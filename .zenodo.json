@@ -1,7 +1,7 @@
 {
-  "title": "RAMA-NOTEBOOK: machine-verified experimental mathematics",
+  "title": "Notes on gcd-matrix permanents, random cycle lifts, and d-matching polynomials, with Lean 4 formalizations",
   "upload_type": "software",
-  "description": "Four short number-theory/combinatorics notes with Lean 4 + Mathlib formalizations: the permanent of the GCD matrix (congruences, 2-adic valuation, growth), the expected characteristic polynomial of random cycle lifts, coefficient stability of d-matching polynomials, and a partition self-divisibility note; plus a methodology note on the computation-to-formal-proof pipeline.",
+  "description": "Four short notes in number theory and combinatorics, with a methodology note, by Vico Bonfioli. (1) The permanent of the GCD matrix a(n)=per[gcd(i,j)] (OEIS A085244): a family of congruences, v2(a(n)) tending to infinity, and bounds on the growth of (a(n)/n!)^(1/n); whether the 2-adic deficit is unbounded is left open. (2) A short elementary derivation of the expected characteristic polynomial of a random permutation r-lift of a cycle. (3) Coefficient stability of d-matching polynomials. (4) Integers n with n dividing p(n)-1. Formalization scope varies by result: the accompanying Lean 4 / Mathlib library builds with no sorry and machine-checks the gcd-permanent congruences and 2-adic bounds and the cycle-lift main theorem, while the growth bounds and the matching-coefficient results are ordinary paper proofs.",
   "access_right": "open",
   "license": "Apache-2.0",
   "keywords": [
@@ -9,10 +9,12 @@
     "permanent",
     "2-adic valuation",
     "matching polynomial",
-    "random lift",
+    "random graph lift",
+    "Chebyshev polynomials",
     "Lean 4",
     "Mathlib",
-    "formalized mathematics"
+    "formalized mathematics",
+    "experimental mathematics"
   ],
   "creators": [
     {
