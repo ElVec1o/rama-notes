@@ -1,0 +1,23 @@
+{
+  "title": "RAMA-NOTEBOOK: machine-verified experimental mathematics",
+  "upload_type": "software",
+  "description": "Four short number-theory/combinatorics notes with Lean 4 + Mathlib formalizations: the permanent of the GCD matrix (congruences, 2-adic valuation, growth), the expected characteristic polynomial of random cycle lifts, coefficient stability of d-matching polynomials, and a partition self-divisibility note; plus a methodology note on the computation-to-formal-proof pipeline.",
+  "access_right": "open",
+  "license": "Apache-2.0",
+  "keywords": [
+    "GCD matrix",
+    "permanent",
+    "2-adic valuation",
+    "matching polynomial",
+    "random lift",
+    "Lean 4",
+    "Mathlib",
+    "formalized mathematics"
+  ],
+  "creators": [
+    {
+      "name": "Bonfioli, Vico",
+      "affiliation": ""
+    }
+  ]
+}

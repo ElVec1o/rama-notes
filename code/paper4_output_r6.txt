@@ -1,0 +1,31 @@
+  class (1, 1, 1): 11 orbit reps [0.0s]
+  class (2, 1): 20 orbit reps [0.0s]
+  class (3,): 18 orbit reps [0.0s]
+r=3: 3 classes, 49 orbit reps [setup 0s]
+r=3: dets done [0s]
+r=3: Psi (ascending) = ['6', '0', '-40', '0', '42', '0', '-12', '0', '1']
+r=3: ALL ODD COEFFS ZERO: True
+r=3: sub-leading = -12 (predicted -12); const = 6
+r=3: TOTAL 0s
+
+Psi_3 validation vs known exact value: OK
+
+  class (1, 1, 1, 1, 1, 1): 901 orbit reps [0.6s]
+  class (2, 1, 1, 1, 1): 11404 orbit reps [1.6s]
+  class (2, 2, 1, 1): 33360 orbit reps [0.6s]
+  class (2, 2, 2): 11404 orbit reps [1.6s]
+  class (3, 1, 1, 1): 29340 orbit reps [0.7s]
+  class (3, 2, 1): 86904 orbit reps [0.3s]
+  class (3, 3): 29340 orbit reps [0.7s]
+  class (4, 1, 1): 65440 orbit reps [0.4s]
+  class (4, 2): 65440 orbit reps [0.4s]
+  class (5, 1): 103700 orbit reps [0.4s]
+  class (6,): 86904 orbit reps [0.4s]
+r=6: 11 classes, 524137 orbit reps [setup 8s]
+r=6: dets done [1099s]
+r=6: Psi (ascending) = ['162/5', '0', '-34068/25', '0', '242478/25', '0', '-646848/25', '0', '840006/25', '0', '-120204/5', '0', '10086', '0', '-2536', '0', '375', '0', '-30', '0', '1']
+r=6: ALL ODD COEFFS ZERO: True
+r=6: sub-leading = -30 (predicted -30); const = 162/5
+r=6: TOTAL 1099s
+
+DONE

@@ -1,0 +1,44 @@
+# Lean / Lake build artifacts
+/.lake/
+**/*.olean
+**/*.ilean
+**/*.c
+lakefile.olean
+
+# Python
+**/__pycache__/
+*.pyc
+
+# Rust build
+**/target/
+
+# LaTeX intermediates (keep .tex sources and compiled .pdf)
+*.aux
+*.log
+*.out
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+*.toc
+*.bbl
+*.blg
+
+# OS / editor
+.DS_Store
+
+# Working material NOT for publication (exploration history, scratch)
+/archive/
+/scratchpad/
+/.repo_scaffold/
+
+# External copyrighted paper (do not redistribute)
+ep_elsholtz_planitzer.pdf
+
+# Compiled C/binary artifacts (keep the .c / .rs sources)
+code/pentagonal_mod
+code/ryser_mod2
+
+# Local editor/tool config
+/.claude/
+/.vscode/
+/.idea/

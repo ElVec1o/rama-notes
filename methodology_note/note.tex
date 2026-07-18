@@ -1,0 +1,278 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1.15in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{remark}\newtheorem{remark}[theorem]{Remark}
+\DeclareMathOperator{\perm}{per}
+\DeclareMathOperator{\lcm}{lcm}
+\newcommand{\Z}{\mathbb Z}
+\newcommand{\N}{\mathbb N}
+\newcommand{\vtwo}{v_2}
+
+\title{Machine-Verified Experimental Mathematics:\\
+Four Ramanujan-Style Case Studies}
+\author{Vico Bonfioli\thanks{All data, scripts, and the
+Lean~4 development are in the \texttt{rama-notes} repository; the formalization is the
+library \texttt{RamaLean/} (Lean~4 + Mathlib, standard axioms
+\texttt{[propext, Classical.choice, Quot.sound]}; plus \texttt{Lean.ofReduceBool}
+for the \texttt{native\_decide} computational cross-checks (Cases~1--2), no
+\texttt{sorry}. The Paper~3 divisibility theorems and the permanent library are on
+the clean three-axiom base). Correspondence: \texttt{vicobonfioli@gmail.com}.}}
+\date{July 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Ramanujan's method---compute aggressively, conjecture boldly from the data, then
+seek the identity---produced curiosities that were later revealed as tips of deep
+icebergs. We ask a \emph{methodological} question: can that method be run today
+end-to-end with machine-checked rigor, so that ``conjecture from computation''
+terminates in ``theorem verified by kernel''? We answer yes through four
+self-contained case studies: three of the four reach a Lean~4/Mathlib proof, and
+Case~4 is computation plus paper-proof, resting on the shared formalized
+matching-polynomial identities. The contribution is \emph{not} any individual theorem---we
+argue plainly that the four discoveries are, in the grand scheme, minor---but the
+demonstration that the experimental-to-formal pipeline closes, including (to our
+knowledge) the first machine-verified instance of the Hall--Puder--Sawin
+``Ramanujan coverings'' circle of ideas, and a small library of reusable formal
+permanent theory that Mathlib previously lacked. We are equally explicit about the
+pipeline's failure modes: one case study is presented as a cautionary tale in
+which an intermediate ``decisive'' computation was \emph{retracted} after its
+proxy invariant was found unfaithful, leaving a razor-sharp but still-open
+conjecture together with the single experiment that would settle it.
+\end{abstract}
+
+\section{Introduction}
+
+Ramanujan filled notebooks with identities found by computing far past the point
+where a pattern becomes ``obvious,'' then trusting the pattern. A century of
+hindsight shows how often the obvious pattern hid real structure---partitions and
+modular forms, the mock theta functions and mock modular forms. The working method
+was: \emph{compute, conjecture, and only then prove.}
+
+Two things have changed since. First, ``compute'' can now mean tens of billions of
+exact operations, pushing the empirical frontier of a combinatorial sequence far
+enough that the eventual asymptotic regime is actually visible. Second,
+``prove'' can now mean \emph{machine-checked}: a proof assistant's kernel certifies
+the argument against a tiny trusted core. This paper is an experiment in running
+Ramanujan's loop with both upgrades in place, on four genuinely new (if modest)
+objects, and reporting honestly on what the discipline of formalization does and
+does not buy.
+
+Our thesis is deliberately narrow. We do \emph{not} claim the four objects below
+are deep; Section~\ref{sec:assessment} argues the opposite. We claim that the
+\emph{pipeline}
+\[
+   \text{compute} \;\to\; \text{conjecture} \;\to\; \text{structural proof}
+   \;\to\; \text{Lean formalization} \;\to\; \text{decisive experiment when theory
+   stalls}
+\]
+closes end-to-end on real examples, that closing it surfaces reusable
+infrastructure, and that it imposes a useful honesty: a formalized theorem cannot
+be quietly wrong, and---as Case~3 shows---a computation engineered to
+settle a conjecture can force a \emph{retraction} rather than a confirmation.
+
+\section{The pipeline}\label{sec:pipeline}
+
+Two features distinguish the loop from ordinary formalization. (i) The conjectures
+are \emph{discovered} here, not imported from the literature to be re-proved.
+(ii) When a structural proof stalls, we engineer a \emph{decisive computation}
+pushed to the feasibility frontier (Gray-code Ryser for permanents; sieve methods
+to $10^7$ for partitions), and we allow that computation to \emph{refute}. The
+formalization step is not decoration: it is where an argument that ``reads
+correctly'' is forced to be correct, and several of our human-written first drafts
+did not survive it.
+
+\section{Case study 2: random lifts of cycles, machine-verified}\label{sec:cycle}
+
+Let $C_n$ be the $n$-cycle and consider a uniformly random permutation
+$r$-\emph{lift} (an $r$-sheeted covering given by assigning a permutation in $S_r$
+to each edge). The expected characteristic polynomial of the ``new'' part of the
+lift---the part orthogonal to the base spectrum---is, by the
+Hall--Puder--Sawin theory of Ramanujan coverings~\cite{HPS},
+\begin{equation}\label{eq:cycle}
+   \Phi_{C_n,r}(x) \;=\; \chi_{C_n}(x)\cdot U_{r-1}\!\big(T_n(x/2)\big),
+\end{equation}
+where $T_n,U_{r-1}$ are Chebyshev polynomials of the first and second kind. The
+quotient $U_{r-1}(T_n(x/2))$ is the $(r-1)$-matching polynomial of $C_n$; its
+real-rootedness is the finite-$r$ generalization, due to~\cite{HPS}, of the
+Heilmann--Lieb theorem and of the interlacing method of Marcus, Spielman, and
+Srivastava~\cite{MSS}. This structure was established in 2018; we do not improve
+it. What we contribute is threefold.
+
+\emph{An independent elementary derivation.} We obtain~\eqref{eq:cycle} through a
+holonomy/transfer-matrix computation and the exponential formula, rather than
+through matching-polynomial combinatorics, yielding en route the generating
+function $\sum_{r\ge0}\Phi_{C_n,r}(x)\,z^r = (1-z)^2/(1-2Yz+z^2)$ with
+$Y=T_n(x/2)$.
+
+\emph{An exact, effective spectral edge.} Whereas~\cite{HPS} give the asymptotic
+Ramanujan bound (largest new eigenvalue $\to 2$), we determine the edge exactly at
+every finite $r$: the largest root of $U_{r-1}(T_n(x/2))$ is
+\[
+   x^\star \;=\; 2\cos\!\Big(\frac{\pi}{nr}\Big),
+   \qquad\text{so the spectral gap is}\quad
+   2 - 2\cos\!\Big(\frac{\pi}{nr}\Big) \sim \frac{\pi^2}{(nr)^2}.
+\]
+
+\emph{Full formalization.} Both the factored form~\eqref{eq:cycle} (over a general
+commutative ring, with \texttt{native\_decide} cross-checks) and the spectral edge
+are machine-checked in \texttt{RamaLean/Paper2*.lean}. The edge is the theorem
+\begin{quote}
+\texttt{Paper2SpectralEdge.spectral\_edge\_is\_root}:\quad
+$U_{r-1}\big(T_n(\cos(\pi/(nr)))\big)=0$ \; for $0<n$, $2\le r$,
+\end{quote}
+proved from $T_n(\cos\theta)=\cos n\theta$ and the vanishing of $U_{r-1}$ at
+$\cos(\pi/r)$. To our knowledge this is the first formally verified statement
+inside the Ramanujan-coverings circle.
+
+\section{Case study 3: the 2-adic gcd permanent (a cautionary tale)}\label{sec:gcd}
+
+Let $a(n)=\perm[\gcd(i,j)]_{1\le i,j\le n}$. The determinant analogue is Smith's
+1876 identity $\det[\gcd(i,j)]=\prod_{k\le n}\varphi(k)$; the permanent is catalogued
+as OEIS~A085244 (2003), but its arithmetic (divisibility, 2-adic growth) appears not
+to have been studied. We establish (all machine-checked): $2,3,4,8\mid a(n)$ in
+suitable ranges, and the sharp linear 2-adic growth rate
+\begin{equation}\label{eq:c1}
+   \vtwo\big(a(n)\big) \;\ge\; n - 2\lfloor\log_2 n\rfloor - 2
+   \qquad(\text{``growth constant } c=1\text{''}),
+\end{equation}
+the theorem \texttt{Paper3C1.two\_pow\_dvd\_permanent\_c1}. The proof rests on four
+new, reusable permanent-divisibility lemmas (Section~\ref{sec:mathlib}).
+
+\emph{The discovery, and the retraction.} Exact Gray-code Ryser values of
+$\vtwo(a(n))$ at the ``peaks'' $n=2^k+1$ yield $\vtwo(a) = 3,5,11,25$ for
+$k=2,3,4,5$, i.e.
+\begin{equation}\label{eq:defconj}
+   \vtwo\big(a(2^k+1)\big) \;=\; 2^k - 2k + 3
+   \qquad\Longleftrightarrow\qquad
+   D(2^k+1) := \vtwo(n!) - \vtwo(a) = 2k-4 \sim 2\log_2 n,
+\end{equation}
+a clean line through all four exact points, suggesting the deficit $D$ is
+\emph{unbounded}, of order $\Theta(\log n)$, against the $O(\log n)$ ceiling
+implied by~\eqref{eq:c1}. Full Ryser at the next peak $n=65$ is $2^{65}$
+operations---out of reach---so we engineered a factored proxy
+$N_0=\sum_v \perm(A_v)\perm(B_v)$ (the weight-$0$ grade of the 2-adic
+decomposition $a=\sum_w 2^w N_w$), computable at $n=65$, and obtained
+$\vtwo(N_0(65))=58$.
+
+We initially read this as \emph{refuting}~\eqref{eq:defconj} (it predicts
+$\vtwo(a(65))=55$). A validation check then showed the proxy is unfaithful:
+$\vtwo(a)-\vtwo(N_0)$ is not identically $0$ but $-2,+1,+3$ at $n=7,12,13$. Hence
+$\vtwo(N_0(65))$ does \emph{not} determine $\vtwo(a(65))$, and the ``refutation''
+was withdrawn. What remains is a genuine, sharply-posed tension:
+\begin{itemize}
+\item the closed form~\eqref{eq:defconj} fits $4/4$ exact peaks (including $k=2$,
+      where the proxy mechanism below fails), and predicts $D(65)=8$ (unbounded);
+\item at $k=3,4,5$ the weight-$0$ grade dominates ($\vtwo(a)=\vtwo(N_0)$), but the
+      grade-profile margins run $0,1,3,1$ (over $k=2,3,4,5$)---fluctuating, not
+      growing, so this dominance is fragile; \emph{if} it nonetheless persisted,
+      $\vtwo(N_0(65))=58$ would force $D(65)=5$ (a bounded ``turnover'').
+\end{itemize}
+These are incompatible at $k=6$: exactly one pattern breaks there. Attacking the
+equivalent recursion $\vtwo(a(2^k+1))=\vtwo(a(2^{k-1}+1))+(2^{k-1}-2)$ shows it is
+\emph{not} an independent, easier target---it holds iff a low grade overtakes
+$w=0$ at $k=6$, iff the deficit is unbounded. What \emph{is} unconditional is the
+upper bound $D(2^k+1)\le 2k$ ($k\ge3$), from~\eqref{eq:c1}; a matching growing
+lower bound---equivalently the exact conjecture~\eqref{eq:defconj}---is open. A
+formalized closed-form fact about the odd-$\varphi$ sub-sum
+($\vtwo(A(2^k+1))=\vtwo(n!)-1$, \texttt{Paper3Atom1}) gives $D\ge2$ infinitely
+often \emph{conditional} on the empirically-clear but unproven
+$\vtwo(B)<\vtwo(A)$. The single decisive feasible experiment is the exact
+$n=33$ grade profile (a Gray-code Ryser over $(\Z/2^{64})[t]$,
+\texttt{code/rust\_grade/}); its margin between the $w=0$ grade and its nearest
+competitor discriminates the two patterns.
+
+We keep this case in the paper precisely because it is where the method behaved
+best as \emph{method}: it produced a falsifiable conjecture, an intermediate
+result, the discovery that the intermediate result's proxy was unfaithful, a clean
+retraction, a proof that the natural next target is equivalent to the original, and
+an explicit pointer to the one computation that would decide it. The formalized
+core~\eqref{eq:c1} is untouched by any of this.
+
+\section{Case studies 1 and 4 (brief)}
+
+\emph{Case 1: partition self-divisibility.} We study $n\mid p(n)$-type divisibility
+of the partition function, computed to $10^7$. A probabilistic
+$\approx\sum 1/n$ heuristic (divergent) predicts infinitely many hits; one
+supporting proposition is formalized. This is the shallowest case: the varying
+modulus breaks the modular-forms machinery that gives Ramanujan's classical
+congruences their depth, so it stays an honest curiosity.
+
+\emph{Case 4: $d$-matching polynomial coefficients.} Inside the same HPS object of
+Case~2, the coefficients $c_k(d)$ of the $d$-matching polynomial are
+polynomials in graph invariants; the two leading coefficients are \emph{universal}
+(functions of $|E|$ and the path count $P$ only), with $c_4$ computed exactly on
+eight graphs. A modest structural refinement of a known object.
+
+\section{The formalized library}\label{sec:mathlib}
+
+Mathlib had no permanent-divisibility results and no permanent Laplace expansion.
+Closing the pipeline produced the following, each a candidate for upstreaming:
+\begin{enumerate}
+\item \texttt{permanent\_succ\_column\_zero}: Laplace/cofactor expansion of the
+      permanent (Mathlib had this only for \texttt{det}; the sign-free proof is
+      shorter).
+\item \texttt{two\_pow\_dvd\_permanent\_odd}: an all-odd matrix has
+      $\vtwo(\perm)\ge \text{size}-\log$.
+\item \texttt{two\_factorial\_dvd\_permanent}: two identical row-groups give
+      $|A|!\,|B|! \mid \perm$, via a free $\mathrm{Sym}(A)\times\mathrm{Sym}(B)$
+      action.
+\item \texttt{two\_pow\_dvd\_permanent\_zeroed}: a zeroed-corner odd matrix has
+      $\vtwo(\perm)\ge \text{size}-2\log$.
+\item \texttt{card\_dvd\_sum\_of\_free\_invariant}: a free finite-group action with
+      an invariant summand gives $|G|\mid\sum$.
+\item \texttt{spectral\_edge\_is\_root} (Section~\ref{sec:cycle}).
+\end{enumerate}
+The permanent lemmas share one idea---divisibility of a permanent by the order of a
+free group acting on the index set while preserving the summand---which we isolate
+as~(5) and reuse throughout.
+
+\section{Honest assessment}\label{sec:assessment}
+
+We state the limitations plainly, because the paper's credibility depends on it.
+Individually the four discoveries are minor (on a grand-scheme scale we would rate
+them $2$--$4$ out of $10$): they concern niche objects, and where they touch deep
+structure---Case~2, the Ramanujan-coverings framework---that
+structure was established by others in 2018, capping the novelty. Rigor and
+machine-checking do \emph{not} buy significance; a formally verified statement
+about a shallow object is still shallow. Case~3's central number-theory
+question is open, and our own analysis suggests its natural proof targets are
+equivalent to it rather than easier.
+
+The claim is therefore methodological. What the pipeline delivers that a
+pen-and-paper note does not is: (a) a reproducible, kernel-checked realization of
+the compute-conjecture-prove loop, end to end, on discovered (not imported)
+objects; (b) the first formally verified instance of the Ramanujan-coverings circle
+of ideas; (c) a reusable formal permanent library Mathlib lacked; and (d) an
+enforced discipline of retraction when a computation's proxy proves unfaithful.
+Not a notebook of new deep mathematics---a proof of concept that Ramanujan's method
+scales to \emph{rigor}, if not yet to \emph{depth}.
+
+\begin{thebibliography}{9}
+\bibitem{HPS} C.~Hall, D.~Puder, W.~F.~Sawin,
+  \emph{Ramanujan coverings of graphs}, Adv.\ Math.\ \textbf{323} (2018),
+  367--410.
+\bibitem{MSS} A.~Marcus, D.~Spielman, N.~Srivastava,
+  \emph{Interlacing families~I: bipartite Ramanujan graphs of all degrees},
+  Ann.\ of Math.\ \textbf{182} (2015), 307--325.
+\bibitem{HL} O.~J.~Heilmann, E.~H.~Lieb,
+  \emph{Theory of monomer-dimer systems}, Comm.\ Math.\ Phys.\ \textbf{25}
+  (1972), 190--232.
+\bibitem{Smith} H.~J.~S.~Smith,
+  \emph{On the value of a certain arithmetical determinant},
+  Proc.\ London Math.\ Soc.\ \textbf{7} (1875--76), 208--212.
+\bibitem{Ryser} H.~J.~Ryser, \emph{Combinatorial Mathematics},
+  Carus Math.\ Monographs \textbf{14}, MAA, 1963.
+\bibitem{Mathlib} The mathlib Community,
+  \emph{The Lean mathematical library}, CPP 2020, 367--381.
+\end{thebibliography}
+
+\end{document}

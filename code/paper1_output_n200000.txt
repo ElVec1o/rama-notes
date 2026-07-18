@@ -1,0 +1,71 @@
+... n=5000  elapsed=0.1s  |S1|=11 |S0|=9 |S-1|=5
+... n=10000  elapsed=0.2s  |S1|=11 |S0|=11 |S-1|=5
+... n=15000  elapsed=0.4s  |S1|=11 |S0|=12 |S-1|=5
+... n=20000  elapsed=0.6s  |S1|=11 |S0|=13 |S-1|=5
+... n=25000  elapsed=0.9s  |S1|=11 |S0|=13 |S-1|=5
+... n=30000  elapsed=1.2s  |S1|=11 |S0|=13 |S-1|=5
+... n=35000  elapsed=1.5s  |S1|=11 |S0|=13 |S-1|=5
+... n=40000  elapsed=1.9s  |S1|=11 |S0|=13 |S-1|=5
+... n=45000  elapsed=2.3s  |S1|=11 |S0|=13 |S-1|=5
+... n=50000  elapsed=2.7s  |S1|=11 |S0|=13 |S-1|=5
+... n=55000  elapsed=3.1s  |S1|=11 |S0|=13 |S-1|=5
+... n=60000  elapsed=3.6s  |S1|=11 |S0|=13 |S-1|=5
+... n=65000  elapsed=4.1s  |S1|=11 |S0|=13 |S-1|=5
+... n=70000  elapsed=4.6s  |S1|=11 |S0|=13 |S-1|=5
+... n=75000  elapsed=5.1s  |S1|=11 |S0|=13 |S-1|=5
+... n=80000  elapsed=5.6s  |S1|=11 |S0|=13 |S-1|=5
+... n=85000  elapsed=6.1s  |S1|=11 |S0|=13 |S-1|=5
+... n=90000  elapsed=6.8s  |S1|=11 |S0|=13 |S-1|=5
+... n=95000  elapsed=7.3s  |S1|=11 |S0|=13 |S-1|=5
+... n=100000  elapsed=7.9s  |S1|=11 |S0|=13 |S-1|=5
+... n=105000  elapsed=8.5s  |S1|=11 |S0|=13 |S-1|=5
+... n=110000  elapsed=9.2s  |S1|=11 |S0|=13 |S-1|=5
+... n=115000  elapsed=9.8s  |S1|=11 |S0|=14 |S-1|=5
+... n=120000  elapsed=10.5s  |S1|=11 |S0|=14 |S-1|=5
+... n=125000  elapsed=11.1s  |S1|=11 |S0|=14 |S-1|=5
+... n=130000  elapsed=11.8s  |S1|=11 |S0|=14 |S-1|=5
+... n=135000  elapsed=12.4s  |S1|=11 |S0|=14 |S-1|=5
+... n=140000  elapsed=13.1s  |S1|=11 |S0|=14 |S-1|=5
+... n=145000  elapsed=13.9s  |S1|=11 |S0|=14 |S-1|=5
+... n=150000  elapsed=14.6s  |S1|=11 |S0|=14 |S-1|=5
+... n=155000  elapsed=15.3s  |S1|=11 |S0|=14 |S-1|=5
+... n=160000  elapsed=16.2s  |S1|=11 |S0|=14 |S-1|=5
+... n=165000  elapsed=17.0s  |S1|=11 |S0|=14 |S-1|=5
+... n=170000  elapsed=17.8s  |S1|=11 |S0|=14 |S-1|=5
+... n=175000  elapsed=18.6s  |S1|=11 |S0|=14 |S-1|=5
+... n=180000  elapsed=19.4s  |S1|=11 |S0|=15 |S-1|=5
+... n=185000  elapsed=20.3s  |S1|=11 |S0|=15 |S-1|=5
+... n=190000  elapsed=21.1s  |S1|=11 |S0|=15 |S-1|=5
+... n=195000  elapsed=22.1s  |S1|=11 |S0|=15 |S-1|=5
+... n=200000  elapsed=23.0s  |S1|=11 |S0|=15 |S-1|=5
+
+Done in 23.0s
+Sanity checks vs published terms: OK
+
+S1  (n | p(n)-1), 11 terms up to 200000:
+[4, 7, 11, 54, 55, 115, 146, 157, 234, 239, 951]
+expected count ~ ln(200000) = 12.21
+
+S0  (n | p(n)), 15 terms up to 200000:
+[2, 3, 124, 158, 342, 693, 1896, 3853, 4434, 5273, 8640, 14850, 17928, 110516, 178984]
+
+S-1 (p(n) == -1 mod n), 5 terms up to 200000:
+[6, 156, 305, 484, 1219]
+
+Consecutive pairs in S1: [(54, 55)]
+Consecutive pairs in S1 u S0 u S-1: [(2, 3), (3, 4), (6, 7), (54, 55), (156, 157), (157, 158)]
+
+S1 counts by window [2^k, 2^(k+1)):
+  [4,8): 2   (random prediction ~ ln2 = 0.69)
+  [8,16): 1   (random prediction ~ ln2 = 0.69)
+  [16,32): 0   (random prediction ~ ln2 = 0.69)
+  [32,64): 2   (random prediction ~ ln2 = 0.69)
+  [64,128): 1   (random prediction ~ ln2 = 0.69)
+  [128,256): 4   (random prediction ~ ln2 = 0.69)
+  [256,512): 0   (random prediction ~ ln2 = 0.69)
+  [512,1024): 1   (random prediction ~ ln2 = 0.69)
+  [1024,2048): 0   (random prediction ~ ln2 = 0.69)
+  [2048,4096): 0   (random prediction ~ ln2 = 0.69)
+  [4096,8192): 0   (random prediction ~ ln2 = 0.69)
+  [8192,16384): 0   (random prediction ~ ln2 = 0.69)
+  [16384,32768): 0   (random prediction ~ ln2 = 0.69)

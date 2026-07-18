@@ -1,0 +1,7 @@
+r=2: exact Ramanujan-triple count = 6 / 8   [0s]
+r=2: float cross-check = 6  (MATCH)
+r=3: exact Ramanujan-triple count = 158 / 216   [0s]
+r=3: float cross-check = 158  (MATCH)
+r=4: exact Ramanujan-triple count = 11808 / 13824   [3s]
+r=5: exact Ramanujan-triple count = 1368072 / 1728000   [89s]
+DONE

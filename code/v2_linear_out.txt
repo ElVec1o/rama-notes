@@ -1,0 +1,32 @@
+=== (A) all-ones-column lemma:  c1! | per(M_d)  for ALL d  (n<=8) ===
+  n= 1  divisor-tuples checked, c1!|per failures = 0
+  n= 2  divisor-tuples checked, c1!|per failures = 0
+  n= 3  divisor-tuples checked, c1!|per failures = 0
+  n= 4  divisor-tuples checked, c1!|per failures = 0
+  n= 5  divisor-tuples checked, c1!|per failures = 0
+  n= 6  divisor-tuples checked, c1!|per failures = 0
+  n= 7  divisor-tuples checked, c1!|per failures = 0
+  n= 8  divisor-tuples checked, c1!|per failures = 0
+  LEMMA (A) holds for all tested: True
+
+=== (B) global bound   v2(a(n))  >=  v2(ceil(n/2)!) ~ n/2   (Ryser, n<=21) ===
+    n  v2(a)  v2(ceil(n/2)!)  margin   ~n/2
+    2      0               0       0     1.0   OK
+    3      1               1       0     1.5   OK
+    4      4               1       3     2.0   OK
+    5      3               1       2     2.5   OK
+    6      2               1       1     3.0   OK
+    7      4               3       1     3.5   OK
+    8      4               3       1     4.0   OK
+    9      5               3       2     4.5   OK
+   10      6               3       3     5.0   OK
+   11      7               4       3     5.5   OK
+   12      9               4       5     6.0   OK
+   13     11               4       7     6.5   OK
+   14      8               4       4     7.0   OK
+   15     12               7       5     7.5   OK
+   16     10               7       3     8.0   OK
+   17     11               7       4     8.5   OK
+   18     14               7       7     9.0   OK
+   19     13               8       5     9.5   OK
+   20     15               8       7    10.0   OK

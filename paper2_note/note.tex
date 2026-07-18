@@ -1,0 +1,204 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1.2in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{hyperref}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{lemma}[theorem]{Lemma}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Q}{\mathbb{Q}}
+
+\title{The expected characteristic polynomial of a random lift of a cycle:\\
+an elementary proof, a generating function,\\ and a machine-checked formalization}
+\author{Vico Bonfioli\thanks{Lean~4 sources: \texttt{RamaLean/} in the \texttt{rama-notes} repository. Correspondence: \texttt{vicobonfioli@gmail.com}.}}
+\date{July 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Let $\Phi_{n,r}(x)$ denote the expected characteristic polynomial of a uniformly
+random permutation $r$-lift of the cycle $C_n$. We give a short, self-contained
+derivation of the closed form
+$\Phi_{n,r}(x)=\chi_{C_n}(x)\cdot U_{r-1}\!\bigl(T_n(x/2)\bigr)$,
+where $T,U$ are Chebyshev polynomials and $\chi_{C_n}(x)=2T_n(x/2)-2$;
+equivalently, the $d$-matching polynomial of $C_n$ (Hall--Puder--Sawin) is
+$U_{d}(T_n(x/2))$. This statement is equivalent, via the Hall--Puder--Sawin
+identity, to a conjecture of Hall proved combinatorially by Cochran,
+Groothuis, Herring, Rohatgi and Stucky (2018); our proof is independent,
+passing through the exponential formula and a Chebyshev generating function,
+and yields as byproducts the generating function
+$\sum_{d\ge 0}\mu_{d,C_n}(x)\,z^d=\bigl(1-2T_n(x/2)z+z^2\bigr)^{-1}$,
+a Fibonacci--Lucas evaluation, and a parity theorem for the quotient.
+The entire derivation from cycle weights to the closed form --- including the
+exponential formula for $S_r$ --- is formalized in Lean~4 over Mathlib, with
+no axioms beyond Lean's standard three.
+\end{abstract}
+
+\section{Introduction and statement}
+
+The expected characteristic polynomial of a random lift is the object at the
+heart of the interlacing-families method of Marcus--Spielman--Srivastava
+\cite{MSS}, who used the $r=2$ (signing) case to prove that bipartite Ramanujan
+graphs exist in every degree; Hall--Puder--Sawin \cite{HPS} extended the
+framework to arbitrary coverings. We evaluate it in closed form for the cycle.
+
+A \emph{permutation $r$-lift} of a graph $G$ replaces each vertex by $r$
+copies and each edge $\{u,v\}$ by the perfect matching $u_i\sim v_{\sigma(i)}$
+of a permutation $\sigma\in S_r$ chosen independently and uniformly per edge.
+For the cycle $C_n$, gauge-fixing a spanning path reduces the lift to a single
+permutation $\sigma\in S_r$ on the closing edge, and the lift decomposes into
+disjoint cycles: each $\ell$-cycle of $\sigma$ contributes a cycle $C_{n\ell}$
+(fixed points contribute copies of $C_n$). Since
+$\chi_{C_m}(x)=\det(xI-A_{C_m})=2T_m(x/2)-2$, the expected characteristic
+polynomial is the expected cycle weight
+\begin{equation}\label{eq:avg}
+\Phi_{n,r}(x)\;=\;\E_{\sigma\in S_r}\;
+\prod_{\ell\,\in\,\mathrm{cycles}(\sigma)}\bigl(2T_{n\ell}(x/2)-2\bigr).
+\end{equation}
+
+\begin{theorem}\label{thm:main}
+For all $n\ge 1$, $r\ge 1$, with $Y=T_n(x/2)$,
+\[
+\Phi_{n,r}(x)\;=\;U_r(Y)-2U_{r-1}(Y)+U_{r-2}(Y)
+\;=\;\underbrace{\bigl(2T_n(x/2)-2\bigr)}_{\chi_{C_n}(x)}\cdot\,
+\underbrace{U_{r-1}\bigl(T_n(x/2)\bigr)}_{\Psi_r(x)} .
+\]
+\end{theorem}
+
+The factored form identifies the quotient $\Psi_r$ --- by the theorem of
+Hall--Puder--Sawin \cite{HPS} equating the expected new-eigenvalue
+characteristic polynomial with the $d$-matching polynomial ($d=r-1$) --- as
+\[
+\mu_{d,C_n}(x)\;=\;U_{d}\bigl(T_n(x/2)\bigr),
+\]
+which is equivalent (through $\mathcal P_d(2t)=U_d(t)$, $\mathcal
+C_n(2t)=2T_n(t)$ and the composition identity
+$U_{dn+n-1}=U_d(T_n)\,U_{n-1}$) to \emph{Hall's conjecture}
+$\mathcal C_{n,d}=\mathcal P_d(\mathcal C_n)$, proved in \cite{CGHRS}.
+Our route is different and elementary; we make no use of matching-polynomial
+combinatorics.
+
+\begin{corollary}\label{cor:gf}
+$\displaystyle\sum_{d\ge 0}\mu_{d,C_n}(x)\,z^d=\frac{1}{1-2T_n(x/2)\,z+z^2}$,
+\quad and \quad
+$\displaystyle\sum_{r\ge 0}\Phi_{n,r}(x)\,z^r=\frac{(1-z)^2}{1-2T_n(x/2)\,z+z^2}$.
+\end{corollary}
+
+\begin{corollary}[real-rootedness]\label{cor:roots}
+All roots of $\Phi_{n,r}$ lie in $[-2,2]$: with $x=2\cos\theta$,
+$\chi_{C_n}$ vanishes at $\theta=2\pi m/n$ and
+$\Psi_r=\sin(rn\theta)/\sin(n\theta)$ vanishes at $\theta=m\pi/(rn)$ with $r\nmid m$
+(when $r\mid m$ the denominator vanishes too and $\Psi_r=\pm r\neq0$); this leaves
+exactly $n(r-1)$ roots, matching $\deg\Psi_r$.
+\end{corollary}
+
+\begin{corollary}[Fibonacci--Lucas evaluation]\label{cor:fib}
+$\Phi_{n,r}(3)=(L_{2n}-2)\,F_{2nr}/F_{2n}$, since $T_n(3/2)=L_{2n}/2$ and
+$U_{r-1}(L_{2n}/2)=F_{2nr}/F_{2n}$.
+\end{corollary}
+
+\begin{corollary}[parity]\label{cor:parity}
+$\Psi_r(-x)=(-1)^{n(r-1)}\Psi_r(x)$: the quotient is supported on exponents
+of a single parity, like a matching polynomial. (For bipartite $C_n$ it is an
+even polynomial for every $r$; at $r=2$ it is the classical matching
+polynomial $2T_n(x/2)$ of $C_n$, consistent with Godsil--Gutman
+\cite{GG}.)
+\end{corollary}
+
+\section{Proof}
+
+Write $f(\ell)=2T_\ell(Y)-2$ with $Y=T_n(x/2)$; by the composition identity
+$T_{n\ell}=T_\ell\circ T_n$ this is the per-cycle factor in \eqref{eq:avg}.
+
+\emph{Step 1 (exponential formula).} For any commutative ring $R$ and
+$f:\mathbb N\to R$, the $S_r$-average
+$\Phi_r=\E_\sigma\prod_{\ell\in\mathrm{cycles}(\sigma)}f(\ell)$ satisfies
+\begin{equation}\label{eq:newton}
+r\,\Phi_r=\sum_{k=1}^{r}f(k)\,\Phi_{r-k},\qquad\Phi_0=1 ,
+\end{equation}
+the coefficient form of $\sum_r\Phi_r z^r=\exp\bigl(\sum_\ell f(\ell)z^\ell/\ell\bigr)$.
+(Proof: group $\sigma$ by cycle type $\lambda$ with Cauchy's count
+$r!/z_\lambda$, mark a part, and re-index; see the Lean file
+\texttt{Paper2ExpFormula.lean} for the fully detailed version.)
+
+\emph{Step 2 (Chebyshev generating function).} With $f(\ell)=2T_\ell(Y)-2$,
+\[
+\sum_{\ell\ge1}f(\ell)\frac{z^\ell}{\ell}
+=-\log\bigl(1-2Yz+z^2\bigr)+2\log(1-z)
+\quad\Longrightarrow\quad
+\sum_{r\ge0}\Phi_r z^r=\frac{(1-z)^2}{1-2Yz+z^2}.
+\]
+Extracting coefficients against $\sum U_r(Y)z^r=(1-2Yz+z^2)^{-1}$ gives
+$\Phi_r=U_r-2U_{r-1}+U_{r-2}$, and the three-term recurrence
+$U_r+U_{r-2}=2YU_{r-1}$ collapses this to $(2Y-2)\,U_{r-1}(Y)$.
+\hfill$\square$
+
+In the formalization the analytic Step 2 is replaced by an equivalent
+finite argument: the closed form is shown to satisfy \eqref{eq:newton}
+directly (a second-difference induction), and \eqref{eq:newton} with
+$\Phi_0=1$ determines $\Phi$ over a characteristic-zero domain.
+
+\section{The formalization}
+
+The core algebraic derivation --- the exponential formula, the closed form of
+Theorem~\ref{thm:main} for all $n,r$ (equivalently, everything from the cycle
+weights \eqref{eq:avg} to the closed form), its factorization, and the parity
+Corollary~\ref{cor:parity} --- is machine-checked in Lean~4 over Mathlib (v4.30).
+The main entry points:
+
+\begin{itemize}
+\item \texttt{Paper2.expFormula} --- the exponential formula
+  \eqref{eq:newton} in integer form
+  $r\,A_r=\sum_k r^{(k)} f(k)A_{r-k}$ over any commutative ring, proved via
+  Mathlib's Cauchy cycle-type count
+  (\texttt{Equiv.Perm.card\_of\_cycleType\_mul\_eq});
+\item \texttt{Paper2.thm1\_Sr} --- Theorem~\ref{thm:main} in the form:
+  the expected cycle weight \eqref{eq:avg} equals the closed form, for all
+  $n,r$, over any $\Q$-algebra domain;
+\item \texttt{Paper2.cG\_factored}, \texttt{Paper2.quotient\_parity} ---
+  the factorization and Corollary~\ref{cor:parity}.
+\end{itemize}
+
+The three remaining corollaries are formalized only in part:
+Corollary~\ref{cor:gf}'s generating function appears as the finite recurrence
+\eqref{eq:newton} rather than a literal power-series identity; of
+Corollary~\ref{cor:roots} only the underlying trigonometric factorization
+(\texttt{cor1\_factored}) is checked, not the ``all roots in $[-2,2]$''
+statement end-to-end; and Corollary~\ref{cor:fib} (\texttt{cor2\_phi3}) is a
+bounded \texttt{native\_decide} over $n,r\le6$.
+
+Trust base for the general theorems: \texttt{propext}, \texttt{Classical.choice},
+\texttt{Quot.sound} only (checked with \texttt{\#print axioms}); the bounded
+\texttt{native\_decide} checks additionally invoke \texttt{Lean.ofReduceBool}.
+No \texttt{sorry}. The single remaining unformalized ingredient of the
+\emph{graph-theoretic} statement is the sentence before \eqref{eq:avg}: a lift
+of a cycle is a disjoint union of cycles --- elementary covering-space
+combinatorics for which Mathlib currently lacks the vocabulary.
+
+\begin{remark}
+Everything here is stated for the uniform permutation model; by
+\cite{HPS} the quotient coincides with the $(r-1)$-matching polynomial,
+so Theorem~\ref{thm:main} can alternatively be deduced from \cite{CGHRS}.
+We believe the generating function of Corollary~\ref{cor:gf}, the
+evaluation of Corollary~\ref{cor:fib}, and the formalization are new.
+\end{remark}
+
+\begin{thebibliography}{9}
+\bibitem{GG} C.~Godsil, I.~Gutman, \emph{On the matching polynomial of a
+graph}, in: Algebraic Methods in Graph Theory, 1981.
+\bibitem{HPS} C.~Hall, D.~Puder, W.~Sawin, \emph{Ramanujan coverings of
+graphs}, Adv.\ Math.\ \textbf{323} (2018), 367--410.
+\bibitem{CGHRS} G.~Cochran, C.~Groothuis, A.~Herring, R.~Rohatgi,
+E.~Stucky, \emph{A new (combinatorial) proof of the commutativity of
+matching polynomials for cycles}, arXiv:1810.05889 (2018).
+\bibitem{MSS} A.~Marcus, D.~Spielman, N.~Srivastava, \emph{Interlacing
+families I: Bipartite Ramanujan graphs of all degrees}, Ann.\ of Math.\
+\textbf{182} (2015), 307--325.
+\end{thebibliography}
+
+\end{document}

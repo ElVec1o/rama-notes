@@ -1,0 +1,193 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1.15in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{hyperref}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\E}{\mathbb{E}}
+\DeclareMathOperator{\tri}{tri}
+
+\title{Coefficient stability of $d$-matching polynomials}
+\author{Vico Bonfioli\thanks{Computations and an independent Lean/Mathlib
+formalization of related material: the \texttt{rama-notes} repository. Correspondence: \texttt{vicobonfioli@gmail.com}.}}
+\date{July 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Let $\mu_{d,G}$ be the $d$-matching polynomial of a finite graph $G$ (the
+average matching polynomial over $d$-sheeted covers, Hall--Puder--Sawin). We
+show that for each fixed $k$ the coefficient of $x^{|V|d-2k}$ in $\mu_{d,G}$ is a
+\emph{polynomial in $d$ of degree $k$}, and we compute its top two coefficients
+in closed form for every $G$:
+\[
+[x^{|V|d-2k}]\,\mu_{d,G} = (-1)^k c_k(d),\qquad
+c_k(d) = \frac{|E|^k}{k!}\,d^k \;-\; \frac{|E|^{k-2}}{(k-2)!}\Big(\tfrac{|E|}{2}+P\Big)d^{k-1}
++ \cdots ,
+\]
+where $P=\sum_v \binom{\deg v}{2}$ is the number of $2$-paths. We give the full
+$c_1,c_2,c_3$ as explicit polynomials in elementary graph invariants (edges,
+$2$-paths, claws, triangles), and observe that at $k=3$ the constant term counts
+triangles, $c_3(0)=-\tri(G)$; for $k\ge4$ the constant term is a genuinely higher
+combinatorial invariant, not a simple count of $k$-edge cyclic subgraphs.
+The results are verified on the infinite cycle family (via the exact closed form
+$\mu_{d,C_n}=U_d(T_n(x/2))$) and on $K_4$ and $K_4-e$. In contrast, an exhaustive
+search finds that $K_4$ admits \emph{no} constant-coefficient recurrence in $d$ of
+order $\le3$ and $x$-degree $\le8$ (unlike cycles), so the $d$-matching polynomial
+has no ``cycle-like'' global closed form of that shape; the coefficient stability
+above is the structure that survives.
+\end{abstract}
+
+\section{Setup}
+
+For a finite graph $G=(V,E)$ and $d\ge 1$, a $d$-cover (or $d$-lift) $H$ of $G$
+replaces each vertex by $d$ copies and each edge by a perfect matching between
+the fibres given by a permutation in $S_d$. The \emph{$d$-matching polynomial}
+$\mu_{d,G}$ is the average, over all $|E|$-tuples of independent uniform edge
+permutations, of the matching polynomial $\mu_H(x)=\sum_{k\ge0}(-1)^k m_k(H)\,
+x^{|V(H)|-2k}$ \cite{GG}, where $m_k(H)$ is the number of $k$-matchings of $H$
+\cite{HPS}. Equivalently, by \cite{HPS}, $\mu_{d,G}$ is the expected
+characteristic polynomial of the ``new'' eigenvalues of a random $d$-cover.
+Since $|V(H)|=|V|d$, writing $c_k(d):=\E[m_k(H)]$ we have
+$\mu_{d,G}=\sum_k (-1)^k c_k(d)\, x^{|V|d-2k}$, and the object of study is the
+dependence of $c_k(d)$ on $d$.
+
+For cycles, $\mu_{d,C_n}=U_d(T_n(x/2))$ with $T,U$ the Chebyshev polynomials
+\cite{CGHRS}; this gives exact data for all $d$. We also use exact data for
+$K_4$ (through $d=5$) and $K_4-e$ (the ``diamond,'' through $d=5$).
+
+\section{Coefficient stability}
+
+\begin{theorem}\label{thm:stab}
+For each fixed $k\ge 0$, $c_k(d)=\E[m_k(H)]$ is a polynomial in $d$ of degree
+$k$, with leading coefficient $|E|^k/k!$.
+\end{theorem}
+
+\begin{proof}
+Since $m_k(H)\le\binom{|E|d}{k}$, the expectation $c_k(d)=\E[m_k(H)]$ is bounded
+above by a polynomial of degree $k$ in $d$. That $c_k(d)$ is itself a polynomial
+in $d$ is the specialization to $k$-matchings of the polynomiality of expected
+subgraph counts in random $d$-covers \cite{LP}: grouping the $k$-matchings of $H$
+by their projection to a $k$-edge sub-multigraph of $G$, each of the finitely many
+projection types contributes a polynomial in $d$. Proposition~\ref{prop:top}
+evaluates the top two coefficients by inclusion--exclusion and in particular gives
+leading coefficient $|E|^k/k!\neq0$; hence the degree is exactly $k$. The
+lower-order coefficients are polynomial in $d$ by the same argument, but we do not
+reproduce them in closed form here (beyond $c_1,c_2,c_3$ in
+Proposition~\ref{prop:low}).
+\end{proof}
+
+\begin{proposition}[top two coefficients]\label{prop:top}
+For $k\ge 2$, with $P=\sum_{v}\binom{\deg v}{2}$ the number of $2$-paths of $G$,
+\[
+[d^k]\,c_k = \frac{|E|^k}{k!},\qquad
+[d^{k-1}]\,c_k = -\frac{|E|^{k-2}}{(k-2)!}\Big(\frac{|E|}{2}+P\Big).
+\]
+\end{proposition}
+
+\begin{proof}
+By inclusion--exclusion on the number of adjacent pairs,
+$m_k = \binom{M}{k} - p_2\binom{M-2}{k-2}+\cdots$, where $M=|E|d$ is the number
+of edges of $H$ and $p_2=P\,d$ is its number of $2$-paths (both determined by
+the degree sequence of $H$, hence deterministic). The two displayed
+coefficients come from the top two terms: $\binom{M}{k}$ contributes
+$|E|^k d^k/k!$ and $-\binom{k}{2}|E|^{k-1}d^{k-1}/k! = -|E|^{k-1}d^{k-1}/(2(k-2)!)$;
+the term $-p_2\binom{M-2}{k-2}$ contributes $-P|E|^{k-2}d^{k-1}/(k-2)!$ at order
+$d^{k-1}$. Summing gives the claim.
+\end{proof}
+
+\begin{proposition}[the first coefficients, explicitly]\label{prop:low}
+Let $S=\sum_v\binom{\deg v}{3}$ (number of claws $K_{1,3}$),
+$W=\sum_{uv\in E}(\deg u-1)(\deg v-1)$, and $t=\tri(G)$ the number of triangles.
+Then
+\[
+c_1=|E|d,\quad
+c_2=\binom{|E|d}{2}-P\,d,\quad
+c_3=\binom{|E|d}{3}-P\,d(|E|d-2)+(W+2S)\,d-t .
+\]
+\end{proposition}
+
+\begin{proof}
+$c_1=m_1=|E|d$ (edge count) and $c_2=\binom{M}{2}-p_2$ are deterministic. For
+$c_3$, inclusion--exclusion gives
+$m_3=\binom{M}{3}-p_2(M-2)+p_3+2(t_H+s)$, where $p_3=W d-3t_H$ is the number of
+$3$-edge paths, $s=S d$ the number of claws, and $t_H$ the number of triangles
+of $H$. All but $t_H$ are deterministic; taking expectations with
+$\E[t_H]=t$ (each triangle of $G$ lifts with expected multiplicity $1$, being
+the expected number of fixed points of the uniform composition of its three
+edge-permutations) yields the stated cubic.
+\end{proof}
+
+\begin{proposition}[the universal coefficients are exactly the top two]
+For $k\ge 2$ the two leading coefficients of $c_k(d)$ are given by the
+graph-independent formulas of Proposition~\ref{prop:top} (functions of $|E|$
+and $P$ only). No further coefficient is universal in this sense: already
+$[d^1]c_3 = |E|/3+2P+W+2S$ requires $W,S$, and $[d^2]c_4$ requires still more.
+Concretely, for the cycle $C_n$ ($n\ge5$) the exact fourth coefficient is
+\[
+c_4(C_n,d)=\tfrac{n^4}{24}d^4-\tfrac{3n^3}{4}d^3+\tfrac{107n^2}{24}d^2
+-\tfrac{35n}{4}d,
+\]
+whose $d^2,d^1$ coefficients $\tfrac{107}{24}n^2,-\tfrac{35}{4}n$ no formula in
+$(|E|,P)$ can reproduce; they are the cycle values of graph-specific
+combinations of subgraph counts ($W$, $3$-paths, $4$-cycles, claws, \dots).
+Thus $c_1,c_2,c_3$ are the fully explicit members; from $c_4$ on, only the top
+two coefficients have closed forms.
+\end{proposition}
+
+\begin{remark}[topological constant term]
+The constant term $c_3(0)=-t$ (immediate from Proposition~\ref{prop:low},
+verified on $C_3$--$C_6$, $K_4$, $K_4-e$, the bowtie and the paw): the $c_3$
+constant term counts triangles. Beyond $k=3$ the constant term is no longer a
+simple invariant: direct computation gives $c_4(0)=6,1,21,20,12,8$ for
+$C_3, C_4$, the diamond, the bowtie, two disjoint triangles, and the paw,
+which depends on how triangles overlap and on pendant edges---so $c_4(0)$ is a
+genuine higher combinatorial invariant, not a function of $(\#C_4,\tri)$ alone.
+The same holds for the middle coefficients: as the exact $c_4(C_n)$ above already
+shows, $[d^2]c_4$ is not a function of $(|E|,P)$, and expressing it requires several
+graph-specific subgraph counts ($W$, $S$, $\#C_4$, claws, \dots). Thus, beyond the
+universal top two, the coefficients of $c_k$ are delivered in principle by the
+projection/lift-count method but are genuinely multi-invariant (the quadratic
+subgraph basis), not low-order closed forms in $(|E|,P)$.
+\end{remark}
+
+\section{Verification and a contrast}
+
+Propositions~\ref{prop:top}--\ref{prop:low} are verified for
+$k=1,\dots,5$ on the cycles $C_3,\dots,C_6$ (using the exact
+$\mu_{d,C_n}=U_d(T_n(x/2))$), on $K_4$ ($|E|=6$, $P=12$, $S=4$, $W=24$,
+$t=4$), and on $K_4-e$ ($|E|=5$, $P=8$, $S=2$, $W=12$, $t=2$). The last two
+have $|E|\ne P$, so they independently exercise the $P$, $S$, $W$, $t$ terms.
+
+For $K_4$ we further observe, in contrast to cycles, that the $\mu_{d,K_4}$
+satisfy \emph{no} constant-coefficient linear recurrence in $d$ with
+polynomial-in-$x$ coefficients: solving
+$\mu_{d+2}=A(x)\mu_{d+1}+B(x)\mu_d$ from two instances yields $A,B$ rational
+(not polynomial) in $x$, failing on the next instance, and an exhaustive
+search finds no order-$\le 3$, degree-$\le 8$ recurrence. Thus $K_4$ has no
+``cycle-like'' closed form of the type $\mathcal C_{n,d}=\mathcal
+P_d(\mathcal C_n)$ proved for cycles in \cite{CGHRS}; coefficient stability is
+the structure that persists in general. (This dichotomy is sharp: the top
+$x$-degree coefficients of $\mu_{d,K_4}$ are universal polynomials in $d$,
+while the constant term is $\E[\#\text{perfect matchings}]$, which we compute to
+grow like $(16/9)^d$.)
+
+\begin{thebibliography}{9}
+\bibitem{HPS} C.~Hall, D.~Puder, W.~Sawin, \emph{Ramanujan coverings of
+graphs}, Adv.\ Math.\ \textbf{323} (2018) 367--410.
+\bibitem{CGHRS} G.~Cochran, C.~Groothuis, A.~Herring, R.~Rohatgi, E.~Stucky,
+\emph{A new (combinatorial) proof of the commutativity of matching polynomials
+for cycles}, arXiv:1810.05889 (2018).
+\bibitem{LP} N.~Linial, D.~Puder, \emph{Word maps and spectra of random graph
+lifts}, Random Structures Algorithms \textbf{37} (2010), no.~1, 100--135.
+\bibitem{GG} C.~Godsil, I.~Gutman, \emph{On the matching polynomial of a
+graph}, in: Algebraic Methods in Graph Theory, 1981.
+\end{thebibliography}
+
+\end{document}

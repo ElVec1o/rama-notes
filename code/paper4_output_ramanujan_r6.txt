@@ -1,0 +1,13 @@
+266 chunks over 524137 orbit reps
+  25/266 chunks, t=172s
+  50/266 chunks, t=384s
+  75/266 chunks, t=612s
+  100/266 chunks, t=817s
+  125/266 chunks, t=1020s
+  150/266 chunks, t=1270s
+  175/266 chunks, t=1445s
+  200/266 chunks, t=1685s
+  225/266 chunks, t=1909s
+  250/266 chunks, t=2139s
+
+r=6: exact Ramanujan-triple count = 270504000 / 373248000  (fraction 0.7247)  [2239s]

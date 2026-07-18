@@ -1,0 +1,136 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1.15in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{hyperref}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{remark}\newtheorem{remark}[theorem]{Remark}
+\DeclareMathOperator{\perm}{per}
+\newcommand{\vtwo}{v_2}
+\newcommand{\Z}{\mathbb Z}
+
+\title{The 2-adic deficit of the gcd permanent:\\
+two odd-permanent engines and a parity mechanism}
+\author{Vico Bonfioli\thanks{Companion to \emph{The permanent of the
+GCD matrix}. Data/scripts in \texttt{code/} of the \texttt{rama-notes} repository; the odd-permanent lower bound
+\texttt{OddPerm.two\_pow\_dvd\_permanent\_odd} and the $c=1$ rate are machine-checked in
+\texttt{RamaLean/}. Correspondence: \texttt{vicobonfioli@gmail.com}.}}
+\date{July 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Let $a(n)=\perm[\gcd(i,j)]_{1\le i,j\le n}$ and $D(n)=\vtwo(n!)-\vtwo(a(n))$ its 2-adic deficit below
+the factorial. Exact data at the peaks $n=2^k+1$ gives $\vtwo(a)=3,5,11,25$ ($k=2,3,4,5$), i.e.
+$D(2^k+1)=2k-4$. We explain this value \emph{mechanistically}. Two exact 2-adic valuation theorems for
+odd-integer permanents---one for size $2^a$ driven by the first permanental symmetric function
+$\pi_1$, one for size $2^a+1$ driven by $\pi_2$---combine to give, for the two factors of the
+weight-$0$ grade $N_0=\sum_v\perm(A_v)\perm(B_v)$, the sum $\vtwo(\perm A_v)+\vtwo(\perm B_v)=2^k-2k+3$
+at every $v$ with $\pi_1(A_v),\pi_2(B_v)$ both odd. A leading-term/achiever-parity rule then gives
+$\vtwo(N_0)=2^k-2k+3$ \emph{iff} the number of such $v$ is odd. That achiever count is computable with
+\emph{no permanents} (an $O(n\log n)$ divisor sieve); it is odd for $k=4,5,7,8,11,14,16,17,18$ within
+$k\le21$ (roughly half, recurring), giving $D_{N_0}(2^k+1)=2k-4\to\infty$. Thus the deficit of $N_0$ is
+(empirically, on a proven mechanism) \textbf{unbounded, of order $2\log_2 n$}. The two engines and the
+reduction are rigorous; the sole open step---that the achiever parity is odd infinitely often---is a
+parity-of-a-divisor-correlation statement that behaves pseudorandomly and which we leave as a
+conjecture.
+\end{abstract}
+
+\section{The two odd-permanent engines}
+
+For an $s\times s$ integer matrix $M$ all of whose entries are odd, write $M=2e+J$ with $J$ the
+all-ones matrix and $e=(M-J)/2$. The column-multilinear expansion of the permanent
+(\texttt{OddPerm.permanent\_two\_mul\_add\_one}) is
+\begin{equation}\label{eq:exp}
+   \perm(2e+J)=\sum_{k=0}^{s}2^k(s-k)!\,\pi_k(e),
+   \qquad
+   \pi_k(e)=\sum_{|R|=|S|=k}\perm\big(e[R,S]\big),
+\end{equation}
+the $\pi_k$ being the permanental symmetric functions ($\pi_0=1$, $\pi_1=\sum_{i,j}e_{ij}$). Writing
+$v_2(m!)=m-s_2(m)$ ($s_2=$ binary digit sum), term $k$ has valuation
+$k+(s-k)-s_2(s-k)+\vtwo(\pi_k)=s-s_2(s-k)+\vtwo(\pi_k)$.
+
+\begin{theorem}[$A$-engine, size $2^a$]\label{thm:A}
+Let $s=2^a$ with $a\ge2$ and $\pi_1(e)$ odd. Then $\vtwo(\perm(2e+J))=2^a-a$ exactly.
+\end{theorem}
+\begin{proof}
+In \eqref{eq:exp}: the $k=1$ term has $\vtwo=2^a-s_2(2^a-1)+\vtwo(\pi_1)=2^a-a$ (as $\pi_1$ odd); the
+$k=0$ term has $\vtwo=2^a-1>2^a-a$; and for $2\le k\le 2^a$ one has $2^a-k\in[0,2^a-2]$, every element
+of which has at most $a-1$ binary ones (only $2^a-1$ has $a$), so $s_2(2^a-k)\le a-1$ and the term has
+$\vtwo\ge 2^a-a+1$. The $k=1$ term is thus the unique minimum-valuation term; no cancellation at level
+$2^a-a$, hence $\vtwo(\perm)=2^a-a$.
+\end{proof}
+
+\begin{theorem}[$B$-engine, size $2^a+1$]\label{thm:B}
+Let $s=2^a+1$ with $a\ge3$ and $\pi_2(e)$ odd. Then $\vtwo(\perm(2e+J))=2^a+1-a$ exactly.
+\end{theorem}
+\begin{proof}
+Now $\max_{0\le k\le s}s_2(s-k)=a$, attained \emph{uniquely} at $k=2$ (where $s-k=2^a-1$, the only
+integer $\le 2^a+1$ with $a$ ones). So the $k=2$ term has $\vtwo=2^a+1-a+\vtwo(\pi_2)=2^a+1-a$
+($\pi_2$ odd), while every other $k$ has $s_2(s-k)\le a-1$, hence $\vtwo\ge 2^a+2-a$. Unique minimum,
+no cancellation, so $\vtwo(\perm)=2^a+1-a$.
+\end{proof}
+
+Theorem~\ref{thm:A} is the tight matching upper bound to the machine-checked lower bound
+$\vtwo(\perm)\ge s-\lfloor\log_2 s\rfloor-1$; both engines are exact, and were verified exhaustively
+on random odd matrices for $a\le4$.
+
+\section{The weight-0 grade and the mechanism}
+
+For odd $n$ the weight-$0$ grade of $a(n)=\sum_{w\ge0}2^wN_w$ factors as
+$N_0=\sum_{v}\perm(A_v)\perm(B_v)$, where, with $m=\lfloor n/2\rfloor$, the sum runs over odd values
+$v$, $A_v$ is the $m\times m$ all-odd matrix on even positions $\times$ (odd values $\setminus\{v\}$),
+and $B_v$ the $(m{+}1)\times(m{+}1)$ all-odd matrix on odd positions $\times$ (even values
+$\cup\{v\}$). At the peaks $n=2^k+1$ we have $m=2^{k-1}$, so $A_v$ has size $2^{k-1}$ and $B_v$ size
+$2^{k-1}+1$: \emph{exactly the two engine sizes}. When $\pi_1(A_v)$ and $\pi_2(B_v)$ are both odd,
+Theorems~\ref{thm:A}--\ref{thm:B} give
+\[
+   \vtwo(\perm A_v)+\vtwo(\perm B_v)
+   =\big(2^{k-1}-(k-1)\big)+\big(2^{k-1}+1-(k-1)\big)=2^k-2k+3 .
+\]
+These are the minimum-valuation terms of $N_0$ (a $\pi$ even only raises the valuation). Since all
+$\perm(A_v)\perm(B_v)$ are integers, the leading-term rule gives
+\[
+   N_0\equiv 2^{\,2^k-2k+3}\cdot\#\{v:\pi_1(A_v),\pi_2(B_v)\text{ odd}\}\pmod{2^{\,2^k-2k+4}},
+\]
+so $\vtwo(N_0)=2^k-2k+3$ \textbf{iff the achiever count is odd}. This reproduces the measured
+$\vtwo(N_0)=11,25,58$ at $k=4,5,6$ exactly (the $k=6$ value $58>55$ is the even-parity lift).
+
+\begin{proposition}
+The achiever count $\#\{v:\pi_1(A_v),\pi_2(B_v)\text{ odd}\}\bmod 2$ is computable in $O(n\log n)$ with
+no permanent evaluation, via $\pi_1(A_v)\equiv$ a divisor sum and an $O(s^2)$ closed form for
+$\pi_2(B_v)\bmod2$ reduced to Jordan-totient sums.
+\end{proposition}
+
+Computed for $k=4,\dots,21$, the parity is odd at $k=4,5,7,8,11,14,16,17,18$ (nine of eighteen), so
+$D_{N_0}(2^k+1)=2k-4$ there, reaching $32$ at $k=18$ and setting new records at every odd-parity peak.
+
+\begin{corollary}[conditional]
+If the achiever count is odd for infinitely many $k$, then $D_{N_0}(2^k+1)=2k-4$ infinitely often, so
+the weight-$0$ deficit is unbounded, $D_{N_0}=\Theta(\log n)$ along the peaks.
+\end{corollary}
+
+\section{Status and the open problem}
+
+The engines (Theorems~\ref{thm:A},~\ref{thm:B}) and the achiever-parity reduction are rigorous. What
+remains open is a single, sharply-posed arithmetic statement.
+\begin{conjecture}
+$\#\{v\text{ odd}\le 2^k+1:\pi_1(A_v),\pi_2(B_v)\text{ both odd}\}$ is odd for infinitely many $k$.
+\end{conjecture}
+Empirically this parity is $\approx\tfrac12$-dense and pseudorandom in $k$ (no pattern in $k$,
+$s_2(k)$, or the binary expansion), which is why the conjecture, though it reduces to a computable
+divisor-sum correlation, resists a direct proof; the subfamily $k=2^j$ is odd for $k=4,8,16$ but its
+neighbours are odd too, so it is not evidently a tractable special case. For the \emph{full}
+permanent $a(n)$ one needs additionally $\vtwo(a)=\vtwo(N_0)$ (weight-$0$ dominance), which holds at
+the peaks $k=3,4,5$ with a grade-margin that grows.
+
+\medskip\noindent\emph{Summary.} The 2-adic deficit of the gcd permanent at $n=2^k+1$ equals $2k-4$
+through a transparent mechanism---two exact odd-permanent valuations plus a parity---rather than
+opaque cancellation. The deficit is unbounded conditional on a clean parity conjecture, and the
+mechanism is a permanent-free, $O(n\log n)$ predictor of $\vtwo(N_0)$.
+
+\end{document}

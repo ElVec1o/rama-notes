@@ -1,0 +1,35 @@
+r=2: classes=2, orbit reps total=8 (vs full 8)  [setup 0.0s]
+r=2: reduction cross-check vs full brute force OK
+r=2: division by chi_K4 remainder zero: True
+r=2: Psi_r integer coefficients: True
+r=2: Psi_r (ascending) = ['3', '0', '-6', '0', '1']
+r=2: ALL ODD-DEGREE COEFFS ZERO: True
+r=2: sub-leading coeff (x^2... x^(deg-4-2)) = -6  (claimed -6(r-1) = -6)
+r=2: TOTAL TIME 0.1s
+
+r=3: classes=3, orbit reps total=49 (vs full 216)  [setup 0.0s]
+r=3: reduction cross-check vs full brute force OK
+r=3: division by chi_K4 remainder zero: True
+r=3: Psi_r integer coefficients: True
+r=3: Psi_r (ascending) = ['6', '0', '-40', '0', '42', '0', '-12', '0', '1']
+r=3: ALL ODD-DEGREE COEFFS ZERO: True
+r=3: sub-leading coeff (x^6... x^(deg-4-2)) = -12  (claimed -6(r-1) = -12)
+r=3: TOTAL TIME 0.0s
+
+r=4: classes=5, orbit reps total=681 (vs full 13824)  [setup 0.0s]
+r=4: division by chi_K4 remainder zero: True
+r=4: Psi_r integer coefficients: False
+r=4: Psi_r (ascending) = ['97/9', '0', '-158', '0', '393', '0', '-332', '0', '117', '0', '-18', '0', '1']
+r=4: ALL ODD-DEGREE COEFFS ZERO: True
+r=4: sub-leading coeff (x^10... x^(deg-4-2)) = -18  (claimed -6(r-1) = -18)
+r=4: TOTAL TIME 0.2s
+
+r=5: classes=7, orbit reps total=14721 (vs full 1728000)  [setup 3.6s]
+r=5: division by chi_K4 remainder zero: True
+r=5: Psi_r integer coefficients: False
+r=5: Psi_r (ascending) = ['75/4', '0', '-495', '0', '2230', '0', '-3654', '0', '2781', '0', '-1092', '0', '228', '0', '-24', '0', '1']
+r=5: ALL ODD-DEGREE COEFFS ZERO: True
+r=5: sub-leading coeff (x^14... x^(deg-4-2)) = -24  (claimed -6(r-1) = -24)
+r=5: TOTAL TIME 13.6s
+
+ALL DONE
