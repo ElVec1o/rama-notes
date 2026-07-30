@@ -6,6 +6,7 @@
 \newtheorem{theorem}{Theorem}
 \newtheorem{corollary}[theorem]{Corollary}
 \newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{conjecture}[theorem]{Conjecture}
 \theoremstyle{remark}
 \newtheorem{remark}[theorem]{Remark}
 
@@ -292,6 +293,41 @@ So the cycle is not merely the easiest case of Theorem~\ref{thm:uni}: it is the
 degenerate one, the unique member of the family whose spectrum has no gaps and
 for which the Ramanujan interval is attained. Any cycle with a tree attached
 exhibits a band structure that no cycle can display.
+
+\paragraph{A conjecture for all graphs.}
+Corollary~\ref{cor:floquet} is proved by Floquet theory, which is available
+only because $\pi_1(G)=\mathbb{Z}$. Its \emph{statement}, however, makes sense
+for every graph, and we know two cases of it. At $d=1$ it is classical:
+$\mu_{1,G}$ is the ordinary matching polynomial, whose roots are eigenvalues of
+the path tree of $G$ and hence lie in $\operatorname{spec}(T)$ (Godsil). At
+$b_1(G)=1$ it is Corollary~\ref{cor:floquet}, for every $d$. We therefore
+propose:
+
+\begin{conjecture}\label{conj:gap}
+For every finite graph $G$ and every $d\ge1$, all roots of $\mu_{d,G}$ lie in
+$\operatorname{spec}(T)$, the spectrum of the universal cover of $G$.
+\end{conjecture}
+
+This strengthens the root-localization theorem of \cite{HPS}, which places the
+roots in the interval $[-\rho,\rho]$ with $\rho$ the spectral radius of $T$;
+the conjecture places them in $\operatorname{spec}(T)$ itself. The two agree
+whenever $T$ has no spectral gap --- in particular for regular $G$, where $T$
+is a regular tree and $\operatorname{spec}(T)=[-2\sqrt{q},2\sqrt{q}]$ is an
+interval. They differ exactly when $T$ has a gap, and the smallest examples are
+biregular: for $K_{2,3}$ the universal cover is the $(3,2)$-biregular tree,
+with spectrum $\{0\}\cup\pm[\sqrt2-1,\sqrt2+1]$ and hence a gap
+$(0,\sqrt2-1)$ inside the Ramanujan interval. We have computed $\mu_{d,K_{2,3}}$
+for $d\le4$, and $\mu_{d,K_{2,4}}$ for $d\le3$ (universal cover the
+$(4,2)$-biregular tree, gap $(0,\sqrt3-1)$), by averaging matching polynomials
+over all $d$-covers: in every case no root lies in the gap. Note that
+$b_1(K_{2,3})=2$ and $b_1(K_{2,4})=3$, so these are outside the reach of
+Corollary~\ref{cor:floquet}.
+
+A proof of Conjecture~\ref{conj:gap} cannot go through Floquet theory, since
+for $b_1\ge2$ the relevant cover is a tree with free deck group rather than a
+periodic chain. What the $b_1=1$ case does show is that the interval in
+\cite{HPS} is not the natural receptacle for the roots, and that the correct
+one is spectral rather than metric.
 
 \paragraph{Related work.}
 Two ingredients are classical and are used, not claimed. The factorization of
