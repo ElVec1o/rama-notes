@@ -42,3 +42,6 @@ code/ryser_mod2
 /.claude/
 /.vscode/
 /.idea/
+
+# Rule 10: scratch, logs, strategy, dead ends
+/private/

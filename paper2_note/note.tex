@@ -430,9 +430,46 @@ g_{K_{4,5}}=z^4+8z^3-6z^2-128z-139
 \]
 all have a nonzero subleading coefficient. Their roots do satisfy
 \eqref{eq:twosided}, with maxima $4.06,4.48,6.26$ against bounds
-$4.90,5.66,6.93$. So the open case is precisely a Heilmann--Lieb theorem for a
-class of polynomials strictly larger than the matching polynomials, containing
-the $g$ above; we do not know how to characterize that class.
+$4.90,5.66,6.93$. That class admits a clean description. Since a $k$-matching leaves $p-k$
+vertices of $A$ unmatched,
+\begin{equation}\label{eq:multivar}
+f_G(y)=\sum_{k}(-1)^k m_k\,y^{p-k}
+=\sum_{M}(-1)^{|M|}\prod_{v\in A\setminus V(M)}y
+=\mathcal M\bigl(G;\,x_A=y,\ x_B=1\bigr),
+\end{equation}
+the multivariate matching polynomial of Heilmann and Lieb under the asymmetric
+specialization that puts the variable on one side of the bipartition and $1$ on
+the other. So the $g$ are not exotic: they are shifts of matching polynomials in
+the multivariate sense, and the univariate case $b=2$ is the accident that the
+specialization is again a matching polynomial of a graph.
+
+Deleting a vertex now gives two different recursions, because only $A$-vertices
+carry the variable:
+\[
+v\in A:\quad f_G=y\,f_{G-v}-\!\!\sum_{u\sim v}\!f_{G-v-u},
+\qquad
+u\in B:\quad f_G=f_{G-u}-\!\!\sum_{v\sim u}\!f_{G-u-v},
+\]
+whence the cavity recursion
+$R_A=y-\sum1/R_B$, $R_B=1-\sum1/R_A$. On the $(a,b)$-biregular tree, with
+$P=a-1$, $Q=b-1$, its fixed point satisfies $R^2+(P-Q-y)R+yQ=0$, of
+discriminant
+\[
+D(y)=(P-Q-y)^2-4yQ,
+\qquad
+D(y)=0\iff y=(\sqrt P\pm\sqrt Q)^2 .
+\]
+The two roots are exactly the spectrum edges in the variable $y=x^2$, and $D<0$
+strictly between them: the fixed point is complex precisely on the spectrum and
+real precisely off it, as it must be. Both recursions and the discriminant have
+been checked exactly.
+
+Conjecture~\ref{conj:gap} for biregular $G$ is therefore the statement that the
+asymmetric recursion, started from the leaves of the path tree, never produces
+$R=0$ while $D>0$. The invariant region is $R_A<0<1\le R_B$, and the fixed
+points do lie there throughout the gap. A $B$-leaf carries $R_B=1$, exactly the
+boundary, and is harmless; an $A$-leaf carries $R_A=y>0$, of the wrong sign.
+Whether an $A$-leaf can occur, and what it costs, is the remaining obstruction.
 
 The case $b\ge3$ of the biregular family is the sharp open case, since $b=2$ is
 Theorem~\ref{thm:subdiv}. It has been tested at $d=1$ on
