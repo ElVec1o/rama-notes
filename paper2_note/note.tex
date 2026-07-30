@@ -584,7 +584,43 @@ proof of Conjecture~\ref{conj:gap} must therefore use $m_4$ or beyond, that is,
 it must be sensitive to the cycle structure of $G$. This is consistent with the
 place the conjecture occupies: bounds of the shape $2\sqrt{(a-1)(b-1)}$ are
 non-backtracking bounds, and the non-backtracking operator of a bipartite graph
-is exactly the object that records cycles. Their roots do satisfy \eqref{eq:twosided}, with maxima
+is exactly the object that records cycles.
+
+Proposition~\ref{prop:moments} also explains why the interval is not filled. The
+mean square of the roots is $\bigl[(b-2)^2+a(b-1)\bigr]$, so the fraction of the
+band $[-2\sqrt m,2\sqrt m]$ occupied in mean square is
+\[
+\frac{(b-2)^2+a(b-1)}{4(a-1)(b-1)},
+\]
+which is $7/16$ for $(a,b)=(3,3)$, $1/2$ for $(2,2)$, $3/8$ for $(4,3)$, and
+tends to $1/4$ as $a\to\infty$. The bulk of the spectrum sits well inside the
+band; only the extremes are at issue, which is why moments cannot decide the
+question.
+
+The extremes behave as Theorem~\ref{thm:subcoef} predicts. Writing the least and
+greatest roots as percentages of the two band edges:
+\begin{center}
+\begin{tabular}{lccc}
+\hline
+$G$ & girth & least root & greatest root\\
+\hline
+$K_{3,3}$ & 4 & $89.6\%$ & $57.2\%$\\
+$K_{4,4}$ & 4 & $94.6\%$ & $56.6\%$\\
+circulant $6+6$ & 4 & $96.4\%$ & $74.2\%$\\
+Heawood & 6 & $97.5\%$ & $79.9\%$\\
+Pappus & 6 & $98.6\%$ & $83.4\%$\\
+\hline
+$C_{12}$ & 6 & $96.6\%$ & $96.6\%$\\
+$3C_4$ & 4 & $70.7\%$ & $70.7\%$\\
+\hline
+\end{tabular}
+\end{center}
+The first block has $b=3$, and the least root is consistently far closer to its
+edge than the greatest is to its --- the roots are displaced downwards by $b-2$,
+exactly as Theorem~\ref{thm:subcoef} requires. The second block has $b=2$, the
+displacement vanishes, and the two ends are used equally. The lower bound also
+appears to be sharp: the percentage rises with girth, reaching $98.6\%$ for the
+Pappus graph, so no constant better than $2\sqrt m$ is available. Their roots do satisfy \eqref{eq:twosided}, with maxima
 $4.06,4.48,6.26$ against bounds $4.90,5.66,6.93$. That class admits a clean description. Since a $k$-matching leaves $p-k$
 vertices of $A$ unmatched,
 \begin{equation}\label{eq:multivar}
