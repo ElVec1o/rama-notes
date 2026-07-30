@@ -246,15 +246,24 @@ roots of unity is the block-circulant diagonalization
 decomposition of a periodic discrete operator, and $y=-P/(2Q)$ is the
 corresponding Floquet discriminant. The identity
 $\Phi_{G,r}=\chi_G\cdot\mu_{r-1,G}$ is \cite{HPS}. Closest in form is
-McSorley and Feinsilver \cite{MF}, who study paths with cyclically labelled
-edges and obtain a $(\tau,\Delta)$-recurrence of the same shape as
-\eqref{eq:V}, with $\tau$ the matching polynomial of a cycle and $\Delta$ a
-monomial; combining their Theorems 4.4 and 4.5 already yields the cycle case of
-Theorem~\ref{thm:main} in Chebyshev form. Their setting is a cyclic edge
-labelling rather than a covering, so the underlying graph is always a path,
-cycle or rooted tree and $\Delta$ is always $\pm$ a monomial; here the graph is
-a cycle with arbitrary trees attached and $\mu_{G-V(C)}$ is a genuine
-polynomial.
+McSorley and Feinsilver \cite{MF}. For a path whose edges are cyclically
+labelled with $t$ labels they establish a $(\tau,\Delta)$-recurrence
+$\Phi_{N}=\tau\Phi_{N-1}-\Delta\Phi_{N-2}$, which is the algebraic skeleton of
+\eqref{eq:V}, and their Theorem 4.4 solves it as
+$\Delta^{N/2}U_N(\tau/2\sqrt{\Delta})$, exactly the form used here. In the
+univariate specialization their $\tau$ is the matching polynomial of the cycle
+$C_t$ and $\Delta=(-1)^tx_1\cdots x_t$ is a monomial; passing between their
+counting normalization and the characteristic one used here is the
+homogenization $V_d\mapsto c^dV_d$, under which a monomial $\Delta$ becomes
+$\mu_{G-V(C)}=1$. Their Theorems 4.4 and 4.5 together give
+$U_{dn+n-1}=U_d(T_n)U_{n-1}$, the identity invoked in Section~1 to pass between
+Theorem~\ref{thm:main} and Hall's conjecture, so that bridge was already
+available in 2009. Their parameter is the number of label periods along a path
+and their graphs are paths, cycles and rooted trees; there is no covering and
+no cycle with trees attached. What is added here is the pair
+$(\mu_G,\mu_{G-V(C)})$, whose second entry is a genuine polynomial recording
+the attached trees rather than a monomial, together with the covering
+interpretation that makes the recurrence a statement about $\mu_{d,G}$.
 
 \paragraph{The boundary is sharp.}
 For $b_1(G)=b$ the lift is determined by $b$ permutations, that is by an action
