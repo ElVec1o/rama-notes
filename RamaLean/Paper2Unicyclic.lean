@@ -214,6 +214,67 @@ theorem subdivision_gap {s θ x : K} (hs : 1 ≤ s) (hθ : -2 * s ≤ θ)
   push_neg at hcon
   nlinarith [abs_nonneg x, habs, hnn, hcon]
 
+
+/-!
+## The theorems in full
+
+`subdivision_gap` and `cV_root_mem_band` above are the inequality kernels.  Below they are packaged
+as statements about actual polynomials and their roots, with the two classical graph-theoretic
+inputs appearing as explicit hypotheses:
+
+* `hHL`  -- Heilmann--Lieb for `H`: every root of `μ_H` is at least `-2√(D-1)`;
+* `hid`  -- the subdivision identity `μ_{S(H)} = X^k · μ_H(X² - D)` (Wan--Wang--Mohammadian).
+
+Neither is available in Mathlib (there is no matching polynomial, no subdivision construction and
+no Heilmann--Lieb), so they are assumed rather than proved.  What is proved is everything else: that
+those two inputs force every nonzero root of `μ_{S(H)}` out of the spectral gap of the universal
+cover.  The conclusion `√(D-1) - 1 ≤ |x|` is exactly the gap edge of the `(D,2)`-biregular tree.
+-/
+
+open Polynomial in
+/-- **Subdivision gap theorem.** Given Heilmann--Lieb for a `D`-regular `H` and the subdivision
+identity, every nonzero root of the matching polynomial of `S(H)` has absolute value at least
+`√(D-1) - 1`, the spectral gap edge of the `(D,2)`-biregular universal cover. -/
+theorem subdivision_gap_theorem
+    {D : ℝ} (hD : 2 ≤ D) {muH muS : Polynomial ℝ} {k : ℕ} (hmuH : muH ≠ 0)
+    (hHL : ∀ θ ∈ muH.roots, -2 * Real.sqrt (D - 1) ≤ θ)
+    (hid : muS = X ^ k * muH.comp (X ^ 2 - C D))
+    {x : ℝ} (hx : muS.IsRoot x) (hx0 : x ≠ 0) :
+    Real.sqrt (D - 1) - 1 ≤ |x| := by
+  -- from the identity and x ≠ 0, x² - D is a root of muH
+  have hcomp : (muH.comp (X ^ 2 - C D)).IsRoot x := by
+    have h0 : (x : ℝ) ^ k ≠ 0 := pow_ne_zero k hx0
+    have hev := hx
+    rw [hid, IsRoot, eval_mul, eval_pow, eval_X] at hev
+    exact (mul_eq_zero.mp hev).resolve_left h0
+  have hroot : muH.IsRoot (x ^ 2 - D) := by
+    have := hcomp
+    rwa [IsRoot, eval_comp, eval_sub, eval_pow, eval_X, eval_C] at this
+  have hmem : (x ^ 2 - D) ∈ muH.roots := by
+    rw [mem_roots hmuH]; exact hroot
+  -- Heilmann--Lieb, then the inequality kernel
+  have hθ : -2 * Real.sqrt (D - 1) ≤ x ^ 2 - D := hHL _ hmem
+  set s := Real.sqrt (D - 1) with hs_def
+  have hD1 : (0:ℝ) ≤ D - 1 := by linarith
+  have hs2 : s ^ 2 = D - 1 := Real.sq_sqrt hD1
+  have hs1 : 1 ≤ s := by
+    have h1 : (1:ℝ) ≤ D - 1 := by linarith
+    calc (1:ℝ) = Real.sqrt 1 := Real.sqrt_one.symm
+      _ ≤ Real.sqrt (D - 1) := Real.sqrt_le_sqrt h1
+  exact subdivision_gap hs1 hθ (by nlinarith [hs2])
+
+open Polynomial in
+/-- **Unicyclic band theorem.** For a graph of first Betti number one, with `A = μ_G` and
+`B = -μ_{G-V(C)}`, the `d`-matching polynomial is `cV A B d`; this states that a root of it must
+satisfy `|A| ≤ 2|B|`, i.e. must lie in the Floquet band, i.e. in the spectrum of the universal
+cover.  `hmu` is the graph-theoretic input identifying the `d`-matching polynomial with `cV`. -/
+theorem unicyclic_band_theorem
+    {A B : ℝ → ℝ} {mu : ℕ → ℝ → ℝ} {d : ℕ}
+    (hmu : ∀ y, mu d y = cV (A y) (B y) d)
+    {x : ℝ} (hx : mu d x = 0) (hB : B x ≠ 0) :
+    |A x| ≤ 2 * |B x| :=
+  cV_root_mem_band hB two_ne_zero (by rw [← hmu]; exact hx)
+
 end Localization
 
 end Paper2Unicyclic
