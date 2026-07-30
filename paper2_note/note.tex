@@ -378,14 +378,19 @@ absolute value at least $\sqrt{D-1}-1$; that is,
 Conjecture~\ref{conj:gap} holds for $S(H)$ at $d=1$, and the bound is sharp.
 \end{theorem}
 
-Theorem~\ref{thm:subdiv} settles the case $r=2$ of Problem~1 of \cite{SFM}.
+Theorem~\ref{thm:subdiv} settles the case $\min(d,r)=2$ of Problem~1 of
+\cite{SFM}.
 Their uniformity condition allows $r\ge2$, and they observe that when $H$ is a
 simple graph the incidence graph $B_H$ is exactly the subdivision $S(H)$; so
 their question at $r=2$ asks precisely whether $\mu_{S(H)}$ has no root $\mu$
 with $0<|\mu|<|\sqrt{D-1}-1|$. By their Theorem 1.8 this gives every
 $D$-regular graph, viewed as a $(D,2)$-regular hypergraph, a left-sided
-Ramanujan $2$-covering. The case $r\ge3$ of their problem remains open, as does
-Conjecture~\ref{conj:gap} for $b\ge3$.
+Ramanujan $2$-covering. The case $d=2$ follows as well, since $B_H$ is a
+bipartite graph and $\mu_{B_H}$ does not distinguish its two sides: a
+$(2,r)$-regular hypergraph has for incidence graph the subdivision of an
+$r$-regular graph, and the quantity $|\sqrt{d-1}-\sqrt{r-1}|$ is symmetric in
+$d$ and $r$. The case $\min(d,r)\ge3$ of their problem remains open, as does
+Conjecture~\ref{conj:gap} for $\min(a,b)\ge3$.
 
 \begin{proof}
 By the subdivision identity $\mu_{S(H)}(x)=x^{|E|-|V|}\,\mu_H(x^2-D)$
@@ -445,7 +450,8 @@ $G$, into a single clean statement:
 which is a Heilmann--Lieb interval of effective degree $m+1$. The upper end of
 \eqref{eq:twosided} is known: the path-tree argument of Godsil bounds the roots
 of $\mu_G$ by the spectral radius of the path tree, which for an
-$(a,b)$-biregular graph with $a,b\ge2$ is at most $s+t$ \cite{XZ}. It is worth
+$(a,b)$-biregular graph with $a,b\ge2$ is at most $s+t$
+\cite{God81,God93}. It is worth
 noting that \cite{HL} proved the corresponding statement only in the regular
 case; the irregular case is due to Godsil and to \cite{MSS}. The lower end is
 the conjecture. \emph{They are the two ends of one interval}, so
@@ -565,11 +571,24 @@ a root of $f_G$.
 \begin{proof}
 $f_G$ has integer coefficients and $(s\mp t)^2=(a+b-2)\mp2\sqrt m$, so for $m$
 not a square the two band edges are conjugate over $\mathbb Q$; if one is a root
-of $f_G$, so is the other. The upper bound is furnished by the path tree, which
-is finite, and a finite subtree of the $(a,b)$-biregular tree has spectral
-radius strictly less than $s+t$. Hence $(s+t)^2$ is not a root, and therefore
-neither is $(s-t)^2$.
+of $f_G$, so is the other. Every root of $\mu_G$ is bounded by the spectral
+radius of a path tree $T_u(G)$ \cite{God81}, and $T_u(G)$ is finite and embeds
+in the universal cover of $G$, the $(a,b)$-biregular tree $T_{a,b}$, with
+degrees bounded by those of $T_{a,b}$. Now $\rho(T_{a,b})=s+t$ is the supremum
+of $\rho$ over finite subtrees of $T_{a,b}$, and that supremum is not attained:
+any finite subtree is a proper subgraph of a larger connected finite subtree,
+and $\rho$ is strictly monotone under proper subgraph containment for finite
+connected graphs. Hence $\rho(T_u(G))<s+t$, so $(s+t)^2$ is not a root of
+$f_G$, and therefore neither is $(s-t)^2$.
 \end{proof}
+
+The hypothesis on $m$ is needed for the argument, not merely for convenience:
+when $m$ is a square the two band edges are rational and independent, and
+conjugacy says nothing. The smallest such case is $(a,b)=(5,2)$, where $m=4$
+and the edges are $1$ and $9$. There the conclusion nevertheless holds, but for
+a different reason --- the Heilmann--Lieb bound is strict for finite graphs, so
+Theorem~\ref{thm:subdiv} already excludes the lower edge. Proposition~\ref{prop:galois}
+is the statement for the cases those methods do not reach.
 
 Evaluating $f_G$ in $\mathbb Z[\sqrt m]$ confirms this and exhibits the
 conjugacy: for $K_{3,4}$, $K_{3,5}$, $K_{3,6}$, $K_{4,5}$ the two edge values
@@ -773,8 +792,11 @@ bipartite biregular graphs and applications}, Combin.\ Probab.\ Comput.\
 \textbf{31} (2022) 229--267.
 \bibitem{HL} O.~J.~Heilmann, E.~H.~Lieb, \emph{Theory of monomer-dimer
 systems}, Comm.\ Math.\ Phys.\ \textbf{25} (1972) 190--232.
-\bibitem{XZ} Z.~Xu, P.~Zhang, \emph{An improved upper bound for the
-Bilu--Linial conjecture via interlacing families}, arXiv:2606.28797 (2026).
+\bibitem{God81} C.~D. Godsil, \emph{Matchings and walks in graphs},
+J. Graph Theory \textbf{5} (1981), 285--297.
+
+\bibitem{God93} C.~D. Godsil, \emph{Algebraic Combinatorics}, Chapman and Hall,
+New York, 1993, Theorem 6.1.1 and \S5.6.
 \bibitem{Cs} P.~Csikv\'ari, \emph{Lower matching conjecture, and a new proof of
 Schrijver's and Gurvits's theorems}, J.\ Eur.\ Math.\ Soc.\ (2017);
 arXiv:1406.0766.
