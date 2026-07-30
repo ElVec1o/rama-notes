@@ -888,7 +888,8 @@ under vertex deletion. The Heilmann--Lieb argument for $|x|\le2\sqrt{\Delta-1}$
 inducts on vertex deletion, which is available because $\Delta$ only decreases.
 The quantity $|\sqrt{a-1}-\sqrt{b-1}|$ has no such monotonicity: deleting one
 vertex of the larger side of $K_{3,4}$ produces $K_{3,3}$, which is regular, and
-the gap collapses to zero. So the naive induction by vertex deletion, which is
+the gap collapses to zero --- for $a=b$ one has $c=2\sqrt m$, so the interval
+$[c-2\sqrt m,\,c+2\sqrt m]$ has its lower end at $0$ and the statement is empty. So the naive induction by vertex deletion, which is
 what yields the upper bound, cannot prove the lower one. We do not claim this
 rules out every inductive argument, only the direct analogue of the
 Heilmann--Lieb one. A lower bound of the same shape is known in the random setting: Brito,
@@ -918,8 +919,9 @@ in the gap, consistent with the deficient subtree $P_8$ carrying one; that is a
 statement about the tree and not about $G$. Controlling deficient $A$-vertices
 is the open problem.
 
-The case $b\ge3$ of the biregular family is the sharp open case, since $b=2$ is
-Theorem~\ref{thm:subdiv}. It has been tested at $d=1$ on
+The case $b\ge3$ of the biregular family is the remaining open one, since $b=2$
+is Theorem~\ref{thm:subdiv}; note that every graph named below has $a\ne b$, so
+the statement being tested is not the empty one. It has been tested at $d=1$ on
 $K_{3,4},K_{3,5},K_{3,6},K_{3,7},K_{3,8},K_{4,5},K_{4,6},K_{4,7},K_{5,6}$ and a
 $(3,2)$ design incidence graph, with smallest-root ratios between $1.51$ and
 $3.33$ and no root in a gap.
