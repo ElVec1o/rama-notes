@@ -392,6 +392,48 @@ it. The evidence is therefore not merely that the bound holds but that it is
 approached, though no computation here reaches the regime where the ratio is
 close to $1$.
 
+\paragraph{The biregular case is one interval, and we have one end of it.}
+Let $G$ be $(a,b)$-biregular bipartite, $s=\sqrt{a-1}$, $t=\sqrt{b-1}$. Since
+$G$ is bipartite, $\mu_G(x)=x^{\varepsilon}f(x^2)$ for a polynomial $f$ and
+$\varepsilon\in\{0,1,2,\dots\}$. Put
+\[
+c=(a-1)+(b-1),\qquad m=(a-1)(b-1),\qquad g(z)=f(z+c).
+\]
+The universal cover has spectrum $\{0\}\cup\pm[\,|s-t|,s+t\,]$, and
+$(s\pm t)^2=c\pm2\sqrt m$, so
+\[
+x\in\operatorname{spec}(T)\ \setminus\{0\}
+\iff
+x^2-c\in\bigl[-2\sqrt m,\ 2\sqrt m\bigr].
+\]
+The change of variable therefore turns Conjecture~\ref{conj:gap}, for biregular
+$G$, into a single clean statement:
+\begin{equation}\label{eq:twosided}
+\text{every root of }g\text{ lies in }\bigl[-2\sqrt m,\,2\sqrt m\bigr],
+\end{equation}
+which is a Heilmann--Lieb interval of effective degree $m+1$. The upper end of
+\eqref{eq:twosided} is the known Ramanujan bound $|x|\le s+t$ for bigraphs; the
+lower end is the conjecture. \emph{They are the two ends of one interval}, so
+what is missing is exactly half of a two-sided Heilmann--Lieb theorem for
+biregular bipartite graphs.
+
+This also explains the boundary between what is proved and what is not. When
+$b=2$ the polynomial $g$ \emph{is} a matching polynomial --- for $G=S(H)$ one
+computes $g=\mu_H$, which recovers Theorem~\ref{thm:subdiv} and the subdivision
+identity as the case $c=(a-1)+1$ of the change of variable --- so Heilmann--Lieb
+applies verbatim. For $b\ge3$ it is not: a matching polynomial on $n$ vertices
+involves only every other power of $z$, whereas
+\[
+g_{K_{3,4}}=z^3+3z^2-9z-19,\quad
+g_{K_{3,5}}=z^3+3z^2-12z-24,\quad
+g_{K_{4,5}}=z^4+8z^3-6z^2-128z-139
+\]
+all have a nonzero subleading coefficient. Their roots do satisfy
+\eqref{eq:twosided}, with maxima $4.06,4.48,6.26$ against bounds
+$4.90,5.66,6.93$. So the open case is precisely a Heilmann--Lieb theorem for a
+class of polynomials strictly larger than the matching polynomials, containing
+the $g$ above; we do not know how to characterize that class.
+
 The case $b\ge3$ of the biregular family is the sharp open case, since $b=2$ is
 Theorem~\ref{thm:subdiv}. It has been tested at $d=1$ on
 $K_{3,4},K_{3,5},K_{3,6},K_{3,7},K_{3,8},K_{4,5},K_{4,6},K_{4,7},K_{5,6}$ and a
