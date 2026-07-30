@@ -52,7 +52,16 @@ Fan and Miao. After the change of variable that centres the band, the resulting
 polynomial $g$ has subleading coefficient exactly $p(b-2)$; so $g$ is a matching
 polynomial precisely when $\min(a,b)=2$, and for $\min(a,b)\ge3$ its roots are
 displaced by $b-2$ towards the lower band edge, which is the end that remains
-open. Both statements are formalized.
+open. We determine the top five coefficients of $g$: the first four depend only
+on the parameters $(p,a,b)$ and not on the graph, and the fifth is a universal
+term plus the number of $4$-cycles, with coefficient one. Since the two power
+sums carried by the universal coefficients imply only a bound growing like
+$\sqrt p$, while the conjectured bound is independent of $p$, no argument using
+them can succeed: a proof must be sensitive to the cycle structure. The
+subdivision bound, the recurrence, the deletion recursion and the algebra of the
+coefficient formulas are formalized in Lean~4; the combinatorial identities for
+the matching counts $m_3$ and $m_4$ are proved by hand and verified by exact
+computation, not formalized.
 \end{abstract}
 
 \section{Introduction and statement}
