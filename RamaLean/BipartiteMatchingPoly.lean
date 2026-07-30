@@ -73,4 +73,58 @@ theorem bipF_eq_sum_counts (E : Finset (α × β)) (y : R) (p : ℕ)
   rw [this, Finset.sum_singleton]
   simp
 
+
+/-! ## The deletion recursion (A5)
+
+The combinatorial content of the asymmetric recursion is that the `(k+1)`-matchings of `E` split
+according to how the left vertex `v` is covered: either it is uncovered, and the matching is a
+`(k+1)`-matching of `E` with all `v`-edges deleted, or it uses a unique edge `(v,u)`, and deleting
+that edge gives a `k`-matching of `E` with all `v`-edges and all `u`-edges deleted.
+-/
+
+/-- Edges of `E` not meeting the left vertex `v`. -/
+def delL (E : Finset (α × β)) (v : α) : Finset (α × β) := E.filter (fun e => e.1 ≠ v)
+
+/-- Edges of `E` meeting neither the left vertex `v` nor the right vertex `u`. -/
+def delLR (E : Finset (α × β)) (v : α) (u : β) : Finset (α × β) :=
+  E.filter (fun e => e.1 ≠ v ∧ e.2 ≠ u)
+
+/-- The right endpoints available to `v`. -/
+def nbrL (E : Finset (α × β)) (v : α) : Finset β :=
+  (E.filter (fun e => e.1 = v)).image Prod.snd
+
+lemma isMatching_of_subset {M N : Finset (α × β)} (hMN : M ⊆ N) (hN : IsMatching N) :
+    IsMatching M :=
+  ⟨fun e he f hf h => hN.1 e (hMN he) f (hMN hf) h,
+   fun e he f hf h => hN.2 e (hMN he) f (hMN hf) h⟩
+
+/-- A matching of `E` avoiding `v` is precisely a matching of `delL E v`. -/
+lemma mem_matchings_delL {E : Finset (α × β)} {v : α} {M : Finset (α × β)} :
+    M ∈ matchings (delL E v) ↔ M ∈ matchings E ∧ ∀ e ∈ M, e.1 ≠ v := by
+  classical
+  simp only [matchings, delL, Finset.mem_filter, Finset.mem_powerset]
+  constructor
+  · rintro ⟨hsub, hM⟩
+    refine ⟨⟨fun e he => (Finset.mem_filter.mp (hsub he)).1, hM⟩,
+            fun e he => (Finset.mem_filter.mp (hsub he)).2⟩
+  · rintro ⟨⟨hsub, hM⟩, hv⟩
+    exact ⟨fun e he => Finset.mem_filter.mpr ⟨hsub he, hv e he⟩, hM⟩
+
+/-- A matching of `E` avoiding `v` and `u` is precisely a matching of `delLR E v u`. -/
+lemma mem_matchings_delLR {E : Finset (α × β)} {v : α} {u : β} {M : Finset (α × β)} :
+    M ∈ matchings (delLR E v u) ↔ M ∈ matchings E ∧ ∀ e ∈ M, e.1 ≠ v ∧ e.2 ≠ u := by
+  classical
+  simp only [matchings, delLR, Finset.mem_filter, Finset.mem_powerset]
+  constructor
+  · rintro ⟨hsub, hM⟩
+    exact ⟨⟨fun e he => (Finset.mem_filter.mp (hsub he)).1, hM⟩,
+           fun e he => (Finset.mem_filter.mp (hsub he)).2⟩
+  · rintro ⟨⟨hsub, hM⟩, hvu⟩
+    exact ⟨fun e he => Finset.mem_filter.mpr ⟨hsub he, hvu e he⟩, hM⟩
+
+
+/-! `mCount_delete_left`, the deletion recursion (A5), is proved on paper but not
+formalized: it needs the bijection between `(k+1)`-matchings using edge `(v,u)` and `k`-matchings
+of the doubly-deleted edge set, which is a larger `Finset` argument than the fibering above. -/
+
 end BipartiteMatchingPoly

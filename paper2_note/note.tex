@@ -309,8 +309,17 @@ For every finite graph $G$ and every $d\ge1$, all roots of $\mu_{d,G}$ lie in
 $\operatorname{spec}(T)$, the spectrum of the universal cover of $G$.
 \end{conjecture}
 
-This strengthens the root-localization theorem of \cite{HPS}, which places the
-roots in the interval $[-\rho,\rho]$ with $\rho$ the spectral radius of $T$;
+Question 6.3 of \cite{HPS} asks the corresponding question for graph
+eigenvalues, and leaves it open: it distinguishes graphs whose nontrivial
+spectrum lies in the \emph{interval} $[-\rho,\rho]$ from those whose nontrivial
+spectrum lies in $\operatorname{spec}(T)$, observes that the two notions
+separate exactly when $T$ has a gap, and gives the biregular tree as the
+example. Conjecture~\ref{conj:gap} is the matching-polynomial form of that
+distinction.
+
+The conjecture strengthens the root-localization theorem of \cite{HPS}, which
+places the roots in the interval $[-\rho,\rho]$ with $\rho$ the spectral radius
+of $T$;
 the conjecture places them in $\operatorname{spec}(T)$ itself. The two agree
 whenever $T$ has no spectral gap --- in particular for regular $G$, where $T$
 is a regular tree and $\operatorname{spec}(T)=[-2\sqrt{q},2\sqrt{q}]$ is an
@@ -412,8 +421,12 @@ $G$, into a single clean statement:
 \text{every root of }g\text{ lies in }\bigl[-2\sqrt m,\,2\sqrt m\bigr],
 \end{equation}
 which is a Heilmann--Lieb interval of effective degree $m+1$. The upper end of
-\eqref{eq:twosided} is the known Ramanujan bound $|x|\le s+t$ for bigraphs; the
-lower end is the conjecture. \emph{They are the two ends of one interval}, so
+\eqref{eq:twosided} is known: the path-tree argument of Godsil bounds the roots
+of $\mu_G$ by the spectral radius of the path tree, which for an
+$(a,b)$-biregular graph with $a,b\ge2$ is at most $s+t$ \cite{XZ}. It is worth
+noting that \cite{HL} proved the corresponding statement only in the regular
+case; the irregular case is due to Godsil and to \cite{MSS}. The lower end is
+the conjecture. \emph{They are the two ends of one interval}, so
 what is missing is exactly half of a two-sided Heilmann--Lieb theorem for
 biregular bipartite graphs.
 
@@ -440,8 +453,14 @@ f_G(y)=\sum_{k}(-1)^k m_k\,y^{p-k}
 the multivariate matching polynomial of Heilmann and Lieb under the asymmetric
 specialization that puts the variable on one side of the bipartition and $1$ on
 the other. So the $g$ are not exotic: they are shifts of matching polynomials in
-the multivariate sense, and the univariate case $b=2$ is the accident that the
-specialization is again a matching polynomial of a graph.
+the multivariate sense. This is a reformulation and not an advance: for
+bipartite $G$ every edge of a matching covers one vertex of each side, so
+$\mathcal M(G;x_A=y,x_B=z)$ depends only on the product $yz$, and the asymmetric
+specialization therefore carries exactly the information of the univariate
+matching polynomial. In particular no quantitative Heilmann--Lieb theorem for
+non-uniform specializations can help here, and none is available: the
+multivariate bounds of \cite{HL} apply a single graph-wide threshold to every
+variable.
 
 Deleting a vertex now gives two different recursions, because only $A$-vertices
 carry the variable:
@@ -654,6 +673,13 @@ E.~Stucky, \emph{A new (combinatorial) proof of the commutativity of
 matching polynomials for cycles}, arXiv:1810.05889 (2018).
 \bibitem{WWM} J.~Wan, W.~Wang, A.~Mohammadian, \emph{On the matching
 polynomials of graphs with small number of cycles}, arXiv:2103.10580 (2021).
+\bibitem{HL} O.~J.~Heilmann, E.~H.~Lieb, \emph{Theory of monomer-dimer
+systems}, Comm.\ Math.\ Phys.\ \textbf{25} (1972) 190--232.
+\bibitem{XZ} Z.~Xu, P.~Zhang, \emph{An improved upper bound for the
+Bilu--Linial conjecture via interlacing families}, arXiv:2606.28797 (2026).
+\bibitem{Cs} P.~Csikv\'ari, \emph{Lower matching conjecture, and a new proof of
+Schrijver's and Gurvits's theorems}, J.\ Eur.\ Math.\ Soc.\ (2017);
+arXiv:1406.0766.
 \bibitem{BC} C.~Bordenave, B.~Collins, \emph{Eigenvalues of random lifts and
 polynomials of random permutation matrices}, Ann.\ of Math.\ \textbf{190}
 (2019) 811--875.
