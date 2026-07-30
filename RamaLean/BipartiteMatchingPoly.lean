@@ -208,8 +208,70 @@ lemma card_covered (E : Finset (α × β)) (v : α) (u : β) (hu : (v, u) ∈ E)
     obtain ⟨_, hNavoid⟩ := mem_matchings_delLR.mp hNm
     exact Finset.erase_insert (fun h => (hNavoid _ h).1 rfl)
 
-/-! `mCount_delete_left`, the deletion recursion (A5), is proved on paper but not
-formalized: it needs the bijection between `(k+1)`-matchings using edge `(v,u)` and `k`-matchings
-of the doubly-deleted edge set, which is a larger `Finset` argument than the fibering above. -/
+
+/-- The covered `(k+1)`-matchings decompose over the partner of `v`. -/
+lemma covered_biUnion (E : Finset (α × β)) (v : α) (m : ℕ) :
+    ((matchings E).filter (fun M => M.card = m)).filter (fun M => ¬ ∀ e ∈ M, e.1 ≠ v)
+      = (nbrL E v).biUnion
+          (fun u => ((matchings E).filter (fun M => M.card = m)).filter (fun M => (v, u) ∈ M)) := by
+  classical
+  ext M
+  simp only [Finset.mem_biUnion, Finset.mem_filter, not_forall]
+  constructor
+  · rintro ⟨⟨hMm, hc⟩, e, he, hne⟩
+    have hev : e = (v, e.2) := by
+      rcases e with ⟨e1, e2⟩
+      have : e1 = v := not_not.mp hne
+      simp [this]
+    have hsub : M ⊆ E := Finset.mem_powerset.mp (Finset.mem_filter.mp hMm).1
+    refine ⟨e.2, ?_, ⟨hMm, hc⟩, hev ▸ he⟩
+    exact Finset.mem_image.mpr ⟨e, Finset.mem_filter.mpr ⟨hsub he, by rw [hev]⟩, rfl⟩
+  · rintro ⟨u, _, ⟨hMm, hc⟩, hvu⟩
+    exact ⟨⟨hMm, hc⟩, (v, u), hvu, by simp⟩
+
+/-- Distinct partners give disjoint families. -/
+lemma covered_disjoint (E : Finset (α × β)) (v : α) (m : ℕ) :
+    ∀ u ∈ nbrL E v, ∀ u' ∈ nbrL E v, u ≠ u' →
+      Disjoint (((matchings E).filter (fun M => M.card = m)).filter (fun M => (v, u) ∈ M))
+               (((matchings E).filter (fun M => M.card = m)).filter (fun M => (v, u') ∈ M)) := by
+  classical
+  intro u _ u' _ hne
+  rw [Finset.disjoint_left]
+  intro M hM hM'
+  rw [Finset.mem_filter] at hM hM'
+  have hMatch : IsMatching M := (Finset.mem_filter.mp (Finset.mem_filter.mp hM.1).1).2
+  exact hne (unique_partner hMatch hM.2 hM'.2)
+
+/-- Every available partner really is an edge. -/
+lemma edge_of_mem_nbrL {E : Finset (α × β)} {v : α} {u : β} (hu : u ∈ nbrL E v) : (v, u) ∈ E := by
+  classical
+  obtain ⟨e, he, rfl⟩ := Finset.mem_image.mp hu
+  obtain ⟨heE, hev⟩ := Finset.mem_filter.mp he
+  have heq : (v, e.2) = e := Prod.ext_iff.mpr ⟨hev.symm, rfl⟩
+  rw [heq]; exact heE
+
+/-- **A5, count form.** The `(k+1)`-matchings of `E` split by how the left vertex `v` is covered. -/
+theorem mCount_delete_left (E : Finset (α × β)) (v : α) (k : ℕ) :
+    mCount E (k + 1)
+      = mCount (delL E v) (k + 1) + ∑ u ∈ nbrL E v, mCount (delLR E v u) k := by
+  classical
+  have hsplit := Finset.filter_card_add_filter_neg_card_eq_card
+    (s := (matchings E).filter (fun M => M.card = k + 1))
+    (p := fun M => ∀ e ∈ M, e.1 ≠ v)
+  have hcov : (((matchings E).filter (fun M => M.card = k + 1)).filter
+        (fun M => ¬ ∀ e ∈ M, e.1 ≠ v)).card = ∑ u ∈ nbrL E v, mCount (delLR E v u) k := by
+    rw [covered_biUnion E v (k + 1), Finset.card_biUnion (covered_disjoint E v (k + 1))]
+    exact Finset.sum_congr rfl fun u hu => card_covered E v u (edge_of_mem_nbrL hu) k
+  have huncov := card_uncovered E v (k + 1)
+  calc mCount E (k + 1)
+      = (((matchings E).filter (fun M => M.card = k + 1)).filter
+            (fun M => ∀ e ∈ M, e.1 ≠ v)).card
+        + (((matchings E).filter (fun M => M.card = k + 1)).filter
+            (fun M => ¬ ∀ e ∈ M, e.1 ≠ v)).card := by
+        rw [hsplit]; rfl
+    _ = mCount (delL E v) (k + 1) + ∑ u ∈ nbrL E v, mCount (delLR E v u) k := by
+        rw [huncov, hcov]
+
+
 
 end BipartiteMatchingPoly
