@@ -539,19 +539,56 @@ $\binom N3-\tfrac{Nc}{2}(N-2)+\bigl(N\binom c2-3t\bigr)+2t$ therefore depends
 only on $(p,a,b)$.
 \end{proof}
 
-The graph enters at the next coefficient, and it does so through a single
-invariant. Writing $C_4(G)$ for the number of $4$-cycles, computation on pairs of
-graphs sharing $(p,a,b)$ gives
+The graph enters at the very next coefficient, and it does so through a single
+invariant, with coefficient one.
+
+\begin{theorem}\label{thm:c4}
+Let $C_4(G)$ denote the number of $4$-cycles of $G$. Then
 \[
-[z^{p-4}]\,g \;=\; U(p,a,b)+C_4(G)
+[z^{p-4}]\,g \;=\; U(p,a,b)+C_4(G),
 \]
-with coefficient exactly one: for $(p,a,b)=(6,2,2)$ the values are
-$9,10,12$ at $C_4=0,1,3$; for $(6,3,3)$, $-48$ and $-60$ at $C_4=18$ and $6$;
-for $(7,3,3)$, $-126$ for the Heawood graph and $-119$ for a $7+7$ circulant, at
-$C_4=0$ and $7$. This is the expected place for it to appear, since four
-pairwise disjoint edges are first constrained by a $4$-cycle, and it says that
-the conjecture is insensitive to the graph until girth enters. We have not
-proved the formula for $[z^{p-4}]g$, only verified it.
+where, writing $\beta=b-2$ and $A=a(b-1)$,
+\[
+U=\binom p4\beta^4-\tfrac32A\beta^2\binom p3
++\frac{A\,(3A+4\beta^2)}{12}\binom p2-\frac{A\,(9A+2b^2-14b+14)}{24}\,p .
+\]
+\end{theorem}
+
+\begin{proof}
+As in Theorem~\ref{thm:universal}, $m_4$ is the number of independent $4$-sets of
+$L$, and inclusion--exclusion expresses it through the \emph{non-induced} counts
+in $L$ of the ten graphs on at most four vertices with no isolated vertex. Nine
+of the ten are universal, by the clique structure of $L$: each vertex of $L$ is a
+cell of the $p\times q$ biadjacency matrix, and two cells are adjacent exactly
+when they share a row or share a column, never both, so every edge of $L$ has a
+well-defined type.
+
+Only the count of $C_4$ in $L$ is not universal. Reading the cyclic word of types
+around a four-cycle of $L$, the words $RRRC$ and $RCCC$ are impossible, since
+three consecutive edges of one type force all four cells into a single line and
+then the fourth edge has that type too; and $RRCC$ is impossible, since it would
+require a cell sharing a column with two distinct cells of one row. This leaves
+$RRRR$ and $CCCC$, whose four cells lie in one line and which therefore number
+$3\bigl[p\binom a4+q\binom b4\bigr]$, and $RCRC$, whose four cells are exactly
+the four entries of a $2\times2$ all-ones submatrix, that is a $4$-cycle of $G$,
+each contributing exactly one. Substituting and applying the shift
+$[z^{p-4}](z+c)^{p-k}=\binom{p-k}{p-4}c^{4-k}$ gives the stated $U$.
+\end{proof}
+
+Together with Theorem~\ref{thm:universal} this determines the top five
+coefficients of $g$ completely:
+\[
+\begin{aligned}
+{}[z^{p-1}]g&=p\beta, &
+[z^{p-2}]g&=\binom p2\beta^2-\tfrac12Ap,\\
+[z^{p-3}]g&=\binom p3\beta^3-A\beta\binom p2+\tfrac16A\beta p, &
+[z^{p-4}]g&=U+C_4(G).
+\end{aligned}
+\]
+For the Heawood graph ($p=7$, $a=b=3$, $C_4=0$) the last reads
+$35-315+231-77=-126$. So the conjecture is insensitive to the graph until girth
+enters, and it enters at the first opportunity: four pairwise disjoint edges are
+first constrained by a $4$-cycle.
 
 Theorem~\ref{thm:universal} has a consequence for what a proof of
 Conjecture~\ref{conj:gap} can look like. The universal coefficients determine the
