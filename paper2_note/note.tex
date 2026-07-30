@@ -297,11 +297,8 @@ exhibits a band structure that no cycle can display.
 \paragraph{A conjecture for all graphs.}
 Corollary~\ref{cor:floquet} is proved by Floquet theory, which is available
 only because $\pi_1(G)=\mathbb{Z}$. Its \emph{statement}, however, makes sense
-for every graph, and we know two cases of it. At $d=1$ it is classical:
-$\mu_{1,G}$ is the ordinary matching polynomial, whose roots are eigenvalues of
-the path tree of $G$ and hence lie in $\operatorname{spec}(T)$ (Godsil). At
-$b_1(G)=1$ it is Corollary~\ref{cor:floquet}, for every $d$. We therefore
-propose:
+for every graph, and we know one case of it: at $b_1(G)=1$ it is
+Corollary~\ref{cor:floquet}, for every $d$. We therefore propose:
 
 \begin{conjecture}\label{conj:gap}
 For every finite graph $G$ and every $d\ge1$, all roots of $\mu_{d,G}$ lie in
@@ -338,7 +335,30 @@ K_{3,5} & 8 & (5,3) & 0.5858 & 1,2 & 2.10,\ 1.73\\
 \end{array}
 \]
 All of these have $b_1\ge2$, so none is covered by
-Corollary~\ref{cor:floquet}. The last column decreases monotonically in $d$ in
+Corollary~\ref{cor:floquet}. It is worth recording that even $d=1$ is not
+formal. There $\mu_{1,G}$ is the ordinary matching polynomial, whose roots are
+eigenvalues of the path tree of $G$ (Godsil), and the path tree embeds in $T$;
+but eigenvalues of a finite subtree of $T$ need not lie in
+$\operatorname{spec}(T)$ when $T$ has a gap. For the $(3,2)$-biregular tree,
+whose gap is $(0,\sqrt2-1)$, the path $P_8$ is a subtree with eigenvalue
+$2\cos(4\pi/9)=0.3473$ inside that gap. So the $d=1$ case of
+Conjecture~\ref{conj:gap} does not follow from the path-tree argument, and we
+have tested it separately on the subdivisions of $K_4$, $K_{3,3}$, the prism,
+$Q_3$, the Wagner graph and the Petersen graph --- all of which have
+$(3,2)$-biregular universal cover --- with smallest root ratios
+$1.97,\,1.69,\,1.72,\,1.57,\,1.56,\,1.47$ and no root in the gap.
+
+For $K_{2,3}$ the computation was pushed to $d=6$ using
+$\mu_{d,G}=\E[\chi_H]/\chi_G$ over $(d+1)$-covers, which is polynomial time per
+cover, together with the reduction of the first free permutation to one
+representative per cycle type; the ratios continue
+$1.68$ at $d=5$ and no root in the gap at $d=6$. That last case is a caution
+worth recording: in floating point it appeared to produce roots at
+$\pm0.055$, well inside the gap, which an exact integer recomputation showed to
+be an artefact of evaluating a degree-$30$ polynomial built from $35\times35$
+characteristic polynomials in double precision.
+
+ The last column decreases monotonically in $d$ in
 every case, which is what the conjecture predicts: by
 Corollary~\ref{cor:floquet} in the $b_1=1$ case the roots equidistribute on
 $\operatorname{spec}(T)$, so they should approach the gap edge without crossing
