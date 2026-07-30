@@ -551,7 +551,40 @@ for $(7,3,3)$, $-126$ for the Heawood graph and $-119$ for a $7+7$ circulant, at
 $C_4=0$ and $7$. This is the expected place for it to appear, since four
 pairwise disjoint edges are first constrained by a $4$-cycle, and it says that
 the conjecture is insensitive to the graph until girth enters. We have not
-proved the formula for $[z^{p-4}]g$, only verified it. Their roots do satisfy \eqref{eq:twosided}, with maxima
+proved the formula for $[z^{p-4}]g$, only verified it.
+
+Theorem~\ref{thm:universal} has a consequence for what a proof of
+Conjecture~\ref{conj:gap} can look like. The universal coefficients determine the
+first two power sums of the roots of $g$, namely
+$\sum\rho_i=-p(b-2)$ and $\sum\rho_i^2=p\bigl[(b-2)^2+a(b-1)\bigr]$, and those
+two numbers already imply a bound on the least root.
+
+\begin{proposition}\label{prop:moments}
+Every root of $g$ satisfies
+$\rho\ge-(b-2)-\sqrt{(p-1)a(b-1)}$, and this is the sharpest bound implied by
+the coefficients of $z^p,z^{p-1},z^{p-2}$.
+\end{proposition}
+
+\begin{proof}
+The roots are real. Fix a root $\rho$ and apply Cauchy--Schwarz to the other
+$p-1$: $\bigl(\sum\rho_i-\rho\bigr)^2\le(p-1)\bigl(\sum\rho_i^2-\rho^2\bigr)$.
+With $e=\sum\rho_i$ and $S=\sum\rho_i^2$ this is
+$p\rho^2-2e\rho+e^2-(p-1)S\le0$, so
+$\rho\ge\bigl[e-\sqrt{(p-1)(pS-e^2)}\bigr]/p$. Substituting the two power sums
+gives $pS-e^2=p^2a(b-1)$ and the stated bound. Sharpness is the equality case of
+Cauchy--Schwarz.
+\end{proof}
+
+The bound of Proposition~\ref{prop:moments} grows like $\sqrt p$, whereas the
+conjectured bound $-2\sqrt m$ does not depend on $p$ at all. So for all but the
+smallest graphs the moment bound is far weaker, and since by
+Theorem~\ref{thm:universal} the coefficients it uses do not see $G$, no argument
+resting on them can distinguish one $(a,b)$-biregular graph from another. Any
+proof of Conjecture~\ref{conj:gap} must therefore use $m_4$ or beyond, that is,
+it must be sensitive to the cycle structure of $G$. This is consistent with the
+place the conjecture occupies: bounds of the shape $2\sqrt{(a-1)(b-1)}$ are
+non-backtracking bounds, and the non-backtracking operator of a bipartite graph
+is exactly the object that records cycles. Their roots do satisfy \eqref{eq:twosided}, with maxima
 $4.06,4.48,6.26$ against bounds $4.90,5.66,6.93$. That class admits a clean description. Since a $k$-matching leaves $p-k$
 vertices of $A$ unmatched,
 \begin{equation}\label{eq:multivar}
