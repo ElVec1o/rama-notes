@@ -711,4 +711,230 @@ theorem bipQ_eval_delete_left (E : Finset (α × β)) (v : α) (y : R) :
 
 end Deletion
 
+/-! ## Counting the `2`-matchings
+
+`mCount_zero` and `mCount_one` evaluate `m_0` and `m_1`; this section does `m_2`, which is the last
+coefficient that the earlier results consume as an input rather than produce.
+
+The count is easiest through *ordered* pairs of distinct edges, of which there are `|E|(|E|-1)`.
+Such a pair either shares its left endpoint (`confL`), or shares its right endpoint (`confR`), or
+neither, in which case the two edges form a `2`-matching (`ordMatch`).  The three cases are
+exhaustive and mutually exclusive: in a bipartite edge set two edges agreeing in both coordinates
+are equal, so `confL` and `confR` are disjoint.  Since every `2`-matching arises from exactly two
+ordered pairs, this gives the degree-free identity
+
+  `2 m_2 + |confL| + |confR| = |E| (|E| - 1)`
+
+(`two_mul_mCount_two_add_conflicts`).  No regularity is assumed anywhere.
+
+`card_confL` and `card_confR` then evaluate the two conflict counts as degree sums,
+`|confL| = ∑_v d(v)(d(v)-1)`, which is what specializes.  For an `(a,b)`-biregular graph with `p`
+vertices of degree `a` on the left and `q` of degree `b` on the right, the two sums collapse to
+`p·a·(a-1)` and `q·b·(b-1)`, and with `|E| = pa = qb` the identity reads
+
+  `2 m_2 = pa(pa - 1) - pa(a - 1) - qb(b - 1) = pa(pa - a - b + 1)`,
+
+i.e. `m_2 = (pa/2)(pa - a - b + 1)`.  That is precisely the `m_2` appearing in the coefficient
+theorems above — `bipP_taylor_coeff_pred_two` and the shifted `4`-cycle coefficient — which take
+`mCount E 2` as an abstract input.  So this section is what connects those statements to the
+degrees of the graph.
+-/
+
+section TwoMatchings
+
+/-- Ordered pairs of distinct edges sharing their left endpoint. -/
+def confL (E : Finset (α × β)) : Finset ((α × β) × (α × β)) :=
+  E.offDiag.filter (fun q => q.1.1 = q.2.1)
+
+/-- Ordered pairs of distinct edges sharing their right endpoint. -/
+def confR (E : Finset (α × β)) : Finset ((α × β) × (α × β)) :=
+  E.offDiag.filter (fun q => q.1.2 = q.2.2)
+
+/-- Ordered pairs of distinct edges sharing neither endpoint: the ordered `2`-matchings. -/
+def ordMatch (E : Finset (α × β)) : Finset ((α × β) × (α × β)) :=
+  E.offDiag.filter (fun q => q.1.1 ≠ q.2.1 ∧ q.1.2 ≠ q.2.2)
+
+/-- Two distinct edges cannot share both endpoints, so the two conflict types are exclusive. -/
+lemma confL_disjoint_confR (E : Finset (α × β)) : Disjoint (confL E) (confR E) := by
+  classical
+  rw [Finset.disjoint_left]
+  rintro q hL hR
+  rw [confL, Finset.mem_filter] at hL
+  rw [confR, Finset.mem_filter] at hR
+  have hne : q.1 ≠ q.2 := (Finset.mem_offDiag.mp hL.1).2.2
+  exact hne (Prod.ext hL.2 hR.2)
+
+/-- Natural-subtraction bookkeeping for `Finset.offDiag_card`: the off-diagonal of an `n`-element
+set has `n(n-1)` elements. -/
+lemma card_offDiag_mul_pred {γ : Type*} [DecidableEq γ] (s : Finset γ) :
+    s.offDiag.card = s.card * (s.card - 1) := by
+  rw [Finset.offDiag_card]
+  cases hn : s.card with
+  | zero => simp
+  | succ n => simp [Nat.mul_succ]
+
+/-- **The three-way split.**  `ordMatch`, `confL` and `confR` partition the ordered pairs of
+distinct edges. -/
+lemma card_ordMatch_add_conflicts (E : Finset (α × β)) :
+    (ordMatch E).card + (confL E).card + (confR E).card = E.card * (E.card - 1) := by
+  classical
+  have hsplit : E.offDiag = ordMatch E ∪ (confL E ∪ confR E) := by
+    ext q
+    simp only [ordMatch, confL, confR, Finset.mem_union, Finset.mem_filter]
+    constructor
+    · intro hq
+      by_cases h1 : q.1.1 = q.2.1
+      · exact Or.inr (Or.inl ⟨hq, h1⟩)
+      · by_cases h2 : q.1.2 = q.2.2
+        · exact Or.inr (Or.inr ⟨hq, h2⟩)
+        · exact Or.inl ⟨hq, h1, h2⟩
+    · rintro (⟨hq, _⟩ | ⟨hq, _⟩ | ⟨hq, _⟩) <;> exact hq
+  have hdisj : Disjoint (ordMatch E) (confL E ∪ confR E) := by
+    rw [Finset.disjoint_left]
+    rintro q hq hmem
+    rw [ordMatch, Finset.mem_filter] at hq
+    rcases Finset.mem_union.mp hmem with h | h
+    · exact hq.2.1 (Finset.mem_filter.mp h).2
+    · exact hq.2.2 (Finset.mem_filter.mp h).2
+  have hcard : E.offDiag.card = (ordMatch E).card + ((confL E).card + (confR E).card) := by
+    rw [hsplit, Finset.card_union_of_disjoint hdisj,
+      Finset.card_union_of_disjoint (confL_disjoint_confR E)]
+  rw [card_offDiag_mul_pred] at hcard
+  omega
+
+/-- **The fibres are pairs.**  A `2`-matching `M` is hit by exactly the two orderings of its two
+edges, so the fibre of `q ↦ {q.1, q.2}` over `M` has two elements. -/
+lemma card_ordMatch_fiber (E : Finset (α × β)) {M : Finset (α × β)}
+    (hM : M ∈ (matchings E).filter (fun M => M.card = 2)) :
+    ((ordMatch E).filter (fun q => ({q.1, q.2} : Finset (α × β)) = M)).card = 2 := by
+  classical
+  rw [Finset.mem_filter] at hM
+  obtain ⟨hMm, hMcard⟩ := hM
+  have hMatch : IsMatching M := (Finset.mem_filter.mp hMm).2
+  have hsub : M ⊆ E := Finset.mem_powerset.mp (Finset.mem_filter.mp hMm).1
+  obtain ⟨e, f, hef, rfl⟩ := Finset.card_eq_two.mp hMcard
+  have heE : e ∈ E := hsub (by simp)
+  have hfE : f ∈ E := hsub (by simp)
+  have h1 : e.1 ≠ f.1 := fun h => hef (hMatch.1 e (by simp) f (by simp) h)
+  have h2 : e.2 ≠ f.2 := fun h => hef (hMatch.2 e (by simp) f (by simp) h)
+  have hset : (ordMatch E).filter (fun q => ({q.1, q.2} : Finset (α × β)) = {e, f})
+      = {(e, f), (f, e)} := by
+    ext q
+    simp only [Finset.mem_filter, Finset.mem_insert, Finset.mem_singleton, ordMatch,
+      Finset.mem_offDiag]
+    constructor
+    · rintro ⟨⟨⟨_, _, hqne⟩, _, _⟩, hq⟩
+      have hq1 : q.1 = e ∨ q.1 = f := by
+        have : q.1 ∈ ({e, f} : Finset (α × β)) := hq ▸ (by simp)
+        simpa using this
+      have hq2 : q.2 = e ∨ q.2 = f := by
+        have : q.2 ∈ ({e, f} : Finset (α × β)) := hq ▸ (by simp)
+        simpa using this
+      rcases hq1 with h | h <;> rcases hq2 with h' | h'
+      · exact absurd (h.trans h'.symm) hqne
+      · exact Or.inl (Prod.ext h h')
+      · exact Or.inr (Prod.ext h h')
+      · exact absurd (h.trans h'.symm) hqne
+    · rintro (rfl | rfl)
+      · exact ⟨⟨⟨heE, hfE, hef⟩, h1, h2⟩, rfl⟩
+      · exact ⟨⟨⟨hfE, heE, hef.symm⟩, h1.symm, h2.symm⟩, Finset.pair_comm f e⟩
+  have hne : ((e, f) : (α × β) × (α × β)) ≠ (f, e) := fun h => hef (congrArg Prod.fst h)
+  rw [hset, Finset.card_insert_of_notMem (by simpa using hne), Finset.card_singleton]
+
+/-- Ordered `2`-matchings are counted with multiplicity two by the unordered ones. -/
+lemma card_ordMatch (E : Finset (α × β)) : (ordMatch E).card = 2 * mCount E 2 := by
+  classical
+  have hmaps : ∀ q ∈ ordMatch E,
+      ({q.1, q.2} : Finset (α × β)) ∈ (matchings E).filter (fun M => M.card = 2) := by
+    intro q hq
+    rw [ordMatch, Finset.mem_filter, Finset.mem_offDiag] at hq
+    obtain ⟨⟨h1E, h2E, hne⟩, hf, hs⟩ := hq
+    refine Finset.mem_filter.mpr ⟨Finset.mem_filter.mpr ⟨Finset.mem_powerset.mpr ?_, ?_, ?_⟩, ?_⟩
+    · intro x hx
+      rcases Finset.mem_insert.mp hx with rfl | hx
+      · exact h1E
+      · rw [Finset.mem_singleton] at hx; exact hx ▸ h2E
+    · intro x hx y hy h
+      simp only [Finset.mem_insert, Finset.mem_singleton] at hx hy
+      rcases hx with rfl | rfl <;> rcases hy with rfl | rfl
+      · rfl
+      · exact absurd h hf
+      · exact absurd h.symm hf
+      · rfl
+    · intro x hx y hy h
+      simp only [Finset.mem_insert, Finset.mem_singleton] at hx hy
+      rcases hx with rfl | rfl <;> rcases hy with rfl | rfl
+      · rfl
+      · exact absurd h hs
+      · exact absurd h.symm hs
+      · rfl
+    · rw [Finset.card_insert_of_notMem (by simpa using hne), Finset.card_singleton]
+  rw [Finset.card_eq_sum_card_fiberwise
+    (f := fun q : (α × β) × (α × β) => ({q.1, q.2} : Finset (α × β)))
+    (fun q hq => hmaps q hq)]
+  rw [Finset.sum_congr rfl (fun M hM => card_ordMatch_fiber E hM)]
+  rw [Finset.sum_const, smul_eq_mul, mCount]
+  ring
+
+/-- **The `2`-matching count, degree-free.**  Ordered pairs of distinct edges are counted in two
+ways: `|E|(|E|-1)` of them altogether, and separately as the ordered `2`-matchings (two per
+`2`-matching) plus the two kinds of conflicting pair. -/
+theorem two_mul_mCount_two_add_conflicts (E : Finset (α × β)) :
+    2 * mCount E 2 + (confL E).card + (confR E).card = E.card * (E.card - 1) := by
+  rw [← card_ordMatch]
+  exact card_ordMatch_add_conflicts E
+
+/-- The left degree of a vertex: the number of edges at `v`. -/
+def dL (E : Finset (α × β)) (v : α) : ℕ := (E.filter (fun e => e.1 = v)).card
+
+/-- The right degree of a vertex: the number of edges at `u`. -/
+def dR (E : Finset (α × β)) (u : β) : ℕ := (E.filter (fun e => e.2 = u)).card
+
+/-- **The left conflicts as a degree sum.**  Fibring over the shared left endpoint, the fibre at
+`v` is the off-diagonal of the edges at `v`. -/
+theorem card_confL (E : Finset (α × β)) :
+    (confL E).card = ∑ v ∈ E.image Prod.fst, dL E v * (dL E v - 1) := by
+  classical
+  have hmaps : ∀ q ∈ confL E, q.1.1 ∈ E.image Prod.fst := by
+    intro q hq
+    rw [confL, Finset.mem_filter, Finset.mem_offDiag] at hq
+    exact Finset.mem_image.mpr ⟨q.1, hq.1.1, rfl⟩
+  rw [Finset.card_eq_sum_card_fiberwise
+    (f := fun q : (α × β) × (α × β) => q.1.1) (fun q hq => hmaps q hq)]
+  refine Finset.sum_congr rfl fun v _ => ?_
+  have hfib : (confL E).filter (fun q => q.1.1 = v)
+      = (E.filter (fun e => e.1 = v)).offDiag := by
+    ext q
+    simp only [confL, Finset.mem_filter, Finset.mem_offDiag]
+    constructor
+    · rintro ⟨⟨⟨h1, h2, hne⟩, heq⟩, hv⟩
+      exact ⟨⟨h1, hv⟩, ⟨h2, heq ▸ hv⟩, hne⟩
+    · rintro ⟨⟨h1, hv1⟩, ⟨h2, hv2⟩, hne⟩
+      exact ⟨⟨⟨h1, h2, hne⟩, hv1.trans hv2.symm⟩, hv1⟩
+  rw [hfib, card_offDiag_mul_pred, dL]
+
+/-- **The right conflicts as a degree sum**, the mirror image of `card_confL`. -/
+theorem card_confR (E : Finset (α × β)) :
+    (confR E).card = ∑ u ∈ E.image Prod.snd, dR E u * (dR E u - 1) := by
+  classical
+  have hmaps : ∀ q ∈ confR E, q.1.2 ∈ E.image Prod.snd := by
+    intro q hq
+    rw [confR, Finset.mem_filter, Finset.mem_offDiag] at hq
+    exact Finset.mem_image.mpr ⟨q.1, hq.1.1, rfl⟩
+  rw [Finset.card_eq_sum_card_fiberwise
+    (f := fun q : (α × β) × (α × β) => q.1.2) (fun q hq => hmaps q hq)]
+  refine Finset.sum_congr rfl fun u _ => ?_
+  have hfib : (confR E).filter (fun q => q.1.2 = u)
+      = (E.filter (fun e => e.2 = u)).offDiag := by
+    ext q
+    simp only [confR, Finset.mem_filter, Finset.mem_offDiag]
+    constructor
+    · rintro ⟨⟨⟨h1, h2, hne⟩, heq⟩, hu⟩
+      exact ⟨⟨h1, hu⟩, ⟨h2, heq ▸ hu⟩, hne⟩
+    · rintro ⟨⟨h1, hu1⟩, ⟨h2, hu2⟩, hne⟩
+      exact ⟨⟨⟨h1, h2, hne⟩, hu1.trans hu2.symm⟩, hu1⟩
+  rw [hfib, card_offDiag_mul_pred, dR]
+
+end TwoMatchings
+
 end BipartiteMatchingPoly
