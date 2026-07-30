@@ -123,6 +123,91 @@ lemma mem_matchings_delLR {E : Finset (α × β)} {v : α} {u : β} {M : Finset 
     exact ⟨fun e he => Finset.mem_filter.mpr ⟨hsub he, hvu e he⟩, hM⟩
 
 
+
+/-- In a matching, a left vertex is covered at most once. -/
+lemma unique_partner {M : Finset (α × β)} (hM : IsMatching M) {v : α} {u u' : β}
+    (h : (v, u) ∈ M) (h' : (v, u') ∈ M) : u = u' := by
+  have h2 := hM.1 (v, u) h (v, u') h' rfl
+  exact congrArg Prod.snd h2
+
+/-- **Uncovered part.** The `(k+1)`-matchings of `E` avoiding `v` are the `(k+1)`-matchings of
+`delL E v`. -/
+lemma card_uncovered (E : Finset (α × β)) (v : α) (m : ℕ) :
+    (((matchings E).filter (fun M => M.card = m)).filter
+        (fun M => ∀ e ∈ M, e.1 ≠ v)).card = mCount (delL E v) m := by
+  classical
+  unfold mCount
+  congr 1
+  ext M
+  simp only [Finset.mem_filter, mem_matchings_delL]
+  tauto
+
+/-- **Covered part.** For an available partner `u`, the `(k+1)`-matchings of `E` using `(v,u)`
+correspond to the `k`-matchings of `delLR E v u`, by deleting the edge. -/
+lemma card_covered (E : Finset (α × β)) (v : α) (u : β) (hu : (v, u) ∈ E) (k : ℕ) :
+    (((matchings E).filter (fun M => M.card = k + 1)).filter
+        (fun M => (v, u) ∈ M)).card = mCount (delLR E v u) k := by
+  classical
+  unfold mCount
+  refine Finset.card_bij' (fun M _ => M.erase (v, u)) (fun N _ => insert (v, u) N) ?_ ?_ ?_ ?_
+  · -- erase lands in the target
+    intro M hM
+    simp only [Finset.mem_filter] at hM
+    obtain ⟨⟨hMm, hcard⟩, hvu⟩ := hM
+    have hMatch : IsMatching M := (Finset.mem_filter.mp hMm).2
+    have hsub : M ⊆ E := Finset.mem_powerset.mp (Finset.mem_filter.mp hMm).1
+    refine Finset.mem_filter.mpr ⟨?_, ?_⟩
+    · refine mem_matchings_delLR.mpr ⟨?_, ?_⟩
+      · exact Finset.mem_filter.mpr ⟨Finset.mem_powerset.mpr
+          (fun e he => hsub (Finset.mem_of_mem_erase he)),
+          isMatching_of_subset (Finset.erase_subset _ _) hMatch⟩
+      · intro e he
+        have hne : e ≠ (v, u) := Finset.ne_of_mem_erase he
+        have heM : e ∈ M := Finset.mem_of_mem_erase he
+        constructor
+        · intro h1; exact hne (hMatch.1 e heM (v, u) hvu (by simpa using h1))
+        · intro h2; exact hne (hMatch.2 e heM (v, u) hvu (by simpa using h2))
+    · rw [Finset.card_erase_of_mem hvu, hcard]; rfl
+  · -- insert lands back
+    intro N hN
+    simp only [Finset.mem_filter] at hN
+    obtain ⟨hNm, hcard⟩ := hN
+    obtain ⟨hNE, hNavoid⟩ := mem_matchings_delLR.mp hNm
+    have hNMatch : IsMatching N := (Finset.mem_filter.mp hNE).2
+    have hNsub : N ⊆ E := Finset.mem_powerset.mp (Finset.mem_filter.mp hNE).1
+    have hnotmem : (v, u) ∉ N := fun h => (hNavoid _ h).1 rfl
+    refine Finset.mem_filter.mpr ⟨Finset.mem_filter.mpr ⟨?_, ?_⟩, ?_⟩
+    · refine Finset.mem_filter.mpr ⟨Finset.mem_powerset.mpr ?_, ?_⟩
+      · intro e he
+        rcases Finset.mem_insert.mp he with rfl | he'
+        · exact hu
+        · exact hNsub he'
+      · constructor
+        · intro e he f hf hef
+          rcases Finset.mem_insert.mp he with rfl | he' <;>
+            rcases Finset.mem_insert.mp hf with rfl | hf'
+          · rfl
+          · exact absurd hef.symm (hNavoid f hf').1
+          · exact absurd hef (hNavoid e he').1
+          · exact hNMatch.1 e he' f hf' hef
+        · intro e he f hf hef
+          rcases Finset.mem_insert.mp he with rfl | he' <;>
+            rcases Finset.mem_insert.mp hf with rfl | hf'
+          · rfl
+          · exact absurd hef.symm (hNavoid f hf').2
+          · exact absurd hef (hNavoid e he').2
+          · exact hNMatch.2 e he' f hf' hef
+    · rw [Finset.card_insert_of_notMem hnotmem, hcard]
+    · exact Finset.mem_insert_self _ _
+  · intro M hM
+    simp only [Finset.mem_filter] at hM
+    exact Finset.insert_erase hM.2
+  · intro N hN
+    simp only [Finset.mem_filter] at hN
+    obtain ⟨hNm, _⟩ := hN
+    obtain ⟨_, hNavoid⟩ := mem_matchings_delLR.mp hNm
+    exact Finset.erase_insert (fun h => (hNavoid _ h).1 rfl)
+
 /-! `mCount_delete_left`, the deletion recursion (A5), is proved on paper but not
 formalized: it needs the bijection between `(k+1)`-matchings using edge `(v,u)` and `k`-matchings
 of the doubly-deleted edge set, which is a larger `Finset` argument than the fibering above. -/
