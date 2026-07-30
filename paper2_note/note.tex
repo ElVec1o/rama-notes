@@ -45,6 +45,14 @@ $V_d=\mu_G V_{d-1}-\mu_{G-V(C)}^{\,2}V_{d-2}$ in the ordinary matching
 polynomials of $G$ and of the forest obtained by deleting the cycle; this
 answers Question 6.5 of Hall--Puder--Sawin for that family, and we show the
 Betti-number-one hypothesis cannot be relaxed.
+For the associated gap problem we prove that every nonzero root of the matching
+polynomial of a subdivision $S(H)$ of a $D$-regular graph has absolute value at
+least $\sqrt{D-1}-1$, which settles the case $\min(d,r)=2$ of Problem~1 of Song,
+Fan and Miao. After the change of variable that centres the band, the resulting
+polynomial $g$ has subleading coefficient exactly $p(b-2)$; so $g$ is a matching
+polynomial precisely when $\min(a,b)=2$, and for $\min(a,b)\ge3$ its roots are
+displaced by $b-2$ towards the lower band edge, which is the end that remains
+open. Both statements are formalized.
 \end{abstract}
 
 \section{Introduction and statement}
@@ -458,20 +466,51 @@ the conjecture. \emph{They are the two ends of one interval}, so
 what is missing is exactly half of a two-sided Heilmann--Lieb theorem for
 biregular bipartite graphs.
 
-This also explains the boundary between what is proved and what is not. When
-$b=2$ the polynomial $g$ \emph{is} a matching polynomial --- for $G=S(H)$ one
-computes $g=\mu_H$, which recovers Theorem~\ref{thm:subdiv} and the subdivision
-identity as the case $c=(a-1)+1$ of the change of variable --- so Heilmann--Lieb
-applies verbatim. For $b\ge3$ it is not: a matching polynomial on $n$ vertices
-involves only every other power of $z$, whereas
+This also explains the boundary between what is proved and what is not, and the
+explanation is exact.
+
+\begin{theorem}\label{thm:subcoef}
+Let $G$ be $(a,b)$-biregular bipartite with parts of sizes $p\le q$, degree $a$
+on the $p$-side and $b$ on the $q$-side, and let $g(z)=f_G(z+c)$ with
+$c=(a-1)+(b-1)$. Then
+\[
+[z^{p-1}]\,g \;=\; p\,(b-2).
+\]
+Consequently the roots of $g$ have mean $-(b-2)$, and $g$ is the matching
+polynomial of a graph if and only if $b=2$.
+\end{theorem}
+
+\begin{proof}
+Counting edges by their smaller side gives $pa=qb$, so $p\le q$ forces $a\ge b$
+and $b=\min(a,b)$. The polynomial $f_G$ is monic of degree $p$, and its next
+coefficient is $-m_1$, where $m_1$ is the number of $1$-matchings, that is
+$|E|=pa$. Hence
+\[
+[z^{p-1}]\,f_G(z+c)=\binom{p}{1}c-pa=p(a+b-2)-pa=p(b-2).
+\]
+The mean of the roots is $-[z^{p-1}]g/p=-(b-2)$. A matching polynomial of
+degree $p$ involves only every other power of $z$, so its coefficient at
+$z^{p-1}$ vanishes; thus $b=2$ is necessary. It is sufficient: for $b=2$ the
+graph is $S(H)$ for an $a$-regular $H$ and $g=\mu_H$ by \cite{YY}.
+\end{proof}
+
+So for $b=2$ the polynomial $g$ \emph{is} a matching polynomial, Heilmann--Lieb
+applies verbatim, and one recovers Theorem~\ref{thm:subdiv} and the subdivision
+identity as the case $c=(a-1)+1$ of the change of variable. For $b\ge3$ it
+provably is not, and Theorem~\ref{thm:subcoef} says more than that it fails: it
+locates the failure. The roots of $g$ are not centred at the band centre but sit
+a distance $b-2$ below it, towards the lower band edge --- which is exactly the
+end of \eqref{eq:twosided} that is open. The asymmetry of the problem and the
+departure from the matching-polynomial class are the same phenomenon, measured
+by the single quantity $b-2$. Examples:
 \[
 g_{K_{3,4}}=z^3+3z^2-9z-19,\quad
 g_{K_{3,5}}=z^3+3z^2-12z-24,\quad
-g_{K_{4,5}}=z^4+8z^3-6z^2-128z-139
+g_{K_{4,5}}=z^4+8z^3-6z^2-128z-139,
 \]
-all have a nonzero subleading coefficient. Their roots do satisfy
-\eqref{eq:twosided}, with maxima $4.06,4.48,6.26$ against bounds
-$4.90,5.66,6.93$. That class admits a clean description. Since a $k$-matching leaves $p-k$
+with subleading coefficients $3=3(3-2)$, $3=3(3-2)$ and $8=4(4-2)$ as the
+theorem requires. Their roots do satisfy \eqref{eq:twosided}, with maxima
+$4.06,4.48,6.26$ against bounds $4.90,5.66,6.93$. That class admits a clean description. Since a $k$-matching leaves $p-k$
 vertices of $A$ unmatched,
 \begin{equation}\label{eq:multivar}
 f_G(y)=\sum_{k}(-1)^k m_k\,y^{p-k}

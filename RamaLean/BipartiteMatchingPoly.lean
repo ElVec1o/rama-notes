@@ -294,4 +294,149 @@ follows from `mCount_delete_left` and `bipF_eq_sum_counts` by separating the `k 
 reindexing. It is bookkeeping rather than content and is not formalized here; the combinatorial
 step, `mCount_delete_left`, is. -/
 
+/-! ## The subleading coefficient after the band-centre shift
+
+For an `(a,b)`-biregular bipartite graph with parts of sizes `p ≤ q` and degree `a` on the
+`p`-side, the polynomial `f_G` defined by `μ_G(x) = x^(q-p) f_G(x²)` is monic of degree `p` with
+`[y^(p-1)] f_G = -|E| = -pa`.  Shifting by the band centre `c = (a-1)+(b-1)` gives
+`[z^(p-1)] f_G(z+c) = p·c - pa = p(b-2)`.
+
+This is exactly zero iff `b = 2`.  A matching polynomial of degree `p` has vanishing coefficient at
+`p-1`, so `f_G(z+c)` can be a matching polynomial only when `b = 2` — which is the case where the
+Yan–Yeh subdivision identity applies and the two-sided Heilmann–Lieb bound is available.  So the
+boundary between the proved and the open case is not an artefact of the method.
+
+Equivalently the roots of `f_G(z+c)` have mean `-(b-2)`: they are centred at the band centre
+exactly when `b = 2`, and are skewed towards the lower band edge otherwise.
+-/
+
+section Subleading
+
+open Polynomial
+
+/-- Every singleton edge set is a matching, and these are all the matchings of size one, so the
+number of `1`-matchings is the number of edges. -/
+theorem mCount_one (E : Finset (α × β)) : mCount E 1 = E.card := by
+  have hset : (matchings E).filter (fun M => M.card = 1)
+      = E.image (fun e => ({e} : Finset (α × β))) := by
+    ext M
+    simp only [Finset.mem_filter, Finset.mem_image, matchings, Finset.mem_powerset]
+    constructor
+    · rintro ⟨⟨hsub, _⟩, hcard⟩
+      obtain ⟨e, rfl⟩ := Finset.card_eq_one.mp hcard
+      exact ⟨e, hsub (Finset.mem_singleton_self e), rfl⟩
+    · rintro ⟨e, he, rfl⟩
+      refine ⟨⟨?_, ?_⟩, Finset.card_singleton e⟩
+      · intro f hf; rw [Finset.mem_singleton] at hf; subst hf; exact he
+      · exact ⟨fun x hx y hy _ => by
+            rw [Finset.mem_singleton] at hx hy; rw [hx, hy],
+          fun x hx y hy _ => by
+            rw [Finset.mem_singleton] at hx hy; rw [hx, hy]⟩
+  unfold mCount
+  rw [hset, Finset.card_image_of_injective _ (fun x y h => by
+    simpa using Finset.singleton_injective h)]
+
+variable {R : Type*} [CommRing R]
+
+/-- The polynomial form of `bipF`: `∑_k (-1)^k m_k X^(p-k)`. -/
+noncomputable def bipP (E : Finset (α × β)) (p : ℕ) : R[X] :=
+  ∑ k ∈ Finset.range (p + 1), C ((-1 : R) ^ k * (mCount E k : R)) * X ^ (p - k)
+
+theorem bipP_natDegree_le (E : Finset (α × β)) (p : ℕ) :
+    (bipP (R := R) E p).natDegree ≤ p := by
+  refine (Polynomial.natDegree_sum_le _ _).trans ?_
+  simp only [Finset.fold_max_le]
+  refine ⟨Nat.zero_le _, fun k _ => ?_⟩
+  refine (Polynomial.natDegree_C_mul_le _ _).trans ?_
+  refine Polynomial.natDegree_pow_le.trans ?_
+  calc (p - k) * (X : R[X]).natDegree ≤ (p - k) * 1 :=
+        Nat.mul_le_mul_left _ Polynomial.natDegree_X_le
+    _ ≤ p := by omega
+
+/-- The leading coefficient: `m_0 = 1`. -/
+theorem bipP_coeff_self (E : Finset (α × β)) (p : ℕ) :
+    (bipP (R := R) E p).coeff p = 1 := by
+  unfold bipP
+  rw [Polynomial.finsetSum_coeff]
+  rw [Finset.sum_eq_single 0]
+  · simp [mCount_zero]
+  · intro k hk hk0
+    have hne : p ≠ p - k := by
+      have := Finset.mem_range.mp hk
+      omega
+    rw [Polynomial.coeff_C_mul, Polynomial.coeff_X_pow, if_neg hne]
+    ring
+  · intro h; exact absurd (Finset.mem_range.mpr (Nat.succ_pos p)) h
+
+/-- The subleading coefficient: `-m_1 = -|E|`. -/
+theorem bipP_coeff_pred (E : Finset (α × β)) {p : ℕ} (hp : 1 ≤ p) :
+    (bipP (R := R) E p).coeff (p - 1) = -(E.card : R) := by
+  unfold bipP
+  rw [Polynomial.finsetSum_coeff]
+  rw [Finset.sum_eq_single 1]
+  · rw [Polynomial.coeff_C_mul, Polynomial.coeff_X_pow, if_pos rfl, mCount_one]
+    ring
+  · intro k hk hk1
+    have hne : p - 1 ≠ p - k := by
+      have := Finset.mem_range.mp hk
+      rcases Nat.eq_zero_or_pos k with rfl | hk0
+      · omega
+      · omega
+    rw [Polynomial.coeff_C_mul, Polynomial.coeff_X_pow, if_neg hne]
+    ring
+  · intro h; exact absurd (Finset.mem_range.mpr (by omega)) h
+
+/-- **The Taylor shift on the subleading coefficient.**  For any `f` of degree at most `p`,
+the coefficient of `X^(p-1)` in `f(X + c)` is `f_{p-1} + p·f_p·c`. -/
+theorem taylor_coeff_pred (f : R[X]) (c : R) {p : ℕ} (hp : 1 ≤ p)
+    (hdeg : f.natDegree ≤ p) :
+    (Polynomial.taylor c f).coeff (p - 1) = f.coeff (p - 1) + p * f.coeff p * c := by
+  rw [Polynomial.taylor_coeff]
+  have hH : Polynomial.hasseDeriv (p - 1) f
+      = C (f.coeff (p - 1)) + C ((p : R) * f.coeff p) * X := by
+    ext n
+    rw [Polynomial.hasseDeriv_coeff]
+    match n with
+    | 0 => simp
+    | 1 =>
+      have h1 : 1 + (p - 1) = p := by omega
+      have h2 : p.choose (p - 1) = p := by
+        rw [show p - 1 = p - 1 from rfl, Nat.choose_symm (by omega : 1 ≤ p),
+          Nat.choose_one_right]
+      rw [h1, h2]; simp
+    | (n + 2) =>
+      have hz : f.coeff (n + 2 + (p - 1)) = 0 := by
+        refine Polynomial.coeff_eq_zero_of_natDegree_lt ?_
+        omega
+      rw [hz]
+      simp [Polynomial.coeff_add, Polynomial.coeff_C, Polynomial.coeff_C_mul,
+        Polynomial.coeff_X]
+  rw [hH]
+  simp [mul_comm]
+
+/-- **A15.**  For a bipartite graph whose polynomial is monic of degree `p` with `|E|` edges,
+shifting by `c` moves the subleading coefficient to `p·c - |E|`. -/
+theorem bipP_taylor_coeff_pred (E : Finset (α × β)) (c : R) {p : ℕ} (hp : 1 ≤ p) :
+    (Polynomial.taylor c (bipP (R := R) E p)).coeff (p - 1) = p * c - (E.card : R) := by
+  rw [taylor_coeff_pred _ _ hp (bipP_natDegree_le E p), bipP_coeff_pred E hp,
+    bipP_coeff_self E p]
+  ring
+
+/-- **A15, biregular form.**  If the graph is `(a,b)`-biregular with `p` vertices of degree `a` on
+the smaller side, so `|E| = p·a`, and `c = (a-1) + (b-1)` is the band centre, then the subleading
+coefficient after the shift is exactly `p·(b-2)`.
+
+It vanishes iff `b = 2` (in a ring where `p ≠ 0` is not a zero divisor).  Since a matching
+polynomial of degree `p` has vanishing coefficient at `p-1`, the shifted polynomial can be a
+matching polynomial only when `b = 2`. -/
+theorem bipP_taylor_coeff_biregular (E : Finset (α × β)) {p a b : ℕ} (hp : 1 ≤ p) (hb : 1 ≤ b)
+    (hcard : E.card = p * a) :
+    (Polynomial.taylor (((a : R) - 1) + ((b : R) - 1)) (bipP (R := R) E p)).coeff (p - 1)
+      = (p : R) * ((b : R) - 2) := by
+  rw [bipP_taylor_coeff_pred _ _ hp, hcard]
+  push_cast
+  ring
+
+end Subleading
+
 end BipartiteMatchingPoly
