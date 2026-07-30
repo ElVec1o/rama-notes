@@ -763,11 +763,28 @@ $c>2\sqrt m$ strictly by the arithmetic--geometric mean inequality.
 Where it has content the bound holds with room to spare, and is not approached.
 For $(4,2)$-biregular graphs the conjecture asserts $y\ge c-2\sqrt m=4-2\sqrt3
 =0.5359$; a girth-$4$ family plateaus at $y_{\min}=1.1716$ and a girth-$8$ family
-at $0.7392$. In the trivial regime the same plateauing is visible and can be
-computed to many digits: for the cubic bipartite circulants with connection set
-$\{0,1,3\}$, which have girth $6$ for every $n$, the least root tends to
-$99.85186\%$ of the lower edge as $n\to\infty$, and for $\{0,1,2\}$, girth $4$, to
-$98.46084\%$; both stop strictly short of $100\%$. This is what one should expect:
+at $0.7392$. In the trivial regime the same plateauing is visible, and there
+the limit is an algebraic number one can name. For a cubic bipartite circulant on
+$n+n$ vertices with connection set $S$, the matching counts satisfy
+$f_n(y)=\operatorname{tr}A(y)^n$ for a transfer matrix $A(y)$ with entries linear
+in $y$, so by the theorem of Beraha, Kahane and Weiss the roots accumulate where
+the two dominant eigenvalues of $A(y)$ have equal modulus. That happens by a
+genuine collision of two real eigenvalues --- below $y^*$ the pair is real and
+distinct, above it a complex-conjugate pair --- so the locus is cut out by
+$\operatorname{disc}_\lambda\chi_{A(y)}=0$ and $y^*$ is the left edge of the
+accumulation band. For $S=\{0,1,2\}$, girth $4$,
+\[
+\operatorname{disc}_\lambda\chi=4y^2\bigl(y^4-12y^3+46y^2-84y+5\bigr),
+\]
+and $y^*$ is the least positive root of that quartic, which is irreducible over
+$\mathbb Q$; then $y^*=0.0615663466041589\ldots$ and the limit is
+$100-25y^*=98.4608413349\ldots\%$ of the lower edge. For $S=\{0,1,3\}$, girth
+$6$, the discriminant is $y^3F(y)$ with $F$ irreducible of degree $17$, giving
+$y^*=0.0059255959422562\ldots$ and $99.8518601014\ldots\%$. Both stop strictly
+short of $100\%$. The finite-$n$ values approach these from above with a $1/n^2$
+band-edge law, and $n^2\bigl(y_{\min}(n)-y^*\bigr)$ is constant to five digits at
+$n=200,300,500$, which identifies the extrapolated plateau with the algebraic
+number. This is what one should expect:
 a family with a fixed local structure has a fixed Benjamini--Schramm limit, which
 is not a tree, so its matching measure retains a gap at $0$. Girth does help
 monotonically --- at $30$ vertices, girth $4$, $6$ and $8$ give $98.166\%$,
