@@ -275,6 +275,50 @@ theorem unicyclic_band_theorem
     |A x| ≤ 2 * |B x| :=
   cV_root_mem_band hB two_ne_zero (by rw [← hmu]; exact hx)
 
+
+/-!
+## The asymmetric recursion: discriminant and invariant region
+
+For an `(a,b)`-biregular bipartite graph put `P = a-1 = s^2`, `Q = b-1 = t^2`.  The polynomial
+`f_G(y) = sum_k (-1)^k m_k y^{p-k}` is the multivariate matching polynomial specialized at
+`x_A = y`, `x_B = 1`, and its cavity recursion is asymmetric,
+`R_A = y - sum 1/R_B`, `R_B = 1 - sum 1/R_A`.  On the tree the fixed point solves
+`R^2 + (P - Q - y) R + y Q = 0`.  Two facts about that quadratic are pure algebra and are proved
+here; the graph-theoretic input is not formalized (Mathlib has no matching polynomial).
+
+* `discriminant_factors` -- its discriminant factors with roots exactly at `(s ± t)^2`, the edges
+  of the spectrum of the `(a,b)`-biregular tree in the variable `y = x^2`;
+* `region_closure_bound` -- the invariant region `R_A ≤ -α`, `R_B ∈ [1, 1 + Q/α]` is closed under
+  the recursion precisely when `y ≤ h(α) = α(P-Q-α)/(α+Q)`, and `h(α) ≤ (s-t)^2` always, because
+  the difference is a perfect square.  So the region closes exactly up to the gap edge, and
+* `region_closure_sharp` -- equality holds at `α = t(s-t) = sqrt(PQ) - Q`, so the bound is attained.
+-/
+
+/-- **Discriminant of the fixed-point quadratic.** With `P = s^2`, `Q = t^2`,
+`D(y) = (P - Q - y)^2 - 4yQ` factors with roots exactly `(s-t)^2` and `(s+t)^2`. -/
+theorem discriminant_factors (s t y : K) :
+    (s ^ 2 - t ^ 2 - y) ^ 2 - 4 * y * t ^ 2 = (y - (s - t) ^ 2) * (y - (s + t) ^ 2) := by
+  ring
+
+/-- **Invariant region closure.** `h(α) = α(P-Q-α)/(α+Q)` never exceeds `(s-t)^2`; in cleared form,
+`α(s² - t² - α) ≤ (s-t)²(α + t²)`.  The difference is `(α - t(s-t))^2`, so the region closes for
+every `y` up to the gap edge and no further. -/
+theorem region_closure_bound (s t α : K) :
+    α * (s ^ 2 - t ^ 2 - α) ≤ (s - t) ^ 2 * (α + t ^ 2) := by
+  nlinarith [sq_nonneg (α - t * (s - t))]
+
+/-- **Sharpness.** Equality in `region_closure_bound` at `α = t(s-t) = sqrt(PQ) - Q`. -/
+theorem region_closure_sharp (s t : K) :
+    (t * (s - t)) * (s ^ 2 - t ^ 2 - t * (s - t))
+      = (s - t) ^ 2 * (t * (s - t) + t ^ 2) := by
+  ring
+
+/-- The gap edge is where the discriminant vanishes and where the invariant region stops closing:
+both are `(s-t)^2`.  Stated as the exact difference identity behind both theorems. -/
+theorem gap_edge_identity (s t α : K) :
+    (s - t) ^ 2 * (α + t ^ 2) - α * (s ^ 2 - t ^ 2 - α) = (α - t * (s - t)) ^ 2 := by
+  ring
+
 end Localization
 
 end Paper2Unicyclic
