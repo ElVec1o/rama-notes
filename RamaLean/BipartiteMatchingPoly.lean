@@ -460,6 +460,34 @@ theorem bipP_taylor_coeff_pred_two (E : Finset (α × β)) (c : R) {p : ℕ} (hp
     bipP_coeff_pred E (by omega), bipP_coeff_self E p]
   ring
 
+/-- **The Taylor shift, in general.**  For `f` of degree at most `p` and any `j ≤ p`, the
+coefficient of `X^j` in `f(X + c)` is `∑_i C(i+j, j) f_{i+j} c^i`.  Specializing `j = p-1`,
+`j = p-2` and `j = p-4` recovers the individual coefficient formulas; the last is the shift step
+used in the `4`-cycle theorem. -/
+theorem taylor_coeff_of_natDegree_le (f : R[X]) (c : R) {p j : ℕ} (hj : j ≤ p)
+    (hdeg : f.natDegree ≤ p) :
+    (Polynomial.taylor c f).coeff j
+      = ∑ i ∈ Finset.range (p + 1 - j), ((i + j).choose j : ℕ) * f.coeff (i + j) * c ^ i := by
+  rw [Polynomial.taylor_coeff]
+  have hnd : (Polynomial.hasseDeriv j f).natDegree < p + 1 - j := by
+    have h := Polynomial.natDegree_hasseDeriv_le f j
+    omega
+  rw [Polynomial.eval_eq_sum_range' hnd]
+  refine Finset.sum_congr rfl fun i _ => ?_
+  rw [Polynomial.hasseDeriv_coeff]
+
+/-- The `j = p-4` case, written as the five-term sum in the matching counts.  This is the shift
+step of the `4`-cycle theorem: with `f` the polynomial whose `X^(p-k)` coefficient is
+`(-1)^k m_k`, the coefficient of `z^(p-4)` in `f(z+c)` is
+`∑_{k≤4} (-1)^k C(p-k, p-4) m_k c^(4-k)`. -/
+theorem taylor_coeff_sub_four (f : R[X]) (c : R) {p : ℕ} (hp : 4 ≤ p)
+    (hdeg : f.natDegree ≤ p) :
+    (Polynomial.taylor c f).coeff (p - 4)
+      = ∑ i ∈ Finset.range 5,
+          ((i + (p - 4)).choose (p - 4) : ℕ) * f.coeff (i + (p - 4)) * c ^ i := by
+  have h := taylor_coeff_of_natDegree_le f c (by omega : p - 4 ≤ p) hdeg
+  rwa [show p + 1 - (p - 4) = 5 by omega] at h
+
 /-- **A15.**  For a bipartite graph whose polynomial is monic of degree `p` with `|E|` edges,
 shifting by `c` moves the subleading coefficient to `p·c - |E|`. -/
 theorem bipP_taylor_coeff_pred (E : Finset (α × β)) (c : R) {p : ℕ} (hp : 1 ≤ p) :
