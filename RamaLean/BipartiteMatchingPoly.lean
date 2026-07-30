@@ -274,4 +274,24 @@ theorem mCount_delete_left (E : Finset (α × β)) (v : α) (k : ℕ) :
 
 
 
+
+/-- The empty matching is the only `0`-matching, so `m_0 = 1`. -/
+lemma mCount_zero (E : Finset (α × β)) : mCount E 0 = 1 := by
+  classical
+  unfold mCount matchings
+  have : (E.powerset.filter IsMatching).filter (fun M => M.card = 0) = {∅} := by
+    ext M
+    simp only [Finset.mem_filter, Finset.mem_powerset, Finset.card_eq_zero, Finset.mem_singleton]
+    constructor
+    · rintro ⟨⟨_, _⟩, h⟩; exact h
+    · rintro rfl
+      exact ⟨⟨Finset.empty_subset _, ⟨by simp, by simp⟩⟩, rfl⟩
+  rw [this, Finset.card_singleton]
+
+/-! The polynomial form of the recursion,
+`bipF E y (p+1) = y * bipF (delL E v) y p - sum_u bipF (delLR E v u) y p`,
+follows from `mCount_delete_left` and `bipF_eq_sum_counts` by separating the `k = 0` term and
+reindexing. It is bookkeeping rather than content and is not formalized here; the combinatorial
+step, `mCount_delete_left`, is. -/
+
 end BipartiteMatchingPoly
