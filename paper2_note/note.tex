@@ -310,6 +310,18 @@ For every finite graph $G$ and every $d\ge1$, all roots of $\mu_{d,G}$ lie in
 $\operatorname{spec}(T)$, the spectrum of the universal cover of $G$.
 \end{conjecture}
 
+The biregular case of Conjecture~\ref{conj:gap} at $d=1$ is not new. It is
+Problem~1 of Song, Fan and Miao \cite{SFM}, posed in 2023: they ask whether the
+matching polynomial of the incidence graph $B_H$ of a $(d,r)$-regular hypergraph
+has no root $\mu$ with $0<|\mu|<|\sqrt{d-1}-\sqrt{r-1}|$, and every
+$(d,r)$-biregular bipartite graph is such an incidence graph. Their Theorem 1.8
+attaches a consequence: an affirmative answer would give every $(d,r)$-regular
+hypergraph a left-sided Ramanujan $2$-covering. The only bound in that direction
+we know of is their Lemma 5.5, which goes the other way,
+$0<\mu_{\tau}(B_H)\le\max\{\sqrt d,\sqrt r\}$. We are not aware of any proof,
+partial result or counterexample. Conjecture~\ref{conj:gap} extends their problem
+in two directions, to arbitrary graphs and to all $d$.
+
 Question 6.3 of \cite{HPS} asks the corresponding question for graph
 eigenvalues, and leaves it open: it distinguishes graphs whose nontrivial
 spectrum lies in the \emph{interval} $[-\rho,\rho]$ from those whose nontrivial
@@ -564,9 +576,10 @@ under vertex deletion. The Heilmann--Lieb argument for $|x|\le2\sqrt{\Delta-1}$
 inducts on vertex deletion, which is available because $\Delta$ only decreases.
 The quantity $|\sqrt{a-1}-\sqrt{b-1}|$ has no such monotonicity: deleting one
 vertex of the larger side of $K_{3,4}$ produces $K_{3,3}$, which is regular, and
-the gap collapses to zero. No induction by vertex deletion can therefore prove
-the lower bound, which rules out the class of arguments that yields the upper
-one. A lower bound of the same shape is known in the random setting: Brito,
+the gap collapses to zero. So the naive induction by vertex deletion, which is
+what yields the upper bound, cannot prove the lower one. We do not claim this
+rules out every inductive argument, only the direct analogue of the
+Heilmann--Lieb one. A lower bound of the same shape is known in the random setting: Brito,
 Dumitriu and Harris \cite{BDH} show that a random bipartite biregular graph
 satisfies $\eta^+_{\min}\ge\sqrt{d_1-1}-\sqrt{d_2-1}-\varepsilon_n$ with high
 probability. That is an asymptotic statement about adjacency eigenvalues of
@@ -742,6 +755,8 @@ E.~Stucky, \emph{A new (combinatorial) proof of the commutativity of
 matching polynomials for cycles}, arXiv:1810.05889 (2018).
 \bibitem{WWM} J.~Wan, W.~Wang, A.~Mohammadian, \emph{On the matching
 polynomials of graphs with small number of cycles}, arXiv:2103.10580 (2021).
+\bibitem{SFM} Y.-M.~Song, Y.-Z.~Fan, Z.~Miao, \emph{Hypergraph coverings and
+Ramanujan hypergraphs}, arXiv:2310.01771 (2023).
 \bibitem{YY} W.~Yan, Y.-N.~Yeh, \emph{On the matching polynomial of subdivision
 graphs}, Discrete Appl.\ Math.\ \textbf{157} (2009) 195--200.
 \bibitem{BDH} G.~Brito, I.~Dumitriu, K.~D.~Harris, \emph{Spectral gap in random
