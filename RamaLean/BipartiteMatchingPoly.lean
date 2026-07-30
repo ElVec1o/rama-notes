@@ -291,8 +291,9 @@ lemma mCount_zero (E : Finset (α × β)) : mCount E 0 = 1 := by
 /-! The polynomial form of the recursion,
 `bipF E y (p+1) = y * bipF (delL E v) y p - sum_u bipF (delLR E v u) y p`,
 follows from `mCount_delete_left` and `bipF_eq_sum_counts` by separating the `k = 0` term and
-reindexing. It is bookkeeping rather than content and is not formalized here; the combinatorial
-step, `mCount_delete_left`, is. -/
+reindexing.  In the `X^|M|` normalization that reindexing disappears entirely, and the recursion
+is proved below as `bipQ_delete_left`; `bipP_eq_reverse_bipQ` records that the two normalizations
+are reverses of one another. -/
 
 /-! ## The subleading coefficient after the band-centre shift
 
@@ -483,5 +484,203 @@ theorem bipP_taylor_coeff_biregular (E : Finset (α × β)) {p a b : ℕ} (hp : 
   ring
 
 end Subleading
+
+/-! ## The deletion recursion in polynomial form
+
+`bipP E p = ∑_k (-1)^k m_k X^(p-k)` carries a truncated natural subtraction in the exponent, which
+makes every reindexing step awkward.  The *reversed* polynomial
+
+  `bipQ E = ∑_M (-1)^|M| X^|M| = ∑_k (-1)^k m_k X^k`
+
+has no subtraction at all: it is obtained from `bipP E p` by reversing the coefficient list, so no
+information is lost.  In this form the combinatorial split of `mCount_delete_left` becomes a single
+polynomial identity,
+
+  `bipQ E = bipQ (E - v) - X * ∑_{u ∼ v} bipQ (E - v - u)`,
+
+which is the deletion recursion for the bipartite matching polynomial.
+-/
+
+section Deletion
+
+open Polynomial
+
+variable {R : Type*} [CommRing R]
+
+/-- The **reversed** bipartite matching polynomial `∑_M (-1)^|M| X^|M|`.  Its coefficient of `X^k`
+is `(-1)^k m_k`, whereas `bipP E p` places that same coefficient on `X^(p-k)`. -/
+noncomputable def bipQ (E : Finset (α × β)) : R[X] :=
+  ∑ M ∈ matchings E, C ((-1 : R) ^ M.card) * X ^ M.card
+
+/-- Card-free analogue of `covered_biUnion`: the matchings of `E` that cover the left vertex `v`
+decompose according to the partner of `v`. -/
+lemma covered_biUnion' (E : Finset (α × β)) (v : α) :
+    (matchings E).filter (fun M => ¬ ∀ e ∈ M, e.1 ≠ v)
+      = (nbrL E v).biUnion (fun u => (matchings E).filter (fun M => (v, u) ∈ M)) := by
+  classical
+  ext M
+  simp only [Finset.mem_biUnion, Finset.mem_filter, not_forall]
+  constructor
+  · rintro ⟨hMm, e, he, hne⟩
+    have hev : e = (v, e.2) := by
+      rcases e with ⟨e1, e2⟩
+      have : e1 = v := not_not.mp hne
+      simp [this]
+    have hsub : M ⊆ E := Finset.mem_powerset.mp (Finset.mem_filter.mp hMm).1
+    refine ⟨e.2, ?_, hMm, hev ▸ he⟩
+    exact Finset.mem_image.mpr ⟨e, Finset.mem_filter.mpr ⟨hsub he, by rw [hev]⟩, rfl⟩
+  · rintro ⟨u, _, hMm, hvu⟩
+    exact ⟨hMm, (v, u), hvu, by simp⟩
+
+/-- Card-free analogue of `covered_disjoint`: distinct partners give disjoint families. -/
+lemma covered_disjoint' (E : Finset (α × β)) (v : α) :
+    ∀ u ∈ nbrL E v, ∀ u' ∈ nbrL E v, u ≠ u' →
+      Disjoint ((matchings E).filter (fun M => (v, u) ∈ M))
+               ((matchings E).filter (fun M => (v, u') ∈ M)) := by
+  classical
+  intro u _ u' _ hne
+  rw [Finset.disjoint_left]
+  intro M hM hM'
+  rw [Finset.mem_filter] at hM hM'
+  have hMatch : IsMatching M := (Finset.mem_filter.mp hM.1).2
+  exact hne (unique_partner hMatch hM.2 hM'.2)
+
+/-- Polynomial analogue of `card_covered`: for an available partner `u`, deleting the edge `(v,u)`
+is a bijection from the matchings of `E` using `(v,u)` onto the matchings of `delLR E v u`, and it
+drops the degree by one.  Hence the contribution of the partner `u` is `-X * bipQ (delLR E v u)`. -/
+lemma sum_covered_partner (E : Finset (α × β)) (v : α) (u : β) (hu : (v, u) ∈ E) :
+    ∑ M ∈ (matchings E).filter (fun M => (v, u) ∈ M),
+        C ((-1 : R) ^ M.card) * X ^ M.card
+      = -(X * bipQ (R := R) (delLR E v u)) := by
+  classical
+  unfold bipQ
+  rw [Finset.mul_sum, ← Finset.sum_neg_distrib]
+  refine Finset.sum_bij' (fun M _ => M.erase (v, u)) (fun N _ => insert (v, u) N)
+    ?_ ?_ ?_ ?_ ?_
+  · -- erase lands in the target
+    intro M hM
+    simp only [Finset.mem_filter] at hM
+    obtain ⟨hMm, hvu⟩ := hM
+    have hMatch : IsMatching M := (Finset.mem_filter.mp hMm).2
+    have hsub : M ⊆ E := Finset.mem_powerset.mp (Finset.mem_filter.mp hMm).1
+    refine mem_matchings_delLR.mpr ⟨?_, ?_⟩
+    · exact Finset.mem_filter.mpr ⟨Finset.mem_powerset.mpr
+        (fun e he => hsub (Finset.mem_of_mem_erase he)),
+        isMatching_of_subset (Finset.erase_subset _ _) hMatch⟩
+    · intro e he
+      have hne : e ≠ (v, u) := Finset.ne_of_mem_erase he
+      have heM : e ∈ M := Finset.mem_of_mem_erase he
+      constructor
+      · intro h1; exact hne (hMatch.1 e heM (v, u) hvu (by simpa using h1))
+      · intro h2; exact hne (hMatch.2 e heM (v, u) hvu (by simpa using h2))
+  · -- insert lands back
+    intro N hN
+    obtain ⟨hNE, hNavoid⟩ := mem_matchings_delLR.mp hN
+    have hNMatch : IsMatching N := (Finset.mem_filter.mp hNE).2
+    have hNsub : N ⊆ E := Finset.mem_powerset.mp (Finset.mem_filter.mp hNE).1
+    refine Finset.mem_filter.mpr ⟨?_, Finset.mem_insert_self _ _⟩
+    refine Finset.mem_filter.mpr ⟨Finset.mem_powerset.mpr ?_, ?_⟩
+    · intro e he
+      rcases Finset.mem_insert.mp he with rfl | he'
+      · exact hu
+      · exact hNsub he'
+    · constructor
+      · intro e he f hf hef
+        rcases Finset.mem_insert.mp he with rfl | he' <;>
+          rcases Finset.mem_insert.mp hf with rfl | hf'
+        · rfl
+        · exact absurd hef.symm (hNavoid f hf').1
+        · exact absurd hef (hNavoid e he').1
+        · exact hNMatch.1 e he' f hf' hef
+      · intro e he f hf hef
+        rcases Finset.mem_insert.mp he with rfl | he' <;>
+          rcases Finset.mem_insert.mp hf with rfl | hf'
+        · rfl
+        · exact absurd hef.symm (hNavoid f hf').2
+        · exact absurd hef (hNavoid e he').2
+        · exact hNMatch.2 e he' f hf' hef
+  · -- the two maps are mutually inverse
+    intro M hM
+    exact Finset.insert_erase (Finset.mem_filter.mp hM).2
+  · intro N hN
+    obtain ⟨_, hNavoid⟩ := mem_matchings_delLR.mp hN
+    exact Finset.erase_insert (fun h => (hNavoid _ h).1 rfl)
+  · -- the summands agree: erasing an edge drops the degree by one and flips the sign
+    intro M hM
+    have hvu : (v, u) ∈ M := (Finset.mem_filter.mp hM).2
+    have hc : M.card = (M.erase (v, u)).card + 1 := (Finset.card_erase_add_one hvu).symm
+    rw [hc, pow_succ, pow_succ, map_mul, map_neg, map_one]
+    ring
+
+/-- **The deletion recursion.**  Splitting the matchings of `E` according to whether the left
+vertex `v` is covered, and if so by which partner, gives
+`bipQ E = bipQ (delL E v) - X * ∑_{u ∼ v} bipQ (delLR E v u)`.
+
+This is the polynomial form of `mCount_delete_left`; because `bipQ` is the reverse of `bipP`, no
+truncated subtraction appears. -/
+theorem bipQ_delete_left (E : Finset (α × β)) (v : α) :
+    bipQ (R := R) E = bipQ (delL E v) - X * ∑ u ∈ nbrL E v, bipQ (delLR E v u) := by
+  classical
+  have huncov : (matchings E).filter (fun M => ∀ e ∈ M, e.1 ≠ v) = matchings (delL E v) := by
+    ext M
+    simp only [Finset.mem_filter, mem_matchings_delL]
+  have huncov' : (∑ M ∈ (matchings E).filter (fun M => ∀ e ∈ M, e.1 ≠ v),
+        C ((-1 : R) ^ M.card) * X ^ M.card) = bipQ (R := R) (delL E v) := by
+    unfold bipQ
+    rw [huncov]
+  have hdisj : Set.PairwiseDisjoint (↑(nbrL E v))
+      (fun u => (matchings E).filter (fun M => (v, u) ∈ M)) := by
+    intro u hu u' hu' hne
+    exact covered_disjoint' E v u (Finset.mem_coe.mp hu) u' (Finset.mem_coe.mp hu') hne
+  have hsplit : bipQ (R := R) E
+      = (∑ M ∈ (matchings E).filter (fun M => ∀ e ∈ M, e.1 ≠ v),
+            C ((-1 : R) ^ M.card) * X ^ M.card)
+        + ∑ M ∈ (matchings E).filter (fun M => ¬ ∀ e ∈ M, e.1 ≠ v),
+            C ((-1 : R) ^ M.card) * X ^ M.card :=
+    (Finset.sum_filter_add_sum_filter_not _ _ _).symm
+  have hcov : (∑ M ∈ (matchings E).filter (fun M => ¬ ∀ e ∈ M, e.1 ≠ v),
+        C ((-1 : R) ^ M.card) * X ^ M.card)
+      = ∑ u ∈ nbrL E v, -(X * bipQ (R := R) (delLR E v u)) := by
+    rw [covered_biUnion' E v, Finset.sum_biUnion hdisj]
+    exact Finset.sum_congr rfl fun u hu => sum_covered_partner E v u (edge_of_mem_nbrL hu)
+  rw [hsplit, hcov, huncov', Finset.sum_neg_distrib, ← Finset.mul_sum]
+  ring
+
+/-- The coefficients of `bipQ` are the alternating matching counts: `[X^k] bipQ E = (-1)^k m_k`. -/
+theorem bipQ_coeff (E : Finset (α × β)) (k : ℕ) :
+    (bipQ (R := R) E).coeff k = (-1 : R) ^ k * (mCount E k : R) := by
+  classical
+  unfold bipQ mCount
+  rw [Polynomial.finsetSum_coeff]
+  have h : ∀ M ∈ matchings E,
+      (C ((-1 : R) ^ M.card) * X ^ M.card).coeff k
+        = if M.card = k then (-1 : R) ^ k else 0 := by
+    intro M _
+    rw [Polynomial.coeff_C_mul, Polynomial.coeff_X_pow]
+    by_cases h : M.card = k
+    · subst h; simp
+    · have h' : ¬ (k = M.card) := fun hh => h hh.symm
+      simp [h, h']
+  rw [Finset.sum_congr rfl h, ← Finset.sum_filter, Finset.sum_const, nsmul_eq_mul]
+  ring
+
+/-- `bipQ` really is the reverse of `bipP`: reading the coefficients of `bipQ E` off in the
+opposite order recovers `bipP E p`. -/
+theorem bipP_eq_reverse_bipQ (E : Finset (α × β)) (p : ℕ) :
+    bipP (R := R) E p
+      = ∑ k ∈ Finset.range (p + 1), C ((bipQ (R := R) E).coeff k) * X ^ (p - k) := by
+  unfold bipP
+  exact Finset.sum_congr rfl fun k _ => by rw [bipQ_coeff]
+
+/-- **The deletion recursion, evaluated form.**  The ordinary one-variable statement
+`Q_E(y) = Q_{E-v}(y) - y * ∑_{u ∼ v} Q_{E-v-u}(y)`. -/
+theorem bipQ_eval_delete_left (E : Finset (α × β)) (v : α) (y : R) :
+    (bipQ (R := R) E).eval y
+      = (bipQ (R := R) (delL E v)).eval y
+        - y * ∑ u ∈ nbrL E v, (bipQ (R := R) (delLR E v u)).eval y := by
+  rw [bipQ_delete_left (R := R) E v]
+  simp [Polynomial.eval_finsetSum]
+
+end Deletion
 
 end BipartiteMatchingPoly
