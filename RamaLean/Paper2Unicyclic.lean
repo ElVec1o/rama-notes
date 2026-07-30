@@ -111,4 +111,86 @@ theorem cV_eq_cheb {K : Type*} [Field K] (A B : K) (hB : B ≠ 0) (h2 : (2 : K) 
       field_simp
       ring
 
+
+
+/-!
+## Root localization
+
+The mathematical content of the unicyclic theorem is not the recurrence but where its roots can be.
+`cV A B d = 0` forces `|A / (2B)| ≤ 1`, i.e. the root lies in the Floquet band
+`{x : |μ_G(x)| ≤ 2|μ_{G-V(C)}(x)|}`, which is the spectrum of the universal cover.  Everything below
+is over a `LinearOrderedField`, and the engine is that `U_d` has no root outside `[-1,1]`.
+-/
+
+section Localization
+
+variable {K : Type*} [Field K] [LinearOrder K] [IsStrictOrderedRing K]
+
+/-- For `y ≥ 1` the Chebyshev values are increasing and at least one: `cU y (d+1) ≥ cU y d ≥ 1`. -/
+lemma cU_ge_one_of_one_le {y : K} (hy : 1 ≤ y) :
+    ∀ d, 1 ≤ cU y d ∧ cU y d ≤ cU y (d + 1) := by
+  intro d
+  induction d with
+  | zero =>
+    constructor
+    · exact le_of_eq (cU_zero y).symm
+    · rw [cU_zero, cU_one]; linarith
+  | succ k ih =>
+    obtain ⟨h1, h2⟩ := ih
+    have hk1 : 1 ≤ cU y (k + 1) := le_trans h1 h2
+    refine ⟨hk1, ?_⟩
+    have hrec : cU y (k + 2) = 2 * y * cU y (k + 1) - cU y k := rfl
+    have : 2 * y * cU y (k + 1) ≥ 2 * cU y (k + 1) := by nlinarith
+    linarith [hrec, this, h2]
+
+/-- `U_d` is nonzero outside `[-1,1]`: for `1 ≤ y`, `cU y d ≥ 1 > 0`. -/
+lemma cU_pos_of_one_le {y : K} (hy : 1 ≤ y) (d : ℕ) : 0 < cU y d :=
+  lt_of_lt_of_le zero_lt_one (cU_ge_one_of_one_le hy d).1
+
+/-- `cU` alternates under negation: `cU (-y) d = (-1)^d * cU y d`. -/
+lemma cU_neg (y : K) : ∀ d, cU (-y) d = (-1 : K) ^ d * cU y d := by
+  intro d
+  induction d using Nat.strong_induction_on with
+  | _ d ih =>
+    match d with
+    | 0 => simp [cU_zero]
+    | 1 => rw [show cU (-y) 1 = 2 * (-y) from rfl, show cU y 1 = 2 * y from rfl]; ring
+    | (k + 2) =>
+      have e2 : cU (-y) (k + 2) = 2 * (-y) * cU (-y) (k + 1) - cU (-y) k := rfl
+      have e1 : cU y (k + 2) = 2 * y * cU y (k + 1) - cU y k := rfl
+      rw [e2, ih (k + 1) (by omega), ih k (by omega), e1]
+      ring
+
+/-- **`U_d` has no root of absolute value `≥ 1`.** -/
+theorem cU_ne_zero_of_one_le_abs {y : K} (hy : 1 ≤ |y|) (d : ℕ) : cU y d ≠ 0 := by
+  rcases abs_cases y with ⟨he, _⟩ | ⟨he, _⟩
+  · exact ne_of_gt (cU_pos_of_one_le (he ▸ hy) d)
+  · have hneg : (1 : K) ≤ -y := by rw [he] at hy; exact hy
+    have : cU (-(-y)) d = (-1 : K) ^ d * cU (-y) d := cU_neg (-y) d
+    rw [neg_neg] at this
+    have hpos : 0 < cU (-y) d := cU_pos_of_one_le hneg d
+    rw [this]
+    exact mul_ne_zero (pow_ne_zero _ (by norm_num)) (ne_of_gt hpos)
+
+/-- **Root localization.** If `cV A B d` vanishes and `B ≠ 0`, then `|A| ≤ 2|B|`.
+For a unicyclic graph with `A = μ_G` and `B = -μ_{G-V(C)}` this says every root of the
+`d`-matching polynomial lies in the Floquet band `|μ_G| ≤ 2|μ_{G-V(C)}|`, i.e. in the spectrum of
+the universal cover -- never in a spectral gap, for any `d`. -/
+theorem cV_root_mem_band {A B : K} (hB : B ≠ 0) (h2 : (2 : K) ≠ 0) {d : ℕ}
+    (hroot : cV A B d = 0) : |A| ≤ 2 * |B| := by
+  by_contra hcon
+  push_neg at hcon
+  -- |−A/(2B)| ≥ 1, so the Chebyshev factor cannot vanish
+  have hy : (1 : K) ≤ |(-A) / (2 * B)| := by
+    rw [abs_div, abs_neg, abs_mul, abs_two]
+    rw [le_div_iff₀ (by positivity)]
+    linarith
+  have := cV_eq_cheb A B hB h2 d
+  rw [hroot] at this
+  have hne : cU ((-A) / (2 * B)) d ≠ 0 := cU_ne_zero_of_one_le_abs hy d
+  have hBd : (-B) ^ d ≠ 0 := pow_ne_zero _ (neg_ne_zero.mpr hB)
+  exact (mul_ne_zero hBd hne) this.symm
+
+end Localization
+
 end Paper2Unicyclic

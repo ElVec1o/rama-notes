@@ -237,7 +237,11 @@ $A_G\bigl(e^{\,ik\pi/(d+1)}\bigr)$, $1\le k\le d$.
 \end{corollary}
 
 This is the real-rootedness theorem of \cite{HPS} for this family, with the
-roots identified.
+roots identified. The localization itself --- that a vanishing $V_d$ forces
+$|\mu_G|\le2|\mu_{G-V(C)}|$, so that a root can never sit in a spectral gap ---
+is machine-checked in Lean~4 as \texttt{cV\_root\_mem\_band}, resting on
+\texttt{cU\_ne\_zero\_of\_one\_le\_abs}: the Chebyshev polynomial $U_d$ has no
+root of absolute value at least one.
 
 The roots can be located much more precisely than that. Since $b_1(G)=1$ the
 group $\pi_1(G)$ is $\mathbb{Z}$, so the universal cover $T$ of $G$ \emph{is}
@@ -346,7 +350,10 @@ Conjecture~\ref{conj:gap} does not follow from the path-tree argument, and we
 have tested it separately on the subdivisions of $K_4$, $K_{3,3}$, the prism,
 $Q_3$, the Wagner graph and the Petersen graph --- all of which have
 $(3,2)$-biregular universal cover --- with smallest root ratios
-$1.97,\,1.69,\,1.72,\,1.57,\,1.56,\,1.47$ and no root in the gap.
+$1.97,\,1.69,\,1.72,\,1.57,\,1.56,\,1.47$ and no root in the gap; the
+subdivisions of the Heawood and M\"obius--Kantor graphs, of girth $6$, give
+$1.36$ and $1.33$. The ratios decrease as the girth grows, as they must if the
+containment is sharp, but the decrements shrink and no computation crosses $1$.
 
 For $K_{2,3}$ the computation was pushed to $d=6$ using
 $\mu_{d,G}=\E[\chi_H]/\chi_G$ over $(d+1)$-covers, which is polynomial time per
