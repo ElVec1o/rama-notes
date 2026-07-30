@@ -504,7 +504,31 @@ $\alpha=t(s-t)=\sqrt{PQ}-Q$. The region therefore closes for every $y$ strictly
 below the gap edge and for no $y$ above it: the invariant region is calibrated
 exactly to the spectrum, and \eqref{eq:square} is the reason.
 
-Two obstructions remain, both caused by cycles in $G$. First, a leaf of the path
+Two structural facts explain the boundary between the proved and the open case.
+
+The first is a reflection. For $G=S(H)$ with $H$ $D$-regular the subdivision
+identity gives $f_G(y)=\mu_H(y-D)$, and $\mu_H(-z)=(-1)^{|V(H)|}\mu_H(z)$, so
+\begin{equation}\label{eq:reflect}
+f_G(2c-y)=(-1)^{p}f_G(y),\qquad c=(a-1)+(b-1),
+\end{equation}
+and $c$ is the midpoint of $[(s-t)^2,(s+t)^2]$ because $(s\pm t)^2=c\pm2\sqrt m$.
+The roots of $f_G$ are therefore symmetric about the centre of the band, so for
+$b=2$ the lower bound in \eqref{eq:twosided} is \emph{equivalent} to the upper
+one, and Theorem~\ref{thm:subdiv} is that equivalence. The reflection
+\eqref{eq:reflect} fails for $b\ge3$: for $K_{3,4}$ and $K_{3,5}$ one checks
+directly that $f_G(2c-y)\ne\pm f_G(y)$. So for $b\ge3$ the lower bound is not a
+repackaging of the upper bound but carries information the upper bound does not.
+
+The second is that the lower bound, unlike the upper bound, is not monotone
+under vertex deletion. The Heilmann--Lieb argument for $|x|\le2\sqrt{\Delta-1}$
+inducts on vertex deletion, which is available because $\Delta$ only decreases.
+The quantity $|\sqrt{a-1}-\sqrt{b-1}|$ has no such monotonicity: deleting one
+vertex of the larger side of $K_{3,4}$ produces $K_{3,3}$, which is regular, and
+the gap collapses to zero. No induction by vertex deletion can therefore prove
+the lower bound, which rules out the class of arguments that yields the upper
+one.
+
+Two obstructions remain in the direct approach, both caused by cycles in $G$. First, a leaf of the path
 tree that is an $A$-vertex carries $R_A=y>0$, of the wrong sign. This one is
 disposed of: a maximal self-avoiding walk ending at $w\in A$ contains all $a$
 neighbours of $w$, hence at least $a$ vertices of $B$ and therefore at least $a$
