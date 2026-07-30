@@ -191,6 +191,29 @@ theorem cV_root_mem_band {A B : K} (hB : B ≠ 0) (h2 : (2 : K) ≠ 0) {d : ℕ}
   have hBd : (-B) ^ d ≠ 0 := pow_ne_zero _ (neg_ne_zero.mpr hB)
   exact (mul_ne_zero hBd hne) this.symm
 
+
+/-!
+## The subdivision family at `d = 1`
+
+A second, independent case of the gap statement, for the ordinary matching polynomial.  If `H` is
+`D`-regular then (Heilmann--Lieb) every root `θ` of `μ_H` satisfies `|θ| ≤ 2√(D-1)`, and the
+subdivision identity `μ_{S(H)}(x) = x^{|E|-|V|} μ_H(x² - D)` says the nonzero roots of `μ_{S(H)}`
+are the `x` with `x² = D + θ`.  Writing `s = √(D-1)`, so `D = s² + 1`, the bound below gives
+`|x| ≥ s - 1`, which is exactly the spectral gap edge `|√(D-1) - √(2-1)|` of the `(D,2)`-biregular
+universal cover of `S(H)`.  So the containment holds, and is sharp.
+-/
+
+/-- **Subdivision gap bound.** If `x² = s² + 1 + θ` with `θ ≥ -2s` and `s ≥ 1`, then `|x| ≥ s - 1`.
+With `s = √(D-1)` this is the statement that no root of the matching polynomial of a subdivision
+graph enters the spectral gap `(0, √(D-1) - 1)` of its universal cover. -/
+theorem subdivision_gap {s θ x : K} (hs : 1 ≤ s) (hθ : -2 * s ≤ θ)
+    (hx : x ^ 2 = s ^ 2 + 1 + θ) : s - 1 ≤ |x| := by
+  have hnn : (0 : K) ≤ s - 1 := by linarith
+  have habs : (s - 1) ^ 2 ≤ |x| ^ 2 := by rw [sq_abs]; nlinarith
+  by_contra hcon
+  push_neg at hcon
+  nlinarith [abs_nonneg x, habs, hnn, hcon]
+
 end Localization
 
 end Paper2Unicyclic

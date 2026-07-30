@@ -345,15 +345,34 @@ eigenvalues of the path tree of $G$ (Godsil), and the path tree embeds in $T$;
 but eigenvalues of a finite subtree of $T$ need not lie in
 $\operatorname{spec}(T)$ when $T$ has a gap. For the $(3,2)$-biregular tree,
 whose gap is $(0,\sqrt2-1)$, the path $P_8$ is a subtree with eigenvalue
-$2\cos(4\pi/9)=0.3473$ inside that gap. So the $d=1$ case of
-Conjecture~\ref{conj:gap} does not follow from the path-tree argument, and we
-have tested it separately on the subdivisions of $K_4$, $K_{3,3}$, the prism,
-$Q_3$, the Wagner graph and the Petersen graph --- all of which have
-$(3,2)$-biregular universal cover --- with smallest root ratios
-$1.97,\,1.69,\,1.72,\,1.57,\,1.56,\,1.47$ and no root in the gap; the
-subdivisions of the Heawood and M\"obius--Kantor graphs, of girth $6$, give
-$1.36$ and $1.33$. The ratios decrease as the girth grows, as they must if the
-containment is sharp, but the decrements shrink and no computation crosses $1$.
+$2\cos(4\pi/9)=0.3473$ inside that gap. So the $d=1$ case does not follow from
+the path-tree argument. It is nevertheless a theorem for an infinite family:
+
+\begin{theorem}\label{thm:subdiv}
+Let $H$ be $D$-regular, $D\ge2$, and let $S(H)$ be its subdivision, so that the
+universal cover of $S(H)$ is the $(D,2)$-biregular tree with spectral gap
+$\bigl(0,\sqrt{D-1}-1\bigr)$. Then every nonzero root of $\mu_{S(H)}$ has
+absolute value at least $\sqrt{D-1}-1$; that is,
+Conjecture~\ref{conj:gap} holds for $S(H)$ at $d=1$, and the bound is sharp.
+\end{theorem}
+
+\begin{proof}
+By the subdivision identity $\mu_{S(H)}(x)=x^{|E|-|V|}\,\mu_H(x^2-D)$
+\cite{WWM}, the nonzero roots of $\mu_{S(H)}$ are the $x$ with $x^2=D+\theta$
+for $\theta$ a root of $\mu_H$. Heilmann--Lieb gives $\theta\ge-2\sqrt{D-1}$,
+so with $s=\sqrt{D-1}$ we get $x^2\ge s^2+1-2s=(s-1)^2$, whence
+$|x|\ge s-1$. Sharpness: for cubic $H$ of large girth $\theta_{\min}\to-2\sqrt2$,
+so the bound is approached.
+\end{proof}
+
+The inequality step is machine-checked in Lean~4 as \texttt{subdivision\_gap}.
+The theorem is exactly Heilmann--Lieb for $H$ transported through the
+subdivision identity, and the numbers match: for $H=K_4$, $\mu_{K_4}=x^4-6x^2+3$
+gives smallest positive root $\sqrt{3-\sqrt{3+\sqrt6}\,}=0.8158$, against the
+gap edge $0.4142$; the subdivisions of $K_{3,3}$, the prism, $Q_3$, the Wagner,
+Petersen, Heawood and M\"obius--Kantor graphs give
+$0.701,0.714,0.650,0.647,0.607,0.563,0.551$, decreasing toward the gap edge
+with the girth and never reaching it.
 
 For $K_{2,3}$ the computation was pushed to $d=6$ using
 $\mu_{d,G}=\E[\chi_H]/\chi_G$ over $(d+1)$-covers, which is polynomial time per
@@ -496,6 +515,8 @@ graphs}, Adv.\ Math.\ \textbf{323} (2018), 367--410.
 \bibitem{CGHRS} G.~Cochran, C.~Groothuis, A.~Herring, R.~Rohatgi,
 E.~Stucky, \emph{A new (combinatorial) proof of the commutativity of
 matching polynomials for cycles}, arXiv:1810.05889 (2018).
+\bibitem{WWM} J.~Wan, W.~Wang, A.~Mohammadian, \emph{On the matching
+polynomials of graphs with small number of cycles}, arXiv:2103.10580 (2021).
 \bibitem{BC} C.~Bordenave, B.~Collins, \emph{Eigenvalues of random lifts and
 polynomials of random permutation matrices}, Ann.\ of Math.\ \textbf{190}
 (2019) 811--875.
