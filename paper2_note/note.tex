@@ -392,7 +392,9 @@ Let $H$ be $D$-regular, $D\ge2$, and let $S(H)$ be its subdivision, so that the
 universal cover of $S(H)$ is the $(D,2)$-biregular tree with spectral gap
 $\bigl(0,\sqrt{D-1}-1\bigr)$. Then every nonzero root of $\mu_{S(H)}$ has
 absolute value at least $\sqrt{D-1}-1$; that is,
-Conjecture~\ref{conj:gap} holds for $S(H)$ at $d=1$, and the bound is sharp.
+Conjecture~\ref{conj:gap} holds for $S(H)$ at $d=1$. The constant is the spectral
+gap of the universal cover; we do not claim it is attained, and by the strictness
+of Heilmann--Lieb on finite graphs it is not.
 \end{theorem}
 
 Theorem~\ref{thm:subdiv} settles the case $\min(d,r)=2$ of Problem~1 of
@@ -725,9 +727,34 @@ $3C_4$ & 4 & $70.7\%$ & $70.7\%$\\
 The first block has $b=3$, and the least root is consistently far closer to its
 edge than the greatest is to its --- the roots are displaced downwards by $b-2$,
 exactly as Theorem~\ref{thm:subcoef} requires. The second block has $b=2$, the
-displacement vanishes, and the two ends are used equally. The lower bound also
-appears to be sharp: the percentage rises with girth, reaching $98.6\%$ for the
-Pappus graph, so no constant better than $2\sqrt m$ is available. Their roots do satisfy \eqref{eq:twosided}, with maxima
+displacement vanishes, and the two ends are used equally. That is what the table
+shows, and it is all it shows.
+
+It does not bear on sharpness, for a reason worth stating because it is easy to
+miss. Every graph in the table has $a=b$, and there $c=2(a-1)=2\sqrt m$, so
+$\rho=y-c\ge-c=-2\sqrt m$ holds automatically from $y=x^2\ge0$: the lower bound is
+an identity, not a theorem. This is the triviality that Song, Fan and Miao note
+for $d=r$ \cite{SFM}. The percentages above therefore measure only how close the
+least root of $\mu_G$ comes to $0$, and $100\%$ would require $\mu_G(0)=0$, that
+is a graph with no perfect matching, which by K\H onig's theorem no regular
+bipartite graph is. The conjecture has content exactly when $a\ne b$, where
+$c>2\sqrt m$ strictly by the arithmetic--geometric mean inequality.
+
+Where it has content the bound holds with room to spare, and is not approached.
+For $(4,2)$-biregular graphs the conjecture asserts $y\ge c-2\sqrt m=4-2\sqrt3
+=0.5359$; a girth-$4$ family plateaus at $y_{\min}=1.1716$ and a girth-$8$ family
+at $0.7392$. In the trivial regime the same plateauing is visible and can be
+computed to many digits: for the cubic bipartite circulants with connection set
+$\{0,1,3\}$, which have girth $6$ for every $n$, the least root tends to
+$99.85186\%$ of the lower edge as $n\to\infty$, and for $\{0,1,2\}$, girth $4$, to
+$98.46084\%$; both stop strictly short of $100\%$. This is what one should expect:
+a family with a fixed local structure has a fixed Benjamini--Schramm limit, which
+is not a tree, so its matching measure retains a gap at $0$. Girth does help
+monotonically --- at $30$ vertices, girth $4$, $6$ and $8$ give $98.166\%$,
+$99.311\%$ and $99.410\%$ --- but no family of bounded girth can approach the
+edge, and every cubic bipartite circulant has girth at most $6$, since the closed
+hexagon $0,s_1,s_1-s_2,s_1-s_2+s_3,s_3-s_2,s_3$ is always present. We therefore
+make no claim that $2\sqrt m$ is attained or approached. Their roots do satisfy \eqref{eq:twosided}, with maxima
 $4.06,4.48,6.26$ against bounds $4.90,5.66,6.93$. That class admits a clean description. Since a $k$-matching leaves $p-k$
 vertices of $A$ unmatched,
 \begin{equation}\label{eq:multivar}
