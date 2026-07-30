@@ -36,7 +36,13 @@ $\sum_{d\ge 0}\mu_{d,C_n}(x)\,z^d=\bigl(1-2T_n(x/2)z+z^2\bigr)^{-1}$,
 a Fibonacci--Lucas evaluation, and a parity theorem for the quotient.
 The entire derivation from cycle weights to the closed form --- including the
 exponential formula for $S_r$ --- is formalized in Lean~4 over Mathlib, with
-no axioms beyond Lean's standard three.
+no axioms beyond Lean's standard three. The same argument applies to every
+connected graph of first Betti number one, where it gives
+$\mu_{d,G}=V_d$ for the three-term recurrence
+$V_d=\mu_G V_{d-1}-\mu_{G-V(C)}^{\,2}V_{d-2}$ in the ordinary matching
+polynomials of $G$ and of the forest obtained by deleting the cycle; this
+answers Question 6.5 of Hall--Puder--Sawin for that family, and we show the
+Betti-number-one hypothesis cannot be relaxed.
 \end{abstract}
 
 \section{Introduction and statement}
@@ -143,6 +149,135 @@ finite argument: the closed form is shown to satisfy \eqref{eq:newton}
 directly (a second-difference induction), and \eqref{eq:newton} with
 $\Phi_0=1$ determines $\Phi$ over a characteristic-zero domain.
 
+\section{Graphs of first Betti number one}\label{sec:uni}
+
+The proof above uses cycles in exactly one place: gauge-fixing a spanning path
+leaves a \emph{single} permutation, because $C_n$ has $|E|-|V|+1=1$. The
+argument therefore applies verbatim to any connected $G$ with
+$b_1(G)=|E|-|V|+1=1$, a cycle with trees attached, and we record what it gives.
+
+By \cite{HPS} the expected characteristic polynomial of a random $r$-lift of
+\emph{any} graph factors as $\chi_G\cdot\mu_{r-1,G}$; the content below is
+therefore not that factorization but a closed form for the factor
+$\mu_{d,G}$ itself. Question 6.5 of \cite{HPS} asks which parts of the theory
+of the matching polynomial $\mu_{1,G}$ generalize to $\mu_{d,G}$; the following
+answers it for $b_1(G)=1$.
+
+Let $C$ be the unique cycle of $G$ and let $G-V(C)$ be the forest obtained by
+deleting its vertices. Write $\mu_H$ for the ordinary matching polynomial of a
+graph $H$, with $\mu_\emptyset=1$. Define
+\begin{equation}\label{eq:V}
+V_0=1,\qquad V_1=\mu_G,\qquad
+V_d=\mu_G\,V_{d-1}-\mu_{G-V(C)}^{\,2}\,V_{d-2}.
+\end{equation}
+
+\begin{theorem}\label{thm:uni}
+For every connected $G$ with $b_1(G)=1$ and every $d\ge0$, $\mu_{d,G}=V_d$.
+\end{theorem}
+
+For $G=C_n$ the deleted forest is empty, so $\mu_{G-V(C)}=1$ and \eqref{eq:V}
+is the recurrence for $U_d(\mu_{C_n}/2)=U_d(T_n(x/2))$: Theorem~\ref{thm:main}
+is the case $\mu_{G-V(C)}=1$. In general the attached trees enter only through
+$\mu_{G-V(C)}$; for the triangle with one pendant edge,
+$\mu_G=x^4-4x^2+1$ and $\mu_{G-V(C)}=x$.
+
+The proof goes through the twisted characteristic polynomial. Let $e=uv$ be the
+unique non-tree edge, let $A_G(z)$ be the adjacency matrix of $G$ with the
+$(u,v)$ entry replaced by $z$ and the $(v,u)$ entry by $z^{-1}$, and set
+$F(x,z)=\det(xI-A_G(z))$.
+
+\begin{lemma}\label{lem:PQ}
+$F(x,z)=\mu_G(x)-\mu_{G-V(C)}(x)\,(z+z^{-1})$.
+\end{lemma}
+
+\begin{proof}
+By the Sachs coefficient theorem $\det(xI-A)$ expands over elementary
+subgraphs, that is disjoint unions of edges and cycles. Since a permutation
+uses each of the two twisted entries at most once and
+$A_G(z)^{\mathsf T}=A_G(z^{-1})$, the determinant is of the form
+$P(x)+Q(x)(z+z^{-1})$. Replacing $z$ by $\pm1$ and averaging kills exactly the
+elementary subgraphs whose cycle traverses $e$; as $G$ has the single cycle $C$,
+those are the subgraphs containing $C$, so $P=\mu_G$, and the surviving terms
+contribute $Q=-\mu_{G-V(C)}$, a cycle component carrying the Sachs weight $-2$.
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:uni}]
+Gauge-fix a spanning tree: the $r$-lift is determined by one permutation
+$\sigma\in S_r$ on $e$, and its components are indexed by the cycles of
+$\sigma$, the component of an $\ell$-cycle being the $\ell$-fold cyclic cover
+$G_\ell$. Decomposing the $\mathbb{Z}/\ell$ action into characters gives the
+classical factorization $\chi_{G_\ell}(x)=\prod_{j=0}^{\ell-1}F(x,\omega^j)$
+with $\omega=e^{2\pi i/\ell}$ \cite{MS,DFMRS}. With $P,Q$ as in
+Lemma~\ref{lem:PQ} and $y=-P/(2Q)$,
+\[
+\chi_{G_\ell}=\prod_{j=0}^{\ell-1}\Bigl(P+2Q\cos\tfrac{2\pi j}{\ell}\Bigr)
+=(-Q)^{\ell}\bigl(2T_\ell(y)-2\bigr),
+\]
+so by the exponential formula \eqref{eq:newton}, with $w=-Qz$,
+\[
+\sum_{r\ge0}\Phi_{G,r}z^{r}
+=\exp\Bigl(\sum_{\ell\ge1}\bigl(2T_\ell(y)-2\bigr)\frac{w^{\ell}}{\ell}\Bigr)
+=\frac{(1-w)^2}{1-2yw+w^2},
+\]
+and extracting coefficients as in Section~2 gives
+$\Phi_{G,r}=\chi_G\cdot(-Q)^{r-1}U_{r-1}(y)$. Comparing with
+$\Phi_{G,r}=\chi_G\cdot\mu_{r-1,G}$ \cite{HPS} yields
+$\mu_{d,G}=(-Q)^{d}U_d(y)$, which satisfies \eqref{eq:V}.
+\end{proof}
+
+Since $U_d(y)=2^{d}\prod_{k=1}^{d}(y-\cos\tfrac{k\pi}{d+1})$, the theorem can
+be restated as a product,
+$\mu_{d,G}(x)=\prod_{k=1}^{d}F\bigl(x,e^{\,ik\pi/(d+1)}\bigr)$, whence:
+
+\begin{corollary}\label{cor:unirr}
+For $b_1(G)=1$, $\mu_{d,G}$ is a product of $d$ real-rooted polynomials, and its
+roots are exactly the eigenvalues of the Hermitian matrices
+$A_G\bigl(e^{\,ik\pi/(d+1)}\bigr)$, $1\le k\le d$.
+\end{corollary}
+
+This is the real-rootedness theorem of \cite{HPS} for this family, with the
+roots identified.
+
+\paragraph{Related work.}
+Two ingredients are classical and are used, not claimed. The factorization of
+the characteristic polynomial of a cyclic cover into twisted determinants at
+roots of unity is the block-circulant diagonalization
+\cite{MS,DFMRS}; in the infinite-cover limit it is the Floquet--Bloch
+decomposition of a periodic discrete operator, and $y=-P/(2Q)$ is the
+corresponding Floquet discriminant. The identity
+$\Phi_{G,r}=\chi_G\cdot\mu_{r-1,G}$ is \cite{HPS}. Closest in form is
+McSorley and Feinsilver \cite{MF}, who study paths with cyclically labelled
+edges and obtain a $(\tau,\Delta)$-recurrence of the same shape as
+\eqref{eq:V}, with $\tau$ the matching polynomial of a cycle and $\Delta$ a
+monomial; combining their Theorems 4.4 and 4.5 already yields the cycle case of
+Theorem~\ref{thm:main} in Chebyshev form. Their setting is a cyclic edge
+labelling rather than a covering, so the underlying graph is always a path,
+cycle or rooted tree and $\Delta$ is always $\pm$ a monomial; here the graph is
+a cycle with arbitrary trees attached and $\mu_{G-V(C)}$ is a genuine
+polynomial.
+
+\paragraph{The boundary is sharp.}
+For $b_1(G)=b$ the lift is determined by $b$ permutations, that is by an action
+of the free group $F_b$ on $[r]$, whose orbits are the components of the lift.
+The exponential formula still applies, in the form
+$N_r=\sum_{\ell}\binom{r-1}{\ell-1}C_\ell N_{r-\ell}$ with
+$N_r=(r!)^{b}\Phi_{G,r}$ and $C_\ell$ the sum of $\chi$ over the transitive
+$b$-tuples on $[\ell]$; we have verified this for $b\le3$. What fails is the
+atom. For $b=1$ every transitive tuple gives the \emph{same} cover $G_\ell$, so
+$C_\ell=(\ell-1)!\,\chi_{G_\ell}$: one graph per $\ell$, with $\chi_{G_\ell}$
+Chebyshev in $\ell$. For $b\ge2$ the transitive tuples number $(\ell-1)!$ times
+the count of index-$\ell$ subgroups of $F_b$ and spread over many
+non-isomorphic covers with distinct spectra, so $C_\ell$ carries no such
+structure. Accordingly Theorem~\ref{thm:uni} is not merely unproved for
+$b\ge2$: it is false there already at $d=1$, as we checked for the theta graph,
+the bowtie, $K_4$, $K_{2,3}$ and two triangles joined by an edge.
+
+Theorem~\ref{thm:uni} was verified by exact integer computation against the
+definition of $\mu_{d,G}$ as an average of matching polynomials over all
+$d$-covers, and against brute-forced lift averages, on thirteen named unicyclic
+graphs for $r\le6$ and on a random sample of thirty-four for $r\le5$;
+Lemma~\ref{lem:PQ} was checked on eleven.
+
 \section{The formalization}
 
 The core algebraic derivation --- the exponential formula, the closed form of
@@ -196,6 +331,14 @@ graphs}, Adv.\ Math.\ \textbf{323} (2018), 367--410.
 \bibitem{CGHRS} G.~Cochran, C.~Groothuis, A.~Herring, R.~Rohatgi,
 E.~Stucky, \emph{A new (combinatorial) proof of the commutativity of
 matching polynomials for cycles}, arXiv:1810.05889 (2018).
+\bibitem{MF} J.~P.~McSorley, P.~Feinsilver, \emph{Multivariate matching
+polynomials of cyclically labelled graphs}, Discrete Math.\ \textbf{309} (2009)
+3205--3218.
+\bibitem{MS} H.~Mizuno, I.~Sato, \emph{Characteristic polynomials of some graph
+coverings}, Discrete Math.\ \textbf{142} (1995) 295--298.
+\bibitem{DFMRS} C.~Dalf\'o, M.~A.~Fiol, M.~Miller, J.~Ryan, J.~\v{S}ir\'a\v{n},
+\emph{An algebraic approach to lifts of digraphs}, Discrete Appl.\ Math.\
+\textbf{269} (2019) 68--76.
 \bibitem{MSS} A.~Marcus, D.~Spielman, N.~Srivastava, \emph{Interlacing
 families I: Bipartite Ramanujan graphs of all degrees}, Ann.\ of Math.\
 \textbf{182} (2015), 307--325.
