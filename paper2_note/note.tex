@@ -392,6 +392,30 @@ it. The evidence is therefore not merely that the bound holds but that it is
 approached, though no computation here reaches the regime where the ratio is
 close to $1$.
 
+The case $b\ge3$ of the biregular family is the sharp open case, since $b=2$ is
+Theorem~\ref{thm:subdiv}. It has been tested at $d=1$ on
+$K_{3,4},K_{3,5},K_{3,6},K_{3,7},K_{3,8},K_{4,5},K_{4,6},K_{4,7},K_{5,6}$ and a
+$(3,2)$ design incidence graph, with smallest-root ratios between $1.51$ and
+$3.33$ and no root in a gap.
+
+The natural attack is Godsil's recursion $R_v=x-\sum_{u}1/R_u$, whose fixed
+points on the $(a,b)$-biregular tree are real precisely off the spectrum. Asking
+that the region $R_b\in[x,P/x)$, $P=a-1$, $Q=b-1$, be closed under the
+recursion reduces to $u^2-(2P+Q)u+P^2>0$ at $u=x^2$, i.e.\ to
+$u<\bigl(2P+Q-\sqrt{Q^2+4PQ}\bigr)/2$. This is satisfied throughout the gap
+with room to spare: the ratio of that threshold to $(\sqrt P-\sqrt Q)^2$ ranges
+from $2.7$ to $37.7$ over the cases above. So the analytic part of an induction
+is not the difficulty.
+
+What blocks it is the boundary. A leaf of the path tree carries $R=x>0$, while
+the argument wants $R<0$ at $a$-vertices, and mixed signs among the children of
+a $b$-vertex leave the sum uncontrolled. One might hope to exploit that the
+counterexample to the naive subtree argument, $P_8$ inside the $(3,2)$-biregular
+tree, is deficient at \emph{internal} vertices, whereas a path tree is full at
+internal vertices; but that is false for graphs of small girth, where a
+self-avoiding walk can be blocked early --- in $K_4$ the walk $0,1,2$ admits a
+single extension. We therefore leave $b\ge3$ open.
+
 A proof of Conjecture~\ref{conj:gap} cannot go through Floquet theory. For
 $b_1=b$ the deck group of the universal cover is the free group $F_b$, and
 Floquet theory is exactly the statement that for an \emph{abelian} deck group
