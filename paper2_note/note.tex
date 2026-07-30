@@ -466,7 +466,27 @@ $G$, into a single clean statement:
 \begin{equation}\label{eq:twosided}
 \text{every root of }g\text{ lies in }\bigl[-2\sqrt m,\,2\sqrt m\bigr],
 \end{equation}
-which is a Heilmann--Lieb interval of effective degree $m+1$. The upper end of
+which is a Heilmann--Lieb interval of effective degree $m+1$.
+
+It is worth recording what this says about the matching generating polynomial
+$M_G(w)=\sum_km_kw^k$, since that, rather than $\mu_G$, is the object of
+\cite{HL}. From $f_G(y)=y^pM_G(-1/y)$ the roots correspond by $w=-1/y$, so a
+lower bound on the least positive root of $f_G$ is an upper bound on the modulus
+of the roots of $M_G$. Writing $Q_G(z)=M_G(-z)=\sum_k(-1)^km_kz^k$, the
+reciprocal-and-reflect of $f_G$:
+\begin{equation}\label{eq:annulus}
+\text{Conjecture~\ref{conj:gap} at }d=1
+\iff
+\text{every root of }Q_G\text{ lies in }\Bigl(0,\ (s-t)^{-2}\Bigr].
+\end{equation}
+Heilmann--Lieb, in the same variable, says every root of $Q_G$ is at least
+$\bigl(2\sqrt{\Delta-1}\bigr)^{-2}$ in modulus. The two statements bound the
+roots of one polynomial from the two sides, so \eqref{eq:twosided} and
+\eqref{eq:annulus} are the same dichotomy seen in reciprocal coordinates. This
+is a restatement and nothing more, but it is the coordinate in which the
+classical machinery is written, and $Q_G$ is the polynomial whose deletion
+recursion $Q_G=Q_{G-v}-z\sum_{u\sim v}Q_{G-v-u}$ is formalized in the
+accompanying Lean development. The upper end of
 \eqref{eq:twosided} is known: the path-tree argument of Godsil bounds the roots
 of $\mu_G$ by the spectral radius of the path tree, which for an
 $(a,b)$-biregular graph with $a,b\ge2$ is at most $s+t$
