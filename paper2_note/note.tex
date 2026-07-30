@@ -466,10 +466,44 @@ been checked exactly.
 
 Conjecture~\ref{conj:gap} for biregular $G$ is therefore the statement that the
 asymmetric recursion, started from the leaves of the path tree, never produces
-$R=0$ while $D>0$. The invariant region is $R_A<0<1\le R_B$, and the fixed
-points do lie there throughout the gap. A $B$-leaf carries $R_B=1$, exactly the
-boundary, and is harmless; an $A$-leaf carries $R_A=y>0$, of the wrong sign.
-Whether an $A$-leaf can occur, and what it costs, is the remaining obstruction.
+$R=0$ while $D>0$. The natural invariant region is
+\[
+R_A\le-\alpha<0,\qquad R_B\in[\,1,\ 1+Q/\alpha\,],
+\]
+for a parameter $\alpha>0$. A $B$-vertex with children in the region has
+$R_B=1+\sum1/|R_A|\in(1,1+Q/\alpha]$, and a $B$-leaf carries $R_B=1$, exactly
+the lower boundary. An $A$-vertex with its full complement of $P$ children has
+$R_A\le y-P\alpha/(\alpha+Q)$, so the region is closed precisely when
+$y\le h(\alpha)$, where $h(\alpha)=\alpha(P-Q-\alpha)/(\alpha+Q)$. The
+following is elementary and is machine-checked in Lean~4
+(\texttt{region\_closure\_bound}, \texttt{gap\_edge\_identity}):
+\begin{equation}\label{eq:square}
+(s-t)^2(\alpha+t^2)-\alpha(s^2-t^2-\alpha)=\bigl(\alpha-t(s-t)\bigr)^2 ,
+\end{equation}
+so $h(\alpha)\le(s-t)^2$ for every $\alpha$, with equality at
+$\alpha=t(s-t)=\sqrt{PQ}-Q$. The region therefore closes for every $y$ strictly
+below the gap edge and for no $y$ above it: the invariant region is calibrated
+exactly to the spectrum, and \eqref{eq:square} is the reason.
+
+Two obstructions remain, both caused by cycles in $G$. First, a leaf of the path
+tree that is an $A$-vertex carries $R_A=y>0$, of the wrong sign. This one is
+disposed of: a maximal self-avoiding walk ending at $w\in A$ contains all $a$
+neighbours of $w$, hence at least $a$ vertices of $B$ and therefore at least $a$
+vertices of $A$, so
+\[
+p<a\ \Longrightarrow\ \text{the path tree has no }A\text{-leaf},
+\]
+which covers every $K_{p,q}$ with $p<q$. Second, and this is what blocks the
+argument, an internal $A$-vertex of the path tree may have $k<P$ children, the
+walk having already consumed part of its neighbourhood; the bound
+$R_A\le y-P\alpha/(\alpha+Q)$ then fails. With $k=1$ closure would require
+$\alpha(1-\alpha-Q)/(\alpha+Q)\ge y$, impossible for $b\ge3$ since $Q\ge2$.
+Deficiency occurs already in $K_{3,4}$, where the walk $a_1b_1a_2b_2a_3$ leaves
+$a_3$ with two children rather than three. What the argument as it stands
+establishes is that a \emph{full} truncated biregular tree carries no eigenvalue
+in the gap, consistent with the deficient subtree $P_8$ carrying one; that is a
+statement about the tree and not about $G$. Controlling deficient $A$-vertices
+is the open problem.
 
 The case $b\ge3$ of the biregular family is the sharp open case, since $b=2$ is
 Theorem~\ref{thm:subdiv}. It has been tested at $d=1$ on
