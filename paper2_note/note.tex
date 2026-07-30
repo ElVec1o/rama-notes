@@ -238,6 +238,61 @@ $A_G\bigl(e^{\,ik\pi/(d+1)}\bigr)$, $1\le k\le d$.
 This is the real-rootedness theorem of \cite{HPS} for this family, with the
 roots identified.
 
+The roots can be located much more precisely than that. Since $b_1(G)=1$ the
+group $\pi_1(G)$ is $\mathbb{Z}$, so the universal cover $T$ of $G$ \emph{is}
+the $\mathbb{Z}$-cover, and $T$ is a periodic decorated chain whose adjacency
+operator decomposes by Floquet--Bloch into the fibres $A_G(e^{i\theta})$. Hence
+\[
+\operatorname{spec}(T)=\bigcup_{\theta}\operatorname{spec}A_G(e^{i\theta})
+=\Bigl\{x:\ \exists\,s\in[-1,1],\ \mu_G(x)=2s\,\mu_{G-V(C)}(x)\Bigr\},
+\]
+a finite union of bands, together with a flat band at each common zero of
+$\mu_G$ and $\mu_{G-V(C)}$, where $F(x,\cdot)$ vanishes identically.
+
+\begin{corollary}\label{cor:floquet}
+For $b_1(G)=1$ the roots of $\mu_{d,G}$ are exactly the solutions of
+$\mu_G(x)=2\cos\!\bigl(\tfrac{k\pi}{d+1}\bigr)\mu_{G-V(C)}(x)$ for
+$1\le k\le d$. In particular every root of every $\mu_{d,G}$ lies in
+$\operatorname{spec}(T)$, and as $d\to\infty$ the roots equidistribute on
+$\operatorname{spec}(T)$ with respect to its density of states.
+\end{corollary}
+
+\begin{proof}
+Immediate from Theorem~\ref{thm:uni} in the form
+$\mu_{d,G}=\prod_{k}F(x,e^{ik\pi/(d+1)})$ and
+$F(x,e^{i\theta})=\mu_G-2\cos\theta\,\mu_{G-V(C)}$. The equidistribution is the
+arcsine law for $\cos\bigl(k\pi/(d+1)\bigr)$ transported through the fibre map.
+\end{proof}
+
+Hall--Puder--Sawin place the roots of $\mu_{d,G}$ in the Ramanujan
+\emph{interval} $[-\rho,\rho]$, $\rho$ being the spectral radius of $T$.
+Corollary~\ref{cor:floquet} places them in $\operatorname{spec}(T)$, which is a
+union of bands and is a proper subset of that interval whenever $T$ has a
+spectral gap: no root of any $\mu_{d,G}$ can ever enter a gap. The two
+statements coincide exactly when the band structure is trivial, and that is
+precisely the case of a cycle, where $\mu_{G-V(C)}=1$ and
+$\operatorname{spec}(T)=[-2,2]$ is the whole interval. Attaching even a single
+pendant edge opens gaps, and they are not small (computed band structures,
+proportion of $[-\rho,\rho]$ that is a gap):
+\[
+\begin{array}{lcc}
+\hline
+G & \rho & \text{gap proportion}\\
+\hline
+C_n & 2 & 0\%\\
+\text{triangle}+\text{pendant} & 2.170 & 36.5\%\\
+C_4+\text{pendant} & 2.136 & 45.9\%\\
+\text{triangle}+P_2 & 2.214 & 51.3\%\\
+C_4+P_3 & 2.189 & 54.1\%\\
+\text{triangle}+K_{1,3} & 2.514 & 65.9\%\\
+\hline
+\end{array}
+\]
+So the cycle is not merely the easiest case of Theorem~\ref{thm:uni}: it is the
+degenerate one, the unique member of the family whose spectrum has no gaps and
+for which the Ramanujan interval is attained. Any cycle with a tree attached
+exhibits a band structure that no cycle can display.
+
 \paragraph{Related work.}
 Two ingredients are classical and are used, not claimed. The factorization of
 the characteristic polynomial of a cyclic cover into twisted determinants at
