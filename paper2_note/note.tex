@@ -519,7 +519,34 @@ one, and Theorem~\ref{thm:subdiv} is that equivalence. The reflection
 directly that $f_G(2c-y)\ne\pm f_G(y)$. So for $b\ge3$ the lower bound is not a
 repackaging of the upper bound but carries information the upper bound does not.
 
-The second is that the lower bound, unlike the upper bound, is not monotone
+A consequence of the first is that the band edges are never roots, by an
+argument of a different kind.
+
+\begin{proposition}\label{prop:galois}
+Let $G$ be $(a,b)$-biregular bipartite with $a,b\ge2$, and suppose
+$m=(a-1)(b-1)$ is not a perfect square. Then neither $(s-t)^2$ nor $(s+t)^2$ is
+a root of $f_G$.
+\end{proposition}
+
+\begin{proof}
+$f_G$ has integer coefficients and $(s\mp t)^2=(a+b-2)\mp2\sqrt m$, so for $m$
+not a square the two band edges are conjugate over $\mathbb Q$; if one is a root
+of $f_G$, so is the other. The upper bound is furnished by the path tree, which
+is finite, and a finite subtree of the $(a,b)$-biregular tree has spectral
+radius strictly less than $s+t$. Hence $(s+t)^2$ is not a root, and therefore
+neither is $(s-t)^2$.
+\end{proof}
+
+Evaluating $f_G$ in $\mathbb Z[\sqrt m]$ confirms this and exhibits the
+conjugacy: for $K_{3,4}$, $K_{3,5}$, $K_{3,6}$, $K_{4,5}$ the two edge values
+are $53\mp30\sqrt6$, $72\mp40\sqrt8$, $91\mp50\sqrt{10}$, $1877\mp512\sqrt{12}$.
+For $b=2$ the irrational parts vanish, as \eqref{eq:reflect} requires.
+Proposition~\ref{prop:galois} is worth isolating because it uses no induction on
+vertex deletion, and so is not subject to the obstruction described next; it is
+the only tool we have found with that property, although it controls only the
+edges and not the interior of the gap.
+
+The second point is that the lower bound, unlike the upper bound, is not monotone
 under vertex deletion. The Heilmann--Lieb argument for $|x|\le2\sqrt{\Delta-1}$
 inducts on vertex deletion, which is available because $\Delta$ only decreases.
 The quantity $|\sqrt{a-1}-\sqrt{b-1}|$ has no such monotonicity: deleting one
