@@ -414,6 +414,51 @@ theorem taylor_coeff_pred (f : R[X]) (c : R) {p : ℕ} (hp : 1 ≤ p)
   rw [hH]
   simp [mul_comm]
 
+/-- **The Taylor shift on the second subleading coefficient.**  For `f` of degree at most `p`,
+the coefficient of `X^(p-2)` in `f(X + c)` is `f_{p-2} + (p-1)f_{p-1}c + C(p,2)f_p c^2`. -/
+theorem taylor_coeff_pred_two (f : R[X]) (c : R) {p : ℕ} (hp : 2 ≤ p)
+    (hdeg : f.natDegree ≤ p) :
+    (Polynomial.taylor c f).coeff (p - 2)
+      = f.coeff (p - 2) + (p - 1 : ℕ) * f.coeff (p - 1) * c
+        + (p.choose 2 : ℕ) * f.coeff p * c ^ 2 := by
+  obtain ⟨k, rfl⟩ : ∃ k, p = k + 2 := ⟨p - 2, by omega⟩
+  simp only [Nat.add_sub_cancel, show k + 2 - 1 = k + 1 from rfl]
+  rw [Polynomial.taylor_coeff]
+  have hnd : (Polynomial.hasseDeriv k f).natDegree < 3 := by
+    have h := Polynomial.natDegree_hasseDeriv_le f k
+    omega
+  rw [Polynomial.eval_eq_sum_range' hnd, Finset.sum_range_succ, Finset.sum_range_succ,
+    Finset.sum_range_succ, Finset.sum_range_zero]
+  simp only [Polynomial.hasseDeriv_coeff, Nat.zero_add, Nat.choose_self]
+  rw [show 1 + k = k + 1 from Nat.add_comm 1 k, Nat.choose_succ_self_right,
+    show 2 + k = k + 2 from Nat.add_comm 2 k,
+    show (k + 2).choose k = (k + 2).choose 2 by
+      rw [← Nat.choose_symm (by omega : 2 ≤ k + 2), Nat.add_sub_cancel]]
+  push_cast
+  ring
+
+/-- **A16.**  The second subleading coefficient of the shifted bipartite polynomial, in terms of
+the number of `2`-matchings and the number of edges. -/
+theorem bipP_taylor_coeff_pred_two (E : Finset (α × β)) (c : R) {p : ℕ} (hp : 2 ≤ p) :
+    (Polynomial.taylor c (bipP (R := R) E p)).coeff (p - 2)
+      = (mCount E 2 : R) - (p - 1 : ℕ) * (E.card : R) * c + (p.choose 2 : ℕ) * c ^ 2 := by
+  have hd : (bipP (R := R) E p).natDegree ≤ p := bipP_natDegree_le E p
+  have h2 : (bipP (R := R) E p).coeff (p - 2) = (mCount E 2 : R) := by
+    unfold bipP
+    rw [Polynomial.finsetSum_coeff, Finset.sum_eq_single 2]
+    · rw [Polynomial.coeff_C_mul, Polynomial.coeff_X_pow, if_pos rfl]; ring
+    · intro k hk hk2
+      have hne : p - 2 ≠ p - k := by
+        have := Finset.mem_range.mp hk
+        rcases Nat.lt_or_ge k 2 with h | h
+        · interval_cases k <;> omega
+        · omega
+      rw [Polynomial.coeff_C_mul, Polynomial.coeff_X_pow, if_neg hne]; ring
+    · intro h; exact absurd (Finset.mem_range.mpr (by omega)) h
+  rw [taylor_coeff_pred_two _ _ hp hd, h2,
+    bipP_coeff_pred E (by omega), bipP_coeff_self E p]
+  ring
+
 /-- **A15.**  For a bipartite graph whose polynomial is monic of degree `p` with `|E|` edges,
 shifting by `c` moves the subleading coefficient to `p·c - |E|`. -/
 theorem bipP_taylor_coeff_pred (E : Finset (α × β)) (c : R) {p : ℕ} (hp : 1 ≤ p) :

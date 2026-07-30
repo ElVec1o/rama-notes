@@ -509,7 +509,49 @@ g_{K_{3,5}}=z^3+3z^2-12z-24,\quad
 g_{K_{4,5}}=z^4+8z^3-6z^2-128z-139,
 \]
 with subleading coefficients $3=3(3-2)$, $3=3(3-2)$ and $8=4(4-2)$ as the
-theorem requires. Their roots do satisfy \eqref{eq:twosided}, with maxima
+theorem requires.
+
+The same method determines more than the one coefficient, and shows that the
+graph itself does not enter until surprisingly late.
+
+\begin{theorem}\label{thm:universal}
+With notation as in Theorem~\ref{thm:subcoef}, the coefficients of $z^{p}$,
+$z^{p-1}$, $z^{p-2}$ and $z^{p-3}$ in $g$ depend only on $(p,a,b)$, not on $G$.
+Explicitly the first three are $1$, $p(b-2)$ and
+$\tfrac{p}{2}\bigl[(p-1)(b-2)^2-a(b-1)\bigr]$.
+\end{theorem}
+
+\begin{proof}
+The coefficients of $g$ up to $z^{p-j}$ are determined by $m_1,\dots,m_j$, so it
+suffices that $m_1,m_2,m_3$ are functions of $(p,a,b)$ alone. Write $N=|E|=pa=qb$.
+Then $m_1=N$. Two distinct edges of a bipartite graph meet in at most one vertex,
+so $m_2=\binom N2-p\binom a2-q\binom b2$, which after substituting $q=pa/b$ gives
+$m_2=\tfrac{pa}{2}(pa-a-b+1)$; the stated value of $[z^{p-2}]g$ follows from
+$\binom p2c^2-(p-1)Nc+m_2$ with $c=a+b-2$.
+
+For $m_3$, let $L$ be the graph on $E$ in which two edges are adjacent when they
+meet, so $m_3$ is the number of independent $3$-sets of $L$. Every vertex of $L$
+has degree $(a-1)+(b-1)=c$. Three pairwise meeting edges of a bipartite graph
+must share a vertex, since otherwise they form a triangle in $G$; hence the
+number of triangles of $L$ is $t=p\binom a3+q\binom b3$, and the number of
+$2$-edge paths is $N\binom c2-3t$. The standard count
+$\binom N3-\tfrac{Nc}{2}(N-2)+\bigl(N\binom c2-3t\bigr)+2t$ therefore depends
+only on $(p,a,b)$.
+\end{proof}
+
+The graph enters at the next coefficient, and it does so through a single
+invariant. Writing $C_4(G)$ for the number of $4$-cycles, computation on pairs of
+graphs sharing $(p,a,b)$ gives
+\[
+[z^{p-4}]\,g \;=\; U(p,a,b)+C_4(G)
+\]
+with coefficient exactly one: for $(p,a,b)=(6,2,2)$ the values are
+$9,10,12$ at $C_4=0,1,3$; for $(6,3,3)$, $-48$ and $-60$ at $C_4=18$ and $6$;
+for $(7,3,3)$, $-126$ for the Heawood graph and $-119$ for a $7+7$ circulant, at
+$C_4=0$ and $7$. This is the expected place for it to appear, since four
+pairwise disjoint edges are first constrained by a $4$-cycle, and it says that
+the conjecture is insensitive to the graph until girth enters. We have not
+proved the formula for $[z^{p-4}]g$, only verified it. Their roots do satisfy \eqref{eq:twosided}, with maxima
 $4.06,4.48,6.26$ against bounds $4.90,5.66,6.93$. That class admits a clean description. Since a $k$-matching leaves $p-k$
 vertices of $A$ unmatched,
 \begin{equation}\label{eq:multivar}
