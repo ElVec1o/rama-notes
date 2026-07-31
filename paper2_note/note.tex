@@ -946,9 +946,52 @@ The quantity $|\sqrt{a-1}-\sqrt{b-1}|$ has no such monotonicity: deleting one
 vertex of the larger side of $K_{3,4}$ produces $K_{3,3}$, which is regular, and
 the gap collapses to zero --- for $a=b$ one has $c=2\sqrt m$, so the interval
 $[c-2\sqrt m,\,c+2\sqrt m]$ has its lower end at $0$ and the statement is empty. So the naive induction by vertex deletion, which is
-what yields the upper bound, cannot prove the lower one. We do not claim this
-rules out every inductive argument, only the direct analogue of the
-Heilmann--Lieb one. A lower bound of the same shape is known in the random setting: Brito,
+what yields the upper bound, cannot prove the lower one.
+
+That obstruction can be strengthened, and in a way that rules out the whole
+family of such arguments rather than one instance of it. Every $b$-regular
+bipartite graph is an induced subgraph of some $(a,b)$-biregular graph, by an
+explicit padding construction; and over $b$-regular bipartite graphs the least
+root of $\nu_G$ tends to $0$, in closed form $2\sin(\pi/2N)$ for $b=2$. So on the
+class obtained by closing the biregular graphs under vertex deletion, the
+infimum of the least root is $0$, and the inequality to be proved is simply
+false there. Any argument that deletes vertices and applies an inductive
+hypothesis --- cavity recursions, stability transfer, the Heilmann--Lieb
+induction --- is an induction over that closure, and therefore cannot work,
+not because biregularity is lost but because the statement itself fails. For
+$\mathrm{AG}(2,3)$, where $(s-t)^2=0.10102$, the minimum over all choices of $d$
+deleted vertices on the larger side runs $0.3593$, $0.2424$, $0.1383$, $0.0549$
+for $d=0,1,2,3$: it drops below the target at depth three.
+
+A second route, substituting side-constant values into the multivariate matching
+polynomial of Heilmann and Lieb, fails for a reason that is visible in one line.
+Writing $M_G(z;x)=\sum_Mz^{|M|}\prod_{v\notin M}x_v$ and setting $x_v=\alpha$ on
+the $p$-side and $x_v=\beta$ on the $q$-side gives
+$\sum_km_kz^k\alpha^{p-k}\beta^{q-k}$, in which the exponent pair contributes
+$c^{p-q}$ under $(\alpha,\beta)\mapsto(c\alpha,\beta/c)$ independently of $k$; so
+the specialization depends on $\alpha$ and $\beta$ only through the product
+$\alpha\beta$. Since the image of a product of two upper half-planes is
+$\mathbb C\setminus[0,\infty)$, stability under this substitution says exactly
+that the roots are real and nonnegative, and nothing more. In particular it says
+the same thing when $a=b$, where the conclusion to be proved is empty. No choice
+of $\alpha$ and $\beta$ can see $a-b$.
+
+The correct multivariate object is not a substitution but the mixed
+characteristic polynomial of Marcus, Spielman and Srivastava: with
+$P_k=\operatorname{diag}(\mathbf 1_{N(k)})$ of rank $b$ and $\sum_kP_k=aI_p$, one
+has $\nu_G=\mu[P_1,\dots,P_q]$, since $\sum_kz_kP_k$ is diagonal and each
+$\partial_{z_k}$ must strike a distinct linear factor, so the surviving terms are
+the injections, that is the matchings. This is the stability route done properly,
+and it locates the shortfall quantitatively: a barrier argument that sees only
+the rank, the trace and $\sum_kP_k=aI$ is reading the Marchenko--Pastur law, and
+yields the interval $\bigl[(\sqrt a-\sqrt b)^2,(\sqrt a+\sqrt b)^2\bigr]$, which
+is strictly wider than the band, the discrepancy being
+$2\bigl[\sqrt{ab}-\sqrt{(a-1)(b-1)}-1\bigr]\ge0$ with equality only at $a=b$. So
+the standard potentials do not even recover the known upper bound. What is
+missing is a barrier built from the Kesten measure of the $(a,b)$-biregular tree
+rather than from Marchenko--Pastur, which is to say one that uses that the $P_k$
+are $0/1$ diagonal --- exactly the combinatorial information free probability
+discards. A lower bound of the same shape is known in the random setting: Brito,
 Dumitriu and Harris \cite{BDH} show that a random bipartite biregular graph
 satisfies $\eta^+_{\min}\ge\sqrt{d_1-1}-\sqrt{d_2-1}-\varepsilon_n$ with high
 probability. That is an asymptotic statement about adjacency eigenvalues of
@@ -1135,6 +1178,19 @@ bipartite biregular graphs and applications}, Combin.\ Probab.\ Comput.\
 \textbf{31} (2022) 229--267.
 \bibitem{HL} O.~J.~Heilmann, E.~H.~Lieb, \emph{Theory of monomer-dimer
 systems}, Comm.\ Math.\ Phys.\ \textbf{25} (1972) 190--232.
+\bibitem{DMOSS} Y.~Deshpande, A.~Montanari, R.~O'Donnell, T.~Schramm, S.~Sen,
+\emph{The threshold for SDP-refutation of random regular NAE-3SAT},
+arXiv:1804.05230 (2018). Theorem 4.5 is the Ihara--Bass formula for edge-signed
+graphs, specializing \cite{WF2}.
+
+\bibitem{WF2} Y.~Watanabe, K.~Fukumizu, \emph{Graph zeta function in the Bethe
+free energy and loopy belief propagation}, NIPS 22 (2009).
+
+\bibitem{Mo} A.~Mohammadian, \emph{Laplacian matching polynomial of graphs},
+J. Algebraic Combin. \textbf{52} (2020) 33--39. The average of the Laplacian
+characteristic polynomials over all signings, with vertex weights $x-d(v)$;
+independently Zhang and Chen, Discrete Appl. Math. (2020).
+
 \bibitem{CC} V.~Y. Chernyak, M.~Chertkov, \emph{Fermions and loops on graphs.
 II. A monomer-dimer model as a series of determinants}, J. Stat. Mech. (2008)
 P12012.
