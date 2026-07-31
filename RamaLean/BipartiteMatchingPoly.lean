@@ -1083,6 +1083,48 @@ theorem RCRC_distinct {w x y z : α × β} (hxy : x ≠ y) (hzy : z ≠ y)
   ⟨fun hrow => hxy (Prod.ext (h1.symm.trans hrow) h2),
    fun hcol => hzy (Prod.ext h3.symm (h4.trans hcol))⟩
 
+/-- Column mirror of `no_RRRC`. -/
+theorem no_CCCR {w x y z : α × β} (hzw : z ≠ w)
+    (h1 : w.2 = x.2) (h2 : x.2 = y.2) (h3 : y.2 = z.2) (h4 : z.1 = w.1) : False :=
+  hzw (Prod.ext h4 (by rw [← h3, ← h2, ← h1]))
+
+/-- Column mirror of `no_RRCC`. -/
+theorem no_CCRR {w x y z : α × β} (hwy : w ≠ y)
+    (h1 : w.2 = x.2) (h2 : x.2 = y.2) (h3 : y.1 = z.1) (h4 : z.1 = w.1) : False :=
+  hwy (Prod.ext (h3.trans h4).symm (h1.trans h2))
+
+/-- **Trichotomy for four-cycles of the conflict graph.**  Reading the cyclic word of edge types,
+of the sixteen possibilities only four survive: all four cells in one row, all four in one column,
+or one of the two alternating words, which by `RCRC_rectangle` put the cells at the corners of a
+`2 x 2` submatrix.  The first two are the degenerate cycles inside a single clique, counted by the
+parameters alone; the last two are exactly the four-cycles of `G`. -/
+theorem four_cycle_trichotomy {w x y z : α × β}
+    (hwx : w ≠ x) (hxy : x ≠ y) (hyz : y ≠ z) (hzw : z ≠ w) (hwy : w ≠ y) (hxz : x ≠ z)
+    (c1 : Conflict w x) (c2 : Conflict x y) (c3 : Conflict y z) (c4 : Conflict z w) :
+    (w.1 = x.1 ∧ x.1 = y.1 ∧ y.1 = z.1)
+    ∨ (w.2 = x.2 ∧ x.2 = y.2 ∧ y.2 = z.2)
+    ∨ (w.1 = x.1 ∧ x.2 = y.2 ∧ y.1 = z.1 ∧ z.2 = w.2)
+    ∨ (w.2 = x.2 ∧ x.1 = y.1 ∧ y.2 = z.2 ∧ z.1 = w.1) := by
+  unfold Conflict at c1 c2 c3 c4
+  rcases c1 with r1 | k1 <;> rcases c2 with r2 | k2 <;>
+    rcases c3 with r3 | k3 <;> rcases c4 with r4 | k4
+  · exact Or.inl ⟨r1, r2, r3⟩                                             -- RRRR
+  · exact (no_RRRC (w := w) (x := x) (y := y) (z := z) hzw r1 r2 r3 k4).elim   -- RRRC
+  · exact (no_RRRC (w := z) (x := w) (y := x) (z := y) hyz r4 r1 r2 k3).elim   -- RRCR
+  · exact (no_RRCC (w := w) (x := x) (y := y) (z := z) hwy r1 r2 k3 k4).elim   -- RRCC
+  · exact (no_RRRC (w := y) (x := z) (y := w) (z := x) hxy r3 r4 r1 k2).elim   -- RCRR
+  · exact Or.inr (Or.inr (Or.inl ⟨r1, k2, r3, k4⟩))                       -- RCRC
+  · exact (no_RRCC (w := z) (x := w) (y := x) (z := y) hxz.symm r4 r1 k2 k3).elim -- RCCR
+  · exact (no_CCCR (w := x) (y := z) (x := y) (z := w) hwx k2 k3 k4 r1).elim -- RCCC
+  · exact (no_RRRC (w := x) (x := y) (y := z) (z := w) hwx r2 r3 r4 k1).elim   -- CRRR
+  · exact (no_RRCC (w := x) (x := y) (y := z) (z := w) hxz r2 r3 k4 k1).elim   -- CRRC
+  · exact Or.inr (Or.inr (Or.inr ⟨k1, r2, k3, r4⟩))                       -- CRCR
+  · exact (no_CCCR (w := y) (x := z) (y := w) (z := x) hxy k3 k4 k1 r2).elim -- CRCC
+  · exact (no_CCRR (w := w) (x := x) (y := y) (z := z) hwy k1 k2 r3 r4).elim -- CCRR
+  · exact (no_CCCR (w := z) (x := w) (y := x) (z := y) hyz k4 k1 k2 r3).elim -- CCRC
+  · exact (no_CCCR (w := w) (x := x) (y := y) (z := z) hzw k1 k2 k3 r4).elim -- CCCR
+  · exact Or.inr (Or.inl ⟨k1, k2, k3⟩)                                    -- CCCC
+
 end ConflictGraph
 
 end BipartiteMatchingPoly
