@@ -91,4 +91,68 @@ theorem band_edges_swap {a : ℝ} (ha : 0 ≤ a - 1) :
   have h : Real.sqrt (a - 1) ^ 2 = a - 1 := Real.sq_sqrt ha
   nlinarith [h]
 
+/-! ## Why the sign average computes the mixed characteristic polynomial
+
+`sign_avg_reflect` gives the reflection for whatever the sign average is; the bridge to the mixed
+characteristic polynomial is that the average *is* `μ`.  That rests on one identity, proved by the
+same involution used above: over the Boolean cube the sign monomials are orthogonal to the
+constants.  Since `det(yI + ∑ z_k A_k)` is multi-affine in `z` when each `A_k` has rank one, its
+expansion `∑_S c_S ∏_{k∈S} z_k` is annihilated termwise except at `S = ∅`, so averaging over signs
+returns the constant term, which is exactly what `∏_k (1 - ∂_k)` extracts.
+-/
+
+/-- **Character orthogonality on the Boolean cube.**  A nonempty sign monomial averages to zero;
+the empty one averages to one.  Proof: flipping a coordinate of the monomial's support is an
+involution that negates the summand. -/
+theorem sum_prod_sgn (S : Finset (Fin q)) :
+    ∑ ε : Fin q → Bool, ∏ k ∈ S, sgn ε k = if S = ∅ then (2 : ℝ) ^ q else 0 := by
+  classical
+  rcases S.eq_empty_or_nonempty with rfl | ⟨k₀, hk₀⟩
+  · simp [Fintype.card_fun]
+  · rw [if_neg (Finset.nonempty_iff_ne_empty.mp ⟨k₀, hk₀⟩)]
+    have hinv : Function.Involutive
+        (fun ε : Fin q → Bool => Function.update ε k₀ (!(ε k₀))) := by
+      intro ε
+      funext j
+      by_cases h : j = k₀
+      · subst h; simp
+      · simp [Function.update_of_ne h]
+    have hflip : ∀ ε : Fin q → Bool,
+        (∏ k ∈ S, sgn (Function.update ε k₀ (!(ε k₀))) k) = - ∏ k ∈ S, sgn ε k := by
+      intro ε
+      rw [← Finset.prod_erase_mul S _ hk₀, ← Finset.prod_erase_mul S _ hk₀]
+      have hoff : ∀ k ∈ S.erase k₀, sgn (Function.update ε k₀ (!(ε k₀))) k = sgn ε k := by
+        intro k hk
+        simp [sgn, Function.update_of_ne (Finset.ne_of_mem_erase hk)]
+      have hat : sgn (Function.update ε k₀ (!(ε k₀))) k₀ = - sgn ε k₀ := by
+        simp only [Function.update_self, sgn]
+        split <;> split <;> simp_all
+      rw [Finset.prod_congr rfl hoff, hat]
+      ring
+    have h1 := Equiv.sum_comp (Function.Involutive.toPerm _ hinv)
+      (fun ε : Fin q → Bool => ∏ k ∈ S, sgn ε k)
+    simp only [Function.Involutive.coe_toPerm] at h1
+    rw [Finset.sum_congr rfl (fun ε _ => hflip ε), Finset.sum_neg_distrib] at h1
+    linarith [h1]
+
+/-- The average of a sign monomial: zero unless the monomial is empty. -/
+theorem avg_prod_sgn (S : Finset (Fin q)) (hS : S.Nonempty) :
+    ∑ ε : Fin q → Bool, ∏ k ∈ S, sgn ε k = 0 := by
+  rw [sum_prod_sgn, if_neg (Finset.nonempty_iff_ne_empty.mp hS)]
+
+/-- **The bridge, in the form it is used.**  If `F` is multi-affine, presented by its expansion
+into sign monomials, then averaging `F` over the Boolean cube returns `2^q` times its constant
+term.  Applied to `F(z) = det(yI + ∑ z_k A_k)` with rank-one `A_k`, the constant term is what
+`∏_k (1 - ∂_k)` extracts, so the sign average is the mixed characteristic polynomial. -/
+theorem sum_multiaffine (c : Finset (Fin q) → ℝ) :
+    (∑ ε : Fin q → Bool, ∑ S : Finset (Fin q), c S * ∏ k ∈ S, sgn ε k)
+      = (2 : ℝ) ^ q * c ∅ := by
+  classical
+  rw [Finset.sum_comm]
+  rw [Finset.sum_eq_single (∅ : Finset (Fin q))]
+  · rw [← Finset.mul_sum, sum_prod_sgn, if_pos rfl]; ring
+  · intro S _ hS
+    rw [← Finset.mul_sum, sum_prod_sgn, if_neg hS, mul_zero]
+  · intro h; exact absurd (Finset.mem_univ _) h
+
 end SignReflection
