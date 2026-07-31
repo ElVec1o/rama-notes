@@ -1303,7 +1303,12 @@ m_n(\nu)=\kappa_n(\nu)\ \ (n\le3),\qquad
 \kappa_4(\nu)-m_4(\nu)=-2(b-1)^2 .
 \]
 The two sequences agree through third order and part company at the fourth, by
-exactly $-2a(b-1)^2$. That is why the barrier bound, the scalar free convolution
+exactly $-2a(b-1)^2$. Order four is where every structure in this problem turns
+over, and it does so three independent times: the coefficients $E_0,\dots,E_3$ are
+determined by the parameters while $E_4$ carries the $4$-cycle count; the moment and
+free-cumulant sequences of the jump agree up to order three and split at order four;
+and the parallel-class construction for the finite free convolution reproduces the
+elementary symmetric functions $e_1,e_2,e_3$ of $\mu$ and first fails at $e_4$. That is why the barrier bound, the scalar free convolution
 and the finite free convolution all overshoot by the same margin of about $1.1$,
 and it is the analytic form of the third-moment obstruction above.
 
@@ -1334,7 +1339,38 @@ where the largest imaginary part of a root of $\rho$ is $0.133$ and $0.290$
 respectively. The cube is the informative case: it is $3$-regular and bipartite,
 hence $1$-factorable, so the failure is not caused by the absence of a partition of
 the blocks into parallel classes. Whatever separates the projection class from the
-positive semidefinite relaxation, single-copy divisibility is not it.
+positive semidefinite relaxation, single-copy divisibility is not it: at
+$(p,a,b)=(12,4,2)$ the scalar family, which violates the band, admits the
+factorization while a projection family does not.
+
+Two general facts about free convolution came out of the attempt, and they bound
+what any argument of this shape can achieve. For finitely supported probability
+measures,
+\begin{equation}\label{eq:squeeze}
+\min\operatorname{supp}\omega+\min\operatorname{supp}\tau
+\ \le\ \min\operatorname{supp}(\omega\boxplus\tau)
+\ \le\ \min\operatorname{supp}\tau+m_1(\omega),
+\end{equation}
+the lower bound from the operator model and the upper from
+$\min\operatorname{supp}(\omega\boxplus\tau)=\sup_{w<0}[K_\tau(w)+R_\omega(w)]$
+together with the monotonicity of $R_\omega$, which follows from Cauchy--Schwarz.
+And if $\min\operatorname{supp}\tau\ge c$ then
+$\tau(\{c\})\le\mu_2/\bigl(\mu_2+(m_1-c)^2\bigr)$, so by Bercovici--Voiculescu an
+atom of mass exceeding $\omega(\{\min\operatorname{supp}\omega\})$ pins the left
+edge of $\omega\boxplus\tau$ at $c$ exactly.
+
+Applied with $\omega=\chi$, for which $m_1=1$, \eqref{eq:squeeze} says that
+convolving with $\chi$ moves the left edge by at most $1$. Any certificate that
+tries to reach the band edge by exhibiting $\mu$ as a free convolution with $\chi$
+is therefore capped, and the first three cumulants do not constrain the other
+factor enough: there are measures with exactly the forced values of
+$\kappa_1,\kappa_2,\kappa_3$, real-rooted, supported in $[0,ab]$, whose convolution
+with $\chi$ has left edge $0$. At $(a,b)=(5,4)$, $p=12$ one may take
+$x^4(x-4)^3(x-6)^4(x-12)$, whose mass at $0$ exceeds $1/b$.
+
+The same atom mechanism explains the hypothesis $a\ge b$: for $a<b$ the measure
+$\chi^{\boxplus a}$ carries an atom at $0$ of mass $1-a/b$, so its left edge is $0$
+and the band statement is empty.
 
 What does separate them can be said exactly, in terms of the representation
 \eqref{eq:dpp}. For a general positive semidefinite family with $\sum_kA_k=aI$ the
