@@ -1385,6 +1385,40 @@ theorem mCount_grouped_range (E : Finset (α × β)) (k : ℕ) :
   · exact Nat.lt_succ_of_le (Finset.card_le_card hSE)
   · exact Nat.lt_succ_of_le (Finset.card_le_card (endpoints_subset hSE))
 
+/-- A nonempty set of conflicting pairs has at least two endpoints. -/
+theorem two_le_card_endpoints {E : Finset (α × β)} {S : Finset ((α × β) × (α × β))}
+    (hSE : S ⊆ conflictPairs E) (hS : S.Nonempty) : 2 ≤ (endpoints S).card := by
+  classical
+  obtain ⟨q, hq⟩ := hS
+  have hne : q.1 ≠ q.2 := by
+    have := hSE hq
+    simp only [conflictPairs, Finset.mem_filter, Finset.mem_offDiag] at this
+    exact this.1.2.2
+  have h1 : q.1 ∈ endpoints S :=
+    Finset.mem_union_left _ (Finset.mem_image.mpr ⟨q, hq, rfl⟩)
+  have h2 : q.2 ∈ endpoints S :=
+    Finset.mem_union_right _ (Finset.mem_image.mpr ⟨q, hq, rfl⟩)
+  exact Finset.one_lt_card.mpr ⟨q.1, h1, q.2, h2, hne⟩
+
+/-- **The chain, exercised end to end.**  Running `mCount_closed_form` at `k = 1`: every nonempty
+set of conflicting pairs has at least two endpoints, so only `S = ∅` survives the binomial, and
+it contributes `C(|E|, 1) = |E|`.  This reproves `mCount_one` through the formalized
+inclusion-exclusion rather than by the direct bijection, which checks that the chain computes. -/
+theorem mCount_one_via_inclusion_exclusion (E : Finset (α × β)) :
+    (mCount E 1 : ℤ) = E.card := by
+  classical
+  rw [mCount_closed_form]
+  rw [Finset.sum_eq_single (∅ : Finset ((α × β) × (α × β)))]
+  · simp [endpoints]
+  · intro S hS hne
+    have hSE : S ⊆ conflictPairs E := Finset.mem_powerset.mp hS
+    have h2 : 2 ≤ (endpoints S).card :=
+      two_le_card_endpoints hSE (Finset.nonempty_of_ne_empty hne)
+    rw [if_neg (by omega)]
+    ring
+  · intro h
+    exact absurd (Finset.empty_mem_powerset _) h
+
 end ConflictGraph
 
 end BipartiteMatchingPoly
