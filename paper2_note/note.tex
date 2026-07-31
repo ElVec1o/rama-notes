@@ -655,52 +655,50 @@ non-backtracking bounds, and the non-backtracking operator of a bipartite graph
 is exactly the object that records cycles. That object can be exhibited, but only
 in averaged form, and the reason for the averaging is not incidental.
 
-\begin{proposition}\label{prop:gauge}
+\begin{lemma}[Chernyak--Chertkov; Watanabe--Fukumizu]\label{lem:gauge}
 Let $G$ be any graph, $A_s$ its adjacency matrix with edges signed by
 $s\in\{\pm1\}^{E}$, and $D$ the degree matrix. Then, with $s$ uniform,
 \[
 \mathbb E_s\,\det\bigl(I+u^2(D-I)-uA_s\bigr)
 =\sum_{M}(-u^2)^{|M|}\prod_{v\notin V(M)}\bigl(1+(d_v-1)u^2\bigr),
 \]
-the sum over all matchings $M$ of $G$. If $G$ is $(a,b)$-biregular bipartite with
-$P=a-1$, $Q=b-1$, this equals $\mu_G(\lambda)$ up to the normalization
-$\lambda=\sqrt{(1+Pu^2)(1+Qu^2)}/u$, and then, writing $t=u^2$,
-\[
+the sum being over all matchings $M$ of $G$. If $G$ is $(a,b)$-biregular
+bipartite with $P=a-1$ and $Q=b-1$, the right side is $\mu_G(\lambda)$ up to
+normalization at $\lambda=\sqrt{(1+Pu^2)(1+Qu^2)}/u$, and then, with $t=u^2$,
+\begin{equation}\label{eq:tsub}
 \lambda^2-c=\frac1t+mt .
-\]
-\end{proposition}
+\end{equation}
+\end{lemma}
 
-\begin{proof}
-Expand the determinant over permutations. A permutation contributes a factor
-$s_e$ for each edge it traverses, and $\mathbb E_s[s_e]=0$, so only permutations
-traversing every edge an even number of times survive; as each edge can be used
-at most twice, these are exactly the involutions, that is the matchings. An
-involution with $k$ transpositions has sign $(-1)^k$ and contributes $u^2s_e^2=u^2$
-per transposition, and the diagonal entry at each fixed point. The biregular
-substitution is the identity
-$\sum_k(-1)^km_ku^{2k}(1+Pu^2)^{p-k}(1+Qu^2)^{q-k}$ rewritten in $\lambda$, and
-$\lambda^2=1/t+(P+Q)+mt$ gives the last display since $c=P+Q$.
-\end{proof}
+The identity is not new and we claim none of it. Chernyak and Chertkov
+\cite[Eqs.~(2),~(6)]{CC} prove that for an arbitrary matrix $H$ the average of
+$\det H(\sigma)$ over $\mathbb Z_2$ edge gaugings equals a monomer--dimer sum with
+weights $w_a=H_{aa}$ and $w_{ab}=-H_{ab}H_{ba}$; taking $H=I+u^2(D-I)-uA$ gives
+the display, since then $w_a=1+(d_a-1)u^2$ and $w_{ab}=-u^2$. Equivalently, the
+averaging step alone is the Godsil--Gutman expansion \cite{GG}, valid for any
+diagonal matrix in place of $I+u^2(D-I)$, and the right-hand side with those
+degree-dependent weights is the monomer--dimer partition function
+$\Xi_G(-u^2,\lambda)$, $\lambda_v=1+(d_v-1)u^2$, of Watanabe and Fukumizu
+\cite[Thm.~8]{WF}; on a $(q+1)$-regular graph they reduce it to
+$u^{|V|}\mu_G(1/u+qu)$ \cite[Eq.~(29)]{WF}, attributing the regular case to
+Nagle, and record the consequent band statement, that the roots then lie on the
+circle of radius $1/q$. Only \eqref{eq:tsub}, the biregular substitution, is not
+in those sources.
 
-Almost none of this is new, and it is worth being exact about what is. The
-averaging step is the Godsil--Gutman argument \cite{GG} and holds for an
-arbitrary diagonal matrix in place of $I+u^2(D-I)$. The right-hand side, with
-those degree-dependent weights, is the monomer--dimer partition function
-$\Xi_G(-u^2,\lambda)$ with $\lambda_v=1+(d_v-1)u^2$, which Watanabe and Fukumizu
-prove equals their polynomial $\omega_G(u^2)$ \cite[Thm.~8]{WF}; for a
-$(q+1)$-regular graph they reduce it to $u^{|V|}\mu_G(1/u+qu)$
-\cite[Eq.~(29)]{WF}, which in the regular case goes back to Nagle \cite{Na}. They
-also record the resulting band correspondence: for a $(q+1)$-regular graph the
-roots lie on the circle of radius $1/q$, by \cite{HL}. What does not appear in
-\cite{WF} is any average --- their Theorem 10 relates the \emph{unaveraged}
-determinant to $\omega_G$ by a sum over deletions of vertex-disjoint cycles, and
-they remark that the relation of that theorem to the graph zeta function is not
-understood. The observation here is just that averaging over the sign gauge kills
-exactly those cycle terms, so that $\omega_G$ \emph{is} an expected
-non-backtracking characteristic polynomial; by the signed Ihara--Bass formula,
-$\mathbb E_s\det(I-uW_s)$ equals $(1-u^2)^{|E|-|V|}$ times the left-hand side
-above. The biregular substitution, which \cite{WF} does not treat, is what
-converts this into a statement about the band.
+What we do wish to point out is how the left-hand side should be read. By the
+Ihara--Bass formula for signed graphs, $\mathbb E_s\det(I-uW_s)$ is
+$(1-u^2)^{|E|-|V|}$ times the left side above, so the polynomial in
+Lemma~\ref{lem:gauge} is an \emph{expected non-backtracking characteristic
+polynomial}. This reading is absent from the sources just cited, and not by
+oversight in an obvious direction: \cite{CC} obtain the average but explicitly set
+the Ihara spectral parameter to zero, and \cite{WF} display the Bass matrix
+$I-uA_G+u^2(D_G-I)$ next to their Theorem 10 --- a sum over deletions of
+vertex-disjoint cycles --- and remark in print that its relation to the graph zeta
+function is unknown. The sign average is exactly what annihilates those cycle
+terms. The closest antecedent we have found is Watanabe and Chertkov
+\cite[Thm.~4]{WC}, who do average a non-backtracking determinant over $\pm1$ edge
+signs and convert it by Ihara--Bass, but for the permanent, that is for perfect
+matchings on $K_{N,N}$, with no degree-dependent vertex weights.
 
 Since $1/t+mt=2\sqrt m\cos\varphi$ exactly when $|t|=1/\sqrt m$:
 
@@ -1124,6 +1122,14 @@ bipartite biregular graphs and applications}, Combin.\ Probab.\ Comput.\
 \textbf{31} (2022) 229--267.
 \bibitem{HL} O.~J.~Heilmann, E.~H.~Lieb, \emph{Theory of monomer-dimer
 systems}, Comm.\ Math.\ Phys.\ \textbf{25} (1972) 190--232.
+\bibitem{CC} V.~Y. Chernyak, M.~Chertkov, \emph{Fermions and loops on graphs.
+II. A monomer-dimer model as a series of determinants}, J. Stat. Mech. (2008)
+P12012.
+
+\bibitem{WC} Y.~Watanabe, M.~Chertkov, \emph{Belief propagation and loop calculus
+for the permanent of a non-negative matrix}, J. Phys. A \textbf{43} (2010)
+242002.
+
 \bibitem{Na} J.~F. Nagle, \emph{New series-expansion method for the dimer
 problem}, Phys. Rev. \textbf{152} (1966) 190--197.
 
