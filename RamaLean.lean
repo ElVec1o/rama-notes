@@ -30,3 +30,4 @@ import RamaLean.Paper3Translation
 import RamaLean.SignReflection
 import RamaLean.TracePSD
 import RamaLean.ProductBound
+import RamaLean.AdjugatePSD
