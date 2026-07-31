@@ -1214,6 +1214,47 @@ theorem mCount_eq_sum_alt (E : Finset (α × β)) (k : ℕ) :
   unfold mCount
   rw [matchings_card_eq_powersetCard_filter]
 
+/-- For `T ⊆ E`, the conflict sets inside `T` are the conflict sets of `E` all of whose endpoints
+lie in `T`.  This is what makes the inner index set of `mCount_eq_sum_alt` independent of `T`
+except through a condition, so the two summations can be exchanged. -/
+theorem powerset_conflictPairs_eq {E T : Finset (α × β)} (hTE : T ⊆ E) :
+    (conflictPairs T).powerset
+      = (conflictPairs E).powerset.filter (fun S => ∀ q ∈ S, q.1 ∈ T ∧ q.2 ∈ T) := by
+  classical
+  ext S
+  simp only [Finset.mem_powerset, Finset.mem_filter]
+  constructor
+  · intro h
+    exact ⟨fun q hq => ((mem_conflictPairs_iff hTE).mp (h hq)).1,
+           fun q hq => ((mem_conflictPairs_iff hTE).mp (h hq)).2⟩
+  · rintro ⟨h1, h2⟩ q hq
+    exact (mem_conflictPairs_iff hTE).mpr ⟨h1 hq, h2 q hq⟩
+
+/-- **The inclusion-exclusion formula for the matching counts.**  Exchanging the two summations
+of `mCount_eq_sum_alt` expresses `m_k` as a signed sum over sets of conflicting pairs, each
+weighted by the number of `k`-subsets containing all their endpoints.
+
+This is the identity Theorems `thm:universal` and `thm:c4` evaluate: the weight depends only on
+`|E|` and the number of distinct endpoints of `S`, so the sum reorganizes into a signed sum of
+subgraph counts of the conflict graph, which `three_meeting_share` and `four_cycle_trichotomy`
+then identify. -/
+theorem mCount_inclusion_exclusion (E : Finset (α × β)) (k : ℕ) :
+    (mCount E k : ℤ)
+      = ∑ S ∈ (conflictPairs E).powerset,
+          (-1 : ℤ) ^ S.card
+            * ((E.powersetCard k).filter (fun T => ∀ q ∈ S, q.1 ∈ T ∧ q.2 ∈ T)).card := by
+  classical
+  rw [mCount_eq_sum_alt]
+  have hcongr : ∀ T ∈ E.powersetCard k,
+      (∑ S ∈ (conflictPairs T).powerset, (-1 : ℤ) ^ S.card)
+        = ∑ S ∈ (conflictPairs E).powerset,
+            (if (∀ q ∈ S, q.1 ∈ T ∧ q.2 ∈ T) then (-1 : ℤ) ^ S.card else 0) := by
+    intro T hT
+    rw [powerset_conflictPairs_eq (Finset.mem_powersetCard.mp hT).1, Finset.sum_filter]
+  rw [Finset.sum_congr rfl hcongr, Finset.sum_comm]
+  refine Finset.sum_congr rfl fun S _ => ?_
+  rw [← Finset.sum_filter, Finset.sum_const, nsmul_eq_mul, mul_comm]
+
 end ConflictGraph
 
 end BipartiteMatchingPoly
