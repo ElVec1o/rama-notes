@@ -45,3 +45,6 @@ code/ryser_mod2
 
 # Rule 10: scratch, logs, strategy, dead ends
 /private/
+
+# Lean scratch files used while developing a proof (never part of the library)
+RamaLean/Scratch*.lean
