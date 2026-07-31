@@ -679,8 +679,8 @@ averaging step alone is the Godsil--Gutman expansion \cite{GG}, valid for any
 diagonal matrix in place of $I+u^2(D-I)$, and the right-hand side with those
 degree-dependent weights is the monomer--dimer partition function
 $\Xi_G(-u^2,\lambda)$, $\lambda_v=1+(d_v-1)u^2$, of Watanabe and Fukumizu
-\cite[Thm.~8]{WF}; on a $(q+1)$-regular graph they reduce it to
-$u^{|V|}\mu_G(1/u+qu)$ \cite[Eq.~(29)]{WF}, attributing the regular case to
+\cite[Thm.~5.5]{WF}; on a $(q+1)$-regular graph they reduce it to
+$u^{|V|}\mu_G(1/u+qu)$ \cite[Eq.~(5.3)]{WF}, attributing the regular case to
 Nagle, and record the consequent band statement, that the roots then lie on the
 circle of radius $1/q$. Only \eqref{eq:tsub}, the biregular substitution, is not
 in those sources.
@@ -692,13 +692,28 @@ Lemma~\ref{lem:gauge} is an \emph{expected non-backtracking characteristic
 polynomial}. This reading is absent from the sources just cited, and not by
 oversight in an obvious direction: \cite{CC} obtain the average but explicitly set
 the Ihara spectral parameter to zero, and \cite{WF} display the Bass matrix
-$I-uA_G+u^2(D_G-I)$ next to their Theorem 10 --- a sum over deletions of
+$I-uA_G+u^2(D_G-I)$ next to their Theorem 5.9 --- a sum over deletions of
 vertex-disjoint cycles --- and remark in print that its relation to the graph zeta
 function is unknown. The sign average is exactly what annihilates those cycle
 terms. The closest antecedent we have found is Watanabe and Chertkov
 \cite[Thm.~4]{WC}, who do average a non-backtracking determinant over $\pm1$ edge
 signs and convert it by Ihara--Bass, but for the permanent, that is for perfect
 matchings on $K_{N,N}$, with no degree-dependent vertex weights.
+
+The band condition has a clean reading on that polynomial, and it sharpens a
+published bound. By \eqref{eq:tsub}, a root $\beta$ of $\omega_G$ coming from a
+nonzero root $\lambda$ of $\mu_G$ satisfies $m\beta^2-\rho\beta+1=0$ with
+$\rho=\lambda^2-c$, so the two roots of that quadratic have product $1/m$; they are
+complex conjugates, hence both of modulus $m^{-1/2}$, exactly when
+$|\rho|\le2\sqrt m$, and otherwise real with one inside and one outside that circle.
+Watanabe and Fukumizu prove \cite[Cor.~5.8]{WF} that every root of $\omega_G$ lies
+in the annulus $1/(d_M-1)\le|\beta|\le1/(d_m-1)$, which for an $(a,b)$-biregular
+graph reads $1/(a-1)\le|\beta|\le1/(b-1)$. Conjecture~\ref{conj:gap} at $d=1$
+asserts that all roots except those coming from $\lambda=0$ lie on the single
+circle $|\beta|=m^{-1/2}$, the geometric mean of the two radii they bound by. The
+roots at $\lambda=0$ are $\beta=-1/(a-1)$ and $\beta=-1/(b-1)$, so they sit at the
+two ends of that annulus, which is why it is attained and cannot be narrowed
+without excluding them.
 
 Since $1/t+mt=2\sqrt m\cos\varphi$ exactly when $|t|=1/\sqrt m$:
 
