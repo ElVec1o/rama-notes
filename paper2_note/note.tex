@@ -1080,6 +1080,45 @@ letter, while at length four $\operatorname{tr}(A_iA_jA_iA_k)$ does not reduce. 
 first free invariant sits at level four on both sides of the analogy, matching the
 $4$-cycle count of Theorem~\ref{thm:c4}.
 
+The mixed characteristic polynomial admits a probabilistic representation which gives
+an unconditional bound with no barrier or stability input. Write $P_k=W_kW_k^{*}$
+with $W_k^{*}W_k=I_b$, set $U=[W_1|\cdots|W_q]/\sqrt a$, and let $\Pi=U^{*}U$, a
+rank-$p$ orthogonal projection on $\mathbb R^{n}$, $n=pa=qb$, whose $q$ diagonal
+$b\times b$ blocks are all $\tfrac1aI_b$. Let $S$ be a sample from the determinantal
+process with kernel $\Pi$ and $s_k(S)$ the number of slots of block $k$ it uses.
+Then
+\begin{equation}\label{eq:dpp}
+y^{\,q-p}\,\mu[P_1,\dots,P_q](y)=\mathbb E_S\prod_{k=1}^q\bigl(y-a\,s_k(S)\bigr),
+\end{equation}
+by expanding $\det(yI+\sum_kz_kP_k)$ over subsets and applying
+$\prod_k(1-\partial_{z_k})$, which annihilates every term using a block twice. Here
+$|S|=p$ always, so $\sum_ks_k=p$, and each $s_k$ is exactly
+$\mathrm{Binomial}(b,1/a)$; for a diagonal family $S$ is simply an independent
+uniform choice of one incident edge at each vertex of the $p$-side.
+
+Since $0\le s_k\le b$, every factor in \eqref{eq:dpp} is positive once $y>ab$, so
+the expectation is, and there is no root there.
+
+\begin{proposition}\label{prop:abbound}
+Every root of $\mu[P_1,\dots,P_q]$ is at most $ab$. Moreover, with
+$m=(a-1)(b-1)$,
+\[
+ab-\bigl(\sqrt{a-1}+\sqrt{b-1}\bigr)^2=\bigl(\sqrt m-1\bigr)^2 .
+\]
+\end{proposition}
+
+So the bound overshoots the conjectured edge by exactly $(\sqrt m-1)^2$, and is
+lossless precisely when $m=1$. Two consequences. At $a=b=2$ the overshoot vanishes
+and $ab=4$ is the upper edge; the roots are nonnegative because the matching numbers
+are, so \textbf{the band is proved outright at $a=b=2$}. And for projection families
+generally, $ab$ is a better bound than the Marchenko--Pastur edge
+$(\sqrt a+\sqrt b)^2$ exactly when $1/\sqrt a+1/\sqrt b>1$, which covers $b=2$ with
+$3\le a\le11$ and $b=3$ with $3\le a\le5$; since Marchenko--Pastur was the only
+bound previously available in that generality, this is an improvement there.
+Proposition~\ref{prop:abbound} is formalized in
+\texttt{RamaLean/ProductBound.lean} as \texttt{no\_root\_above} and
+\texttt{edge\_gap}.
+
 At $b=2$ the whole question collapses onto the known half, by a symmetry.
 
 \begin{proposition}\label{prop:reflect}
