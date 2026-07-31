@@ -123,4 +123,47 @@ theorem band_iff_pi {a p : ℝ} (ha : 1 ≤ a) (ha0 : 0 < a) (hp : 0 ≤ p) :
     · exact key.mp (by linarith)
     · linarith [key.mpr h]
 
+/-! ### The weaker bound and what it would buy
+
+`INEQ-2` asks for `π ≤ 4(a-1)/a² = (4/a)(1 - 1/a)`.  The strictly weaker `π ≤ 4/a` already gives a
+bound better than both estimates currently available for projection families at `b = 2`: it beats
+the Marchenko–Pastur edge `(√a + √2)²` for every `a`, and the product bound `ab = 2a` as soon as
+`a ≥ 5`.  It falls short of the true edge by `2(√a - √(a-1)) ~ 1/√a`, so it is asymptotically
+sharp.  The implication is recorded here so that a proof of the weaker inequality immediately
+yields the corresponding theorem.
+-/
+
+/-- The weaker hypothesis `π ≤ 4/a` gives `λ_max ≤ a + 2√a`. -/
+theorem weak_bound {a p : ℝ} (ha0 : 0 < a) (hp : 0 ≤ p) (h : p ≤ 4 / a) :
+    a * (1 + Real.sqrt p) ≤ a + 2 * Real.sqrt a := by
+  have hsa : 0 < Real.sqrt a := Real.sqrt_pos.mpr ha0
+  have hsq : Real.sqrt a ^ 2 = a := Real.sq_sqrt ha0.le
+  have hle : Real.sqrt p ≤ 2 / Real.sqrt a := by
+    rw [show (2:ℝ) / Real.sqrt a = Real.sqrt (4 / a) by
+      rw [show (4:ℝ) / a = 2 ^ 2 / Real.sqrt a ^ 2 by rw [hsq]; norm_num,
+        ← div_pow, Real.sqrt_sq (by positivity)]]
+    exact Real.sqrt_le_sqrt h
+  have : a * Real.sqrt p ≤ a * (2 / Real.sqrt a) := by
+    exact mul_le_mul_of_nonneg_left hle ha0.le
+  have hid : a * (2 / Real.sqrt a) = 2 * Real.sqrt a := by
+    field_simp
+    nlinarith [hsq, hsa]
+  nlinarith [this, hid]
+
+/-- `a + 2√a` is below the product bound `2a` exactly when `a > 4`. -/
+theorem weak_beats_ab {a : ℝ} (ha : 4 < a) : a + 2 * Real.sqrt a < 2 * a := by
+  have hsa : 0 < Real.sqrt a := Real.sqrt_pos.mpr (by linarith)
+  have hsq : Real.sqrt a ^ 2 = a := Real.sq_sqrt (by linarith)
+  nlinarith [hsq, hsa]
+
+/-- `a + 2√a` is below the Marchenko–Pastur edge `(√a + √2)²` for every `a > 0`. -/
+theorem weak_beats_mp {a : ℝ} (ha : 0 < a) :
+    a + 2 * Real.sqrt a < (Real.sqrt a + Real.sqrt 2) ^ 2 := by
+  have hsa : 0 < Real.sqrt a := Real.sqrt_pos.mpr ha
+  have hsq : Real.sqrt a ^ 2 = a := Real.sq_sqrt ha.le
+  have h2 : Real.sqrt 2 ^ 2 = 2 := Real.sq_sqrt (by norm_num)
+  have h2p : 1 < Real.sqrt 2 := by
+    nlinarith [h2, Real.sqrt_nonneg 2]
+  nlinarith [hsq, h2, hsa, h2p]
+
 end ProductBound
