@@ -937,4 +937,105 @@ theorem card_confR (E : Finset (α × β)) :
 
 end TwoMatchings
 
+/-! ## Why `m_3` cannot see the graph
+
+The counts `m_k` are the numbers of independent `k`-sets of the conflict graph `L`, whose
+vertices are the edges of `G` and whose adjacency is "shares an endpoint".  For `m_3` the
+inclusion–exclusion expansion needs the numbers of edges, of `2`-edge paths and of triangles of
+`L`.  The first two are determined by the degree sequence of `L`, and `conflict_degree` below
+shows that degree is `(d_left - 1) + (d_right - 1)`, so for a biregular graph it is the constant
+`c = (a-1) + (b-1)`.
+
+The triangles are where bipartiteness enters, and `three_meeting_share` is the reason: three
+edges of a bipartite graph that pairwise meet must all pass through one vertex, since otherwise
+they would form a triangle in `G`.  So the triangles of `L` are exactly the triples inside a
+single star, and their number is `p*C(a,3) + q*C(b,3)` — again a function of the parameters only.
+Hence `m_3`, and with it the coefficient of `z^(p-3)`, does not depend on `G`.
+-/
+
+section ConflictGraph
+
+/-- Two distinct edges of a bipartite graph conflict when they share an endpoint. -/
+def Conflict (e f : α × β) : Prop := e.1 = f.1 ∨ e.2 = f.2
+
+instance (e : α × β) : DecidablePred (Conflict e) := fun _ => by
+  unfold Conflict; infer_instance
+
+/-- Distinct edges cannot share both endpoints. -/
+theorem not_both_of_ne {e f : α × β} (h : e ≠ f) : ¬(e.1 = f.1 ∧ e.2 = f.2) := by
+  rintro ⟨h1, h2⟩
+  exact h (Prod.ext h1 h2)
+
+/-- **Three pairwise-meeting edges of a bipartite graph share a vertex.**
+
+This is the step that uses bipartiteness.  In a general graph three edges can meet pairwise at
+three distinct vertices, forming a triangle; in a bipartite graph they cannot, so a triangle of
+the conflict graph is always a triple of edges through one vertex. -/
+theorem three_meeting_share {e f g : α × β}
+    (hef : e ≠ f) (hfg : f ≠ g) (heg : e ≠ g)
+    (mef : Conflict e f) (mfg : Conflict f g) (meg : Conflict e g) :
+    (e.1 = f.1 ∧ f.1 = g.1) ∨ (e.2 = f.2 ∧ f.2 = g.2) := by
+  unfold Conflict at mef mfg meg
+  rcases mef with h1 | h1
+  · rcases mfg with h2 | h2
+    · exact Or.inl ⟨h1, h2⟩
+    · -- e,f share the left vertex and f,g share the right: then e and g cannot meet
+      rcases meg with h3 | h3
+      · -- e.1 = g.1 = f.1, so f and g share both coordinates
+        exact absurd ⟨h1 ▸ h3, h2⟩ (not_both_of_ne hfg)
+      · -- e.2 = g.2 = f.2, so e and f share both coordinates
+        exact absurd ⟨h1, h2 ▸ h3⟩ (not_both_of_ne hef)
+  · rcases mfg with h2 | h2
+    · -- e,f share the right vertex and f,g share the left: then e and g cannot meet
+      rcases meg with h3 | h3
+      · -- e.1 = g.1 = f.1, so e and f share both coordinates
+        exact absurd ⟨h3.trans h2.symm, h1⟩ (not_both_of_ne hef)
+      · -- e.2 = g.2 = f.2, so f and g share both coordinates
+        exact absurd ⟨h2, h1.symm.trans h3⟩ (not_both_of_ne hfg)
+    · exact Or.inr ⟨h1, h2⟩
+
+/-- The conflicting partners of an edge `e`, i.e. its neighbours in the conflict graph. -/
+def conflictNbr (E : Finset (α × β)) (e : α × β) : Finset (α × β) :=
+  (E.erase e).filter (fun f => Conflict e f)
+
+/-- **The conflict graph is regular when `G` is biregular.**  An edge `(u,v)` conflicts with the
+other `d_u - 1` edges at `u` and the other `d_v - 1` edges at `v`, and with nothing twice, since
+two distinct edges cannot share both endpoints.  So its conflict degree is
+`(d_u - 1) + (d_v - 1)`, which for an `(a,b)`-biregular graph is `(a-1) + (b-1)`. -/
+theorem conflict_degree (E : Finset (α × β)) {e : α × β} (he : e ∈ E) :
+    (conflictNbr E e).card
+      = ((E.filter (fun f => f.1 = e.1)).card - 1)
+        + ((E.filter (fun f => f.2 = e.2)).card - 1) := by
+  classical
+  have hL : (E.erase e).filter (fun f => f.1 = e.1)
+      = (E.filter (fun f => f.1 = e.1)).erase e := by
+    ext f; simp only [Finset.mem_filter, Finset.mem_erase]; tauto
+  have hR : (E.erase e).filter (fun f => f.2 = e.2)
+      = (E.filter (fun f => f.2 = e.2)).erase e := by
+    ext f; simp only [Finset.mem_filter, Finset.mem_erase]; tauto
+  have hdisj : Disjoint ((E.erase e).filter (fun f => f.1 = e.1))
+      ((E.erase e).filter (fun f => f.2 = e.2)) := by
+    rw [Finset.disjoint_left]
+    intro f hf1 hf2
+    simp only [Finset.mem_filter, Finset.mem_erase] at hf1 hf2
+    exact not_both_of_ne (Ne.symm hf1.1.1) ⟨hf1.2.symm, hf2.2.symm⟩
+  have hsplit : conflictNbr E e
+      = (E.erase e).filter (fun f => f.1 = e.1) ∪ (E.erase e).filter (fun f => f.2 = e.2) := by
+    unfold conflictNbr Conflict
+    ext f
+    simp only [Finset.mem_filter, Finset.mem_union, Finset.mem_erase]
+    constructor
+    · rintro ⟨hfe, h | h⟩
+      · exact Or.inl ⟨hfe, h.symm⟩
+      · exact Or.inr ⟨hfe, h.symm⟩
+    · rintro (⟨hfe, h⟩ | ⟨hfe, h⟩)
+      · exact ⟨hfe, Or.inl h.symm⟩
+      · exact ⟨hfe, Or.inr h.symm⟩
+  have hmemL : e ∈ E.filter (fun f => f.1 = e.1) := Finset.mem_filter.mpr ⟨he, rfl⟩
+  have hmemR : e ∈ E.filter (fun f => f.2 = e.2) := Finset.mem_filter.mpr ⟨he, rfl⟩
+  rw [hsplit, Finset.card_union_of_disjoint hdisj, hL, hR,
+    Finset.card_erase_of_mem hmemL, Finset.card_erase_of_mem hmemR]
+
+end ConflictGraph
+
 end BipartiteMatchingPoly
