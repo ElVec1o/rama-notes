@@ -1216,10 +1216,23 @@ m_k=\sum_{S}(-1)^{|S|}\binom{|E|-|V(S)|}{k-|V(S)|}
 over sets $S$ of conflicting pairs (\texttt{mCount\_closed\_form}); and since the
 weight sees $S$ only through $|S|$ and $|V(S)|$, the sum fibers over that pair
 (\texttt{mCount\_grouped}, \texttt{mCount\_grouped\_range}), which is the grouping
-by subgraph type. What is \emph{not} formalized is the evaluation of the ten
-resulting counts as explicit functions of $(p,a,b)$ and $C_4(G)$ --- the step at
-which \texttt{three\_meeting\_share} and \texttt{four\_cycle\_trichotomy} are
-applied --- together with the numerical verifications.
+by subgraph type. The chain is exercised end to end at $k=1$
+(\texttt{mCount\_one\_via\_inclusion\_exclusion}): every nonempty set of
+conflicting pairs has at least two endpoints, so only the empty set survives the
+binomial and contributes $\binom{|E|}{1}$, reproving $m_1=|E|$ through the
+inclusion--exclusion rather than by the direct bijection, so that two independent
+routes cross-check each link.
+
+What is \emph{not} formalized is the evaluation of the ten resulting counts as
+explicit functions of $(p,a,b)$ and $C_4(G)$ --- the step at which
+\texttt{three\_meeting\_share} and \texttt{four\_cycle\_trichotomy} are applied ---
+together with the numerical verifications. One obstacle there is worth recording:
+the formalized conflict set consists of \emph{ordered} pairs, so each edge of the
+conflict graph occurs twice. This leaves the inclusion--exclusion untouched, since
+the alternating sum vanishes over any nonempty index set whether or not it double
+counts, but it means the grouping enumerates more configurations than the ten
+unordered types above, and aligning the two would require rebuilding the conflict
+set on unordered pairs.
 
 \begin{remark}
 Everything here is stated for the uniform permutation model; by
