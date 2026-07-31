@@ -820,7 +820,11 @@ inequality does use Beraha--Kahane--Weiss: just above $y^*$ the two branches for
 conjugate pair of equal and maximal modulus, and one needs that theorem to conclude
 that the zeros accumulate there. This is what one should expect:
 a family with a fixed local structure has a fixed Benjamini--Schramm limit, which
-is not a tree, so its matching measure retains a gap at $0$. Girth does help
+is not a tree, so its matching measure retains a gap at $0$. Non-attainment of
+this kind was already visible to Heilmann and Lieb, who tabulate the largest zero
+against their own bound for six lattices --- $11.24$ against $12$, $17.86$ against
+$20$, $41.32$ against $44$ --- and remark that equality ``cannot be expected to be
+true in general'' \cite[Table 1 and Remark 4.3]{HL}. Girth does help
 monotonically --- at $30$ vertices, girth $4$, $6$ and $8$ give $98.166\%$,
 $99.311\%$ and $99.410\%$ --- but no family of bounded girth can approach the
 edge, and every cubic bipartite circulant has girth at most $6$, since the closed
@@ -926,7 +930,11 @@ a root of $f_G$.
 \begin{proof}
 $f_G$ has integer coefficients and $(s\mp t)^2=(a+b-2)\mp2\sqrt m$, so for $m$
 not a square the two band edges are conjugate over $\mathbb Q$; if one is a root
-of $f_G$, so is the other. Every root of $\mu_G$ is bounded by the spectral
+of $f_G$, so is the other. Heilmann and Lieb already give a \emph{strict} bound,
+$|a|<2\sqrt{B_1}$ with $B_1=\Delta-1$ for unit edge weights \cite[Thm.~4.3]{HL},
+but at the max-degree radius, which for $a\ne b$ exceeds $s+t$; strictness at the
+biregular radius therefore has to be argued separately. Every root of $\mu_G$ is
+bounded by the spectral
 radius of a path tree $T_u(G)$ \cite{God81}, and $T_u(G)$ is finite and embeds
 in the universal cover of $G$, the $(a,b)$-biregular tree $T_{a,b}$, with
 degrees bounded by those of $T_{a,b}$. Now $\rho(T_{a,b})=s+t$ is the supremum
