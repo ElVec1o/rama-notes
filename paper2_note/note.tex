@@ -1103,6 +1103,14 @@ an even or odd function of $t=y-a$ according to the parity of $p$, because
 $\varepsilon\mapsto-\varepsilon$ preserves the distribution.
 \end{proof}
 
+The last step, which carries the whole proposition, is formalized in
+\texttt{RamaLean/SignReflection.lean} as \texttt{sign\_avg\_reflect}: for any family of
+matrices $S_1,\dots,S_q$ the sign average
+$\sum_{\varepsilon\in\{\pm1\}^q}\det\bigl(tI-\sum_k\varepsilon_kS_k\bigr)$ satisfies
+$\rho(-t)=(-1)^n\rho(t)$, with no hypothesis on the $S_k$; the shift and the exchange
+of band edges $2a-(\sqrt{a-1}+1)^2=(\sqrt{a-1}-1)^2$ are
+\texttt{mixedChar\_reflect} and \texttt{band\_edges\_swap}.
+
 Since $2a-(\sqrt{a-1}+1)^2=(\sqrt{a-1}-1)^2$, the two band edges are exchanged by
 the reflection, so at $b=2$ the lower bound is \emph{equivalent} to the upper one.
 For diagonal families the upper bound is Godsil's path-tree theorem and $b=2$ is

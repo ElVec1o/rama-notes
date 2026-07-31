@@ -27,3 +27,4 @@ import RamaLean.Paper3DigitSum
 import RamaLean.Paper3Involution
 import RamaLean.Paper3Negation
 import RamaLean.Paper3Translation
+import RamaLean.SignReflection
