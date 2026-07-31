@@ -1017,7 +1017,21 @@ the rank, the trace and $\sum_kP_k=aI$ is reading the Marchenko--Pastur law, and
 yields the interval $\bigl[(\sqrt a-\sqrt b)^2,(\sqrt a+\sqrt b)^2\bigr]$, which
 is strictly wider than the band, the discrepancy being
 $2\bigl[\sqrt{ab}-\sqrt{(a-1)(b-1)}-1\bigr]\ge0$ with equality only at $a=b$. So
-the standard potentials do not even recover the known upper bound. What is
+the standard potentials do not even recover the known upper bound. That is not a
+deficiency of the analysis but of the hypotheses, and it can be seen exactly. Take
+$A_k=(b/p)I_p$: these are positive semidefinite with
+$\operatorname{tr}A_k=b$ and $\sum_kA_k=(qb/p)I=aI$, so they satisfy every
+hypothesis the barrier method uses, and $\mu[A_1,\dots,A_q]$ is a Laguerre
+polynomial whose roots converge to the Marchenko--Pastur edges. At $(a,b)=(3,2)$ the
+upper edge is already exceeded at $p=4$, where the largest root is $6.229$ against
+$(s+t)^2=5.828$, and the lower edge at $p=48$, where the smallest is $0.154$
+against $(s-t)^2=0.172$. The Marchenko--Pastur interval is therefore attained on
+those hypotheses, and \emph{no} barrier argument that does not see
+$\operatorname{rank}A_k\le b$ can reach the tree band at either edge. Numerically
+the rank condition is what carries the statement: dropping idempotency but keeping
+$\operatorname{rank}A_k\le b$ and $\operatorname{tr}A_k=b$ produced no violation in
+search, which suggests that class, rather than the projections, as the natural
+target. What is
 missing is a barrier built from the Kesten measure of the $(a,b)$-biregular tree
 rather than from Marchenko--Pastur, which is to say one that uses that the $P_k$
 are $0/1$ diagonal --- exactly the combinatorial information free probability
@@ -1090,8 +1104,13 @@ $\varepsilon\mapsto-\varepsilon$ preserves the distribution.
 \end{proof}
 
 Since $2a-(\sqrt{a-1}+1)^2=(\sqrt{a-1}-1)^2$, the two band edges are exchanged by
-the reflection, so at $b=2$ the open lower bound is \emph{equivalent} to the known
-upper bound. For diagonal families this is Theorem~\ref{thm:subdiv} again: there
+the reflection, so at $b=2$ the lower bound is \emph{equivalent} to the upper one.
+For diagonal families the upper bound is Godsil's path-tree theorem and $b=2$ is
+therefore settled --- that is Theorem~\ref{thm:subdiv} again. For projections it is
+not: the path tree is a graph construction, and the only bound available in that
+generality is the Marchenko--Pastur edge $(\sqrt a+\sqrt b)^2$, which is strictly
+larger than $(s+t)^2$. So at $b=2$ the projection statement is reduced to its upper
+half, not closed. The mechanism in the diagonal case is transparent: there
 $\sum_k\varepsilon_kS_k$ is a signed adjacency matrix, the expectation is
 Godsil--Gutman, and one recovers $\nu_{S(H)}(y)=\mu_H(y-a)$.
 
