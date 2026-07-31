@@ -1275,6 +1275,55 @@ So the third moment vanishes precisely when $b=2$: Proposition~\ref{prop:reflect
 is not an accident of small $b$ but the vanishing of the jump skewness, and for
 $b\ge3$ any argument reaching the lower edge must see a third-order quantity.
 
+There is a single reason behind all of this, and it is worth stating because it
+accounts uniformly for the failure of every method tried. Let
+$\chi=(1-\tfrac1b)\delta_0+\tfrac1b\delta_b$, and let $\nu$ be the centred slot
+spectrum $\tfrac1b\delta_{b-1}+(1-\tfrac1b)\delta_{-1}$, so that
+$\chi=\delta_1\boxplus\nu$.
+
+\begin{proposition}\label{prop:freepower}
+$\operatorname{supp}\bigl(\chi^{\boxplus a}\bigr)
+=\bigl[(\sqrt{a-1}-\sqrt{b-1})^2,\ (\sqrt{a-1}+\sqrt{b-1})^2\bigr]$.
+\end{proposition}
+
+So the band is the support of a free convolution \emph{power}. Every method that
+fails computes instead a compound free Poisson of rate $a$ with jump $\nu$, whose
+free cumulants are $a\,m_n(\nu)$ rather than $a\,\kappa_n(\nu)$, and
+\[
+m_n(\nu)=\kappa_n(\nu)\ \ (n\le3),\qquad
+\kappa_4(\nu)-m_4(\nu)=-2(b-1)^2 .
+\]
+The two sequences agree through third order and part company at the fourth, by
+exactly $-2a(b-1)^2$. That is why the barrier bound, the scalar free convolution
+and the finite free convolution all overshoot by the same margin of about $1.1$,
+and it is the analytic form of the third-moment obstruction above.
+
+The finite free cumulants of $\mu$ itself follow the free power, not the Poisson:
+\[
+\kappa_1=a,\qquad \kappa_2=\frac{ap(b-1)}{p-1},\qquad
+\kappa_3=\frac{ap^2(b-1)(b-2)}{(p-1)(p-2)},
+\]
+with $\kappa_4$ the first that depends on the family --- matching the coefficient
+ladder, where $E_0,\dots,E_3$ are universal and $E_4$ carries the $4$-cycle count.
+Note $\kappa_3=0$ exactly when $b=2$: Proposition~\ref{prop:reflect} is visible in
+the cumulants.
+
+Two further facts delimit what can be done with this. Writing
+$\psi_0(x)=x^{p-p/b}(x-b)^{p/b}$ and $\Psi=\psi_0^{\boxplus_pa}$, the polynomial
+$\Psi$ satisfies the band at every $p$, but $\mu\ne\Psi$ in general and there is no
+real-rooted $\rho$ with $\mu=\Psi\boxplus_p\rho$ unless the two agree: finite free
+deconvolution is unique, so such a $\rho$ would have $\kappa_1=\kappa_2=0$, and
+$\kappa_2$ is a positive multiple of the variance of the roots, forcing
+$\rho=x^p$. The very agreement of the first three cumulants is what forbids the
+factorization. What does appear to hold is divisibility by a single copy:
+$\mu=\psi_0\boxplus_p\rho$ with $\rho$ real-rooted, which by the
+Marcus--Spielman--Srivastava bound yields a lower bound on $\lambda_{\min}$ that
+reached the band edge in every one of $111$ tested families with $b\ge3$, both
+commuting and not. The same test correctly declines to certify the scalar family
+$A_k=(b/p)I$, for which $\rho$ fails to be real-rooted; divisibility by $\psi_0$ is
+a property the projection class has and the positive semidefinite relaxation does
+not, which is precisely the constraint that the free convolution discards.
+
 The size of the claim is also worth recording. Since $E_1$ and $E_2$ are universal,
 the root distribution of $\mu$ has mean $a$ and variance $a(b-1)$ for every
 admissible family. Measured against that, the lower band edge sits between $1.35$
