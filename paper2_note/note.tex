@@ -1054,12 +1054,46 @@ letter, while at length four $\operatorname{tr}(A_iA_jA_iA_k)$ does not reduce. 
 first free invariant sits at level four on both sides of the analogy, matching the
 $4$-cycle count of Theorem~\ref{thm:c4}.
 
-Graphs are not always extremal there, however. At $(p,q,a,b)=(4,8,4,2)$ the minimum
-of $E_4$ over projections is $400/3$ against $134$ over graphs, the gap appearing
-exactly when $q>\binom pb$ forces every graph in the family to repeat a
-neighbourhood and hence to contain a $4$-cycle. So the projection statement is
-strictly stronger, though never by more than about $2.5\%$ of the margin in the
-cases computed. A lower bound of the same shape is known in the random setting: Brito,
+Graphs are not always extremal there, however, and the smallest case can be settled
+exactly. Take $b=2$, $p=4$, so $q=2a$ and $\sum_kP_k=aI_4$. Writing
+$g_{ij}=\operatorname{tr}(P_iP_j)$ and $h_{ij}=\operatorname{tr}\bigl((P_iP_j)^2\bigr)$,
+
+\begin{proposition}\label{prop:E4}
+For rank-$2$ orthogonal projections $P_1,\dots,P_q$ on $\mathbb R^4$ with
+$\sum_kP_k=\tfrac q2I$,
+\[
+E_4=\frac{q^4}{16}-\frac{q^3}{4}+\frac q2+\frac14\sum_{i\ne j}\bigl(g_{ij}^2-h_{ij}\bigr),
+\]
+and every summand is nonnegative. Equality holds exactly when
+$\operatorname{rank}(P_iP_j)\le1$ for all $i\ne j$.
+\end{proposition}
+
+Nonnegativity is immediate once the right object is named: for $i\ne j$ put
+$X=P_jP_iP_j\succeq0$; then $\operatorname{tr}\bigl((P_iP_j)^m\bigr)=\operatorname{tr}(X^m)$
+for every $m\ge1$, so $g_{ij}^2-h_{ij}=(\operatorname{tr}X)^2-\operatorname{tr}X^2
+=2\sum_{r<s}\lambda_r\lambda_s\ge0$.
+
+Identifying a $2$-plane $U\subset\mathbb R^4$ with its unit simple bivector
+$\omega_U\in\Lambda^2\mathbb R^4\cong\mathbb R^6$ gives
+$g_{ij}^2-h_{ij}=2\langle\omega_i,\omega_j\rangle^2$, so the Welch bound for $q$
+unit vectors in a $6$-dimensional space yields
+\[
+E_4\ \ge\ \frac{q^4}{16}-\frac{q^3}{4}+\frac{q^2}{12},
+\]
+with equality exactly when $\{\omega_k\}$ is a tight frame of \emph{simple}
+bivectors. This gives $30$, $400/3$, $1150/3$ and $876$ at $q=6,8,10,12$, matching
+the values found numerically.
+
+At $q=6$ the bound reads $E_4\ge30$, attained by the incidence family of $K_4$; and
+there the tight-frame condition degenerates to ``orthonormal basis'', which is the
+one value of $q$ at which it can be met by simple bivectors alone. That is why
+graphs are extremal at $q=6$ and not at $q=8$, where the minimum $400/3$ lies
+strictly below the graph minimum $134$: the coincidence is the degeneration, not a
+principle. Even at $q=6$ the graphs are only a slice of the minimizers --- the
+equality locus is $4$-dimensional modulo $O(4)$, and taking the $\omega_k$ from the
+six icosahedral axes, with the two $\mathbb R^3$ components Galois conjugate over
+$\mathbb Q(\sqrt5)$, produces a noncommuting family with all
+$g_{ij}=4/5$ and $E_4=30$. A lower bound of the same shape is known in the random setting: Brito,
 Dumitriu and Harris \cite{BDH} show that a random bipartite biregular graph
 satisfies $\eta^+_{\min}\ge\sqrt{d_1-1}-\sqrt{d_2-1}-\varepsilon_n$ with high
 probability. That is an asymptotic statement about adjacency eigenvalues of
