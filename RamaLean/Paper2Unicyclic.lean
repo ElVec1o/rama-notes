@@ -321,4 +321,78 @@ theorem gap_edge_identity (s t α : K) :
 
 end Localization
 
+/-! ## When the lower band edge says nothing
+
+For an `(a,b)`-biregular bipartite graph put `P = a-1`, `Q = b-1`, so the band centre is
+`c = P + Q` and the lower band edge is `c - 2√(PQ)`.  The conjectured bound is
+`ρ ≥ -2√(PQ)`, i.e. `y ≥ c - 2√(PQ)` for `y = x² ≥ 0`.  The identity below shows this gap is a
+square, hence nonnegative, and vanishes exactly when `P = Q`, that is when the graph is regular.
+So for `a = b` the bound follows from `y ≥ 0` alone and carries no information; the statement has
+content precisely when `a ≠ b`.  This is the triviality Song, Fan and Miao record for `d = r`.
+-/
+
+section Vacuity
+
+/-- The distance from the band centre to the lower band edge is `(√P - √Q)²`. -/
+theorem gap_eq_sq {P Q : ℝ} (hP : 0 ≤ P) (hQ : 0 ≤ Q) :
+    P + Q - 2 * Real.sqrt (P * Q) = (Real.sqrt P - Real.sqrt Q) ^ 2 := by
+  rw [Real.sqrt_mul hP]
+  have hP' : Real.sqrt P ^ 2 = P := Real.sq_sqrt hP
+  have hQ' : Real.sqrt Q ^ 2 = Q := Real.sq_sqrt hQ
+  nlinarith [hP', hQ']
+
+/-- The lower band edge never exceeds the band centre. -/
+theorem gap_nonneg {P Q : ℝ} (hP : 0 ≤ P) (hQ : 0 ≤ Q) :
+    0 ≤ P + Q - 2 * Real.sqrt (P * Q) := by
+  rw [gap_eq_sq hP hQ]; positivity
+
+/-- **The bound is vacuous exactly in the regular case.**  The lower band edge coincides with
+`0` precisely when `P = Q`. -/
+theorem gap_eq_zero_iff {P Q : ℝ} (hP : 0 ≤ P) (hQ : 0 ≤ Q) :
+    P + Q - 2 * Real.sqrt (P * Q) = 0 ↔ P = Q := by
+  rw [gap_eq_sq hP hQ, pow_eq_zero_iff two_ne_zero, sub_eq_zero]
+  constructor
+  · intro h
+    have := congrArg (fun z : ℝ => z ^ 2) h
+    simpa [Real.sq_sqrt hP, Real.sq_sqrt hQ] using this
+  · intro h; rw [h]
+
+/-- The regular case, stated as it is used: if `y ≥ 0` and `P = Q` then `y` already satisfies
+the conjectured lower bound, with no hypothesis on the graph. -/
+theorem lower_bound_trivial_of_eq {P Q y : ℝ} (hP : 0 ≤ P) (hQ : 0 ≤ Q) (hPQ : P = Q)
+    (hy : 0 ≤ y) : P + Q - 2 * Real.sqrt (P * Q) ≤ y := by
+  rw [(gap_eq_zero_iff hP hQ).mpr hPQ]; exact hy
+
+end Vacuity
+
+/-! ## The bound implied by the first two power sums
+
+If `p` real numbers have sum `e` and sum of squares `S`, Cauchy–Schwarz applied to the other
+`p-1` of them bounds each one below by `(e - √((p-1)(pS - e²)))/p`.  Since that grows like `√p`
+while the conjectured bound does not depend on `p`, no argument resting on the first two power
+sums — equivalently, on the first three coefficients — can prove the conjecture.
+-/
+
+section Moments
+
+/-- The quadratic step: a real `x` with `p x² - 2ex + (e² - (p-1)S) ≤ 0` is bounded below by the
+smaller root. -/
+theorem quad_root_lower {p e S x : ℝ} (hp : 0 < p)
+    (h : p * x ^ 2 - 2 * e * x + (e ^ 2 - (p - 1) * S) ≤ 0) :
+    (e - Real.sqrt ((p - 1) * (p * S - e ^ 2))) / p ≤ x := by
+  set D := (p - 1) * (p * S - e ^ 2) with hD
+  have hDnn : 0 ≤ D := by nlinarith [sq_nonneg (p * x - e)]
+  have hsq : Real.sqrt D ^ 2 = D := Real.sq_sqrt hDnn
+  have hs : 0 ≤ Real.sqrt D := Real.sqrt_nonneg D
+  rw [div_le_iff₀ hp]
+  nlinarith [hsq, hs, sq_nonneg (p * x - e + Real.sqrt D)]
+
+/-- Cauchy–Schwarz in the form needed: the square of a sum is at most the count times the sum
+of squares. -/
+theorem sq_sum_le {ι : Type*} (s : Finset ι) (f : ι → ℝ) :
+    (∑ i ∈ s, f i) ^ 2 ≤ s.card * ∑ i ∈ s, f i ^ 2 :=
+  sq_sum_le_card_mul_sum_sq
+
+end Moments
+
 end Paper2Unicyclic
