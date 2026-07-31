@@ -1125,6 +1125,56 @@ theorem four_cycle_trichotomy {w x y z : α × β}
   · exact (no_CCCR (w := w) (x := x) (y := y) (z := z) hzw k1 k2 k3 r4).elim -- CCCR
   · exact Or.inr (Or.inl ⟨k1, k2, k3⟩)                                    -- CCCC
 
+/-! ### The engine of the inclusion-exclusion
+
+Every count `m_k` in this file is a number of independent `k`-sets of the conflict graph, and the
+expansion that computes them rests on one identity: the indicator of "no two elements conflict"
+is the alternating sum over subsets of the conflicting pairs.  Summing that over all `k`-subsets
+and exchanging the order of summation turns `m_k` into a signed sum of subgraph counts, which is
+where `four_cycle_trichotomy` and `three_meeting_share` then do their work.
+-/
+
+/-- The conflicting ordered pairs inside a set of edges. -/
+def conflictPairs (T : Finset (α × β)) : Finset ((α × β) × (α × β)) :=
+  T.offDiag.filter (fun q => Conflict q.1 q.2)
+
+/-- A set of edges is a matching exactly when it contains no conflicting pair. -/
+theorem conflictPairs_eq_empty_iff (T : Finset (α × β)) :
+    conflictPairs T = ∅ ↔ IsMatching T := by
+  classical
+  constructor
+  · intro h
+    refine ⟨fun e he f hf h1 => ?_, fun e he f hf h2 => ?_⟩
+    · by_contra hne
+      have hmem : (e, f) ∈ conflictPairs T :=
+        Finset.mem_filter.mpr ⟨Finset.mem_offDiag.mpr ⟨he, hf, hne⟩, Or.inl h1⟩
+      simp [h] at hmem
+    · by_contra hne
+      have hmem : (e, f) ∈ conflictPairs T :=
+        Finset.mem_filter.mpr ⟨Finset.mem_offDiag.mpr ⟨he, hf, hne⟩, Or.inr h2⟩
+      simp [h] at hmem
+  · rintro ⟨hL, hR⟩
+    refine Finset.eq_empty_of_forall_notMem ?_
+    intro q hq
+    simp only [conflictPairs, Finset.mem_filter, Finset.mem_offDiag] at hq
+    obtain ⟨⟨h1, h2, hne⟩, hc⟩ := hq
+    unfold Conflict at hc
+    rcases hc with hc | hc
+    · exact hne (hL _ h1 _ h2 hc)
+    · exact hne (hR _ h1 _ h2 hc)
+
+/-- **The matching indicator as an alternating sum.**  This is the identity the whole
+inclusion-exclusion runs on: summing it over all `k`-subsets of the edge set and exchanging the
+order of summation expresses `m_k` as a signed sum of subgraph counts of the conflict graph. -/
+theorem alt_sum_conflictPairs (T : Finset (α × β)) :
+    (∑ S ∈ (conflictPairs T).powerset, (-1 : ℤ) ^ S.card)
+      = if IsMatching T then 1 else 0 := by
+  classical
+  rw [Finset.sum_powerset_neg_one_pow_card]
+  by_cases h : IsMatching T
+  · rw [if_pos ((conflictPairs_eq_empty_iff T).mpr h), if_pos h]
+  · rw [if_neg (fun hc => h ((conflictPairs_eq_empty_iff T).mp hc)), if_neg h]
+
 end ConflictGraph
 
 end BipartiteMatchingPoly
