@@ -1205,15 +1205,39 @@ the known open sharpening of the Marcus--Spielman--Srivastava bound. So $b=2$ is
 not an easier case awaiting a short argument; it is that open problem in another
 notation.
 
-The obstruction is also identifiable. The block recursion
-$E_r(K)=E_r(K\setminus k)+\det K[B_k]\,E_{r-1}(K/B_k)$ is exactly the
-Heilmann--Lieb \emph{edge} recursion, and it holds verbatim for kernels. But the
-Heilmann--Lieb induction is run on vertices, and the constant $2\sqrt{\Delta-1}$
-comes from the step where deleting a vertex drops a neighbour's degree. Here the
-blocks play the part of edges, and a general projection family carries no second
-partition of the slots playing the part of vertices; in the commuting case that
-partition is the other block-diagonalisation of $\Pi$, which does not exist in
-general. That missing structure, not the analysis, is what blocks the argument. Adversarial search over rank-two projection families and
+What the problem is, at $b=2$, can be said exactly. Both $\mu(x+a)$ and the operator
+$\operatorname{Adj}(A):=\sum_k e_2(A_k)P_{\operatorname{range}A_k}$ depend on the
+family only through the pairs $\bigl(e_2(A_k),\operatorname{range}A_k\bigr)$. So the
+class is the class of weighted $2$-plane families
+$\{(c_k,V_k):c_k\ge0,\ \sum_kc_kP_{V_k}\preceq aI\}$, and $\mu(x+a)$ is the matching
+polynomial of such a family; for coordinate planes it is the ordinary weighted
+matching polynomial. The band being sought is therefore the sharp weighted
+Heilmann--Lieb constant for plane families, which is what fixes $2\sqrt a$ as the
+natural ceiling of any argument of this kind.
+
+In that language the vertex step has an exact form. Setting
+$\Theta^{(r)}:=\sum_{|T|=r}M_{\omega_T}\succeq0$ and
+$W(x):=\sum_{r\ge1}(-1)^r\Theta^{(r)}x^{\,m-2r}$, one has
+$\langle e,W(x)e\rangle=F_A(x)-x\,F_{A^{(e)}}(x)$ for every unit vector $e$, where
+$F_A(x)=\mu(x+a)$ and $A^{(e)}$ is the compression to $e^\perp$; consequently
+$\operatorname{tr}W=mF_A-xF_A'$ and $F_A'=\sum_iF_{A^{(e_i)}}$ for any orthonormal
+basis. The cavity hypothesis is then equivalent to a single matrix inequality: when
+$\operatorname{Adj}(A)=aI$, the band $[a-2\sqrt a,\,a+2\sqrt a]$ holds if and only if
+\[
+W(2\sqrt a)+F_A(2\sqrt a)\,I\ \succeq\ 0 ,
+\]
+a coordinate-free statement with no recursion in it.
+
+Two bounds follow unconditionally from real-rootedness alone. Writing
+$F_A=x^m-M_1x^{m-2}+M_2x^{m-4}-\cdots$, one has $M_1=\tfrac12\operatorname{tr}
+\operatorname{Adj}(A)\le am/2$ and, using $\|\omega_j\wedge\omega_l\|^2\ge
+1-\operatorname{tr}(P_jP_l)$, $M_1^2-2M_2\le\operatorname{tr}
+\operatorname{Adj}(A)^2-\sum_kc_k^2$. Since the largest root $\lambda$ satisfies
+$\lambda^2\le M_1$ and $\lambda^4\le M_1^2-2M_2$, the band
+$[a-2\sqrt a,a+2\sqrt a]$ holds whenever $m\le8$, and whenever
+$m\le16+\bigl(\sum_kc_k^2\bigr)/a^2$, which for projection families is
+$m\le32a/(2a-1)$. The second reproduces the known two-moment bound for projections
+and extends it to all weighted plane families. Adversarial search over rank-two projection families and
 over random biregular graphs reaches $0.83$ of the threshold at $a=3$ and $0.72$ at
 $a=4$, with no violation; graphs are marginally more extremal than general
 projections.
