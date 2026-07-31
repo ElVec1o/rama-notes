@@ -67,4 +67,60 @@ theorem edge_gap_eq_zero_iff (u v : ℝ) :
 /-- At `a = b = 2` the bound closes the upper edge exactly. -/
 theorem edge_gap_two : ((1:ℝ) ^ 2 + 1) * ((1:ℝ) ^ 2 + 1) = ((1:ℝ) + 1) ^ 2 := by norm_num
 
+/-! ## The `b = 2` reduction
+
+At `b = 2` the profile compression collapses to a single variable: writing `n₂` for the number of
+doubly-occupied blocks and `Ψ(u) = 𝔼 u^{n₂}`, one has `μ(y) = (y-a)^p Ψ(θ(y))` with
+`θ(y) = 1 - a²/(y-a)²`.  Real-rootedness forces `Ψ` to be a product of independent Bernoulli
+factors, and the extreme roots come out as `a(1 ± √π)` where `π` is the largest Bernoulli
+parameter.
+
+The band at `b = 2` is `[(√(a-1)-1)², (√(a-1)+1)²] = [a - 2√(a-1), a + 2√(a-1)]`, so both edges
+reduce to the *same* inequality on `π`, namely `a√π ≤ 2√(a-1)`, i.e. `π ≤ 4(a-1)/a²`.  That the
+two edges give one condition is the reflection of `SignReflection` seen on this side.
+-/
+
+/-- The `(a,2)`-biregular band edges in closed form: `(√(a-1) ± 1)² = a ± 2√(a-1)`. -/
+theorem band_edge_eq {a : ℝ} (ha : 1 ≤ a) :
+    (Real.sqrt (a - 1) + 1) ^ 2 = a + 2 * Real.sqrt (a - 1)
+    ∧ (Real.sqrt (a - 1) - 1) ^ 2 = a - 2 * Real.sqrt (a - 1) := by
+  have h : Real.sqrt (a - 1) ^ 2 = a - 1 := Real.sq_sqrt (by linarith)
+  constructor <;> nlinarith [h]
+
+/-- **The `b = 2` reduction.**  The upper edge, the lower edge, and the inequality
+`π ≤ 4(a-1)/a²` are all the same condition.  The two edges coinciding is the reflection
+`y ↦ 2a - y` seen through the substitution `θ`. -/
+theorem band_iff_pi {a p : ℝ} (ha : 1 ≤ a) (ha0 : 0 < a) (hp : 0 ≤ p) :
+    (a * (1 + Real.sqrt p) ≤ (Real.sqrt (a - 1) + 1) ^ 2 ↔ p ≤ 4 * (a - 1) / a ^ 2)
+    ∧ ((Real.sqrt (a - 1) - 1) ^ 2 ≤ a * (1 - Real.sqrt p) ↔ p ≤ 4 * (a - 1) / a ^ 2) := by
+  obtain ⟨hup, hlo⟩ := band_edge_eq ha
+  have hs : Real.sqrt p ^ 2 = p := Real.sq_sqrt hp
+  have hsn : 0 ≤ Real.sqrt p := Real.sqrt_nonneg p
+  have hr : Real.sqrt (a - 1) ^ 2 = a - 1 := Real.sq_sqrt (by linarith)
+  have hrn : 0 ≤ Real.sqrt (a - 1) := Real.sqrt_nonneg _
+  -- both edges reduce to `a √p ≤ 2 √(a-1)`
+  have ha2 : (0:ℝ) < a ^ 2 := by positivity
+  have key : (a * Real.sqrt p ≤ 2 * Real.sqrt (a - 1)) ↔ p ≤ 4 * (a - 1) / a ^ 2 := by
+    rw [le_div_iff₀ ha2]
+    constructor
+    · intro h
+      have h2 := mul_self_le_mul_self (by positivity : (0:ℝ) ≤ a * Real.sqrt p) h
+      nlinarith [h2, hs, hr]
+    · intro h
+      by_contra hc
+      push_neg at hc
+      have h2 := mul_self_lt_mul_self (by positivity : (0:ℝ) ≤ 2 * Real.sqrt (a - 1)) hc
+      nlinarith [h2, hs, hr]
+  have hexp : a * (1 + Real.sqrt p) = a + a * Real.sqrt p := by ring
+  have hexp' : a * (1 - Real.sqrt p) = a - a * Real.sqrt p := by ring
+  refine ⟨?_, ?_⟩
+  · rw [hup, hexp]
+    constructor <;> intro h
+    · exact key.mp (by linarith)
+    · linarith [key.mpr h]
+  · rw [hlo, hexp']
+    constructor <;> intro h
+    · exact key.mp (by linarith)
+    · linarith [key.mpr h]
+
 end ProductBound
