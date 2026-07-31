@@ -1036,6 +1036,53 @@ theorem conflict_degree (E : Finset (α × β)) {e : α × β} (he : e ∈ E) :
   rw [hsplit, Finset.card_union_of_disjoint hdisj, hL, hR,
     Finset.card_erase_of_mem hmemL, Finset.card_erase_of_mem hmemR]
 
+/-! ### Four-cycles of the conflict graph
+
+Identify an edge of `G` with a cell of the `p x q` biadjacency matrix.  Two distinct cells are
+adjacent in `L` exactly when they share a row or share a column, never both, so every edge of `L`
+has a well-defined type, R or C.  Reading the cyclic word of types around a four-cycle of `L`,
+only three words survive, and that is what makes the fifth coefficient split into a universal
+part plus the four-cycle count of `G`:
+
+* `no_RRRC`  — three consecutive edges of one type force the fourth to have that type too, so the
+  words `RRRC` and `RCCC` do not occur;
+* `no_RRCC`  — two edges of one row cannot both meet two edges of one column;
+* `RRRR`/`CCCC` — all four cells lie in one line, giving the degenerate cycles inside a single
+  clique, whose number depends only on the parameters;
+* `RCRC`     — by `RCRC_rectangle` the four cells are exactly the entries of a `2 x 2` all-ones
+  submatrix, that is a four-cycle of `G`, each contributing exactly one.
+-/
+
+/-- **Three consecutive edges of one type force the fourth.**  If `w,x,y,z` lie in one row then
+`z` and `w` also share their row, so they cannot instead share a column without coinciding.
+Hence the cyclic words `RRRC` and `RCCC` do not occur. -/
+theorem no_RRRC {w x y z : α × β} (hzw : z ≠ w)
+    (h1 : w.1 = x.1) (h2 : x.1 = y.1) (h3 : y.1 = z.1) (h4 : z.2 = w.2) : False :=
+  hzw (Prod.ext (by rw [← h3, ← h2, ← h1]) h4)
+
+/-- **`RRCC` is impossible.**  If `w,x,y` share a row and `y,z,w` share a column, then `w` and `y`
+agree in both coordinates. -/
+theorem no_RRCC {w x y z : α × β} (hwy : w ≠ y)
+    (h1 : w.1 = x.1) (h2 : x.1 = y.1) (h3 : y.2 = z.2) (h4 : z.2 = w.2) : False :=
+  hwy (Prod.ext (h1.trans h2) (h3.trans h4).symm)
+
+/-- **The alternating case is a rectangle.**  A four-cycle of `L` whose types alternate has its
+four cells at the corners of a `2 x 2` submatrix, determined by the two rows and two columns.
+Since all four cells are edges of `G`, that submatrix is all-ones, i.e. a four-cycle of `G`. -/
+theorem RCRC_rectangle {w x y z : α × β}
+    (h1 : w.1 = x.1) (h2 : x.2 = y.2) (h3 : y.1 = z.1) (h4 : z.2 = w.2) :
+    x = (w.1, y.2) ∧ z = (y.1, w.2) :=
+  ⟨Prod.ext h1.symm h2, Prod.ext h3.symm h4⟩
+
+/-- The rectangle has two distinct rows and two distinct columns, so it is a genuine four-cycle
+of `G` rather than a degenerate one.  If the two rows coincided the cycle would revisit `y` at
+`x`, and if the two columns coincided it would revisit `y` at `z`. -/
+theorem RCRC_distinct {w x y z : α × β} (hxy : x ≠ y) (hzy : z ≠ y)
+    (h1 : w.1 = x.1) (h2 : x.2 = y.2) (h3 : y.1 = z.1) (h4 : z.2 = w.2) :
+    w.1 ≠ y.1 ∧ w.2 ≠ y.2 :=
+  ⟨fun hrow => hxy (Prod.ext (h1.symm.trans hrow) h2),
+   fun hcol => hzy (Prod.ext h3.symm (h4.trans hcol))⟩
+
 end ConflictGraph
 
 end BipartiteMatchingPoly
