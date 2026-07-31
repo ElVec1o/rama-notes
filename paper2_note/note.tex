@@ -1327,6 +1327,31 @@ hence $1$-factorable, so the failure is not caused by the absence of a partition
 the blocks into parallel classes. Whatever separates the projection class from the
 positive semidefinite relaxation, single-copy divisibility is not it.
 
+What does separate them can be said exactly, in terms of the representation
+\eqref{eq:dpp}. For a general positive semidefinite family with $\sum_kA_k=aI$ the
+marginal of $s_k$ has probability generating function
+$\prod_i\bigl(\tfrac{a-\alpha_i}{a}+\tfrac{\alpha_i}{a}z\bigr)$ over the eigenvalues
+$\alpha_i$ of $A_k$, a Poisson binomial; it is exactly $\mathrm{Binomial}(b,1/a)$ if
+and only if every $\alpha_i$ lies in $\{0,1\}$, that is if and only if $A_k$ is a
+rank-$b$ projection. Among Poisson binomials of fixed mean $b/a$ with $n$ equal
+parameters the variance is $(b/a)(1-b/(na))$, increasing in $n$; so the projections,
+where $n=b$, are the \emph{variance-minimizing} extreme point of the whole family.
+The scalar counterexample $A_k=(b/p)I$ sits at the opposite end, at the Poisson
+limit, with variance exceeding the projection value by exactly $b/a^2$.
+
+The condition $\operatorname{rank}A_k\le b$ is therefore the condition that the
+occupancy of a block fluctuates as little as possible at its given mean, and the
+conjecture asserts that minimal marginal fluctuation propagates to the extreme
+confinement recorded above. That suggests the right statement is one about measures
+rather than matrices: for a random vector $(s_1,\dots,s_q)$ of nonnegative integers
+with $\sum_ks_k=p$ almost surely, each $s_k$ exactly $\mathrm{Binomial}(b,1/a)$, and
+joint generating function homogeneous of degree $p$ and real stable, are the roots
+of $\mathbb E\prod_k(y-as_k)$ confined to the band? Every projection family induces
+such a law, and the scalar family does not, failing the marginal condition. Whether
+the class is exactly right is open; negative association alone is known to be
+insufficient, by an explicit permutation counterexample whose polynomial has a root
+at $ab$.
+
 The size of the claim is also worth recording. Since $E_1$ and $E_2$ are universal,
 the root distribution of $\mu$ has mean $a$ and variance $a(b-1)$ for every
 admissible family. Measured against that, the lower band edge sits between $1.35$
