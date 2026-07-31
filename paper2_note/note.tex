@@ -1109,7 +1109,13 @@ matrices $S_1,\dots,S_q$ the sign average
 $\sum_{\varepsilon\in\{\pm1\}^q}\det\bigl(tI-\sum_k\varepsilon_kS_k\bigr)$ satisfies
 $\rho(-t)=(-1)^n\rho(t)$, with no hypothesis on the $S_k$; the shift and the exchange
 of band edges $2a-(\sqrt{a-1}+1)^2=(\sqrt{a-1}-1)^2$ are
-\texttt{mixedChar\_reflect} and \texttt{band\_edges\_swap}.
+\texttt{mixedChar\_reflect} and \texttt{band\_edges\_swap}. The step identifying the
+sign average with $\mu$ is formalized in the same file: by \texttt{sum\_prod\_sgn} a
+nonempty sign monomial averages to zero over $\{\pm1\}^q$, proved by the same
+involution, so by \texttt{sum\_multiaffine} the average of a multi-affine function
+returns $2^q$ times its constant term --- which for
+$\det\bigl(yI+\sum_kz_kA_k\bigr)$ with rank-one $A_k$ is what
+$\prod_k(1-\partial_{z_k})$ extracts.
 
 Since $2a-(\sqrt{a-1}+1)^2=(\sqrt{a-1}-1)^2$, the two band edges are exchanged by
 the reflection, so at $b=2$ the lower bound is \emph{equivalent} to the upper one.
