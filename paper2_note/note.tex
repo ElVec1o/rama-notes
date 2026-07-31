@@ -1021,7 +1021,45 @@ the standard potentials do not even recover the known upper bound. What is
 missing is a barrier built from the Kesten measure of the $(a,b)$-biregular tree
 rather than from Marchenko--Pastur, which is to say one that uses that the $P_k$
 are $0/1$ diagonal --- exactly the combinatorial information free probability
-discards. A lower bound of the same shape is known in the random setting: Brito,
+discards.
+
+That raises the question of how much of the hypothesis is really needed, and the
+answer delimits the problem usefully. Asking for the same conclusion from
+\emph{arbitrary} positive semidefinite $A_k$ of rank $b$ with $\sum_kA_k=aI_p$ is
+false. Take $p=2$, $q=3$, $(a,b)=(3,2)$, and
+$A_1=A_2=\tfrac u2I_2$, $A_3=(3-u)I_2$: each has rank $2=b$ and the sum is $3I=aI$,
+while $\mu[A_1,A_2,A_3](y)=y^2-6y+\bigl(6u-\tfrac32u^2\bigr)$. At $u=\tfrac1{10}$
+the constant term is $\tfrac{117}{200}$ and the roots are $0.09914$ and $5.90086$,
+outside the band $[3-2\sqrt2,3+2\sqrt2]=[0.17157,5.82843]$ at both ends; as
+$u\to0$ the roots tend to $0$ and $6$. The counterexample is diagonal, hence
+commuting, so noncommutativity is not what fails. What fails is that the traces
+are unconstrained: $\operatorname{tr}A_3=5.8\gg b$. Imposing
+$\operatorname{tr}A_k=b$ restores the second coefficient, since it then depends on
+the family only through $\sum_k\|A_k\|_F^2$, which by Cauchy--Schwarz is at least
+$b$ with equality exactly for idempotents. Projections are thus the extreme point
+already at the first nontrivial coefficient.
+
+For rank-$b$ orthogonal projections the statement survives. A search over more than
+$10^5$ feasible families --- real and complex projections, and the intermediate
+class $\operatorname{rank}\le b$, $\operatorname{tr}=b$ --- produced no violation,
+the smallest observed margin being $3.6\%$ of the band width. Two features make
+this the right generalization to record. First, commuting rank-$b$ projections with
+$\sum_kP_k=aI$ are simultaneously diagonalizable and therefore $0/1$ diagonal, so
+they are \emph{exactly} the biregular incidence families: the projection statement
+is precisely the noncommutative extension of Conjecture~\ref{conj:gap}. Second, the
+universality of Theorem~\ref{thm:universal} persists in that setting --- for
+projections the coefficients $E_0,\dots,E_3$ depend only on $(p,q,a,b)$, because
+idempotency collapses every trace of a word of length at most three with a repeated
+letter, while at length four $\operatorname{tr}(A_iA_jA_iA_k)$ does not reduce. The
+first free invariant sits at level four on both sides of the analogy, matching the
+$4$-cycle count of Theorem~\ref{thm:c4}.
+
+Graphs are not always extremal there, however. At $(p,q,a,b)=(4,8,4,2)$ the minimum
+of $E_4$ over projections is $400/3$ against $134$ over graphs, the gap appearing
+exactly when $q>\binom pb$ forces every graph in the family to repeat a
+neighbourhood and hence to contain a $4$-cycle. So the projection statement is
+strictly stronger, though never by more than about $2.5\%$ of the margin in the
+cases computed. A lower bound of the same shape is known in the random setting: Brito,
 Dumitriu and Harris \cite{BDH} show that a random bipartite biregular graph
 satisfies $\eta^+_{\min}\ge\sqrt{d_1-1}-\sqrt{d_2-1}-\varepsilon_n$ with high
 probability. That is an asymptotic statement about adjacency eigenvalues of
