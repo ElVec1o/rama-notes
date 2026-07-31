@@ -63,9 +63,10 @@ sums carried by the universal coefficients imply only a bound growing like
 $\sqrt p$, while the conjectured bound is independent of $p$, no argument using
 them can succeed: a proof must be sensitive to the cycle structure. The
 subdivision bound, the recurrence, the deletion recursion, the algebra of the
-coefficient formulas and the combinatorics behind the matching counts $m_2$, $m_3$
-and $m_4$ are formalized in Lean~4; what is left by hand is the inclusion--exclusion
-bookkeeping that assembles the last of these, and the numerical work.
+coefficient formulas, the combinatorics behind the matching counts $m_2$, $m_3$ and
+$m_4$, and the inclusion--exclusion that assembles them are formalized in Lean~4;
+what is left by hand is the evaluation of the ten individual subgraph counts, and
+the numerical work.
 \end{abstract}
 
 \section{Introduction and statement}
@@ -1197,9 +1198,28 @@ pairs (\texttt{alt\_sum\_conflictPairs}). Several of these, including the
 trichotomy, depend on no axioms at all. \texttt{RamaLean/Paper2Unicyclic.lean}
 further formalizes that the lower band edge is $(\sqrt P-\sqrt Q)^2$ and so
 vanishes exactly when $P=Q$ (\texttt{gap\_eq\_zero\_iff}), which is the triviality
-recorded above. What is \emph{not} formalized is the inclusion--exclusion
-arithmetic that sums the ten subgraph counts into $m_4$, and the numerical
-verifications.
+recorded above.
+
+The inclusion--exclusion itself is formalized as a chain. The matching indicator is
+the alternating sum over subsets of the conflicting pairs of a set of edges
+(\texttt{alt\_sum\_conflictPairs}); substituting it turns $m_k$ into a double sum
+(\texttt{mCount\_eq\_sum\_alt}); because conflict is intrinsic to a pair of edges,
+the inner index set depends on the outer one only through a containment
+(\texttt{powerset\_conflictPairs\_eq}), so the two summations exchange
+(\texttt{mCount\_inclusion\_exclusion}); the resulting weight is a binomial
+coefficient, by a bijection between the $k$-subsets containing a fixed $V$ and the
+$(k-|V|)$-subsets of the complement
+(\texttt{card\_powersetCard\_filter\_superset}), giving
+\[
+m_k=\sum_{S}(-1)^{|S|}\binom{|E|-|V(S)|}{k-|V(S)|}
+\]
+over sets $S$ of conflicting pairs (\texttt{mCount\_closed\_form}); and since the
+weight sees $S$ only through $|S|$ and $|V(S)|$, the sum fibers over that pair
+(\texttt{mCount\_grouped}, \texttt{mCount\_grouped\_range}), which is the grouping
+by subgraph type. What is \emph{not} formalized is the evaluation of the ten
+resulting counts as explicit functions of $(p,a,b)$ and $C_4(G)$ --- the step at
+which \texttt{three\_meeting\_share} and \texttt{four\_cycle\_trichotomy} are
+applied --- together with the numerical verifications.
 
 \begin{remark}
 Everything here is stated for the uniform permutation model; by
