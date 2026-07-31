@@ -438,6 +438,9 @@ impl B {
         btrim(&mut m);
         B { neg: neg && !m.is_empty(), m }
     }
+    fn is_zero(&self) -> bool {
+        self.m.is_empty()
+    }
     fn sign(&self) -> i32 {
         if self.m.is_empty() {
             0
@@ -515,6 +518,279 @@ fn dyadic_decimal(n: &[u64], t: usize, digits: usize) -> String {
     let s = mdec(&scaled);
     let s = if s.len() <= digits { format!("{}{}", "0".repeat(digits + 1 - s.len()), s) } else { s };
     format!("{}.{}", &s[..s.len() - digits], &s[s.len() - digits..])
+}
+
+// ================= polynomials with big-integer coefficients =================
+type PB = Vec<B>;
+
+fn pb_trim(a: &mut PB) {
+    while a.len() > 1 && a.last().unwrap().is_zero() {
+        a.pop();
+    }
+}
+fn pb_zero() -> PB {
+    vec![B::zero()]
+}
+fn pb_is_zero(a: &PB) -> bool {
+    a.iter().all(|x| x.is_zero())
+}
+fn pb_deg(a: &PB) -> usize {
+    let mut d = a.len() - 1;
+    while d > 0 && a[d].is_zero() {
+        d -= 1;
+    }
+    d
+}
+fn pb_from(p: &P) -> PB {
+    let mut r: PB = p.iter().map(|&x| B::from_i128(x)).collect();
+    pb_trim(&mut r);
+    r
+}
+fn pb_add(a: &PB, b: &PB) -> PB {
+    let mut r: PB = (0..a.len().max(b.len()))
+        .map(|i| {
+            let x = a.get(i).cloned().unwrap_or_else(B::zero);
+            let y = b.get(i).cloned().unwrap_or_else(B::zero);
+            x.add(&y)
+        })
+        .collect();
+    pb_trim(&mut r);
+    r
+}
+fn pb_neg(a: &PB) -> PB {
+    a.iter().map(|x| B { neg: !x.neg && !x.is_zero(), m: x.m.clone() }).collect()
+}
+fn pb_sub(a: &PB, b: &PB) -> PB {
+    pb_add(a, &pb_neg(b))
+}
+fn pb_mul(a: &PB, b: &PB) -> PB {
+    if pb_is_zero(a) || pb_is_zero(b) {
+        return pb_zero();
+    }
+    let mut r = vec![B::zero(); a.len() + b.len() - 1];
+    for (i, x) in a.iter().enumerate() {
+        if x.is_zero() {
+            continue;
+        }
+        for (j, z) in b.iter().enumerate() {
+            if z.is_zero() {
+                continue;
+            }
+            r[i + j] = r[i + j].add(&x.mul(z));
+        }
+    }
+    pb_trim(&mut r);
+    r
+}
+
+// determinant by subset DP -- division free, works for any commutative ring
+fn det_subset_pb(mat: &Vec<Vec<PB>>) -> PB {
+    let sz = mat.len();
+    let full = 1usize << sz;
+    let mut dp: Vec<PB> = vec![pb_zero(); full];
+    dp[0] = vec![B::from_i128(1)];
+    let mut order: Vec<usize> = (0..full).collect();
+    order.sort_by_key(|s| s.count_ones());
+    for &s in &order {
+        if s == 0 {
+            continue;
+        }
+        let k = s.count_ones() as usize;
+        let row = k - 1;
+        let mut acc = pb_zero();
+        let mut idx = 0usize;
+        let mut bits = s;
+        while bits != 0 {
+            let j = bits.trailing_zeros() as usize;
+            bits &= bits - 1;
+            let prev = &dp[s & !(1usize << j)];
+            if !pb_is_zero(&mat[row][j]) && !pb_is_zero(prev) {
+                let t = pb_mul(&mat[row][j], prev);
+                acc = if (k - 1 + idx) % 2 == 0 { pb_add(&acc, &t) } else { pb_sub(&acc, &t) };
+            }
+            idx += 1;
+        }
+        dp[s] = acc;
+    }
+    dp[full - 1].clone()
+}
+
+fn resultant_pb(f: &[PB], g: &[PB]) -> PB {
+    let m = f.len() - 1;
+    let n = g.len() - 1;
+    let sz = m + n;
+    let mut mat = vec![vec![pb_zero(); sz]; sz];
+    for i in 0..n {
+        for j in 0..=m {
+            mat[i][i + j] = f[m - j].clone();
+        }
+    }
+    for i in 0..m {
+        for j in 0..=n {
+            mat[n + i][i + j] = g[n - j].clone();
+        }
+    }
+    det_subset_pb(&mat)
+}
+
+// Taylor shift f(u) -> f(u + a), exact, a a signed machine integer
+fn pb_shift(f: &PB, a: i128) -> PB {
+    let d = pb_deg(f);
+    let mut c: PB = f[..=d].to_vec();
+    if a == 0 {
+        return c;
+    }
+    let ab = B::from_i128(a);
+    for i in 0..d {
+        for j in (i..d).rev() {
+            let t = c[j + 1].mul(&ab);
+            c[j] = c[j].add(&t);
+        }
+    }
+    c
+}
+
+// count of roots of f in the OPEN interval (a/2^t, b/2^t), via Descartes on the interval.
+// Returns the sign-change bound: 0 means no roots, 1 means exactly one root.
+fn count_in_interval(f: &PB, a: i128, b: i128, t: usize) -> usize {
+    assert!(b > a);
+    let d = pb_deg(f);
+    // g(u) = 2^{td} f(u/2^t)
+    let g: PB = (0..=d).map(|i| f[i].shl(t * (d - i))).collect();
+    // h(u) = g(u + a): the interval becomes (0, b-a)
+    let h = pb_shift(&g, a);
+    // Descartes on (0, w): sign changes of sum_i h_i w^i (1+u)^{d-i}
+    let w = B::from_i128(b - a);
+    let mut acc = vec![B::zero(); d + 1];
+    let mut wpow = B::from_i128(1);
+    for i in 0..=d {
+        if !h[i].is_zero() {
+            let c = h[i].mul(&wpow);
+            let m = d - i;
+            let mut binom = B::from_i128(1);
+            for j in 0..=m {
+                if j > 0 {
+                    binom = binom.mul(&B::from_i128((m - j + 1) as i128));
+                    binom = bdiv_small(&binom, j as u64);
+                }
+                acc[j] = acc[j].add(&c.mul(&binom));
+            }
+        }
+        wpow = wpow.mul(&w);
+    }
+    let mut v = 0usize;
+    let mut last = 0i32;
+    for c in acc.iter() {
+        let s = c.sign();
+        if s != 0 {
+            if last != 0 && s != last {
+                v += 1;
+            }
+            last = s;
+        }
+    }
+    v
+}
+
+// exact evaluation sign of f at the dyadic a/2^t
+fn pb_sign_at(f: &PB, a: i128, t: usize) -> i32 {
+    let d = pb_deg(f);
+    let ab = B::from_i128(a);
+    let mut r = f[d].clone();
+    for j in (0..d).rev() {
+        r = r.mul(&ab).add(&f[j].shl(t * (d - j)));
+    }
+    r.sign()
+}
+
+// ---- number of roots of a real polynomial strictly inside the unit disc ----
+// Derived from Rouche, not recalled: for |z| = 1 and real p, |p~(z)| = |z^n p(1/z)| = |p(zbar)|
+// = |p(z)|.  So on the unit circle |a_n p| and |a_0 p~| compare exactly as |a_n| and |a_0|, and
+// z*Tp := a_n p - a_0 p~ has the same number of zeros inside as whichever dominates.
+//   |a_n| > |a_0| :  inside(p) = 1 + inside(Tp)          [z*Tp ~ p, and z*Tp has the root 0]
+//   |a_n| < |a_0| :  inside(p) = n - 1 - inside(Tp)      [z*Tp ~ p~, and inside(p~) = n - inside(p)]
+// deg Tp = n-1 exactly, since the leading coefficient of z*Tp is a_n^2 - a_0^2 != 0.
+// Returns None if |a_n| = |a_0| at some level (the test is then inconclusive).
+fn roots_inside_unit(p: &PB) -> Option<usize> {
+    let n = pb_deg(p);
+    if n == 0 {
+        return Some(0);
+    }
+    let an = p[n].clone();
+    let a0 = p[0].clone();
+    let c = mcmp(&an.m, &a0.m);
+    if c == std::cmp::Ordering::Equal {
+        return None;
+    }
+    let mut t = vec![B::zero(); n];
+    for i in 0..n {
+        let x = an.mul(&p[i + 1]);
+        let y = a0.mul(&p[n - (i + 1)]);
+        t[i] = x.add(&B { neg: !y.neg && !y.is_zero(), m: y.m.clone() });
+    }
+    assert!(!t[n - 1].is_zero(), "degree drop in the Schur step");
+    let sub = roots_inside_unit(&t)?;
+    Some(if c == std::cmp::Ordering::Greater { 1 + sub } else { n - 1 - sub })
+}
+
+// exact number of real roots of f in (a/2^t, b/2^t), by Descartes subdivision
+fn real_roots_in(f: &PB, a: i128, b: i128, t: usize, depth: usize) -> Option<usize> {
+    let v = count_in_interval(f, a, b, t);
+    if v <= 1 {
+        return Some(v);
+    }
+    if depth == 0 {
+        return None;
+    }
+    // subdivide at the midpoint (refining t by one bit so the midpoint is representable)
+    let (a2, b2) = (2 * a, 2 * b);
+    let mid = a2 + (b2 - a2) / 2;
+    let atmid = if pb_sign_at(f, mid, t + 1) == 0 { 1 } else { 0 };
+    Some(real_roots_in(f, a2, mid, t + 1, depth - 1)? + atmid + real_roots_in(f, mid, b2, t + 1, depth - 1)?)
+}
+
+// smallest power of two C with |f_n| C^n > sum_{k<n} |f_k| C^k  (then every root has |z| < C)
+fn cauchy_bound(f: &PB) -> i128 {
+    let n = pb_deg(f);
+    let mut c = 1i128;
+    loop {
+        let cb = B::from_i128(c);
+        let mut lhs = f[n].clone();
+        lhs.neg = false;
+        let mut pw = B::from_i128(1);
+        for _ in 0..n {
+            pw = pw.mul(&cb);
+        }
+        lhs = lhs.mul(&pw);
+        let mut rhs = B::zero();
+        let mut pw = B::from_i128(1);
+        for k in 0..n {
+            let mut t = f[k].clone();
+            t.neg = false;
+            rhs = rhs.add(&t.mul(&pw));
+            pw = pw.mul(&cb);
+        }
+        if mcmp(&lhs.m, &rhs.m) == std::cmp::Ordering::Greater {
+            return c;
+        }
+        c *= 2;
+        assert!(c < (1i128 << 60));
+    }
+}
+
+// chi(y0, .) as an integer polynomial in lambda, for the dyadic y0 = 1/2^e
+fn chi_at(chi: &[P], e: usize) -> PB {
+    (0..chi.len())
+        .map(|k| {
+            let c = &chi[k];
+            let mut v = B::zero();
+            for (i, &ci) in c.iter().enumerate() {
+                // ci * y0^i * 2^{2e} = ci * 2^{2e - i e}
+                v = v.add(&B::from_i128(ci).shl(2 * e - i * e));
+            }
+            v
+        })
+        .collect()
 }
 
 // ---------------- complex arithmetic for exploration only ----------------
@@ -619,6 +895,57 @@ fn selftest() {
     let d = dyadic_decimal(&n, 200, 30);
     println!("   root_dyadic(y^2-2) = {}", d);
     assert!(d.starts_with("1.414213562373095048801688724209"));
+
+    // interval root counting with big-integer coefficients
+    let f = pb_from(&vec![-10, 17, -8, 1]); // (y-1)(y-2)(y-5)
+    assert_eq!(count_in_interval(&f, 0, 3, 1), 1); // (0, 1.5)
+    assert_eq!(count_in_interval(&f, 3, 6, 1), 1); // (1.5, 3)
+    assert_eq!(count_in_interval(&f, 6, 12, 1), 1); // (3, 6)
+    assert_eq!(count_in_interval(&f, 3, 12, 1), 2); // (1.5, 6)
+    assert_eq!(count_in_interval(&f, -8, 0, 1), 0); // (-4, 0)
+    assert_eq!(count_in_interval(&f, 0, 12, 1), 3); // (0, 6)
+    println!("   count_in_interval on (y-1)(y-2)(y-5): OK");
+
+    // Schur-Cohn root counting inside the unit disc, against Durand-Kerner
+    let mut seed = 12345u64;
+    let mut rnd = move || {
+        seed = seed.wrapping_mul(6364136223846793005).wrapping_add(1442695040888963407);
+        ((seed >> 33) % 21) as i128 - 10
+    };
+    let mut tested = 0;
+    let mut deg_hist = [0usize; 9];
+    for _ in 0..4000 {
+        let d = 1 + (rnd().unsigned_abs() as usize % 8);
+        let mut c: P = (0..=d).map(|_| rnd()).collect();
+        if c[d] == 0 || c[0] == 0 {
+            continue;
+        }
+        ptrim(&mut c);
+        if pdeg(&c) != d {
+            continue;
+        }
+        let cf: Vec<f64> = c.iter().map(|&x| x as f64 / c[d] as f64).collect();
+        let roots = roots_dk(&cf);
+        // skip anything with a root near the unit circle -- the test is then ill-posed
+        if roots.iter().any(|z| (z.abs() - 1.0).abs() < 1e-6) {
+            continue;
+        }
+        let want = roots.iter().filter(|z| z.abs() < 1.0).count();
+        match roots_inside_unit(&pb_from(&c)) {
+            None => continue,
+            Some(got) => {
+                assert_eq!(got, want, "Schur-Cohn mismatch on {:?}", c);
+                tested += 1;
+                deg_hist[d] += 1;
+            }
+        }
+    }
+    println!(
+        "   roots_inside_unit agrees with Durand-Kerner on {} random polynomials (degrees {:?})",
+        tested,
+        &deg_hist[1..]
+    );
+    assert!(tested > 500);
     println!();
 }
 
@@ -673,17 +1000,31 @@ fn main() {
         // nature of the crossing near the plateau constant
         let ystar = if s == [0usize, 1, 2] { 0.06156635 } else { 0.00592560 };
         println!("\n  eigenvalues of A(y) near y* = {}: (|.| sorted descending)", ystar);
-        for d in [-4.0f64, -1.0, -0.1, 0.0, 0.1, 1.0, 4.0] {
-            let y = ystar * (1.0 + d * 0.02);
+        for frac in [0.0f64, 0.05, 0.25, 0.5, 0.75, 0.9, 0.98, 1.0, 1.02] {
+            let y = ystar * frac;
             let cf = eval_chi(&chi, y);
             let mut r = roots_dk(&cf);
             r.sort_by(|p, q| q.abs().partial_cmp(&p.abs()).unwrap());
-            let top: Vec<String> = r
-                .iter()
-                .take(3)
-                .map(|z| format!("{:.9}{:+.9}i (|.|={:.9})", z.re, z.im, z.abs()))
-                .collect();
-            println!("   y = {:.10}  {}", y, top.join("   "));
+            let top: Vec<String> = r.iter().map(|z| format!("{:.6}", z.abs())).collect();
+            println!("   y = {:.10}  moduli {}", y, top.join(" "));
+        }
+        // real pairwise products (these are what a separating radius r must avoid: rho = r^2)
+        {
+            let y = ystar * 0.5;
+            let cf = eval_chi(&chi, y);
+            let r = roots_dk(&cf);
+            let mut prods: Vec<f64> = vec![];
+            for i in 0..r.len() {
+                for j in (i + 1)..r.len() {
+                    let p = r[i].mul(r[j]);
+                    if p.im.abs() < 1e-9 && p.re > 0.0 {
+                        prods.push(p.re);
+                    }
+                }
+            }
+            prods.sort_by(|a, b| a.partial_cmp(b).unwrap());
+            println!("   positive real pairwise products at y*/2: {:?}",
+                prods.iter().map(|x| format!("{:.5}", x)).collect::<Vec<_>>());
         }
         // ---- discriminant ----
         let t1 = Instant::now();
@@ -810,6 +1151,204 @@ fn main() {
             println!("               number of complex-conjugate eigenvalue pairs changes at y*)");
         }
 
+        // ================= the dominance certificate on (0, y*) =================
+        // Exact proof that the maximum eigenvalue modulus is attained ONCE on (0, y*), so no
+        // zero of f_n = sum_i lambda_i^n accumulates below y*.
+        println!("\n  --- exact dominance certificate on (0, y*) ---");
+        let tb = 60usize;
+        let nb = root_dyadic(&mp, target, tb); // N with N/2^60 <= y* <= (N+1)/2^60
+        let ylo = nb[0] as i128;
+        let yhi = ylo + 1; // (yhi)/2^60 >= y*
+        println!("     working interval (0, {}/2^60), which contains (0, y*]", yhi);
+
+        // (a) no eigenvalue collision on (0, y*): already certified (disc has no zero there)
+        println!("     (a) disc_lambda(chi) has no zero in (0, y*)  [certified above]");
+        println!("         => the {} eigenvalue branches are distinct and analytic there,", n);
+        println!("            so real branches stay real and the count of non-real ones is constant");
+
+        // (b) no two eigenvalues are negatives of each other:  chi(lambda) and chi(-lambda)
+        //     share a root iff the even and odd parts of chi share a root in u = lambda^2
+        let ev: Vec<PB> = (0..=n / 2).map(|i| pb_from(&chi[2 * i])).collect();
+        let od: Vec<PB> = (0..(n + 1) / 2).map(|i| pb_from(&chi[2 * i + 1])).collect();
+        let ralpha = resultant_pb(&ev, &od);
+        let cnt_alpha = count_in_interval(&ralpha, 0, yhi, tb);
+        println!(
+            "     (b) Res_u(even, odd) has degree {} in y; roots in (0, y*]: {}",
+            pb_deg(&ralpha),
+            cnt_alpha
+        );
+        assert_eq!(cnt_alpha, 0, "an eigenvalue pair lambda, -lambda occurs below y*");
+        println!("         => no two eigenvalues satisfy lambda_i = -lambda_j on (0, y*]");
+
+        // (c) the real-root structure at one exact rational point y0 = 1/2^e in (0, y*)
+        let e = if n == 4 { 5usize } else { 8 };
+        let x = chi_at(&chi, e);
+        let cb = cauchy_bound(&x);
+        let nreal = real_roots_in(&x, -cb, cb, 0, 40).expect("root isolation failed");
+        println!(
+            "     (c) at y0 = 1/2^{} = {}: chi(y0,.) has exactly {} real roots (Cauchy bound {})",
+            e,
+            1.0 / (1u64 << e) as f64,
+            nreal,
+            cb
+        );
+
+        if n == 4 {
+            assert_eq!(nreal, 4, "expected all four roots real");
+            println!("         all {} roots are real, so with (a) all roots are real on (0, y*),", n);
+            println!("         and with (b) their moduli are pairwise distinct there.");
+            println!("     ==> the dominant eigenvalue is a single real branch on (0, y*).  QED");
+        } else {
+            assert_eq!(nreal, 2, "expected exactly two real roots");
+            // separating radius r = 5/4 (dyadic)
+            let (rn, rt) = (5i128, 2usize); // r = 5/4
+            let n2 = real_roots_in(&x, -cb << rt, -rn, rt, 40).unwrap();
+            let n3 = real_roots_in(&x, -rn, rn, rt, 40).unwrap();
+            let n4 = real_roots_in(&x, rn, cb << rt, rt, 40).unwrap();
+            println!(
+                "         with r = 5/4: real roots below -r: {}, in (-r,r): {}, above r: {}",
+                n2, n3, n4
+            );
+            assert_eq!((n2, n3, n4), (2, 0, 0));
+            // psi(nu) = 4^n chi(y0, (5/4) nu): count roots inside the unit disc
+            let psi: PB = (0..=n)
+                .map(|k| {
+                    let mut c = B::from_i128(1);
+                    for _ in 0..k {
+                        c = c.mul(&B::from_i128(5));
+                    }
+                    for _ in 0..(n - k) {
+                        c = c.mul(&B::from_i128(4));
+                    }
+                    x[k].mul(&c)
+                })
+                .collect();
+            let inside = roots_inside_unit(&psi).expect("Schur test inconclusive");
+            println!(
+                "         Schur test: chi(y0,.) has {} roots with |lambda| < 5/4, hence {} outside",
+                inside,
+                n - inside
+            );
+            assert_eq!(inside, n - 2);
+            // (d) no root ever has modulus exactly r on (0, y*]
+            let mut hp = pb_zero();
+            let mut hm = pb_zero();
+            for k in 0..=n {
+                let mut c = B::from_i128(1);
+                for _ in 0..k {
+                    c = c.mul(&B::from_i128(5));
+                }
+                for _ in 0..(n - k) {
+                    c = c.mul(&B::from_i128(4));
+                }
+                let term = pb_mul(&pb_from(&chi[k]), &vec![c.clone()]);
+                hp = pb_add(&hp, &term);
+                hm = if k % 2 == 0 { pb_add(&hm, &term) } else { pb_sub(&hm, &term) };
+            }
+            let (cp, cm) = (count_in_interval(&hp, 0, yhi, tb), count_in_interval(&hm, 0, yhi, tb));
+            println!("     (d) chi(y, r) and chi(y, -r) have {} and {} zeros in (0, y*]", cp, cm);
+            assert_eq!((cp, cm), (0, 0));
+            // conjugate pair of modulus r  <=>  nu^2 - s nu + 1 divides psi(y, nu)
+            let psiy: Vec<PB> = (0..=n)
+                .map(|k| {
+                    let mut c = B::from_i128(1);
+                    for _ in 0..k {
+                        c = c.mul(&B::from_i128(5));
+                    }
+                    for _ in 0..(n - k) {
+                        c = c.mul(&B::from_i128(4));
+                    }
+                    pb_mul(&pb_from(&chi[k]), &vec![c])
+                })
+                .collect();
+            // alpha_{k+1} = s alpha_k + beta_k,  beta_{k+1} = -alpha_k  (polynomials in s)
+            let mut al: Vec<Vec<i128>> = vec![vec![0], vec![1]];
+            let mut be: Vec<Vec<i128>> = vec![vec![1], vec![0]];
+            for k in 1..n {
+                let mut na = vec![0i128; al[k].len() + 1];
+                for (i, &c) in al[k].iter().enumerate() {
+                    na[i + 1] += c;
+                }
+                for (i, &c) in be[k].iter().enumerate() {
+                    na[i] += c;
+                }
+                let nb2: Vec<i128> = al[k].iter().map(|&c| -c).collect();
+                al.push(na);
+                be.push(nb2);
+            }
+            let sdeg = al.iter().map(|v| v.len()).max().unwrap();
+            let mut c1: Vec<PB> = vec![pb_zero(); sdeg];
+            let mut c0: Vec<PB> = vec![pb_zero(); sdeg];
+            for k in 0..=n {
+                for (i, &c) in al[k].iter().enumerate() {
+                    if c != 0 {
+                        c1[i] = pb_add(&c1[i], &pb_mul(&psiy[k], &vec![B::from_i128(c)]));
+                    }
+                }
+                for (i, &c) in be[k].iter().enumerate() {
+                    if c != 0 {
+                        c0[i] = pb_add(&c0[i], &pb_mul(&psiy[k], &vec![B::from_i128(c)]));
+                    }
+                }
+            }
+            while c1.len() > 1 && pb_is_zero(c1.last().unwrap()) {
+                c1.pop();
+            }
+            while c0.len() > 1 && pb_is_zero(c0.last().unwrap()) {
+                c0.pop();
+            }
+            let rrho = resultant_pb(&c1, &c0);
+            let cnt_rho = count_in_interval(&rrho, 0, yhi, tb);
+            println!(
+                "         Res_s of the two remainder coefficients has degree {} in y; zeros in (0, y*]: {}",
+                pb_deg(&rrho),
+                cnt_rho
+            );
+            assert_eq!(cnt_rho, 0, "a pair of eigenvalues has product r^2 below y*");
+            println!("         => no eigenvalue has modulus exactly 5/4 on (0, y*], so the count of");
+            println!("            eigenvalues with |lambda| > 5/4 is constant = 2 there, and by (c)");
+            println!("            those two are the two real branches; the other 6 stay inside.");
+            println!("     ==> the maximum modulus is attained by one of two real branches, which by");
+            println!("         (b) never tie.  So the dominant eigenvalue is a single real branch");
+            println!("         on (0, y*).  QED");
+        }
+
+        // (e) the endpoint y = 0, so that dominance holds on the COMPACT [0, y_1] for every
+        //     y_1 < y*.  At y = 0 there is a collision (lambda = -1 is a multiple root), so the
+        //     branch argument does not apply; instead count directly with the radius 5/4.
+        {
+            let x0: PB = chi.iter().map(|c| B::from_i128(c[0])).collect();
+            let cb0 = cauchy_bound(&x0);
+            let psi0: PB = (0..=n)
+                .map(|k| {
+                    let mut c = B::from_i128(1);
+                    for _ in 0..k {
+                        c = c.mul(&B::from_i128(5));
+                    }
+                    for _ in 0..(n - k) {
+                        c = c.mul(&B::from_i128(4));
+                    }
+                    x0[k].mul(&c)
+                })
+                .collect();
+            let ins0 = roots_inside_unit(&psi0).expect("Schur test inconclusive at y = 0");
+            let out0 = n - ins0;
+            let neg0 = real_roots_in(&x0, -cb0 << 2, -5, 2, 40).unwrap();
+            let pos0 = real_roots_in(&x0, 5, cb0 << 2, 2, 40).unwrap();
+            println!(
+                "     (e) at y = 0: {} roots with |lambda| > 5/4, of which real negative {}, real positive {}",
+                out0, neg0, pos0
+            );
+            assert_eq!(out0, neg0 + pos0, "a non-real eigenvalue lies outside |lambda| = 5/4 at y = 0");
+            assert_eq!(pos0, 0);
+            println!("         all of them are real, negative and simple, hence pairwise distinct in");
+            println!("         modulus: the maximum modulus is attained once at y = 0 as well.");
+        }
+        println!("     ==> the largest-minus-second-largest modulus is a continuous, strictly positive");
+        println!("         function on [0, y_1] for every y_1 < y*; being continuous on a compact set");
+        println!("         it is bounded below there, so |f_n(y)| ~ |lambda_1(y)|^n is nonzero for all");
+        println!("         large n uniformly on [0, y_1].  No zero of f_n accumulates below y*.");
+
         // cross-check against the independent exact transfer-matrix values from circband
         let data: &[(f64, f64)] = if s == [0usize, 1, 2] {
             &[(200.0, 0.0616317188928406), (250.0, 0.0616081849246370), (300.0, 0.0615954010144151),
@@ -868,6 +1407,37 @@ fn main() {
     println!("moduli are then equal identically.  So disc = 0 is the right condition, y* is the left");
     println!("endpoint of the accumulation band, and lim_n y_min(n) = y* exactly (approached from");
     println!("above with the 1/n^2 band-edge law, as the finite-n data confirm).");
+    println!();
+    println!("PROVED BY EXACT ARITHMETIC (no floating point on the certification path):");
+    println!("  1. chi(y,lambda) and disc_lambda(chi) over Z[y];");
+    println!("  2. the minimal polynomials, their irreducibility (irreducible mod a prime), degrees 4");
+    println!("     and 17, and 70-digit certified enclosures of y*;");
+    println!("  3. y* is the LEAST positive zero of disc_lambda(chi), and disc changes sign there;");
+    println!("  4. on the whole of [0, y*) the maximum eigenvalue modulus of A(y) is attained by");
+    println!("     EXACTLY ONE eigenvalue, which is real, simple and negative.  With");
+    println!("     |f_n| >= |lambda_1|^n (1 - (N-1)(1+delta)^-n) on any compact [0,y_1], y_1 < y*,");
+    println!("     this gives liminf_n y_min(n) >= y* by an elementary argument -- Beraha-Kahane-Weiss");
+    println!("     is not needed for this half.");
+    println!("     [(4) uses: no discriminant zero on (0,y*), so the branches are analytic and real");
+    println!("      branches stay real; Res_u(even,odd) has no zero on (0,y*], so no two eigenvalues");
+    println!("      are negatives of each other; for the octic a separating radius 5/4 that no");
+    println!("      eigenvalue ever attains (chi(y,+-5/4) has no zero, and Res_s of the remainder of");
+    println!("      chi mod nu^2-s nu+1 has no zero), plus an exact Schur/Rouche count at one rational");
+    println!("      point showing exactly two eigenvalues lie outside that radius; and the same count");
+    println!("      at the endpoint y = 0.]");
+    println!();
+    println!("THE OTHER HALF, limsup_n y_min(n) <= y*, rests on Beraha-Kahane-Weiss: immediately");
+    println!("above y* the two colliding branches are a complex-conjugate pair (the discriminant");
+    println!("changes sign there, exactly certified) and still the only two eigenvalues outside the");
+    println!("radius 5/4 (the radius certificate holds on an interval reaching past y*), so their");
+    println!("moduli are equal and maximal and the zeros accumulate.  This half uses a classical");
+    println!("theorem rather than a self-contained computation; it is independently confirmed by the");
+    println!("exact finite-n data, where n^2 (y_min(n) - y*) is constant to 5 digits over n = 200..500.");
+    println!();
+    println!("NOT proved here: nothing that the argument above relies on.  Floating point was used");
+    println!("only to CHOOSE the radius 5/4, the sample points and the candidate minimal polynomials;");
+    println!("each choice is then verified exactly, and a bad choice would make a check fail loudly,");
+    println!("not produce a wrong certificate.");
 }
 
 // ---------------- irreducibility certificate: F mod p irreducible => F irreducible over Q ----

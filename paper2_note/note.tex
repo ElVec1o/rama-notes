@@ -790,7 +790,20 @@ $y^*=0.0059255959422562\ldots$ and $99.8518601014\ldots\%$. Both stop strictly
 short of $100\%$. The finite-$n$ values approach these from above with a $1/n^2$
 band-edge law, and $n^2\bigl(y_{\min}(n)-y^*\bigr)$ is constant to five digits at
 $n=200,300,500$, which identifies the extrapolated plateau with the algebraic
-number. This is what one should expect:
+number.
+
+One half of the limit is certified exactly, without appeal to
+Beraha--Kahane--Weiss. On the whole of $[0,y^*)$ the largest eigenvalue modulus of
+$A(y)$ is attained by exactly one eigenvalue, which is real, simple and negative:
+the discriminant has no zero there, so real branches stay real; no two eigenvalues
+are negatives of one another, by a resultant of the even and odd parts of $\chi$
+which has no zero on $(0,y^*]$; and for the octic a separating radius $5/4$, which
+no eigenvalue ever attains, together with one exact Schur count, pins the number of
+eigenvalues outside it at two. Hence $|f_n|\ge|\lambda_1|^n(1-(N-1)(1+\delta)^{-n})$
+on any compact subinterval, giving $\liminf_ny_{\min}(n)\ge y^*$. The reverse
+inequality does use Beraha--Kahane--Weiss: just above $y^*$ the two branches form a
+conjugate pair of equal and maximal modulus, and one needs that theorem to conclude
+that the zeros accumulate there. This is what one should expect:
 a family with a fixed local structure has a fixed Benjamini--Schramm limit, which
 is not a tree, so its matching measure retains a gap at $0$. Girth does help
 monotonically --- at $30$ vertices, girth $4$, $6$ and $8$ give $98.166\%$,
