@@ -1161,7 +1161,16 @@ they coincide is Proposition~\ref{prop:reflect} seen through $\theta$, which is
 two-to-one about $y=a$.
 
 Recentring at $a$ turns $\mu$ into a matching polynomial, and the coefficients have
-a basis-free form.
+a basis-free form. They also have a Grassmann form: writing
+$A_k=b_{k1}b_{k1}^{\mathsf T}+b_{k2}b_{k2}^{\mathsf T}$ and
+$\omega_k=b_{k1}\wedge b_{k2}\in\Lambda^2\mathbb R^p$, the Cauchy--Binet formula
+gives $e_{2r}\bigl(\sum_{k\in T}A_k\bigr)=\bigl\|\bigwedge_{k\in T}\omega_k\bigr\|^2$,
+so
+\[
+\mu(x+a)=\sum_{T\subseteq[q]}(-1)^{|T|}\Bigl\|\bigwedge_{k\in T}\omega_k\Bigr\|^2x^{\,p-2|T|},
+\]
+and $M_r$ is a sum of squared Pl\"ucker norms. In the commuting case each norm is
+$0$ or $1$ and one recovers the matching numbers.
 
 \begin{theorem}\label{thm:matchingform}
 Let $P_1,\dots,P_q$ be rank-two orthogonal projections on $\mathbb R^p$ with
@@ -1338,6 +1347,31 @@ parameters the variance is $(b/a)(1-b/(na))$, increasing in $n$; so the projecti
 where $n=b$, are the \emph{variance-minimizing} extreme point of the whole family.
 The scalar counterexample $A_k=(b/p)I$ sits at the opposite end, at the Poisson
 limit, with variance exceeding the projection value by exactly $b/a^2$.
+
+This has a consequence that organizes the whole picture. Fix $(a,b)$ and let the
+common rank $n$ of the $A_k$ vary, with $A_k=(b/n)Q_k$ for rank-$n$ projections
+$Q_k$ summing to $(an/b)I$, so that $\operatorname{tr}A_k=b$ and $\sum_kA_k=aI$
+throughout. At $(a,b)=(4,2)$, $p=6$, $q=12$ the extreme roots move monotonically:
+\begin{center}
+\begin{tabular}{ccc}
+\hline
+$n$ & least root & greatest root\\
+\hline
+$2$ & $1.129$ & $6.871$\\
+$3$ & $1.004$ & $7.706$\\
+$4$ & $0.951$ & $8.090$\\
+$5$ & $0.921$ & $8.317$\\
+$6$ & $0.903$ & $8.467$\\
+\hline
+\end{tabular}
+\end{center}
+against the band $[0.536,7.464]$ at $n=b=2$ and the Marchenko--Pastur interval
+$[0.343,11.657]$ approached as $n\to p$. So the conjectured band is the endpoint at
+$n=b$ of a family of intervals increasing in $n$, whose other endpoint is
+Marchenko--Pastur, and the Marchenko--Pastur value is attained. That is the correct
+reading of the obstructions recorded above: each of them is sharp for the class it
+sees, namely the one with $n$ unrestricted, and the conjecture is the assertion that
+restricting to $n=b$ contracts the interval all the way to the tree band.
 
 The condition $\operatorname{rank}A_k\le b$ is therefore the condition that the
 occupancy of a block fluctuates as little as possible at its given mean, and the
