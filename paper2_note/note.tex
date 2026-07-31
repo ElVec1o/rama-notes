@@ -1039,10 +1039,22 @@ the family only through $\sum_k\|A_k\|_F^2$, which by Cauchy--Schwarz is at leas
 $b$ with equality exactly for idempotents. Projections are thus the extreme point
 already at the first nontrivial coefficient.
 
-For rank-$b$ orthogonal projections the statement survives. A search over more than
+For rank-$b$ orthogonal projections the statement survives, once one adds the
+hypothesis $a\ge b$, equivalently $p\le q$, which the graph setting supplies
+automatically. Without it the statement is false for a trivial reason: if $p>q$
+then $y^{p-q}$ divides $\mu[P_1,\dots,P_q]$, so $0$ is a root while the lower band
+edge is positive. Taking $p=6$, $q=4$, $(a,b)=(2,3)$ with $P_1=P_2$ and $P_3=P_4$
+the projections onto two complementary $3$-spaces gives a double root at $0$
+against a lower edge of $(\sqrt2-1)^2$. A search over more than
 $10^5$ feasible families --- real and complex projections, and the intermediate
 class $\operatorname{rank}\le b$, $\operatorname{tr}=b$ --- produced no violation,
-the smallest observed margin being $3.6\%$ of the band width. Two features make
+the smallest observed margin being $3.6\%$ of the band width. That figure needs a
+caveat, though, and it cuts against the aggregate impression: every tight case in
+those searches has $b=2$, hence lies in the regime settled by
+Proposition~\ref{prop:reflect}. In the genuinely open range $b\ge3$ the observed
+margins are wide --- at $(p,q,a,b)=(6,8,4,3)$ the least root is $0.486$ against a
+band edge of $0.101$, a factor of nearly five. The numerical evidence for the open
+part of the statement is thinner than the total counts suggest. Two features make
 this the right generalization to record. First, commuting rank-$b$ projections with
 $\sum_kP_k=aI$ are simultaneously diagonalizable and therefore $0/1$ diagonal, so
 they are \emph{exactly} the biregular incidence families: the projection statement
@@ -1054,8 +1066,49 @@ letter, while at length four $\operatorname{tr}(A_iA_jA_iA_k)$ does not reduce. 
 first free invariant sits at level four on both sides of the analogy, matching the
 $4$-cycle count of Theorem~\ref{thm:c4}.
 
-Graphs are not always extremal there, however, and the smallest case can be settled
-exactly. Take $b=2$, $p=4$, so $q=2a$ and $\sum_kP_k=aI_4$. Writing
+At $b=2$ the whole question collapses onto the known half, by a symmetry.
+
+\begin{proposition}\label{prop:reflect}
+Let $P_1,\dots,P_q$ be rank-$2$ orthogonal projections on $\mathbb R^p$ with
+$\sum_kP_k=aI$. Then $\mu[P_1,\dots,P_q](2a-y)=(-1)^p\mu[P_1,\dots,P_q](y)$; in
+particular $\lambda_{\min}+\lambda_{\max}=2a$.
+\end{proposition}
+
+\begin{proof}
+The mixed characteristic polynomial is affine-linear in each slot, so it commutes
+with taking expectations slotwise, and for rank-one slots
+$\mu[v_1v_1^{\mathsf T},\dots]=\det\bigl(yI-\sum_kv_kv_k^{\mathsf T}\bigr)$, since a
+multi-affine polynomial is sent by $\prod_k(1-\partial_k)$ to its value at
+$z=(-1,\dots,-1)$. Choose an orthonormal pair $e_k,f_k$ spanning the range of $P_k$
+and set $v_k=e_k+\varepsilon_kf_k$ with $\varepsilon_k$ independent uniform signs.
+Then $\mathbb E\,v_kv_k^{\mathsf T}=P_k$ and
+$v_kv_k^{\mathsf T}=P_k+\varepsilon_kS_k$ with
+$S_k=e_kf_k^{\mathsf T}+f_ke_k^{\mathsf T}$ and $S_k^2=P_k$, so
+$\mu(y)=\mathbb E_\varepsilon\det\bigl((y-a)I-\sum_k\varepsilon_kS_k\bigr)$. That is
+an even or odd function of $t=y-a$ according to the parity of $p$, because
+$\varepsilon\mapsto-\varepsilon$ preserves the distribution.
+\end{proof}
+
+Since $2a-(\sqrt{a-1}+1)^2=(\sqrt{a-1}-1)^2$, the two band edges are exchanged by
+the reflection, so at $b=2$ the open lower bound is \emph{equivalent} to the known
+upper bound. For diagonal families this is Theorem~\ref{thm:subdiv} again: there
+$\sum_k\varepsilon_kS_k$ is a signed adjacency matrix, the expectation is
+Godsil--Gutman, and one recovers $\nu_{S(H)}(y)=\mu_H(y-a)$.
+
+This also locates the obstruction at $b\ge3$ sharply. Writing
+$N_k=v_kv_k^{\mathsf T}-P_k$ one has $N_k^2=(b-2)N_k+(b-1)P_k$, with spectrum
+$\{b-1,\,-1^{(b-1)}\}$ on the range of $P_k$; the reflection needs this invariant
+under $N_k\mapsto-N_k$, which happens exactly when $b=2$. Equivalently: the mean
+root is always $a$, since $\sum_i\lambda_i=\operatorname{tr}\sum_kP_k=pa$, while the
+band centre is $a+b-2$. The conjecture therefore asserts a skew of exactly $b-2$,
+which is the operator form of the displacement in Theorem~\ref{thm:subcoef} and is
+invisible to any reflection or first-moment argument.
+
+Graphs are not always extremal in that class, however, and the smallest case can be
+settled exactly. This is no longer needed for the band --- at $p=4$, $b=2$ the
+reflection gives $\mu(t+a)=t^4-2at^2+\beta$, and real-rootedness alone forces
+$0\le\beta\le a^2$, hence $t^2\le2a\le4(a-1)$ --- but it identifies the extremal
+families. Take $b=2$, $p=4$, so $q=2a$ and $\sum_kP_k=aI_4$. Writing
 $g_{ij}=\operatorname{tr}(P_iP_j)$ and $h_{ij}=\operatorname{tr}\bigl((P_iP_j)^2\bigr)$,
 
 \begin{proposition}\label{prop:E4}
