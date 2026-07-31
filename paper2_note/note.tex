@@ -663,8 +663,7 @@ $s\in\{\pm1\}^{E}$, and $D$ the degree matrix. Then, with $s$ uniform,
 =\sum_{M}(-u^2)^{|M|}\prod_{v\notin V(M)}\bigl(1+(d_v-1)u^2\bigr),
 \]
 the sum over all matchings $M$ of $G$. If $G$ is $(a,b)$-biregular bipartite with
-$P=a-1$, $Q=b-1$, the right side is
-$u^{-n}\prod$-normalized to $\mu_G(\lambda)$ at
+$P=a-1$, $Q=b-1$, this equals $\mu_G(\lambda)$ up to the normalization
 $\lambda=\sqrt{(1+Pu^2)(1+Qu^2)}/u$, and then, writing $t=u^2$,
 \[
 \lambda^2-c=\frac1t+mt .
@@ -677,16 +676,33 @@ $s_e$ for each edge it traverses, and $\mathbb E_s[s_e]=0$, so only permutations
 traversing every edge an even number of times survive; as each edge can be used
 at most twice, these are exactly the involutions, that is the matchings. An
 involution with $k$ transpositions has sign $(-1)^k$ and contributes $u^2s_e^2=u^2$
-per transposition, and the diagonal entry $1+(d_v-1)u^2$ at each fixed point.
-The biregular substitution is the identity
+per transposition, and the diagonal entry at each fixed point. The biregular
+substitution is the identity
 $\sum_k(-1)^km_ku^{2k}(1+Pu^2)^{p-k}(1+Qu^2)^{q-k}$ rewritten in $\lambda$, and
 $\lambda^2=1/t+(P+Q)+mt$ gives the last display since $c=P+Q$.
 \end{proof}
 
-Combining with the Ihara--Bass formula for signed graphs, the left side is
-$(1-u^2)^{|E|-|V|}$ times the expected characteristic polynomial of the
-non-backtracking operator. Since $1/t+mt=2\sqrt m\cos\varphi$ exactly when
-$|t|=1/\sqrt m$, Proposition~\ref{prop:gauge} says:
+Almost none of this is new, and it is worth being exact about what is. The
+averaging step is the Godsil--Gutman argument \cite{GG} and holds for an
+arbitrary diagonal matrix in place of $I+u^2(D-I)$. The right-hand side, with
+those degree-dependent weights, is the monomer--dimer partition function
+$\Xi_G(-u^2,\lambda)$ with $\lambda_v=1+(d_v-1)u^2$, which Watanabe and Fukumizu
+prove equals their polynomial $\omega_G(u^2)$ \cite[Thm.~8]{WF}; for a
+$(q+1)$-regular graph they reduce it to $u^{|V|}\mu_G(1/u+qu)$
+\cite[Eq.~(29)]{WF}, which in the regular case goes back to Nagle \cite{Na}. They
+also record the resulting band correspondence: for a $(q+1)$-regular graph the
+roots lie on the circle of radius $1/q$, by \cite{HL}. What does not appear in
+\cite{WF} is any average --- their Theorem 10 relates the \emph{unaveraged}
+determinant to $\omega_G$ by a sum over deletions of vertex-disjoint cycles, and
+they remark that the relation of that theorem to the graph zeta function is not
+understood. The observation here is just that averaging over the sign gauge kills
+exactly those cycle terms, so that $\omega_G$ \emph{is} an expected
+non-backtracking characteristic polynomial; by the signed Ihara--Bass formula,
+$\mathbb E_s\det(I-uW_s)$ equals $(1-u^2)^{|E|-|V|}$ times the left-hand side
+above. The biregular substitution, which \cite{WF} does not treat, is what
+converts this into a statement about the band.
+
+Since $1/t+mt=2\sqrt m\cos\varphi$ exactly when $|t|=1/\sqrt m$:
 
 \begin{corollary}\label{cor:ramanujan}
 For $(a,b)$-biregular bipartite $G$, Conjecture~\ref{conj:gap} at $d=1$ holds for
@@ -706,14 +722,6 @@ the roots of $\mu_G$ are not the spectrum of any operator on $G$, and hence why
 the available technology for such statements is the method of interlacing
 families \cite{MSS}, which works with expected polynomials, rather than a
 spectral argument.
-
-Proposition~\ref{prop:gauge} is elementary given \cite{GG} and the signed
-Ihara--Bass formula, and we claim no novelty for it beyond the observation that
-the composite is what Conjecture~\ref{conj:gap} is about. The nearest statement
-we have found in the literature is that of Watanabe and Fukumizu \cite{WF}, whose
-loop-sum polynomial carries the Bass prefactor $(1-\beta)^{|E|-|V|}$ and
-specializes to the monomer--dimer partition function, though it is not there
-identified as a Bass-type formula.
 
 Proposition~\ref{prop:moments} also explains why the interval is not filled. The
 mean square of the roots is $\bigl[(b-2)^2+a(b-1)\bigr]$, so the fraction of the
@@ -1116,6 +1124,9 @@ bipartite biregular graphs and applications}, Combin.\ Probab.\ Comput.\
 \textbf{31} (2022) 229--267.
 \bibitem{HL} O.~J.~Heilmann, E.~H.~Lieb, \emph{Theory of monomer-dimer
 systems}, Comm.\ Math.\ Phys.\ \textbf{25} (1972) 190--232.
+\bibitem{Na} J.~F. Nagle, \emph{New series-expansion method for the dimer
+problem}, Phys. Rev. \textbf{152} (1966) 190--197.
+
 \bibitem{Je} M.~Jerrum, \emph{Two-dimensional monomer-dimer systems are
 computationally intractable}, J. Statist. Phys. \textbf{48} (1987) 121--134.
 
