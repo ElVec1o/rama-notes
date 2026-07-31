@@ -1255,6 +1255,87 @@ theorem mCount_inclusion_exclusion (E : Finset (α × β)) (k : ℕ) :
   refine Finset.sum_congr rfl fun S _ => ?_
   rw [← Finset.sum_filter, Finset.sum_const, nsmul_eq_mul, mul_comm]
 
+/-- The endpoints of a set of conflicting pairs. -/
+def endpoints (S : Finset ((α × β) × (α × β))) : Finset (α × β) :=
+  S.image Prod.fst ∪ S.image Prod.snd
+
+theorem subset_endpoints_iff {S : Finset ((α × β) × (α × β))} {T : Finset (α × β)} :
+    (∀ q ∈ S, q.1 ∈ T ∧ q.2 ∈ T) ↔ endpoints S ⊆ T := by
+  classical
+  simp only [endpoints, Finset.union_subset_iff, Finset.image_subset_iff]
+  constructor
+  · intro h; exact ⟨fun q hq => (h q hq).1, fun q hq => (h q hq).2⟩
+  · rintro ⟨h1, h2⟩ q hq; exact ⟨h1 q hq, h2 q hq⟩
+
+/-- **The weight is a binomial coefficient.**  The `k`-subsets of `E` containing a fixed
+`V ⊆ E` correspond to the `(k - |V|)`-subsets of `E \ V`, by removing and restoring `V`.
+The hypothesis `|V| ≤ k` is needed: without it no `k`-subset contains `V` at all, while the
+binomial coefficient on the right would still be `1`. -/
+theorem card_powersetCard_filter_superset {E V : Finset (α × β)} (hVE : V ⊆ E) {k : ℕ}
+    (hk : V.card ≤ k) :
+    ((E.powersetCard k).filter (fun T => V ⊆ T)).card
+      = (E.card - V.card).choose (k - V.card) := by
+  classical
+  have hsd : ∀ {A B : Finset (α × β)}, B ⊆ A → (A \ B).card = A.card - B.card := by
+    intro A B h
+    rw [Finset.card_sdiff, Finset.inter_eq_left.mpr h]
+  rw [← hsd hVE, ← Finset.card_powersetCard]
+  refine Finset.card_bij' (fun T _ => T \ V) (fun U _ => U ∪ V) ?_ ?_ ?_ ?_
+  · intro T hT
+    simp only [Finset.mem_filter, Finset.mem_powersetCard] at hT
+    obtain ⟨⟨hTE, hTk⟩, hVT⟩ := hT
+    refine Finset.mem_powersetCard.mpr ⟨Finset.sdiff_subset_sdiff hTE (le_refl V), ?_⟩
+    rw [hsd hVT, hTk]
+  · intro U hU
+    simp only [Finset.mem_powersetCard] at hU
+    obtain ⟨hUE, hUk⟩ := hU
+    have hdisj : Disjoint U V := Finset.disjoint_of_subset_left hUE Finset.sdiff_disjoint
+    refine Finset.mem_filter.mpr ⟨Finset.mem_powersetCard.mpr ⟨?_, ?_⟩, Finset.subset_union_right⟩
+    · exact Finset.union_subset (hUE.trans Finset.sdiff_subset) hVE
+    · rw [Finset.card_union_of_disjoint hdisj, hUk]; omega
+  · intro T hT
+    simp only [Finset.mem_filter] at hT
+    exact Finset.sdiff_union_of_subset hT.2
+  · intro U hU
+    simp only [Finset.mem_powersetCard] at hU
+    have hdisj : Disjoint U V := Finset.disjoint_of_subset_left hU.1 Finset.sdiff_disjoint
+    exact Finset.union_sdiff_cancel_right hdisj
+
+theorem endpoints_subset {E : Finset (α × β)} {S : Finset ((α × β) × (α × β))}
+    (hSE : S ⊆ conflictPairs E) : endpoints S ⊆ E := by
+  classical
+  intro v hv
+  simp only [endpoints, Finset.mem_union, Finset.mem_image] at hv
+  rcases hv with ⟨q, hq, rfl⟩ | ⟨q, hq, rfl⟩ <;>
+    · have := hSE hq
+      simp only [conflictPairs, Finset.mem_filter, Finset.mem_offDiag] at this
+      tauto
+
+/-- **The closed form.**  Combining the exchange with the binomial evaluation, `m_k` is a signed
+sum over sets of conflicting pairs, each weighted by a single binomial coefficient depending only
+on `|E|` and the number of endpoints.  Grouping the sets `S` by the isomorphism type of the
+subgraph they span is what turns this into the ten-term expansion of `thm:c4`; the terms with more
+than `k` endpoints drop out. -/
+theorem mCount_closed_form (E : Finset (α × β)) (k : ℕ) :
+    (mCount E k : ℤ)
+      = ∑ S ∈ (conflictPairs E).powerset,
+          (-1 : ℤ) ^ S.card
+            * (if (endpoints S).card ≤ k
+               then ((E.card - (endpoints S).card).choose (k - (endpoints S).card) : ℤ)
+               else 0) := by
+  classical
+  rw [mCount_inclusion_exclusion]
+  refine Finset.sum_congr rfl fun S hS => ?_
+  have hVE : endpoints S ⊆ E := endpoints_subset (Finset.mem_powerset.mp hS)
+  simp only [subset_endpoints_iff]
+  by_cases hk : (endpoints S).card ≤ k
+  · rw [if_pos hk, card_powersetCard_filter_superset hVE hk]
+  · rw [if_neg hk, Finset.filter_false_of_mem, Finset.card_empty]
+    · simp
+    · intro T hT hsub
+      have hTk : T.card = k := (Finset.mem_powersetCard.mp hT).2
+      exact hk (hTk ▸ Finset.card_le_card hsub)
+
 end ConflictGraph
 
 end BipartiteMatchingPoly
