@@ -1119,7 +1119,34 @@ Proposition~\ref{prop:abbound} is formalized in
 \texttt{RamaLean/ProductBound.lean} as \texttt{no\_root\_above} and
 \texttt{edge\_gap}.
 
-At $b=2$ the whole question collapses onto the known half, by a symmetry.
+At $b=2$ the representation \eqref{eq:dpp} collapses further. Only $s_k\in\{0,1,2\}$
+occurs, and $\sum_ks_k=p$ forces the counts of $0$s and $1$s to be determined by
+$n_2=\#\{k:s_k=2\}$, so with $\Psi(u)=\mathbb E\,u^{n_2}$ one has
+\[
+\mu(y)=(y-a)^p\,\Psi\bigl(\theta(y)\bigr),\qquad \theta(y)=1-\frac{a^2}{(y-a)^2}.
+\]
+Real-rootedness of $\mu$ forces $\Psi$ to be real-rooted with nonpositive roots,
+hence $n_2$ a sum of independent Bernoulli variables, and the extreme roots of $\mu$
+are $a\bigl(1\pm\sqrt{\pi_{\max}}\bigr)$ for $\pi_{\max}$ the largest of those
+parameters. Since the band at $b=2$ is $[a-2\sqrt{a-1},\,a+2\sqrt{a-1}]$, both edges
+say $a\sqrt{\pi_{\max}}\le2\sqrt{a-1}$:
+
+\begin{proposition}\label{prop:ineq2}
+For $b=2$, Conjecture~\ref{conj:gap} for the projection family is equivalent to
+\[
+\pi_{\max}\ \le\ \frac{4(a-1)}{a^2}\,=\,1-\Bigl(\frac{a-2}{a}\Bigr)^{2}.
+\]
+\end{proposition}
+
+The equivalence of the two edges with each other and with this inequality is
+formalized in \texttt{RamaLean/ProductBound.lean} as \texttt{band\_iff\_pi}; that
+they coincide is Proposition~\ref{prop:reflect} seen through $\theta$, which is
+two-to-one about $y=a$. Adversarial search over rank-two projection families and
+over random biregular graphs reaches $0.83$ of the threshold at $a=3$ and $0.72$ at
+$a=4$, with no violation; graphs are marginally more extremal than general
+projections.
+
+At $b=2$ the whole question also collapses onto the known half, by a symmetry.
 
 \begin{proposition}\label{prop:reflect}
 Let $P_1,\dots,P_q$ be rank-$2$ orthogonal projections on $\mathbb R^p$ with
