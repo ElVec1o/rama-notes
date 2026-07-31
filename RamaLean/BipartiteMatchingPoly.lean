@@ -1175,6 +1175,45 @@ theorem alt_sum_conflictPairs (T : Finset (α × β)) :
   · rw [if_pos ((conflictPairs_eq_empty_iff T).mpr h), if_pos h]
   · rw [if_neg (fun hc => h ((conflictPairs_eq_empty_iff T).mp hc)), if_neg h]
 
+/-- The `k`-matchings are the `k`-subsets that are matchings. -/
+theorem matchings_card_eq_powersetCard_filter (E : Finset (α × β)) (k : ℕ) :
+    (matchings E).filter (fun M => M.card = k) = (E.powersetCard k).filter IsMatching := by
+  classical
+  ext M
+  simp only [Finset.mem_filter, matchings, Finset.mem_powerset, Finset.mem_powersetCard]
+  tauto
+
+/-- Conflict is intrinsic to a pair of edges, so the conflicting pairs inside `T` are exactly
+those conflicting pairs of `E` both of whose entries lie in `T`. -/
+theorem mem_conflictPairs_iff {E T : Finset (α × β)} (hTE : T ⊆ E)
+    {q : (α × β) × (α × β)} :
+    q ∈ conflictPairs T ↔ q ∈ conflictPairs E ∧ q.1 ∈ T ∧ q.2 ∈ T := by
+  classical
+  simp only [conflictPairs, Finset.mem_filter, Finset.mem_offDiag]
+  constructor
+  · rintro ⟨⟨h1, h2, hne⟩, hc⟩
+    exact ⟨⟨⟨hTE h1, hTE h2, hne⟩, hc⟩, h1, h2⟩
+  · rintro ⟨⟨⟨_, _, hne⟩, hc⟩, h1, h2⟩
+    exact ⟨⟨h1, h2, hne⟩, hc⟩
+
+/-- **`m_k` as a double sum.**  Replacing the matching indicator by
+`alt_sum_conflictPairs` turns the count of `k`-matchings into a sum over `k`-subsets of an
+alternating sum over their internal conflicts.  Exchanging the two summations — using
+`mem_conflictPairs_iff`, which says the inner index set depends on `T` only through which
+endpoints lie in it — is what produces the signed sum of subgraph counts of the conflict graph
+that Theorems~`thm:universal` and `thm:c4` evaluate. -/
+theorem mCount_eq_sum_alt (E : Finset (α × β)) (k : ℕ) :
+    (mCount E k : ℤ)
+      = ∑ T ∈ E.powersetCard k, ∑ S ∈ (conflictPairs T).powerset, (-1 : ℤ) ^ S.card := by
+  classical
+  have hinner : ∀ T ∈ E.powersetCard k,
+      (∑ S ∈ (conflictPairs T).powerset, (-1 : ℤ) ^ S.card)
+        = if IsMatching T then 1 else 0 := fun T _ => alt_sum_conflictPairs T
+  rw [Finset.sum_congr rfl hinner, Finset.sum_ite, Finset.sum_const, Finset.sum_const]
+  simp only [smul_eq_mul, mul_one, mul_zero, add_zero, nsmul_eq_mul]
+  unfold mCount
+  rw [matchings_card_eq_powersetCard_filter]
+
 end ConflictGraph
 
 end BipartiteMatchingPoly
