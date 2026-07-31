@@ -1151,7 +1151,11 @@ $\operatorname{rank}(P_iP_j)\le1$ for all $i\ne j$.
 Nonnegativity is immediate once the right object is named: for $i\ne j$ put
 $X=P_jP_iP_j\succeq0$; then $\operatorname{tr}\bigl((P_iP_j)^m\bigr)=\operatorname{tr}(X^m)$
 for every $m\ge1$, so $g_{ij}^2-h_{ij}=(\operatorname{tr}X)^2-\operatorname{tr}X^2
-=2\sum_{r<s}\lambda_r\lambda_s\ge0$.
+=2\sum_{r<s}\lambda_r\lambda_s\ge0$. The last step is formalized in
+\texttt{RamaLean/TracePSD.lean}: \texttt{sq\_sum\_sub\_sum\_sq} gives the identity
+$\bigl(\sum f\bigr)^2-\sum f^2=\sum_i\sum_{j\ne i}f_if_j$ over any finite index set
+and \texttt{sum\_sq\_le\_sq\_sum} the inequality under nonnegativity, with the
+spectral input carried as explicit hypotheses on the matrix form.
 
 Identifying a $2$-plane $U\subset\mathbb R^4$ with its unit simple bivector
 $\omega_U\in\Lambda^2\mathbb R^4\cong\mathbb R^6$ gives
