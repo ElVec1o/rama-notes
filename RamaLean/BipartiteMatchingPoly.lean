@@ -1336,6 +1336,55 @@ theorem mCount_closed_form (E : Finset (α × β)) (k : ℕ) :
       have hTk : T.card = k := (Finset.mem_powersetCard.mp hT).2
       exact hk (hTk ▸ Finset.card_le_card hsub)
 
+/-- **Grouping by subgraph type.**  The weight in `mCount_closed_form` depends on `S` only
+through its size and its number of endpoints, so the sum fibers over that pair: `m_k` is a signed
+combination of the numbers of conflict sets with a given size and a given number of endpoints.
+
+Those numbers are exactly the subgraph counts of the conflict graph.  For `k = 4` there are ten
+contributing types, and `three_meeting_share` and `four_cycle_trichotomy` are what evaluate them:
+the first forces every triangle of the conflict graph to be a triple of edges through one vertex,
+and the second splits the four-cycles into the degenerate ones inside a single clique and the
+`2 x 2` all-ones submatrices, that is the four-cycles of `G`. -/
+theorem mCount_grouped (E : Finset (α × β)) (k : ℕ) (T : Finset (ℕ × ℕ))
+    (hT : ∀ S ∈ (conflictPairs E).powerset, (S.card, (endpoints S).card) ∈ T) :
+    (mCount E k : ℤ)
+      = ∑ ev ∈ T,
+          (((conflictPairs E).powerset.filter
+              (fun S => (S.card, (endpoints S).card) = ev)).card : ℤ)
+            * ((-1 : ℤ) ^ ev.1
+                * (if ev.2 ≤ k then ((E.card - ev.2).choose (k - ev.2) : ℤ) else 0)) := by
+  classical
+  rw [mCount_closed_form, ← Finset.sum_fiberwise_of_maps_to hT]
+  refine Finset.sum_congr rfl fun ev _ => ?_
+  have hcong : ∀ S ∈ (conflictPairs E).powerset.filter
+        (fun S => (S.card, (endpoints S).card) = ev),
+      (-1 : ℤ) ^ S.card
+        * (if (endpoints S).card ≤ k
+           then ((E.card - (endpoints S).card).choose (k - (endpoints S).card) : ℤ) else 0)
+      = (-1 : ℤ) ^ ev.1
+        * (if ev.2 ≤ k then ((E.card - ev.2).choose (k - ev.2) : ℤ) else 0) := by
+    intro S hS
+    obtain ⟨-, heq⟩ := Finset.mem_filter.mp hS
+    rw [show S.card = ev.1 from congrArg Prod.fst heq,
+        show (endpoints S).card = ev.2 from congrArg Prod.snd heq]
+  rw [Finset.sum_congr rfl hcong, Finset.sum_const, nsmul_eq_mul]
+
+/-- The grouping with an explicit index set: sizes are bounded by the number of conflicting pairs,
+endpoint counts by the number of edges. -/
+theorem mCount_grouped_range (E : Finset (α × β)) (k : ℕ) :
+    (mCount E k : ℤ)
+      = ∑ ev ∈ Finset.range ((conflictPairs E).card + 1) ×ˢ Finset.range (E.card + 1),
+          (((conflictPairs E).powerset.filter
+              (fun S => (S.card, (endpoints S).card) = ev)).card : ℤ)
+            * ((-1 : ℤ) ^ ev.1
+                * (if ev.2 ≤ k then ((E.card - ev.2).choose (k - ev.2) : ℤ) else 0)) := by
+  classical
+  refine mCount_grouped E k _ fun S hS => ?_
+  have hSE : S ⊆ conflictPairs E := Finset.mem_powerset.mp hS
+  refine Finset.mem_product.mpr ⟨Finset.mem_range.mpr ?_, Finset.mem_range.mpr ?_⟩
+  · exact Nat.lt_succ_of_le (Finset.card_le_card hSE)
+  · exact Nat.lt_succ_of_le (Finset.card_le_card (endpoints_subset hSE))
+
 end ConflictGraph
 
 end BipartiteMatchingPoly
