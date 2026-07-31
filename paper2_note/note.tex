@@ -1158,7 +1158,53 @@ For $b=2$, Conjecture~\ref{conj:gap} for the projection family is equivalent to
 The equivalence of the two edges with each other and with this inequality is
 formalized in \texttt{RamaLean/ProductBound.lean} as \texttt{band\_iff\_pi}; that
 they coincide is Proposition~\ref{prop:reflect} seen through $\theta$, which is
-two-to-one about $y=a$. Adversarial search over rank-two projection families and
+two-to-one about $y=a$.
+
+Recentring at $a$ turns $\mu$ into a matching polynomial, and the coefficients have
+a basis-free form.
+
+\begin{theorem}\label{thm:matchingform}
+Let $P_1,\dots,P_q$ be rank-two orthogonal projections on $\mathbb R^p$ with
+$\sum_kP_k=aI$. Then
+\[
+\mu(x+a)=\sum_{r\ge0}(-1)^rM_r\,x^{\,p-2r},\qquad
+M_r=\sum_{|T|=r}e_{2r}\Bigl(\sum_{k\in T}P_k\Bigr),
+\]
+where $e_m$ denotes the $m$-th elementary symmetric function of the spectrum. The
+$M_r$ are nonnegative, $M_0=1$, $M_1=q$, and $M_r\le\binom qr$.
+\end{theorem}
+
+The expression for $M_r$ involves no dilation and no choice of basis for the ranges
+of the $P_k$. When the $P_k$ commute, $\sum_{k\in T}P_k$ is a $0/1$ diagonal matrix
+of rank $2r$ exactly when $T$ is a matching of the multigraph whose edges are the
+blocks, and has rank below $2r$ otherwise; so $e_{2r}$ is the indicator of that
+event and $M_r$ is the number of $r$-matchings. Thus at $b=2$ the recentred mixed
+characteristic polynomial \emph{is} the matching polynomial in the commuting case,
+and $M_r$ is its natural noncommutative extension. Verified exactly on
+$S(K_4)$, $S(K_{3,3})$, the cube, and on noncommuting families including the
+icosahedral one, where the commutators have norm $0.57$.
+
+Two consequences change how the remaining gap should be described. First, in the
+commuting case Proposition~\ref{prop:ineq2} \emph{is} Heilmann--Lieb, so it is a
+theorem there, and it is sharp: the extremal families are the large-girth
+$a$-regular graphs, for which the ratio of $\pi_{\max}$ to its bound rises
+monotonically through $0.866$ at $p=10$ to $0.949$ at $p=38$. No argument with
+slack can close it. Second, and more to the point, in that formulation
+Proposition~\ref{prop:ineq2} says exactly that the roots of a mixed characteristic
+polynomial lie inside the support of the corresponding free convolution, which is
+the known open sharpening of the Marcus--Spielman--Srivastava bound. So $b=2$ is
+not an easier case awaiting a short argument; it is that open problem in another
+notation.
+
+The obstruction is also identifiable. The block recursion
+$E_r(K)=E_r(K\setminus k)+\det K[B_k]\,E_{r-1}(K/B_k)$ is exactly the
+Heilmann--Lieb \emph{edge} recursion, and it holds verbatim for kernels. But the
+Heilmann--Lieb induction is run on vertices, and the constant $2\sqrt{\Delta-1}$
+comes from the step where deleting a vertex drops a neighbour's degree. Here the
+blocks play the part of edges, and a general projection family carries no second
+partition of the slots playing the part of vertices; in the commuting case that
+partition is the other block-diagonalisation of $\Pi$, which does not exist in
+general. That missing structure, not the analysis, is what blocks the argument. Adversarial search over rank-two projection families and
 over random biregular graphs reaches $0.83$ of the threshold at $a=3$ and $0.72$ at
 $a=4$, with no violation; graphs are marginally more extremal than general
 projections.
