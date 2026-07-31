@@ -62,10 +62,10 @@ term plus the number of $4$-cycles, with coefficient one. Since the two power
 sums carried by the universal coefficients imply only a bound growing like
 $\sqrt p$, while the conjectured bound is independent of $p$, no argument using
 them can succeed: a proof must be sensitive to the cycle structure. The
-subdivision bound, the recurrence, the deletion recursion and the algebra of the
-coefficient formulas are formalized in Lean~4; the combinatorial identities for
-the matching counts $m_3$ and $m_4$ are proved by hand and verified by exact
-computation, not formalized.
+subdivision bound, the recurrence, the deletion recursion, the algebra of the
+coefficient formulas and the combinatorics behind the matching counts $m_2$, $m_3$
+and $m_4$ are formalized in Lean~4; what is left by hand is the inclusion--exclusion
+bookkeeping that assembles the last of these, and the numerical work.
 \end{abstract}
 
 \section{Introduction and statement}
@@ -1178,6 +1178,28 @@ No \texttt{sorry}. The single remaining unformalized ingredient of the
 \emph{graph-theoretic} statement is the sentence before \eqref{eq:avg}: a lift
 of a cycle is a disjoint union of cycles --- elementary covering-space
 combinatorics for which Mathlib currently lacks the vocabulary.
+
+For the biregular half, \texttt{RamaLean/BipartiteMatchingPoly.lean} supplies a
+matching polynomial for bipartite graphs, Mathlib having none, and formalizes:
+the deletion recursion $Q_G=Q_{G-v}-z\sum_{u\sim v}Q_{G-v-u}$
+(\texttt{bipQ\_delete\_left}); the general Taylor shift
+$[X^j]f(X+c)=\sum_i\binom{i+j}{j}f_{i+j}c^i$
+(\texttt{taylor\_coeff\_of\_natDegree\_le}), from which the coefficient formulas at
+$p-1$, $p-2$ and $p-4$ follow; the count $2m_2+|{\rm confL}|+|{\rm confR}|=|E|(|E|-1)$
+with the two conflict classes as degree sums; and the combinatorial inputs to
+Theorems~\ref{thm:universal} and~\ref{thm:c4} --- that three pairwise-meeting edges
+of a bipartite graph share a vertex (\texttt{three\_meeting\_share}), that the
+conflict degree of an edge is $(d_u-1)+(d_v-1)$ (\texttt{conflict\_degree}), the
+trichotomy for four-cycles of the conflict graph
+(\texttt{four\_cycle\_trichotomy}), and the identity the whole expansion runs on,
+that the matching indicator is the alternating sum over subsets of the conflicting
+pairs (\texttt{alt\_sum\_conflictPairs}). Several of these, including the
+trichotomy, depend on no axioms at all. \texttt{RamaLean/Paper2Unicyclic.lean}
+further formalizes that the lower band edge is $(\sqrt P-\sqrt Q)^2$ and so
+vanishes exactly when $P=Q$ (\texttt{gap\_eq\_zero\_iff}), which is the triviality
+recorded above. What is \emph{not} formalized is the inclusion--exclusion
+arithmetic that sums the ten subgraph counts into $m_4$, and the numerical
+verifications.
 
 \begin{remark}
 Everything here is stated for the uniform permutation model; by
