@@ -1441,10 +1441,32 @@ rather than matrices: for a random vector $(s_1,\dots,s_q)$ of nonnegative integ
 with $\sum_ks_k=p$ almost surely, each $s_k$ exactly $\mathrm{Binomial}(b,1/a)$, and
 joint generating function homogeneous of degree $p$ and real stable, are the roots
 of $\mathbb E\prod_k(y-as_k)$ confined to the band? Every projection family induces
-such a law, and the scalar family does not, failing the marginal condition. Whether
-the class is exactly right is open; negative association alone is known to be
-insufficient, by an explicit permutation counterexample whose polynomial has a root
-at $ab$.
+such a law, and the scalar family does not, failing the marginal condition.
+
+That class is rigid, which is what makes the reformulation faithful rather than a
+weakening. The marginal condition is itself a rigidity statement: in the polarized
+picture it holds if and only if the $b$ slots inside each block are exactly jointly
+independent Bernoulli$(1/a)$. Consequently, any \emph{determinantal} law satisfying
+the two combinatorial conditions has a rank-$p$ projection kernel whose diagonal
+$b\times b$ blocks are $\tfrac1aI_b$, that is, it is the Naimark kernel of a
+projection family; and any law given by independent balls in bins satisfying them
+comes from an $(a,b)$-biregular incidence matrix, that is, from a commuting family.
+So the two canonical constructions of stable laws produce nothing new. At $b=2$ more
+is true: for $(p,q,a,b)=(4,6,3,2)$ and $(3,6,4,2)$ the affine hull of the stable laws
+in the class coincides with the affine hull of the projection families, of dimensions
+$54$ and $14$ against $78$ and $38$ for the two combinatorial conditions alone. The
+measure formulation is therefore not a relaxation at $b=2$.
+
+The two combinatorial conditions alone do not suffice, and the point at which they
+fail is sharp: over all laws satisfying them the largest root is confined to the band
+only for $q$ below an explicit threshold, and it reaches the trivial value $ab$
+exactly at $q=a^b$, the smallest $q$ at which the binomial profile
+$n_j=q\binom bj(a-1)^{b-j}a^{-b}$ is integral. Stability is what must supply the
+rest, and it cannot be seen by any argument that symmetrizes: the divisibility
+constraint that stability imposes, namely that $(w+a-1)^{b-1}$ divides
+$\mathbb E\bigl[s_l\,w^{s_k}\bigr]$, becomes vacuous on exchangeable laws.
+Negative association alone is likewise insufficient, by an explicit permutation
+counterexample whose polynomial has a root at $ab$.
 
 The size of the claim is also worth recording. Since $E_1$ and $E_2$ are universal,
 the root distribution of $\mu$ has mean $a$ and variance $a(b-1)$ for every
