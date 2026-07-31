@@ -1119,6 +1119,23 @@ Proposition~\ref{prop:abbound} is formalized in
 \texttt{RamaLean/ProductBound.lean} as \texttt{no\_root\_above} and
 \texttt{edge\_gap}.
 
+The representation also supports an exact recursion on the underlying kernels.
+Writing $N_K$ for the transversal expansion attached to a kernel $K$, one has the
+border identity
+\[
+a\,N_{M+ww^{\mathsf T}}=(a-y)\,N_M+N_{\left(\begin{smallmatrix}0&w^{\mathsf T}\\ w&M\end{smallmatrix}\right)},
+\]
+and Schur complements of admissible kernels remain admissible, with
+$\delta_e\le1-c_e$ forced by $K^2\preceq K$. This makes an induction on kernel size
+available in principle. It does not close the upper edge: the scalar cavity
+invariants that carry the classical argument on graphs are false on the kernel
+class, witnessed by explicit rational kernels on which the graph unfolding identity
+fails as an inequality by a $y$-independent amount. What survives is a reduction of
+the upper edge on the whole class to a single inequality on bordered kernels, proved
+for at most two blocks at $b=2$ by monotonicity of transversal determinants under
+downdates, which follows from positivity of the adjugate of a positive semidefinite
+matrix.
+
 At $b=2$ the representation \eqref{eq:dpp} collapses further. Only $s_k\in\{0,1,2\}$
 occurs, and $\sum_ks_k=p$ forces the counts of $0$s and $1$s to be determined by
 $n_2=\#\{k:s_k=2\}$, so with $\Psi(u)=\mathbb E\,u^{n_2}$ one has
