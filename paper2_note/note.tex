@@ -2,6 +2,7 @@
 \usepackage[margin=1.2in]{geometry}
 \usepackage{amsmath,amssymb,amsthm}
 \usepackage{hyperref}
+\sloppy
 
 \newtheorem{theorem}{Theorem}
 \newtheorem{corollary}[theorem]{Corollary}
@@ -14,59 +15,57 @@
 \newcommand{\E}{\mathbb{E}}
 \newcommand{\Q}{\mathbb{Q}}
 
-\title{The expected characteristic polynomial of a random lift of a cycle:\\
-an elementary proof, a generating function,\\ and a machine-checked formalization}
+\title{Roots of $d$-matching polynomials and the spectrum of the universal cover:\\
+a closed form at first Betti number one, a conjecture,\\
+and the biregular case}
 \author{Vico Bonfioli\thanks{Lean~4 sources: \texttt{RamaLean/} in the \texttt{rama-notes} repository. Correspondence: \texttt{vicobonfioli@gmail.com}.}}
-\date{July 2026}
+\date{August 2026}
 
 \begin{document}
 \maketitle
 
 \begin{abstract}
-Let $\Phi_{n,r}(x)$ denote the expected characteristic polynomial of a uniformly
-random permutation $r$-lift of the cycle $C_n$. We give a short, self-contained
-derivation of the closed form
-$\Phi_{n,r}(x)=\chi_{C_n}(x)\cdot U_{r-1}\!\bigl(T_n(x/2)\bigr)$,
-where $T,U$ are Chebyshev polynomials and $\chi_{C_n}(x)=2T_n(x/2)-2$;
-equivalently, the $d$-matching polynomial of $C_n$ (Hall--Puder--Sawin) is
-$U_{d}(T_n(x/2))$. This statement is equivalent, via the Hall--Puder--Sawin
-identity, to a conjecture of Hall proved combinatorially by Cochran,
-Groothuis, Herring, Rohatgi and Stucky (2018); our proof is independent,
-passing through the exponential formula and a Chebyshev generating function,
-and yields as byproducts the generating function
-$\sum_{d\ge 0}\mu_{d,C_n}(x)\,z^d=\bigl(1-2T_n(x/2)z+z^2\bigr)^{-1}$,
-a Fibonacci--Lucas evaluation, and a parity theorem for the quotient.
-The entire derivation from cycle weights to the closed form --- including the
-exponential formula for $S_r$ --- is formalized in Lean~4 over Mathlib, with
-no axioms beyond Lean's standard three. The same argument applies to every
-connected graph of first Betti number one, where it gives
-$\mu_{d,G}=V_d$ for the three-term recurrence
-$V_d=\mu_G V_{d-1}-\mu_{G-V(C)}^{\,2}V_{d-2}$ in the ordinary matching
-polynomials of $G$ and of the forest obtained by deleting the cycle; this
-answers Question 6.5 of Hall--Puder--Sawin for that family, and we show the
-Betti-number-one hypothesis cannot be relaxed.
-For the associated gap problem we prove that every nonzero root of the matching
-polynomial of a subdivision $S(H)$ of a $D$-regular graph has absolute value at
-least $\sqrt{D-1}-1$, which settles the case $\min(d,r)=2$ of Problem~1 of Song,
-Fan and Miao. After the change of variable that centres the band, the resulting
-polynomial $g$ has subleading coefficient exactly $p(b-2)$; so $g$ is a matching
-polynomial precisely when $\min(a,b)=2$, and for $\min(a,b)\ge3$ its roots are
-displaced by $b-2$ towards the lower band edge, which is the end that remains
-open. Equivalently, in the coordinate of the monomer--dimer partition function
-$\omega_G$, for which Watanabe and Fukumizu prove that every root lies in the
-annulus $1/(a-1)\le|\beta|\le1/(b-1)$, the conjecture says that every root except
-the two accounting for the ends of that annulus lies on the geometric mean circle
-$|\beta|=((a-1)(b-1))^{-1/2}$. We determine the top five coefficients of $g$: the first four depend only
-on the parameters $(p,a,b)$ and not on the graph, and the fifth is a universal
-term plus the number of $4$-cycles, with coefficient one. Since the two power
-sums carried by the universal coefficients imply only a bound growing like
-$\sqrt p$, while the conjectured bound is independent of $p$, no argument using
-them can succeed: a proof must be sensitive to the cycle structure. The
-subdivision bound, the recurrence, the deletion recursion, the algebra of the
-coefficient formulas, the combinatorics behind the matching counts $m_2$, $m_3$ and
-$m_4$, and the inclusion--exclusion that assembles them are formalized in Lean~4;
-what is left by hand is the evaluation of the ten individual subgraph counts, and
-the numerical work.
+Hall, Puder and Sawin place the roots of the $d$-matching polynomial $\mu_{d,G}$ in
+the interval $[-\rho,\rho]$, $\rho$ the spectral radius of the universal cover $T$.
+We conjecture that they lie in $\operatorname{spec}(T)$ itself, which is a proper
+subset of that interval whenever $T$ has a spectral gap: no root ever enters a gap.
+This strengthens their theorem, is the matching-polynomial form of their Question
+6.3, and contains Problem~1 of Song, Fan and Miao --- its biregular case at $d=1$
+--- extending it to all graphs and all $d$.
+
+We prove the conjecture for every connected $G$ of first Betti number one and every
+$d$, by giving $\mu_{d,G}$ in closed form: it is $V_d$ for the three-term recurrence
+$V_d=\mu_GV_{d-1}-\mu_{G-V(C)}^2V_{d-2}$, so its roots are exactly the solutions of
+$\mu_G=2\cos\bigl(k\pi/(d+1)\bigr)\mu_{G-V(C)}$ and equidistribute on
+$\operatorname{spec}(T)$. This answers Question 6.5 of Hall--Puder--Sawin for that
+family, and the hypothesis cannot be relaxed. For the cycle it specializes to
+$\Phi_{n,r}=\chi_{C_n}\cdot U_{r-1}(T_n(x/2))$, equivalent to Hall's conjecture, by
+an elementary route through the exponential formula. We also prove the conjecture
+for every subdivision at $d=1$, which settles the case $\min(d,r)=2$ of Problem~1 of
+Song, Fan and Miao.
+
+For $(a,b)$-biregular $G$ the conjecture becomes a two-sided Heilmann--Lieb
+statement, of which the upper half is Godsil's. We determine the top five
+coefficients of the recentred polynomial: four are universal in $(p,a,b)$, and the
+fifth is universal plus the number of $4$-cycles, with coefficient one. In operator
+form $\mu_G$ is the mixed characteristic polynomial of rank-$b$ projections summing
+to $aI$, and commuting such families are \emph{exactly} the biregular incidence
+families, so the projection statement is the precise noncommutative extension. A
+determinantal representation gives the unconditional bound $\lambda\le ab$, which
+overshoots the band edge by exactly $(\sqrt{(a-1)(b-1)}-1)^2$ --- hence proves the
+band outright at $a=b=2$ --- and improves on Marchenko--Pastur whenever
+$1/\sqrt a+1/\sqrt b>1$. The band is the support of a free convolution
+\emph{power}, $\chi^{\boxplus a}$; every method that falls short computes a compound
+free Poisson instead, whose free cumulants agree with the correct ones through order
+three and split at order four, the same order at which the coefficient ladder first
+sees the graph. Letting the common rank vary with the trace and the sum held fixed,
+the extreme roots move monotonically from the tree band at rank $b$ to
+Marchenko--Pastur at rank $p$: each obstruction is sharp for the class it sees, and
+the conjecture is the assertion that minimal rank contracts the interval all the way.
+The closed form, the exponential formula, the subdivision bound, the coefficient
+identities including the $4$-cycle term, the reflection, the $ab$ bound and the
+positivity behind the extremal computation are machine-checked in Lean~4 over
+Mathlib, with no axioms beyond Lean's standard three.
 \end{abstract}
 
 \section{Introduction and statement}
@@ -321,7 +320,29 @@ degenerate one, the unique member of the family whose spectrum has no gaps and
 for which the Ramanujan interval is attained. Any cycle with a tree attached
 exhibits a band structure that no cycle can display.
 
-\paragraph{A conjecture for all graphs.}
+\paragraph{The boundary is sharp.}
+For $b_1(G)=b$ the lift is determined by $b$ permutations, that is by an action
+of the free group $F_b$ on $[r]$, whose orbits are the components of the lift.
+The exponential formula still applies, in the form
+$N_r=\sum_{\ell}\binom{r-1}{\ell-1}C_\ell N_{r-\ell}$ with
+$N_r=(r!)^{b}\Phi_{G,r}$ and $C_\ell$ the sum of $\chi$ over the transitive
+$b$-tuples on $[\ell]$; we have verified this for $b\le3$. What fails is the
+atom. For $b=1$ every transitive tuple gives the \emph{same} cover $G_\ell$, so
+$C_\ell=(\ell-1)!\,\chi_{G_\ell}$: one graph per $\ell$, with $\chi_{G_\ell}$
+Chebyshev in $\ell$. For $b\ge2$ the transitive tuples number $(\ell-1)!$ times
+the count of index-$\ell$ subgroups of $F_b$ and spread over many
+non-isomorphic covers with distinct spectra, so $C_\ell$ carries no such
+structure. Accordingly Theorem~\ref{thm:uni} is not merely unproved for
+$b\ge2$: it is false there already at $d=1$, as we checked for the theta graph,
+the bowtie, $K_4$, $K_{2,3}$ and two triangles joined by an edge.
+
+Theorem~\ref{thm:uni} was verified by exact integer computation against the
+definition of $\mu_{d,G}$ as an average of matching polynomials over all
+$d$-covers, and against brute-forced lift averages, on thirteen named unicyclic
+graphs for $r\le6$ and on a random sample of thirty-four for $r\le5$;
+Lemma~\ref{lem:PQ} was checked on eleven.
+
+\section{A conjecture for all graphs}\label{sec:conj}
 Corollary~\ref{cor:floquet} is proved by Floquet theory, which is available
 only because $\pi_1(G)=\mathbb{Z}$. Its \emph{statement}, however, makes sense
 for every graph, and we know one case of it: at $b_1(G)=1$ it is
@@ -390,7 +411,9 @@ but eigenvalues of a finite subtree of $T$ need not lie in
 $\operatorname{spec}(T)$ when $T$ has a gap. For the $(3,2)$-biregular tree,
 whose gap is $(0,\sqrt2-1)$, the path $P_8$ is a subtree with eigenvalue
 $2\cos(4\pi/9)=0.3473$ inside that gap. So the $d=1$ case does not follow from
-the path-tree argument. It is nevertheless a theorem for an infinite family:
+the path-tree argument. It is nevertheless a theorem for an infinite family.
+
+\subsection{Subdivisions: the case of minimum degree two}
 
 \begin{theorem}\label{thm:subdiv}
 Let $H$ be $D$-regular, $D\ge2$, and let $S(H)$ be its subdivision, so that the
@@ -452,7 +475,7 @@ it. The evidence is therefore not merely that the bound holds but that it is
 approached, though no computation here reaches the regime where the ratio is
 close to $1$.
 
-\paragraph{The biregular case is one interval, and we have one end of it.}
+\subsection{The biregular case is one interval, and we have one end of it}
 Let $G$ be $(a,b)$-biregular bipartite, $s=\sqrt{a-1}$, $t=\sqrt{b-1}$. Since
 $G$ is bipartite, $\mu_G(x)=x^{\varepsilon}f(x^2)$ for a polynomial $f$ and
 $\varepsilon\in\{0,1,2,\dots\}$. Put
@@ -501,6 +524,8 @@ case; the irregular case is due to Godsil and to \cite{MSS}. The lower end is
 the conjecture. \emph{They are the two ends of one interval}, so
 what is missing is exactly half of a two-sided Heilmann--Lieb theorem for
 biregular bipartite graphs.
+
+\section{The coefficient ladder}
 
 This also explains the boundary between what is proved and what is not, and the
 explanation is exact.
@@ -660,6 +685,8 @@ non-backtracking bounds, and the non-backtracking operator of a bipartite graph
 is exactly the object that records cycles. That object can be exhibited, but only
 in averaged form, and the reason for the averaging is not incidental.
 
+\section{An expected non-backtracking polynomial}
+
 \begin{lemma}[Chernyak--Chertkov; Watanabe--Fukumizu]\label{lem:gauge}
 Let $G$ be any graph, $A_s$ its adjacency matrix with edges signed by
 $s\in\{\pm1\}^{E}$, and $D$ the degree matrix. Then, with $s$ uniform,
@@ -742,6 +769,8 @@ the roots of $\mu_G$ are not the spectrum of any operator on $G$, and hence why
 the available technology for such statements is the method of interlacing
 families \cite{MSS}, which works with expected polynomials, rather than a
 spectral argument.
+
+\section{How close the bound comes to being attained}
 
 Proposition~\ref{prop:moments} also explains why the interval is not filled. The
 mean square of the roots is $\bigl[(b-2)^2+a(b-1)\bigr]$, so the fraction of the
@@ -836,8 +865,13 @@ monotonically --- at $30$ vertices, girth $4$, $6$ and $8$ give $98.166\%$,
 $99.311\%$ and $99.410\%$ --- but no family of bounded girth can approach the
 edge, and every cubic bipartite circulant has girth at most $6$, since the closed
 hexagon $0,s_1,s_1-s_2,s_1-s_2+s_3,s_3-s_2,s_3$ is always present. We therefore
-make no claim that $2\sqrt m$ is attained or approached. Their roots do satisfy \eqref{eq:twosided}, with maxima
-$4.06,4.48,6.26$ against bounds $4.90,5.66,6.93$. That class admits a clean description. Since a $k$-matching leaves $p-k$
+make no claim that $2\sqrt m$ is attained or approached. The roots of these
+circulants do satisfy \eqref{eq:twosided}, with maxima $4.06,4.48,6.26$ against
+bounds $4.90,5.66,6.93$.
+
+\section{The multivariate polynomial and the cavity recursion}
+
+The polynomials $g$ admit a clean description. Since a $k$-matching leaves $p-k$
 vertices of $A$ unmatched,
 \begin{equation}\label{eq:multivar}
 f_G(y)=\sum_{k}(-1)^k m_k\,y^{p-k}
@@ -898,9 +932,10 @@ $\alpha=t(s-t)=\sqrt{PQ}-Q$. The region therefore closes for every $y$ strictly
 below the gap edge and for no $y$ above it: the invariant region is calibrated
 exactly to the spectrum, and \eqref{eq:square} is the reason.
 
-Two structural facts explain the boundary between the proved and the open case.
+\section{The reflection, and why the band edges are never roots}
 
-The first is a reflection. The subdivision identity
+One structural fact explains why $b=2$ is the case that closes, and it is a
+reflection. The subdivision identity
 $\mu_{S(H)}(x)=x^{|E|-|V|}\,\mathcal{LM}(H,x^2)$ is due to Yan and Yeh
 \cite{YY}, who also treat the regular and semiregular cases; see
 \cite{WWM}, Corollary 2.3, for a restatement through the multivariate matching
@@ -965,48 +1000,16 @@ conjugacy: for $K_{3,4}$, $K_{3,5}$, $K_{3,6}$, $K_{4,5}$ the two edge values
 are $53\mp30\sqrt6$, $72\mp40\sqrt8$, $91\mp50\sqrt{10}$, $1877\mp512\sqrt{12}$.
 For $b=2$ the irrational parts vanish, as \eqref{eq:reflect} requires.
 Proposition~\ref{prop:galois} is worth isolating because it uses no induction on
-vertex deletion, and so is not subject to the obstruction described next; it is
+vertex deletion, and so is not subject to the obstruction of
+Section~\ref{sec:must}; it is
 the only tool we have found with that property, although it controls only the
 edges and not the interior of the gap.
 
-The second point is that the lower bound, unlike the upper bound, is not monotone
-under vertex deletion. The Heilmann--Lieb argument for $|x|\le2\sqrt{\Delta-1}$
-inducts on vertex deletion, which is available because $\Delta$ only decreases.
-The quantity $|\sqrt{a-1}-\sqrt{b-1}|$ has no such monotonicity: deleting one
-vertex of the larger side of $K_{3,4}$ produces $K_{3,3}$, which is regular, and
-the gap collapses to zero --- for $a=b$ one has $c=2\sqrt m$, so the interval
-$[c-2\sqrt m,\,c+2\sqrt m]$ has its lower end at $0$ and the statement is empty. So the naive induction by vertex deletion, which is
-what yields the upper bound, cannot prove the lower one.
+\section{The operator form}
 
-That obstruction can be strengthened, and in a way that rules out the whole
-family of such arguments rather than one instance of it. Every $b$-regular
-bipartite graph is an induced subgraph of some $(a,b)$-biregular graph, by an
-explicit padding construction; and over $b$-regular bipartite graphs the least
-root of $\nu_G$ tends to $0$, in closed form $2\sin(\pi/2N)$ for $b=2$. So on the
-class obtained by closing the biregular graphs under vertex deletion, the
-infimum of the least root is $0$, and the inequality to be proved is simply
-false there. Any argument that deletes vertices and applies an inductive
-hypothesis --- cavity recursions, stability transfer, the Heilmann--Lieb
-induction --- is an induction over that closure, and therefore cannot work,
-not because biregularity is lost but because the statement itself fails. For
-$\mathrm{AG}(2,3)$, where $(s-t)^2=0.10102$, the minimum over all choices of $d$
-deleted vertices on the larger side runs $0.3593$, $0.2424$, $0.1383$, $0.0549$
-for $d=0,1,2,3$: it drops below the target at depth three.
+\subsection{The mixed characteristic polynomial}
 
-A second route, substituting side-constant values into the multivariate matching
-polynomial of Heilmann and Lieb, fails for a reason that is visible in one line.
-Writing $M_G(z;x)=\sum_Mz^{|M|}\prod_{v\notin M}x_v$ and setting $x_v=\alpha$ on
-the $p$-side and $x_v=\beta$ on the $q$-side gives
-$\sum_km_kz^k\alpha^{p-k}\beta^{q-k}$, in which the exponent pair contributes
-$c^{p-q}$ under $(\alpha,\beta)\mapsto(c\alpha,\beta/c)$ independently of $k$; so
-the specialization depends on $\alpha$ and $\beta$ only through the product
-$\alpha\beta$. Since the image of a product of two upper half-planes is
-$\mathbb C\setminus[0,\infty)$, stability under this substitution says exactly
-that the roots are real and nonnegative, and nothing more. In particular it says
-the same thing when $a=b$, where the conclusion to be proved is empty. No choice
-of $\alpha$ and $\beta$ can see $a-b$.
-
-The correct multivariate object is not a substitution but the mixed
+The multivariate object that does carry the biregular information is the mixed
 characteristic polynomial of Marcus, Spielman and Srivastava: with
 $P_k=\operatorname{diag}(\mathbf 1_{N(k)})$ of rank $b$ and $\sum_kP_k=aI_p$, one
 has $\nu_G=\mu[P_1,\dots,P_q]$, since $\sum_kz_kP_k$ is diagonal and each
@@ -1080,6 +1083,8 @@ letter, while at length four $\operatorname{tr}(A_iA_jA_iA_k)$ does not reduce. 
 first free invariant sits at level four on both sides of the analogy, matching the
 $4$-cycle count of Theorem~\ref{thm:c4}.
 
+\subsection{A determinantal representation}
+
 The mixed characteristic polynomial admits a probabilistic representation which gives
 an unconditional bound with no barrier or stability input. Write $P_k=W_kW_k^{*}$
 with $W_k^{*}W_k=I_b$, set $U=[W_1|\cdots|W_q]/\sqrt a$, and let $\Pi=U^{*}U$, a
@@ -1136,6 +1141,8 @@ for at most two blocks at $b=2$ by monotonicity of transversal determinants unde
 downdates, which follows from positivity of the adjugate of a positive semidefinite
 matrix.
 
+\subsection{The case of rank two}
+
 At $b=2$ the representation \eqref{eq:dpp} collapses further. Only $s_k\in\{0,1,2\}$
 occurs, and $\sum_ks_k=p$ forces the counts of $0$s and $1$s to be determined by
 $n_2=\#\{k:s_k=2\}$, so with $\Psi(u)=\mathbb E\,u^{n_2}$ one has
@@ -1159,6 +1166,8 @@ The equivalence of the two edges with each other and with this inequality is
 formalized in \texttt{RamaLean/ProductBound.lean} as \texttt{band\_iff\_pi}; that
 they coincide is Proposition~\ref{prop:reflect} seen through $\theta$, which is
 two-to-one about $y=a$.
+
+\subsection{The matching form}
 
 Recentring at $a$ turns $\mu$ into a matching polynomial, and the coefficients have
 a basis-free form. They also have a Grassmann form: writing
@@ -1205,6 +1214,8 @@ the known open sharpening of the Marcus--Spielman--Srivastava bound. So $b=2$ is
 not an easier case awaiting a short argument; it is that open problem in another
 notation.
 
+\subsection{The plane class, and two unconditional bounds}
+
 What the problem is, at $b=2$, can be said exactly. Both $\mu(x+a)$ and the operator
 $\operatorname{Adj}(A):=\sum_k e_2(A_k)P_{\operatorname{range}A_k}$ depend on the
 family only through the pairs $\bigl(e_2(A_k),\operatorname{range}A_k\bigr)$. So the
@@ -1241,6 +1252,8 @@ and extends it to all weighted plane families. Adversarial search over rank-two 
 over random biregular graphs reaches $0.83$ of the threshold at $a=3$ and $0.72$ at
 $a=4$, with no violation; graphs are marginally more extremal than general
 projections.
+
+\subsection{The reflection for projections}
 
 At $b=2$ the whole question also collapses onto the known half, by a symmetry.
 
@@ -1307,6 +1320,8 @@ m_1=0,\qquad m_2=b(b-1),\qquad m_3=b(b-1)(b-2).
 So the third moment vanishes precisely when $b=2$: Proposition~\ref{prop:reflect}
 is not an accident of small $b$ but the vanishing of the jump skewness, and for
 $b\ge3$ any argument reaching the lower edge must see a third-order quantity.
+
+\section{The band is the support of a free convolution power}
 
 There is a single reason behind all of this, and it is worth stating because it
 accounts uniformly for the failure of every method tried. Let
@@ -1396,6 +1411,8 @@ The same atom mechanism explains the hypothesis $a\ge b$: for $a<b$ the measure
 $\chi^{\boxplus a}$ carries an atom at $0$ of mass $1-a/b$, so its left edge is $0$
 and the band statement is empty.
 
+\section{Rank monotonicity, and what it explains}\label{sec:rank}
+
 What does separate them can be said exactly, in terms of the representation
 \eqref{eq:dpp}. For a general positive semidefinite family with $\sum_kA_k=aI$ the
 marginal of $s_k$ has probability generating function
@@ -1477,6 +1494,8 @@ concentration: the least of $p$ roots is confined to about two standard deviatio
 where an unstructured sample of that size would reach out to order
 $\sqrt{\log p}$.
 
+\subsection{The extremal problem in dimension four}
+
 Graphs are not always extremal in that class, however, and the smallest case can be
 settled exactly. This is no longer needed for the band --- at $p=4$, $b=2$ the
 reflection gives $\mu(t+a)=t^4-2at^2+\beta$, and real-rootedness alone forces
@@ -1529,6 +1548,54 @@ satisfies $\eta^+_{\min}\ge\sqrt{d_1-1}-\sqrt{d_2-1}-\varepsilon_n$ with high
 probability. That is an asymptotic statement about adjacency eigenvalues of
 random graphs; Conjecture~\ref{conj:gap} is a deterministic statement about
 matching polynomial roots of every graph.
+
+\section{What a proof must contain}\label{sec:must}
+
+Each of the methods that does not reach the band fails for a reason that can be
+named exactly, and each such reason is a property that a proof must have. We
+collect them here as a specification rather than as a list of failures: a proof
+must not induct on vertex deletion, must not be a side-constant specialization of
+the multivariate matching polynomial, must control deficient vertices of the path
+tree, and must not pass through Floquet theory. Every one of these is sharp, in
+the sense that the method in question is exactly optimal for the class of objects
+it can see; that is the content of Section~\ref{sec:rank}.
+
+The lower bound, unlike the upper bound, is not monotone
+under vertex deletion. The Heilmann--Lieb argument for $|x|\le2\sqrt{\Delta-1}$
+inducts on vertex deletion, which is available because $\Delta$ only decreases.
+The quantity $|\sqrt{a-1}-\sqrt{b-1}|$ has no such monotonicity: deleting one
+vertex of the larger side of $K_{3,4}$ produces $K_{3,3}$, which is regular, and
+the gap collapses to zero --- for $a=b$ one has $c=2\sqrt m$, so the interval
+$[c-2\sqrt m,\,c+2\sqrt m]$ has its lower end at $0$ and the statement is empty. So the naive induction by vertex deletion, which is
+what yields the upper bound, cannot prove the lower one.
+
+That obstruction can be strengthened, and in a way that rules out the whole
+family of such arguments rather than one instance of it. Every $b$-regular
+bipartite graph is an induced subgraph of some $(a,b)$-biregular graph, by an
+explicit padding construction; and over $b$-regular bipartite graphs the least
+root of $\nu_G$ tends to $0$, in closed form $2\sin(\pi/2N)$ for $b=2$. So on the
+class obtained by closing the biregular graphs under vertex deletion, the
+infimum of the least root is $0$, and the inequality to be proved is simply
+false there. Any argument that deletes vertices and applies an inductive
+hypothesis --- cavity recursions, stability transfer, the Heilmann--Lieb
+induction --- is an induction over that closure, and therefore cannot work,
+not because biregularity is lost but because the statement itself fails. For
+$\mathrm{AG}(2,3)$, where $(s-t)^2=0.10102$, the minimum over all choices of $d$
+deleted vertices on the larger side runs $0.3593$, $0.2424$, $0.1383$, $0.0549$
+for $d=0,1,2,3$: it drops below the target at depth three.
+
+A second route, substituting side-constant values into the multivariate matching
+polynomial of Heilmann and Lieb, fails for a reason that is visible in one line.
+Writing $M_G(z;x)=\sum_Mz^{|M|}\prod_{v\notin M}x_v$ and setting $x_v=\alpha$ on
+the $p$-side and $x_v=\beta$ on the $q$-side gives
+$\sum_km_kz^k\alpha^{p-k}\beta^{q-k}$, in which the exponent pair contributes
+$c^{p-q}$ under $(\alpha,\beta)\mapsto(c\alpha,\beta/c)$ independently of $k$; so
+the specialization depends on $\alpha$ and $\beta$ only through the product
+$\alpha\beta$. Since the image of a product of two upper half-planes is
+$\mathbb C\setminus[0,\infty)$, stability under this substitution says exactly
+that the roots are real and nonnegative, and nothing more. In particular it says
+the same thing when $a=b$, where the conclusion to be proved is empty. No choice
+of $\alpha$ and $\beta$ can see $a-b$.
 
 Two obstructions remain in the direct approach, both caused by cycles in $G$. First, a leaf of the path
 tree that is an $A$-vertex carries $R_A=y>0$, of the wrong sign. This one is
@@ -1596,7 +1663,7 @@ $d$, with no exceptional set. What the $b_1=1$ case shows is that the interval
 in \cite{HPS} is not the natural receptacle for the roots, and that the correct
 one is spectral rather than metric.
 
-\paragraph{Related work.}
+\section{Related work}
 Two ingredients are classical and are used, not claimed. The factorization of
 the characteristic polynomial of a cyclic cover into twisted determinants at
 roots of unity is the block-circulant diagonalization
@@ -1623,27 +1690,6 @@ $(\mu_G,\mu_{G-V(C)})$, whose second entry is a genuine polynomial recording
 the attached trees rather than a monomial, together with the covering
 interpretation that makes the recurrence a statement about $\mu_{d,G}$.
 
-\paragraph{The boundary is sharp.}
-For $b_1(G)=b$ the lift is determined by $b$ permutations, that is by an action
-of the free group $F_b$ on $[r]$, whose orbits are the components of the lift.
-The exponential formula still applies, in the form
-$N_r=\sum_{\ell}\binom{r-1}{\ell-1}C_\ell N_{r-\ell}$ with
-$N_r=(r!)^{b}\Phi_{G,r}$ and $C_\ell$ the sum of $\chi$ over the transitive
-$b$-tuples on $[\ell]$; we have verified this for $b\le3$. What fails is the
-atom. For $b=1$ every transitive tuple gives the \emph{same} cover $G_\ell$, so
-$C_\ell=(\ell-1)!\,\chi_{G_\ell}$: one graph per $\ell$, with $\chi_{G_\ell}$
-Chebyshev in $\ell$. For $b\ge2$ the transitive tuples number $(\ell-1)!$ times
-the count of index-$\ell$ subgroups of $F_b$ and spread over many
-non-isomorphic covers with distinct spectra, so $C_\ell$ carries no such
-structure. Accordingly Theorem~\ref{thm:uni} is not merely unproved for
-$b\ge2$: it is false there already at $d=1$, as we checked for the theta graph,
-the bowtie, $K_4$, $K_{2,3}$ and two triangles joined by an edge.
-
-Theorem~\ref{thm:uni} was verified by exact integer computation against the
-definition of $\mu_{d,G}$ as an average of matching polynomials over all
-$d$-covers, and against brute-forced lift averages, on thirteen named unicyclic
-graphs for $r\le6$ and on a random sample of thirty-four for $r\le5$;
-Lemma~\ref{lem:PQ} was checked on eleven.
 
 \section{The formalization}
 
@@ -1658,7 +1704,7 @@ The main entry points:
   \eqref{eq:newton} in integer form
   $r\,A_r=\sum_k r^{(k)} f(k)A_{r-k}$ over any commutative ring, proved via
   Mathlib's Cauchy cycle-type count
-  (\texttt{Equiv.Perm.card\_of\_cycleType\_mul\_eq});
+  (\texttt{Equiv.Perm.\allowbreak card\_of\_\allowbreak cycleType\_mul\_eq});
 \item \texttt{Paper2.thm1\_Sr} --- Theorem~\ref{thm:main} in the form:
   the expected cycle weight \eqref{eq:avg} equals the closed form, for all
   $n,r$, over any $\Q$-algebra domain;
@@ -1735,6 +1781,38 @@ the alternating sum vanishes over any nonempty index set whether or not it doubl
 counts, but it means the grouping enumerates more configurations than the ten
 unordered types above, and aligning the two would require rebuilding the conflict
 set on unordered pairs.
+
+The operator side of Sections~\ref{sec:conj}--\ref{sec:rank} is formalized in four
+further files, all on the standard three axioms and with no \texttt{sorry}.
+\texttt{RamaLean/SignReflection.lean} carries
+Proposition~\ref{prop:reflect} to the point where only the rank-one expansion of
+$\mu$ is left by hand: \texttt{sign\_avg\_reflect} proves that
+$\sum_{\varepsilon\in\{\pm1\}^q}\det(tI-\sum_k\varepsilon_kS_k)$ is even or odd in
+$t$ according to the parity of the dimension, with \emph{no} hypothesis on the
+$S_k$, by the involution $\varepsilon\mapsto-\varepsilon$; \texttt{sum\_prod\_sgn}
+is character orthogonality on the Boolean cube, proved by the same involution
+applied to one coordinate; \texttt{sum\_multiaffine} deduces that averaging a
+multi-affine function over signs returns $2^q$ times its constant term, which is
+exactly what $\prod_k(1-\partial_{z_k})$ extracts; and
+\texttt{mixedChar\_reflect} and \texttt{band\_edges\_swap} supply the shift and the
+identity $2a-(\sqrt{a-1}+1)^2=(\sqrt{a-1}-1)^2$ that exchanges the band edges.
+\texttt{RamaLean/ProductBound.lean} proves Proposition~\ref{prop:abbound}
+(\texttt{no\_root\_above}: a convex combination of products of positive numbers is
+positive) together with the exact overshoot $ab-(s+t)^2=(\sqrt m-1)^2$
+(\texttt{edge\_gap}) and its vanishing exactly at $m=1$
+(\texttt{edge\_gap\_eq\_zero\_iff}), which is the case $a=b=2$ where the band is
+proved outright; it also proves Proposition~\ref{prop:ineq2}, that at $b=2$ the two
+band edges are the single condition $\pi_{\max}\le4(a-1)/a^2$
+(\texttt{band\_iff\_pi}), and that the strictly weaker $\pi_{\max}\le4/a$ already
+yields $a+2\sqrt a$, which beats the Marchenko--Pastur edge for every $a$ and the
+product bound $ab$ for $a>4$ (\texttt{weak\_bound}, \texttt{weak\_beats\_mp},
+\texttt{weak\_beats\_ab}). \texttt{RamaLean/TracePSD.lean} and
+\texttt{RamaLean/AdjugatePSD.lean} carry the two positivity facts the extremal
+computation and the kernel recursion run on. In both, the standard input is a
+visible hypothesis rather than a hidden one: \texttt{trace\_sq\_le\_sq\_trace}
+takes the spectral decomposition of a positive semidefinite matrix as an explicit
+assumption, and \texttt{adjugate\_posDef} is proved in the definite case, the
+semidefinite limit $A+\varepsilon I$ being left by hand.
 
 \begin{remark}
 Everything here is stated for the uniform permutation model; by
