@@ -83,6 +83,43 @@ theorem sum_gram_prod_nonneg (f : ι → n → ℝ) (w : ι → p → ℝ) :
   rw [sum_gram_prod_eq_sum_sq]
   exact Finset.sum_nonneg fun i _ => Finset.sum_nonneg fun j _ => sq_nonneg _
 
+/-- The single-family case: `∑_{k,l} ⟨u_k,u_l⟩ = ‖∑_k u_k‖²`. -/
+theorem sum_gram_eq_sq (u : ι → q → ℝ) :
+    (∑ k, ∑ l, u k ⬝ᵥ u l) = ∑ j, (∑ k, u k j) ^ 2 := by
+  simp only [dotProduct]
+  rw [reorder3]
+  exact Finset.sum_congr rfl fun j _ => by rw [sq, Finset.sum_mul_sum]
+
+/-- **The cross term at every level.**  With no hypothesis beyond `hsimple` --- which is
+`f_k ∧ ω'_k = 0` in metric form, and holds automatically --- the off-diagonal sum is a
+difference of two squares:
+
+  `∑_{k≠l} [⟨f_k,f_l⟩⟨w_k,w_l⟩ - ⟨u_k,u_l⟩] = ‖∑_k f_k ⊗ w_k‖² - ‖∑_k u_k‖²`.
+
+Reindexing the general cross term `C_r` by `S = T ∖ {k,l}` puts each of its `S`-summands
+in exactly this form, with `w_k = ω'_k ∧ ω'_S` and `u_k = ι_{f_k}(ω'_k ∧ ω'_S)`, the
+index set being `k ∉ S`.  At `r = 2` the set `S` is empty and tightness makes `∑_k u_k`
+vanish, which is `crossTerm_eq_sq`; at higher levels it does not, and the negative term
+is exactly what obstructs the argument. -/
+theorem crossTerm_eq_sq_sub (f : ι → n → ℝ) (w : ι → p → ℝ) (u : ι → q → ℝ)
+    (hsimple : ∀ k, (f k ⬝ᵥ f k) * (w k ⬝ᵥ w k) = u k ⬝ᵥ u k) :
+    (∑ k, ∑ l ∈ univ.erase k, ((f k ⬝ᵥ f l) * (w k ⬝ᵥ w l) - u k ⬝ᵥ u l))
+      = (∑ i, ∑ j, (∑ k, f k i * w k j) ^ 2) - ∑ j, (∑ k, u k j) ^ 2 := by
+  classical
+  have hsplit : ∀ (F : ι → ι → ℝ),
+      (∑ k, ∑ l ∈ univ.erase k, F k l) = (∑ k, ∑ l, F k l) - ∑ k, F k k := by
+    intro F
+    rw [← Finset.sum_sub_distrib]
+    exact Finset.sum_congr rfl fun k _ => by
+      rw [← Finset.sum_erase_add univ _ (mem_univ k)]; ring
+  rw [hsplit]
+  simp only [Finset.sum_sub_distrib]
+  rw [sum_gram_eq_sq, ← sum_gram_prod_eq_sum_sq]
+  have hdiag : (∑ k, ((f k ⬝ᵥ f k) * (w k ⬝ᵥ w k) - u k ⬝ᵥ u k)) = 0 :=
+    Finset.sum_eq_zero fun k _ => by rw [hsimple k]; ring
+  rw [Finset.sum_sub_distrib] at hdiag
+  linarith
+
 /-- **The leading cross term is a perfect square.**
 
 `hsimple` is `f_k ∧ ω'_k = 0`, in the equivalent metric form `‖f_k‖²‖ω'_k‖² = ‖u_k‖²`;
@@ -95,33 +132,14 @@ theorem crossTerm_eq_sq (f : ι → n → ℝ) (w : ι → p → ℝ) (u : ι �
     (∑ k, ∑ l ∈ univ.erase k, ((f k ⬝ᵥ f l) * (w k ⬝ᵥ w l) - u k ⬝ᵥ u l))
       = ∑ i, ∑ j, (∑ k, f k i * w k j) ^ 2 := by
   classical
-  -- the `u` double sum collapses: `∑_{k,l} ⟨u_k,u_l⟩ = ‖∑_k u_k‖² = 0`
-  have hzero : ∀ i, (∑ k, u k i) = 0 := by
-    intro i
-    have := congrFun htight i
+  rw [crossTerm_eq_sq_sub f w u hsimple]
+  have hzero : ∀ j, (∑ k, u k j) = 0 := by
+    intro j
+    have := congrFun htight j
     simpa [Finset.sum_apply] using this
-  have hu : (∑ k, ∑ l, u k ⬝ᵥ u l) = 0 := by
-    have h1 : (∑ k, ∑ l, u k ⬝ᵥ u l) = ∑ i, (∑ k, u k i) * (∑ l, u l i) := by
-      simp only [dotProduct]
-      rw [reorder3]
-      exact Finset.sum_congr rfl fun i _ => (Finset.sum_mul_sum _ _ _ _).symm
-    rw [h1]
-    exact Finset.sum_eq_zero fun i _ => by rw [hzero i, zero_mul]
-  -- split each double sum into diagonal and off-diagonal
-  have hsplit : ∀ (F : ι → ι → ℝ),
-      (∑ k, ∑ l ∈ univ.erase k, F k l) = (∑ k, ∑ l, F k l) - ∑ k, F k k := by
-    intro F
-    rw [← Finset.sum_sub_distrib]
-    exact Finset.sum_congr rfl fun k _ => by
-      rw [← Finset.sum_erase_add univ _ (mem_univ k)]; ring
-  rw [hsplit]
-  simp only [Finset.sum_sub_distrib]
-  rw [hu, ← sum_gram_prod_eq_sum_sq]
-  have hdiag : (∑ k, ((f k ⬝ᵥ f k) * (w k ⬝ᵥ w k) - u k ⬝ᵥ u k)) = 0 :=
-    Finset.sum_eq_zero fun k _ => by rw [hsimple k]; ring
-  have := hdiag
-  rw [Finset.sum_sub_distrib] at this
-  linarith
+  have : (∑ j, (∑ k, u k j) ^ 2) = 0 :=
+    Finset.sum_eq_zero fun j _ => by rw [hzero j]; ring
+  rw [this, sub_zero]
 
 /-- The conclusion in the form the recursion consumes it: under the two hypotheses the
 leading cross term is nonnegative. -/

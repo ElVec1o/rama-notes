@@ -1403,6 +1403,47 @@ contains $e$ in its plane, so $\omega_k'=0$, or is orthogonal to it, so $f_k=0$.
 precisely why the classical recursion has no cross terms. Off that locus the minimum is
 strictly positive.
 
+The proof reindexes, and doing so gives every level at once.
+
+\begin{theorem}\label{thm:Cr}
+For every $r\ge2$,
+\[
+C_r=\sum_{|S|=r-2}\Bigl[\,Q_S-\|W_S\|^2\,\Bigr],
+\qquad
+\begin{aligned}
+Q_S&=\sum_{k,l\notin S}\langle f_k,f_l\rangle
+\bigl\langle\omega_k'\wedge\omega_S',\ \omega_l'\wedge\omega_S'\bigr\rangle,\\
+W_S&=\sum_{k\notin S}\iota_{f_k}\bigl(\omega_k'\wedge\omega_S'\bigr),
+\end{aligned}
+\]
+and $Q_S=\bigl\|\sum_{k\notin S}f_k\otimes(\omega_k'\wedge\omega_S')\bigr\|^2\ge0$.
+\end{theorem}
+
+\begin{proof}
+Writing $T=S\cup\{k,l\}$ reindexes $C_r$ as
+$\sum_{|S|=r-2}\sum_{k\ne l\notin S}\langle f_k\wedge\omega_l'\wedge\omega_S',\
+f_l\wedge\omega_k'\wedge\omega_S'\rangle$. Apply \eqref{eq:wedgeip} with
+$\alpha=\omega_l'\wedge\omega_S'$ and $\gamma=\omega_k'\wedge\omega_S'$. The wedge
+$\omega_k'\wedge\omega_S'$ is a product of vectors, hence simple, and
+$f_k\wedge(\omega_k'\wedge\omega_S')=(f_k\wedge\omega_k')\wedge\omega_S'=0$ by the proof
+of Theorem~\ref{thm:C2}; so
+$\|f_k\|^2\|\omega_k'\wedge\omega_S'\|^2=\|\iota_{f_k}(\omega_k'\wedge\omega_S')\|^2$,
+and the diagonal terms of the two double sums cancel exactly as before. The Gram matrix
+of the vectors $\omega_k'\wedge\omega_S'$ is positive semidefinite, so $Q_S$ is the
+squared norm of $\sum_{k\notin S}f_k\otimes(\omega_k'\wedge\omega_S')$.
+\end{proof}
+
+At $r=2$ the set $S$ is empty, $W_\emptyset=\sum_k\iota_{f_k}\omega_k'$ vanishes by
+tightness, and Theorem~\ref{thm:Cr} is Theorem~\ref{thm:C2}. At $r=3$ it does not
+vanish, but it simplifies: since $\iota_{f_n}\omega_n'$ lies in the plane of $\omega_n'$,
+the self term $(\iota_{f_n}\omega_n')\wedge\omega_n'$ is zero, and using
+$\sum_ku_k=0$,
+\[
+W_{\{n\}}=\sum_{k\ne n}\omega_k'\wedge\iota_{f_k}\omega_n' .
+\]
+So the obstruction at $r=3$ is exactly the failure of the compressed planes to be
+mutually orthogonal, and it is the only obstruction: everything else is a square.
+
 It is worth being exact about what this settles. Writing the condition $X_e\le0$ at
 $x=2\sqrt a$ in the form
 \begin{equation}\label{eq:Chat}
@@ -1410,12 +1451,42 @@ $x=2\sqrt a$ in the form
 \end{equation}
 Theorem~\ref{thm:C2} is the leading coefficient of \eqref{eq:Chat}, that is the case
 $a\to\infty$. It gives $X_e\le0$ outright when $m\le5$, where $C_2$ is the only cross
-term; for $m\le7$ the condition is exactly $4a\,C_2\ge C_3$, which held in every family
-tested with a factor of $12.2$ to spare at $m=6$, falling to $3.6$ at $m=8$ and $1.94$ at
-$m=10$. The range $m\le5$ does not improve on the two-moment bounds above, so
+term. That range does not improve on the two-moment bounds above, so
 Theorem~\ref{thm:C2} does not by itself enlarge the unconditional range; what it supplies
-is the first structural reason for the sign, and a proof that the obstruction to
-\eqref{eq:Chat} lies entirely in the odd coefficients $C_3,C_5,\dots$.
+is the first structural reason for the sign.
+
+The obvious next step, bounding $C_3$ by $4a\,C_2$ so as to reach $m\le7$, is not
+available, and it fails for a reason worth recording rather than for lack of effort. The
+ratio $4a\,C_2/C_3$ decreases steadily in $m$ --- over cubic graphs it runs $3.50$ at
+$m=8$, $2.00$ at $m=10$ (Petersen), $1.36$ at $m=12$ (Franklin), $1.03$ at $m=14$
+(Heawood) --- and crosses below $1$ at $m=16$, where the M\"obius--Kantor graph gives
+$0.826$, and $0.687$ for the Pappus graph at $m=18$. So $C_3\le4aC_2$ is false in
+general.
+
+What the same computation shows is that the truncation is what fails, not the conclusion.
+Writing $\Sigma_R$ for the partial sum of \eqref{eq:Chat} over $2\le r\le R$, the
+sequence oscillates and settles quickly:
+\[
+\begin{array}{lcrrrr}
+\hline
+G & m & \Sigma_2 & \Sigma_3 & \Sigma_4 & \Sigma_5\\
+\hline
+\text{cube} & 8 & 1.283 & 0.916 & 0.938 & \\
+\text{Petersen} & 10 & 1.523 & 0.761 & 0.835 & 0.835\\
+\text{Franklin} & 12 & 1.703 & 0.454 & 0.723 & 0.704\\
+\text{Heawood} & 14 & 1.973 & 0.065 & 0.668 & \\
+\text{M\"obius--Kantor} & 16 & 2.141 & -0.452 & 0.669 & \\
+\text{Pappus} & 18 & 2.163 & -0.984 & & \\
+\hline
+\end{array}
+\]
+$\Sigma_3$ goes negative from $m=16$, $\Sigma_4$ recovers to about $0.7$, and $\Sigma_5$
+barely moves. The values are for one direction per graph, fixed by the seed in
+\texttt{code/hl\_Cr.py}, which also regenerates Theorem~\ref{thm:Cr} against the
+definition of $C_r$. So \eqref{eq:Chat} is in practice a three-term statement,
+$C_2-C_3/(4a)+C_4/(16a^2)\ge0$, and any proof must carry $C_4$; two terms provably will
+not do. By Theorem~\ref{thm:Cr} all three are differences of a Schur square and the
+square of a contraction, with only the contraction obstructing.
 
 The constant is therefore not an artefact of the estimate: $\sqrt a$ is the fixed
 point of $\rho\mapsto x-a/\rho$ at $x=2\sqrt a$, the value at which the two roots of
@@ -2012,10 +2083,17 @@ band edges are the single condition $\pi_{\max}\le4(a-1)/a^2$
 (\texttt{band\_iff\_pi}), and that the strictly weaker $\pi_{\max}\le4/a$ already
 yields $a+2\sqrt a$, which beats the Marchenko--Pastur edge for every $a$ and the
 product bound $ab$ for $a>4$ (\texttt{weak\_bound}, \texttt{weak\_beats\_mp},
-\texttt{weak\_beats\_ab}). \texttt{RamaLean/CrossTerm.lean} carries Theorem~\ref{thm:C2}. Its two geometric
+\texttt{weak\_beats\_ab}). \texttt{RamaLean/CrossTerm.lean} carries Theorems~\ref{thm:C2} and~\ref{thm:Cr}.
+\texttt{crossTerm\_eq\_sq\_sub} is the general level: with no hypothesis beyond
+\texttt{hsimple} it proves
+$\sum_{k\ne l}[\langle f_k,f_l\rangle\langle w_k,w_l\rangle-\langle u_k,u_l\rangle]
+=\|\sum_kf_k\otimes w_k\|^2-\|\sum_ku_k\|^2$, which is the $S$-summand of
+Theorem~\ref{thm:Cr} once $w_k=\omega_k'\wedge\omega_S'$ and
+$u_k=\iota_{f_k}(\omega_k'\wedge\omega_S')$. Its two geometric
 inputs are hypotheses --- \texttt{hsimple}, that $f_k\wedge\omega_k'=0$ in its metric form
 $\|f_k\|^2\|\omega_k'\|^2=\|u_k\|^2$, and \texttt{htight}, that $\sum_ku_k=0$ --- and
-\texttt{crossTerm\_eq\_sq} proves that they force $C_2$ to equal
+\texttt{crossTerm\_eq\_sq} specializes it to $r=2$, where tightness kills the second
+square, and proves that they force $C_2$ to equal
 $\sum_{i,j}\bigl(\sum_k(f_k)_i(\omega_k')_j\bigr)^2$, with \texttt{crossTerm\_nonneg} and
 \texttt{crossTerm\_eq\_zero\_iff} the consequences. The supporting
 \texttt{sum\_gram\_prod\_eq\_sum\_sq} is the Schur product theorem in the case needed,
