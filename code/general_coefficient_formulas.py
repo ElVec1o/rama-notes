@@ -34,7 +34,7 @@ def c_k(mu_fn, per_d, k, dmax):
 def check(name,V,E,mu_fn,per_d,dmax):
     nE,P,t=ginfo(V,E)
     c1=c_k(mu_fn,per_d,1,dmax); c2=c_k(mu_fn,per_d,2,dmax); c3=c_k(mu_fn,per_d,3,dmax)
-    c2f=sp.expand(sp.binomial(nE*d,2)-P*d)
+    c2f=sp.expand(sp.Rational(1,2)*(nE*d)*(nE*d-1)-P*d)
     print(f" {name}: |E|={nE} P={P} tri={t}")
     print(f"   c_1={c1}  (=|E|d? {sp.expand(c1-nE*d)==0})")
     print(f"   c_2={c2}  ==C(|E|d,2)-Pd? {sp.expand(c2-c2f)==0}")
