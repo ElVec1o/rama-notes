@@ -7,7 +7,7 @@ authors:
     family-names: "Bonfioli"
     email: "vicobonfioli@gmail.com"
     # orcid: "https://orcid.org/0000-0000-0000-0000"   # add if you have one
-repository-code: "https://github.com/ElVec1o/rama-notebook"
+repository-code: "https://github.com/ElVec1o/rama-notes"
 license: Apache-2.0
 keywords:
   - GCD matrix
