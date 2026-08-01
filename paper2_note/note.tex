@@ -1664,11 +1664,41 @@ equal.
 
 The right-hand side is \emph{strictly positive}, since $g_k\ge\theta_k>0$. So the
 strengthened induction does not require $X_e\le0$; it requires $X_e$ below an explicit
-positive quantity. That is a genuine weakening of the target, and it is the only one we
-have found. It does not close the problem --- no upper bound on $X_e$ is available at all
---- but it changes what one must prove. On the graphs tested $(\mathrm H)$ held with
-margin $0.52$ to $0.71$, and the sufficient condition held with the right-hand side
-exceeding $|X_e|$ by a factor of five to twenty.
+positive quantity. On the graphs tested $(\mathrm H)$ held with margin $0.52$ to $0.71$,
+and the sufficient condition held with the right-hand side exceeding $|X_e|$ by a factor
+of five to twenty.
+
+That is worth having because an upper bound on $X_e$ does exist, and the deficiency
+supplies it. Applying the vertex identity a second time writes each child polynomial as
+$F_{A''_k}=\bigl(F_{A^{(e)}}-q_k\bigr)/x$ with
+$q_k=\langle\hat f_k,W^{(e)}(x)\hat f_k\rangle$, so
+$\sum_k\theta_kF_{A''_k}=\bigl(aF_{A^{(e)}}-\operatorname{tr}(FW^{(e)})\bigr)/x$, and
+substituting into $X_e=N_e-\sum_k\theta_kF_{A''_k}$ gives a relation between the vertex
+matrices at two consecutive levels:
+
+\begin{proposition}\label{prop:twolevel}
+$x\,X_e=\operatorname{tr}\bigl(F\,W^{(e)}(x)\bigr)-x\,\langle e,W(x)e\rangle
+-a\,F_{A^{(e)}}(x)$, and consequently
+\[
+x\,X_e\ \le\ a\,\lambda_{\max}\bigl(W^{(e)}(x)\bigr)-x\,\langle e,W(x)e\rangle
+-a\,F_{A^{(e)}}(x).
+\]
+\end{proposition}
+
+\begin{proof}
+The identity is the substitution above. For the bound, $F=\sum_k\theta_k\hat f_k\hat
+f_k^{\mathsf T}$ is a nonnegative combination of unit rank-ones with
+$\sum_k\theta_k=\operatorname{tr}F=a$, so
+$\operatorname{tr}(FW^{(e)})=\sum_k\theta_kq_k\le\bigl(\sum_k\theta_k\bigr)
+\lambda_{\max}(W^{(e)})$; no spectral theory is needed beyond the definition of
+$\lambda_{\max}$.
+\end{proof}
+
+This is the first upper bound on $X_e$ in the development --- every earlier statement
+bounded it below or computed it exactly --- and the trace step is not lossy where it
+matters: on $K_5$ and $K_6$, where $X_e=0$, it holds with equality. Together with
+Proposition~\ref{prop:defstep}, whose target is strictly positive, the band is therefore
+reduced to a spectral bound on the child's vertex matrix. We have not proved that bound.
 
 The constant is therefore not an artefact of the estimate: $\sqrt a$ is the fixed
 point of $\rho\mapsto x-a/\rho$ at $x=2\sqrt a$, the value at which the two roots of
@@ -2346,8 +2376,10 @@ only if} $x\ge2\sqrt a$; \texttt{double\_root\_at\_threshold} is the structural
 form of the same statement, the factorization
 $\rho^2-2\sqrt a\,\rho+a=(\rho-\sqrt a)^2$ that collapses the interval of admissible
 thresholds to a point; and \texttt{no\_slack\_propagates} is
-Proposition~\ref{prop:rigid}; and \texttt{cavity\_step\_deficient} is
-Proposition~\ref{prop:defstep}, the strengthened step. Proposition~\ref{prop:deficient} is
+Proposition~\ref{prop:rigid}; \texttt{cavity\_step\_deficient} is
+Proposition~\ref{prop:defstep}, the strengthened step; and \texttt{compression\_sum},
+\texttt{trace\_le\_of\_rayleigh} and \texttt{remainder\_upper} are
+Proposition~\ref{prop:twolevel}. Proposition~\ref{prop:deficient} is
 \texttt{Tightness.adj\_compressed}, with the per-block splitting
 \texttt{Tightness.iota\_split}. \texttt{RamaLean/KestenMcKay.lean} carries
 Proposition~\ref{prop:km}: \texttt{radical\_at\_edge} that the radical is exactly $2$ at

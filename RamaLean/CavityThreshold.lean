@@ -208,4 +208,61 @@ theorem cavity_step_deficient {ι : Type*} [Fintype ι] {a x X F R d : ℝ} {θ 
   rw [hR]
   linarith [hsum', hXF, hcombine, hx2a, hsplit]
 
+/-! ### An upper bound on the remainder
+
+Applying the vertex identity a second time expresses each child polynomial as
+`F''_k = (F' - q_k)/x` with `q_k = ⟨f̂_k, W^(e) f̂_k⟩`, so that
+
+  `∑_k θ_k F''_k = (a F' - ∑_k θ_k q_k)/x = (a F' - tr(F W^(e)))/x`,
+
+`F = ∑_k θ_k f̂_k f̂_kᵀ` being the deficiency of `Tightness.adj_compressed`, whose trace is
+`a`.  Substituting into `X_e = N_e - ∑_k θ_k F''_k` gives the two-level identity
+
+  `x X_e = tr(F W^(e)) - x⟨e, W e⟩ - a F'`.
+
+Because `F` is a nonnegative combination of unit rank-ones, `tr(F W^(e)) ≤ a·λ_max(W^(e))`
+with no spectral theory at all — it is just `∑ θ_k q_k ≤ (∑ θ_k) L`.  That yields the
+first upper bound on `X_e` in this development, `remainder_upper` below.  Combined with
+`cavity_step_deficient`, whose target is strictly positive, it reduces the band to a
+spectral bound on the child's vertex matrix.
+-/
+
+/-- **The compression sum.**  If each child polynomial is `(F' - q_k)/x`, the weighted sum
+collapses to a single trace against the deficiency. -/
+theorem compression_sum {ι : Type*} [Fintype ι] {a x Fp : ℝ} {θ q Fpp : ι → ℝ}
+    (hx : x ≠ 0) (hsum : ∑ k, θ k = a)
+    (hFpp : ∀ k, Fpp k = (Fp - q k) / x) :
+    (∑ k, θ k * Fpp k) = (a * Fp - ∑ k, θ k * q k) / x := by
+  have : (∑ k, θ k * Fpp k) = ∑ k, (θ k * Fp - θ k * q k) / x := by
+    refine Finset.sum_congr rfl fun k _ => ?_
+    rw [hFpp k]
+    field_simp
+  rw [this, ← Finset.sum_div, Finset.sum_sub_distrib, ← Finset.sum_mul, hsum]
+
+/-- **The trace bound, elementarily.**  `tr(F W) ≤ a·L` when `F = ∑ θ_k f̂_k f̂_kᵀ` with
+`θ_k ≥ 0` summing to `a` and every Rayleigh quotient `q_k = ⟨f̂_k, W f̂_k⟩` at most `L`.
+Because `F` is presented as a nonnegative combination of unit rank-ones, this needs no
+spectral theory. -/
+theorem trace_le_of_rayleigh {ι : Type*} [Fintype ι] {a L : ℝ} {θ q : ι → ℝ}
+    (hθ : ∀ k, 0 ≤ θ k) (hsum : ∑ k, θ k = a) (hq : ∀ k, q k ≤ L) :
+    (∑ k, θ k * q k) ≤ a * L := by
+  calc (∑ k, θ k * q k) ≤ ∑ k, θ k * L :=
+        Finset.sum_le_sum fun k _ => mul_le_mul_of_nonneg_left (hq k) (hθ k)
+    _ = a * L := by rw [← Finset.sum_mul, hsum]
+
+/-- **An upper bound on the remainder.**  From the two-level identity
+`x X = ∑_k θ_k q_k - x·We - a·F'` and the trace bound,
+
+  `x X ≤ a L - x·We - a F'`,
+
+`L` any upper bound for the child Rayleigh quotients, in particular `λ_max(W^(e))`.  This
+is the first upper bound on `X_e` available: every earlier statement bounded it below or
+computed it exactly. -/
+theorem remainder_upper {ι : Type*} [Fintype ι] {a x L Fp We X : ℝ} {θ q : ι → ℝ}
+    (hθ : ∀ k, 0 ≤ θ k) (hsum : ∑ k, θ k = a) (hq : ∀ k, q k ≤ L)
+    (hid : x * X = (∑ k, θ k * q k) - x * We - a * Fp) :
+    x * X ≤ a * L - x * We - a * Fp := by
+  have := trace_le_of_rayleigh hθ hsum hq
+  linarith [hid]
+
 end CavityThreshold
