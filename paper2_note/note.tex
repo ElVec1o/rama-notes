@@ -1119,14 +1119,48 @@ ab-\bigl(\sqrt{a-1}+\sqrt{b-1}\bigr)^2=\bigl(\sqrt m-1\bigr)^2 .
 \end{proposition}
 
 So the bound overshoots the conjectured edge by exactly $(\sqrt m-1)^2$, and is
-lossless precisely when $m=1$. Two consequences. At $a=b=2$ the overshoot vanishes
+lossless precisely when $m=1$. At $a=b=2$ the overshoot vanishes
 and $ab=4$ is the upper edge; the roots are nonnegative because the matching numbers
-are, so \textbf{the band is proved outright at $a=b=2$}. And for projection families
-generally, $ab$ is a better bound than the Marchenko--Pastur edge
-$(\sqrt a+\sqrt b)^2$ exactly when $1/\sqrt a+1/\sqrt b>1$, which covers $b=2$ with
-$3\le a\le11$ and $b=3$ with $3\le a\le5$; since Marchenko--Pastur was the only
-bound previously available in that generality, this is an improvement there.
-Proposition~\ref{prop:abbound} is formalized in
+are, so \textbf{the band is proved outright at $a=b=2$}.
+
+Where $ab$ stands relative to what is known needs care, and we record it exactly. Xu, Xu
+and Zhu \cite[Thm.~1.9]{XXZ} prove, for positive semidefinite $X_1,\dots,X_q$ of rank at
+most $k$ with $\sum X_i\preceq I$ and $\varepsilon=\max\operatorname{tr}X_i$, that
+$\operatorname{maxroot}\mu\le\bigl(\sqrt{1-\varepsilon/(k-1)}+\sqrt\varepsilon\bigr)^2$
+whenever $\varepsilon\le(k-1)^2/k$. Normalizing a rank-$b$ projection family with
+$\sum_kP_k=aI$ by $a$ puts it in exactly that form with $k=b$ and $\varepsilon=b/a$, and
+since the roots scale with the family this gives
+\begin{equation}\label{eq:xxz}
+\lambda_{\max}\ \le\ a\Bigl(\sqrt{1-\tfrac{b}{a(b-1)}}+\sqrt{\tfrac ba}\Bigr)^{2},
+\qquad a\ \ge\ \frac{b^2}{(b-1)^2},
+\end{equation}
+which at $b=2$ is $a+2\sqrt{2a-4}$ for $a\ge4$. That is strictly better than $ab$ for
+every $a>4$ --- indeed $a+2\sqrt{2a-4}\le2a$ with equality only at $a=4$, formalized as
+\texttt{xxz\_le\_ab} and \texttt{xxz\_eq\_ab\_iff} --- and better than
+Marchenko--Pastur throughout. So $ab$ is the best available bound only where the
+hypothesis of \eqref{eq:xxz} fails, which at $b=2$ means $a<4$: at $a=b=2$, where it is
+sharp and settles the band, and at $(a,b)=(3,2)$, where it gives $6$ against a
+Marchenko--Pastur edge of $9.899$ and a band edge of $5.828$. Elsewhere \eqref{eq:xxz} is
+the state of the art:
+\[
+\begin{array}{lrrrrr}
+\hline
+(a,b) & \eqref{eq:xxz} & ab & \text{Marchenko--Pastur} & a+2\sqrt a & \text{band}\\
+\hline
+(3,2) & \text{n/a} & 6.000 & 9.899 & 6.464 & 5.828\\
+(4,2) & 8.000 & 8.000 & 11.657 & 8.000 & 7.464\\
+(9,2) & 16.483 & 18.000 & 19.485 & 15.000 & 14.657\\
+(100,2) & 128.000 & 200.000 & 130.284 & 120.000 & 119.900\\
+(4,3) & 10.977 & 12.000 & 13.928 & - & 9.899\\
+(25,4) & 47.126 & 100.000 & 49.000 & - & 43.971\\
+\hline
+\end{array}
+\]
+The comparison also says what the target of this section is worth: at $b=2$ the bound
+$a+2\sqrt a$ of Proposition~\ref{prop:cross} would improve on \eqref{eq:xxz} for every
+$a>4$, since $\sqrt a\le\sqrt{2a-4}$ there (\texttt{target\_le\_xxz}). It is therefore
+not a weaker target than the literature already provides, but a stronger one everywhere
+the barrier hypothesis holds. Proposition~\ref{prop:abbound} is formalized in
 \texttt{RamaLean/ProductBound.lean} as \texttt{no\_root\_above} and
 \texttt{edge\_gap}.
 
@@ -1295,6 +1329,19 @@ summands lie in $\Lambda^{2r}(e^\perp)$ and $e\wedge\Lambda^{2r-1}(e^\perp)$, wh
 are orthogonal, so the norms add; summing over $|T|=r$ gives the first display, and
 the second is that display multiplied by $(-1)^rx^{\,m-2r}$ and summed.
 \end{proof}
+
+We have looked for Theorem~\ref{thm:vertexrec} in the literature and not found it. The
+whole arXiv corpus mentioning ``mixed characteristic polynomial'' is seven papers, all
+working through the barrier function or interlacing families; the generalizations of
+Heilmann--Lieb we can find are to hypergraphs \cite{Zhang}, to spanning subgraphs with
+degree constraints, and to multivariate independence polynomials, all of them
+graph-theoretic; and a search of arXiv for ``matching polynomial'' together with any of
+Grassmann, Pl\"ucker, bivector or exterior algebra returns nothing. That is weak evidence:
+the Gram form below is elementary enough to be folklore, the pre-arXiv matching-polynomial
+literature is not covered by such a search, and the statement could well appear under
+different language --- hyperbolic or Lorentzian polynomials, or the theory of stable
+polynomials, where Pl\"ucker coordinates do occur but in the different role of
+characterizing stability by total nonnegativity. We claim only that we have not found it.
 
 The exterior algebra can be dispensed with entirely, and doing so identifies the
 theorem with a known lemma. Let $C$ be the $m\times2r$ matrix whose columns are the
@@ -2206,6 +2253,10 @@ evaluation of Corollary~\ref{cor:fib}, and the formalization are new.
 \end{remark}
 
 \begin{thebibliography}{9}
+\bibitem{Zhang} A hypergraph Heilmann--Lieb theorem, arXiv:2206.09558 (2022).
+\bibitem{XXZ} Z.~Xu, Z.~Xu, Z.~Zhu, \emph{Improved bounds in Weaver's
+$\mathrm{KS}_r$ conjecture for high rank positive semidefinite matrices},
+arXiv:2106.09205 (2021).
 \bibitem{GG} C.~Godsil, I.~Gutman, \emph{On the matching polynomial of a
 graph}, in: Algebraic Methods in Graph Theory, 1981.
 \bibitem{HPS} C.~Hall, D.~Puder, W.~Sawin, \emph{Ramanujan coverings of

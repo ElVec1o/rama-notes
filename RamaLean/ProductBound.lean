@@ -166,4 +166,43 @@ theorem weak_beats_mp {a : ℝ} (ha : 0 < a) :
     nlinarith [h2, Real.sqrt_nonneg 2]
   nlinarith [hsq, h2, hsa, h2p]
 
+/-! ### Comparison with the barrier bound of Xu, Xu and Zhu
+
+For rank-`b` projections with `∑ P_k = aI`, normalising by `a` puts the family in the
+Weaver form `∑ X_k = I`, `rank X_k ≤ b`, `ε = b/a`, and Theorem 1.9 of Xu–Xu–Zhu (2021)
+gives `λ_max ≤ a(√(1 - ε/(b-1)) + √ε)²` whenever `ε ≤ (b-1)²/b`.  At `b = 2` that is
+
+  `λ_max ≤ a + 2√(2a - 4)`,   valid for `a ≥ 4`.
+
+The two lemmas below place it against the bounds of this section.  `xxz_le_ab` says it is
+at least as good as `ab = 2a` everywhere it applies, with equality only at `a = 4` — so
+`ab` is the better bound only where the barrier hypothesis fails, namely `a < 4`.
+`target_le_xxz` says the target `a + 2√a` of `weak_bound` is in turn better than it for
+`a > 4`, so proving that target would improve on the state of the art exactly there. -/
+
+/-- The barrier bound `a + 2√(2a-4)` is at most the product bound `2a`, with equality
+exactly at `a = 4`; the gap is `(a-4)²` under the square root comparison. -/
+theorem xxz_le_ab {a : ℝ} (ha : 4 ≤ a) :
+    a + 2 * Real.sqrt (2 * a - 4) ≤ 2 * a := by
+  have h0 : (0:ℝ) ≤ 2 * a - 4 := by linarith
+  have hs : Real.sqrt (2 * a - 4) ^ 2 = 2 * a - 4 := Real.sq_sqrt h0
+  have hn : 0 ≤ Real.sqrt (2 * a - 4) := Real.sqrt_nonneg _
+  nlinarith [hs, hn, sq_nonneg (a - 4), sq_nonneg (Real.sqrt (2 * a - 4) - 2)]
+
+/-- Equality holds exactly at `a = 4`. -/
+theorem xxz_eq_ab_iff {a : ℝ} (ha : 4 ≤ a) :
+    a + 2 * Real.sqrt (2 * a - 4) = 2 * a ↔ a = 4 := by
+  have h0 : (0:ℝ) ≤ 2 * a - 4 := by linarith
+  have hs : Real.sqrt (2 * a - 4) ^ 2 = 2 * a - 4 := Real.sq_sqrt h0
+  have hn : 0 ≤ Real.sqrt (2 * a - 4) := Real.sqrt_nonneg _
+  constructor
+  · intro h; nlinarith [hs, hn, sq_nonneg (a - 4)]
+  · intro h; subst h; norm_num
+
+/-- The target `a + 2√a` is at least as strong as the barrier bound for `a ≥ 4`. -/
+theorem target_le_xxz {a : ℝ} (ha : 4 ≤ a) :
+    a + 2 * Real.sqrt a ≤ a + 2 * Real.sqrt (2 * a - 4) := by
+  have : Real.sqrt a ≤ Real.sqrt (2 * a - 4) := Real.sqrt_le_sqrt (by linarith)
+  linarith
+
 end ProductBound
