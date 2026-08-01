@@ -75,6 +75,51 @@ theorem companion_small :
     p 6 ≡ 5 [MOD 6] := by                                -- 6 ∈ S₋₁  (p 6 = 11 ≡ -1 mod 6)
   refine ⟨?_, ?_, ?_⟩ <;> native_decide
 
+/-! ### The trust base, isolated
+
+Every statement of Part A is a consequence of the value table `p_values` and of nothing
+else.  That table is the only place `native_decide` is needed: the kernel cannot reduce
+`Fintype.card (Nat.Partition n)` — its `Decidable` instance does not evaluate — so the
+values must come from compiled evaluation.
+
+Each statement is therefore given here FIRST in conditional form, taking as hypotheses
+exactly the values it uses.  Those conditional theorems depend on the standard three
+axioms only, and they are where the mathematics of the Proposition lives; the
+unconditional versions above are these applied to the table.  So the compiled evaluation
+is confined to a list of integers a reader can check by hand, and every inference drawn
+from them is kernel-checked.
+-/
+
+theorem prop_i_of (h : p 5 = 7) : p 5 ≡ 2 [MOD 5] := by rw [h]; decide
+
+theorem prop_ii_of (h : p 7 = 15) : p 7 ≡ 1 [MOD 7] := by rw [h]; decide
+
+theorem prop_iii_of (h : p 11 = 56) : p 11 ≡ 1 [MOD 11] := by rw [h]; decide
+
+theorem four_mem_of (h : p 4 = 5) : S₁ 4 := by
+  refine ⟨by norm_num, ?_⟩
+  rw [h]; norm_num
+
+theorem seven_mem_of (h : p 7 = 15) : S₁ 7 := by
+  refine ⟨by norm_num, ?_⟩
+  rw [h]; norm_num
+
+theorem eleven_mem_of (h : p 11 = 56) : S₁ 11 := by
+  refine ⟨by norm_num, ?_⟩
+  rw [h]; norm_num
+
+theorem five_not_mem_of (h : p 5 = 7) : ¬ S₁ 5 := by
+  rintro ⟨-, hd⟩
+  rw [h] at hd
+  norm_num at hd
+
+/-- The Proposition, in the form the paper states it, from the table alone. -/
+theorem proposition_of (h5 : p 5 = 7) (h7 : p 7 = 15) (h11 : p 11 = 56) :
+    (p 5 ≡ 2 [MOD 5]) ∧ (p 7 ≡ 1 [MOD 7]) ∧ (p 11 ≡ 1 [MOD 11])
+      ∧ S₁ 7 ∧ S₁ 11 ∧ ¬ S₁ 5 :=
+  ⟨prop_i_of h5, prop_ii_of h7, prop_iii_of h11,
+   seven_mem_of h7, eleven_mem_of h11, five_not_mem_of h5⟩
+
 /-! ## Part B — the Euler pentagonal recurrence and the full sequences
 
 `ppent` is the partition function computed by Euler's pentagonal recurrence

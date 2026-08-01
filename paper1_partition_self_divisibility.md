@@ -198,6 +198,28 @@ and the pattern breaks.
    moduli.)
 
 
+## 4a. Formalization
+
+The Proposition of Section 3 is machine-checked in Lean 4 / Mathlib
+(`RamaLean/Paper1.lean`), over the *combinatorial* partition function
+`p n = Fintype.card (Nat.Partition n)` — no recurrence and no appeal to Euler's
+theorem.
+
+The trust base is isolated. Lean's kernel cannot reduce
+`Fintype.card (Nat.Partition n)`, so the *values* p(4), p(5), p(7), p(11) come from
+compiled evaluation (`native_decide`, which adds one axiom beyond Lean's standard
+three). Every *inference* drawn from them is separated out and kernel-checked:
+`prop_i_of`, `prop_ii_of`, `prop_iii_of`, `four_mem_of`, `seven_mem_of`,
+`eleven_mem_of`, `five_not_mem_of` and `proposition_of` take the values they use as
+explicit hypotheses and depend on the standard three axioms only. So the compiled
+step is confined to a short list of integers a reader can check by hand, and nothing
+mathematical rests on it.
+
+Part B of the file introduces the pentagonal recurrence as a computable function and
+certifies the larger members of the sequences; its reading as a statement about p
+rests on Euler's Pentagonal Number Theorem, which is classical and not yet in
+Mathlib. That dependence is stated inline in the file.
+
 ## 5. Reproducibility code
 
 The computation to N = 10^6 is `code/paper1_million.py` in the `rama-notes`
