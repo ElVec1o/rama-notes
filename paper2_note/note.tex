@@ -1622,6 +1622,54 @@ Propagating $R\ge c\sqrt a$ requires $c\sqrt a\le2\sqrt a-a/(c\sqrt a)$, which a
 clearing the denominator is $a(c-1)^2\le0$, so $c=1$.
 \end{proof}
 
+There is one hypothesis the argument has not used, and it changes what has to be proved.
+The class is \emph{not} closed under compression in the tight sense:
+
+\begin{proposition}\label{prop:deficient}
+For a weighted $2$-plane family with $\operatorname{Adj}(A)=aI$ and any unit $e$,
+\[
+\operatorname{Adj}\bigl(A^{(e)}\bigr)=a\,I_{e^\perp}-F,\qquad F=\sum_kf_kf_k^{\mathsf T},
+\qquad \operatorname{tr}F=a .
+\]
+\end{proposition}
+
+\begin{proof}
+For $u,v\perp e$ one has $\iota_u\omega_k=-\langle u,f_k\rangle e+\iota_u\omega_k'$ with
+$\iota_u\omega_k'\perp e$, so
+$\langle\iota_u\omega_k,\iota_v\omega_k\rangle
+=\langle u,f_k\rangle\langle v,f_k\rangle+\langle\iota_u\omega_k',\iota_v\omega_k'\rangle$;
+summing and using $\operatorname{Adj}(A)=aI$ gives the display, and
+$\operatorname{tr}F=\sum_k\theta_k=\langle e,\operatorname{Adj}(A)e\rangle=a$.
+\end{proof}
+
+So compressing costs exactly a positive semidefinite matrix of trace $a$, and the children
+of a tight family are deficient by a definite amount. Spending that deficiency strengthens
+the induction. Write $d(e)=a-\langle e,\operatorname{Adj}(A)e\rangle\ge0$ for the local
+deficiency, and replace the hypothesis $R\ge x/2$ of Proposition~\ref{prop:cross} by
+\[
+(\mathrm H)\qquad R_e\ \ge\ \frac x2+\frac{2\,d(e)}{x}.
+\]
+This is consistent at the base ($m\le1$: $R_e=x$, $d=a$, and $x/2+2a/x=x$ exactly), and at
+a tight family $d\equiv0$, so it still delivers the band.
+
+\begin{proposition}\label{prop:defstep}
+Let $g_k=\langle\hat f_k,F\hat f_k\rangle$ be the deficiency the children inherit. Then
+$(\mathrm H)$ propagates provided
+\[
+X_e\ \le\ \frac{2F_{A^{(e)}}}{x}\sum_k\frac{\theta_k\,g_k}{a+g_k},
+\]
+and the estimate is lossless: the two sides of the resulting comparison are identically
+equal.
+\end{proposition}
+
+The right-hand side is \emph{strictly positive}, since $g_k\ge\theta_k>0$. So the
+strengthened induction does not require $X_e\le0$; it requires $X_e$ below an explicit
+positive quantity. That is a genuine weakening of the target, and it is the only one we
+have found. It does not close the problem --- no upper bound on $X_e$ is available at all
+--- but it changes what one must prove. On the graphs tested $(\mathrm H)$ held with
+margin $0.52$ to $0.71$, and the sufficient condition held with the right-hand side
+exceeding $|X_e|$ by a factor of five to twenty.
+
 The constant is therefore not an artefact of the estimate: $\sqrt a$ is the fixed
 point of $\rho\mapsto x-a/\rho$ at $x=2\sqrt a$, the value at which the two roots of
 $\rho^2-x\rho+a$ collide. For $x>2\sqrt a$ the inductive hypothesis has an interval
@@ -2298,7 +2346,10 @@ only if} $x\ge2\sqrt a$; \texttt{double\_root\_at\_threshold} is the structural
 form of the same statement, the factorization
 $\rho^2-2\sqrt a\,\rho+a=(\rho-\sqrt a)^2$ that collapses the interval of admissible
 thresholds to a point; and \texttt{no\_slack\_propagates} is
-Proposition~\ref{prop:rigid}. \texttt{RamaLean/KestenMcKay.lean} carries
+Proposition~\ref{prop:rigid}; and \texttt{cavity\_step\_deficient} is
+Proposition~\ref{prop:defstep}, the strengthened step. Proposition~\ref{prop:deficient} is
+\texttt{Tightness.adj\_compressed}, with the per-block splitting
+\texttt{Tightness.iota\_split}. \texttt{RamaLean/KestenMcKay.lean} carries
 Proposition~\ref{prop:km}: \texttt{radical\_at\_edge} that the radical is exactly $2$ at
 the threshold, \texttt{G\_at\_edge} the closed form there, \texttt{inv\_G\_div\_edge} the
 constant $1+1/(1+\sqrt a)$, and \texttt{excess\_eq}, \texttt{excess\_pos},

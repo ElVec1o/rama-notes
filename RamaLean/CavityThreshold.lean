@@ -131,4 +131,81 @@ theorem no_slack_propagates {a c : ℝ} (ha : 0 < a) (hc : 0 < c)
     exact pow_eq_zero_iff two_ne_zero |>.mp hz
   linarith
 
+/-- **The induction step, strengthened by the deficiency.**
+
+`Tightness.adj_compressed` says the compressed family is not tight but deficient by
+`F = ∑_k f_k f_kᵀ`.  Tracking that deficiency turns the hypothesis `R ≥ x/2` into
+`R ≥ x/2 + 2d/x`, where `d = a - ⟨e, Adj e⟩ ≥ 0` is the local deficiency, and `d = 0`
+recovers `cavity_step` and hence the band.
+
+The point is what it does to the target.  With `g_k = ⟨f̂_k, F f̂_k⟩` the deficiency the
+children inherit, the step closes provided
+
+  `X ≤ (2F/x) ∑_k θ_k g_k/(a + g_k)`,
+
+whose right-hand side is **strictly positive** (each `g_k ≥ θ_k > 0`).  So the strengthened
+induction does not need `X_e ≤ 0`; it needs `X_e` below an explicit positive quantity.
+And the estimate is not lossy: the two sides of the final comparison are *identically*
+equal, so nothing is thrown away. -/
+theorem cavity_step_deficient {ι : Type*} [Fintype ι] {a x X F R d : ℝ} {θ g R' : ι → ℝ}
+    (hx : 0 < x) (ha : 0 < a) (hband : x ^ 2 = 4 * a)
+    (hθ : ∀ k, 0 ≤ θ k) (hg : ∀ k, 0 ≤ g k)
+    (hsum : ∑ k, θ k = a - d)
+    (hR' : ∀ k, x / 2 + 2 * g k / x ≤ R' k)
+    (hF : 0 < F)
+    (hX : X ≤ (2 * F / x) * ∑ k, θ k * g k / (a + g k))
+    (hR : R = x - (∑ k, θ k / R' k) - X / F) :
+    x / 2 + 2 * d / x ≤ R := by
+  have hxne : x ≠ 0 := hx.ne'
+  have hag : ∀ k, 0 < a + g k := fun k => by have := hg k; linarith
+  -- each child ratio is at least `2(a + g k)/x`
+  have hchild : ∀ k, 2 * (a + g k) / x ≤ R' k := by
+    intro k
+    refine le_trans (le_of_eq ?_) (hR' k)
+    field_simp
+    linarith [hband]
+  have hcpos : ∀ k, 0 < R' k := fun k =>
+    lt_of_lt_of_le (div_pos (by linarith [hag k]) hx) (hchild k)
+  have hterm : ∀ k, θ k / R' k ≤ θ k * x / (2 * (a + g k)) := by
+    intro k
+    have h3 : θ k * x * (2 * (a + g k) / x) ≤ θ k * x * R' k :=
+      mul_le_mul_of_nonneg_left (hchild k) (mul_nonneg (hθ k) hx.le)
+    have h4 : θ k * x * (2 * (a + g k) / x) = θ k * (2 * (a + g k)) := by
+      field_simp
+    rw [div_le_iff₀ (hcpos k), div_mul_eq_mul_div,
+      le_div_iff₀ (by linarith [hag k] : (0:ℝ) < 2 * (a + g k))]
+    linarith [h3, h4]
+  have hsum' : (∑ k, θ k / R' k) ≤ ∑ k, θ k * x / (2 * (a + g k)) :=
+    Finset.sum_le_sum fun k _ => hterm k
+  have hXF : X / F ≤ (2 / x) * ∑ k, θ k * g k / (a + g k) := by
+    rw [div_le_iff₀ hF]
+    calc X ≤ (2 * F / x) * ∑ k, θ k * g k / (a + g k) := hX
+      _ = (2 / x) * (∑ k, θ k * g k / (a + g k)) * F := by ring
+  -- the two contributions add to exactly `(2/x) ∑ θ k`: nothing is thrown away
+  have hexact : ∀ k, θ k * x / (2 * (a + g k)) + 2 / x * (θ k * g k / (a + g k))
+      = 2 * θ k / x := by
+    intro k
+    have hne : (a + g k) ≠ 0 := (hag k).ne'
+    have hden : (2:ℝ) * x * (a + g k) ≠ 0 :=
+      mul_ne_zero (mul_ne_zero two_ne_zero hxne) hne
+    have expand : θ k * x / (2 * (a + g k)) + 2 / x * (θ k * g k / (a + g k))
+        = (θ k * x ^ 2 + 4 * (θ k * g k)) / (2 * x * (a + g k)) := by
+      field_simp
+      ring
+    rw [expand, div_eq_div_iff hden hxne]
+    linear_combination (θ k * x) * hband
+  have hcombine : (∑ k, θ k * x / (2 * (a + g k)))
+      + (2 / x) * ∑ k, θ k * g k / (a + g k) = ∑ k, 2 * θ k / x := by
+    rw [Finset.mul_sum, ← Finset.sum_add_distrib]
+    exact Finset.sum_congr rfl fun k _ => hexact k
+  have hx2a : x - 2 * a / x = x / 2 := by
+    field_simp
+    linarith [hband]
+  have hsimp : (∑ k, 2 * θ k / x) = 2 * (a - d) / x := by
+    rw [← Finset.sum_div, ← Finset.mul_sum, hsum]
+  rw [hsimp] at hcombine
+  have hsplit : 2 * (a - d) / x = 2 * a / x - 2 * d / x := by ring
+  rw [hR]
+  linarith [hsum', hXF, hcombine, hx2a, hsplit]
+
 end CavityThreshold

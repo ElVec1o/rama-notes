@@ -41,6 +41,10 @@ def proj (e b : n → ℝ) : n → ℝ := b - (e ⬝ᵥ b) • e
     a ⬝ᵥ iota v b1 b2 = (v ⬝ᵥ b1) * (a ⬝ᵥ b2) - (v ⬝ᵥ b2) * (a ⬝ᵥ b1) := by
   simp [iota, dotProduct_sub, dotProduct_smul]
 
+@[simp] theorem iota_dot (a v b1 b2 : n → ℝ) :
+    iota v b1 b2 ⬝ᵥ a = (v ⬝ᵥ b1) * (a ⬝ᵥ b2) - (v ⬝ᵥ b2) * (a ⬝ᵥ b1) := by
+  rw [dotProduct_comm]; exact dot_iota a v b1 b2
+
 /-- **Antisymmetry of the contraction pairing.**  `⟨a, ι_b ω⟩ = -⟨b, ι_a ω⟩`. -/
 theorem iota_antisymm (a b b1 b2 : n → ℝ) :
     a ⬝ᵥ iota b b1 b2 = -(b ⬝ᵥ iota a b1 b2) := by
@@ -129,6 +133,57 @@ theorem tight_sum_contraction_eq_zero (e : n → ℝ) (he : e ⬝ᵥ e = 1)
   funext i
   have := hall (Pi.single i 1)
   simpa [dotProduct, Pi.single_apply] using this
+
+/-- **The compression splits the contraction form.**  For `u, v` orthogonal to the unit
+vector `e`, the contraction form of a block splits into its `e`-part and the form of the
+compressed block. -/
+theorem iota_split (e u v b1 b2 : n → ℝ) (he : e ⬝ᵥ e = 1)
+    (hu : e ⬝ᵥ u = 0) (hv : e ⬝ᵥ v = 0) :
+    (iota u b1 b2) ⬝ᵥ (iota v b1 b2)
+      = (u ⬝ᵥ iota e b1 b2) * (v ⬝ᵥ iota e b1 b2)
+        + (iota u (proj e b1) (proj e b2)) ⬝ᵥ (iota v (proj e b1) (proj e b2)) := by
+  have hub : ∀ b : n → ℝ, u ⬝ᵥ proj e b = u ⬝ᵥ b := by
+    intro b
+    have h0 : u ⬝ᵥ ((e ⬝ᵥ b) • e) = 0 := by
+      rw [dotProduct_smul, dotProduct_comm u e, hu, smul_zero]
+    simp [proj, dotProduct_sub, h0]
+  have hvb : ∀ b : n → ℝ, v ⬝ᵥ proj e b = v ⬝ᵥ b := by
+    intro b
+    have h0 : v ⬝ᵥ ((e ⬝ᵥ b) • e) = 0 := by
+      rw [dotProduct_smul, dotProduct_comm v e, hv, smul_zero]
+    simp [proj, dotProduct_sub, h0]
+  have hbb : ∀ c d : n → ℝ, (proj e c) ⬝ᵥ (proj e d)
+      = c ⬝ᵥ d - (e ⬝ᵥ c) * (e ⬝ᵥ d) := by
+    intro c d
+    simp only [proj, sub_dotProduct, dotProduct_sub, smul_dotProduct, dotProduct_smul,
+      smul_eq_mul, he]
+    rw [dotProduct_comm e c]
+    ring
+  simp only [dot_iota, iota_dot, hub, hvb, hbb]
+  rw [dotProduct_comm b2 b1]
+  ring
+
+/-- **The compressed family is deficient by exactly `F = ∑_k f_k f_kᵀ`.**  If
+`Adj(A) = a I` then `Adj(A^(e)) = a I - F` on `e^⊥`, and `tr F = ⟨e, Adj(A) e⟩ = a`.  So
+the class is *not* closed under compression in the tight sense: compressing costs exactly
+a rank-`≤ q` positive semidefinite matrix of trace `a`, and that deficiency is what a
+sharpened induction can spend. -/
+theorem adj_compressed (e : n → ℝ) (he : e ⬝ᵥ e = 1) (b1 b2 : ι → n → ℝ) (a : ℝ)
+    (htight : ∀ u v : n → ℝ,
+      (∑ k, (iota u (b1 k) (b2 k)) ⬝ᵥ (iota v (b1 k) (b2 k))) = a * (u ⬝ᵥ v))
+    (u v : n → ℝ) (hu : e ⬝ᵥ u = 0) (hv : e ⬝ᵥ v = 0) :
+    (∑ k, (iota u (proj e (b1 k)) (proj e (b2 k)))
+            ⬝ᵥ (iota v (proj e (b1 k)) (proj e (b2 k))))
+      = a * (u ⬝ᵥ v)
+        - ∑ k, (u ⬝ᵥ iota e (b1 k) (b2 k)) * (v ⬝ᵥ iota e (b1 k) (b2 k)) := by
+  have hsplit : ∀ k, (iota u (proj e (b1 k)) (proj e (b2 k)))
+      ⬝ᵥ (iota v (proj e (b1 k)) (proj e (b2 k)))
+      = (iota u (b1 k) (b2 k)) ⬝ᵥ (iota v (b1 k) (b2 k))
+        - (u ⬝ᵥ iota e (b1 k) (b2 k)) * (v ⬝ᵥ iota e (b1 k) (b2 k)) := by
+    intro k
+    have := iota_split e u v (b1 k) (b2 k) he hu hv
+    linarith
+  rw [Finset.sum_congr rfl fun k _ => hsplit k, Finset.sum_sub_distrib, htight u v]
 
 /-- **The chain, closed.**  Composing `tight_sum_contraction_eq_zero` with
 `CrossTerm.crossTerm_nonneg`: for a tight family of rank-two blocks and any unit `e`, the
