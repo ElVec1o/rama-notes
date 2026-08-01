@@ -4,22 +4,33 @@ Four short number-theory / combinatorics notes and a methodology note, each pair
 result with a Lean 4 + Mathlib formalization. Everything here builds and is machine-checked; conjectures
 are labeled as such.
 
-> **Formalization status:** the Lean library `RamaLean/` builds against Mathlib with **no `sorry`**. The
-> genuine mathematical theorems depend only on Lean's three standard axioms (`propext`, `Classical.choice`,
-> `Quot.sound`); the `native_decide` computational checks (Paper 1, and Paper 2's `thm1_verified` /
-> `cor2_fibLucas`) additionally use `Lean.ofReduceBool`. Paper 4 has no dedicated Lean file — its formal
-> backing is the shared Paper 2 matching-polynomial identities.
+> **Formalization status:** the Lean library `RamaLean/` builds against Mathlib with **no `sorry`**. Every
+> mathematical theorem depends only on Lean's three standard axioms (`propext`, `Classical.choice`,
+> `Quot.sound`). `native_decide`, which additionally uses `Lean.ofReduceBool`, appears only where the
+> kernel provably cannot evaluate: Paper 1's partition *values* (the `Decidable` instance for
+> `Fintype.card (Nat.Partition n)` does not reduce) and two bounded checks in Paper 2. In Paper 1 the
+> inferences drawn from those values are separated out and kernel-checked, so nothing mathematical rests
+> on the compiled step.
 
 ## Papers
 
-### Paper 2 — The expected characteristic polynomial of a random lift of a cycle
-`paper2_note/` · [note.pdf](paper2_note/note.pdf)
+### Paper 2 — Roots of $d$-matching polynomials and the spectrum of the universal cover
+`paper2_note/` · [note.pdf](paper2_note/note.pdf) · 40pp
 
-For the expected characteristic polynomial of a uniformly random permutation $r$-lift of $C_n$,
-$$\Phi_{n,r}(x)=\chi_{C_n}(x)\,U_{r-1}\!\big(T_n(x/2)\big),\qquad \chi_{C_n}(x)=2T_n(x/2)-2,$$
-equivalently the $d$-matching polynomial of $C_n$ is $U_d(T_n(x/2))$. This is an independent proof of a
-conjecture of Hall (first proved by Cochran–Groothuis–Herring–Rohatgi–Stucky, 2018), via the
-exponential formula and a Chebyshev generating function. **Fully formalized in Lean.**
+Hall–Puder–Sawin place the roots of $\mu_{d,G}$ in the interval $[-\rho,\rho]$. We conjecture they lie in
+$\operatorname{spec}(T)$ itself — a proper subset whenever the universal cover has a spectral gap — which
+is the matching-polynomial form of their Question 6.3 and contains Problem 1 of Song–Fan–Miao.
+- **Proved** for every $G$ of first Betti number one and every $d$, by a closed form
+  $\mu_{d,G}=V_d$ for $V_d=\mu_G V_{d-1}-\mu_{G-V(C)}^2V_{d-2}$. For the cycle this specializes to
+  $\Phi_{n,r}=\chi_{C_n}U_{r-1}(T_n(x/2))$, equivalent to Hall's conjecture (first proved by
+  Cochran–Groothuis–Herring–Rohatgi–Stucky, 2018), by an independent elementary route. **Formalized.**
+- **Proved** for every subdivision at $d=1$, settling the case $\min(d,r)=2$ of Song–Fan–Miao.
+- A vertex recursion for weighted 2-plane families valid in *every* direction, whose cavity term is a
+  sum of squares; in Gram coordinates it is the matching determinant lemma. **Formalized.**
+- The leading cross term is a perfect square, hence $\ge 0$ — **formalized with no hypotheses.**
+- The band is the support of a free convolution *power*; the cavity ratio at the threshold is exactly
+  $1+1/(1+\sqrt a)$ (Kesten–McKay). **Formalized.**
+- **Open:** the band itself, reduced to one sign $X_e\le0$, and the sharper Conjecture on the ratio.
 
 ### Paper 3 — The permanent of the GCD matrix
 `paper3_note/` · [note.pdf](paper3_note/note.pdf)
@@ -29,14 +40,20 @@ $\det[\gcd(i,j)]=\prod_{k\le n}\varphi(k)$ (Smith, 1876), the permanent's arithm
 - Congruences: $2\mid a(n)\ (n\ge3)$, $4\mid a(n)\ (n\ge4)$, $3\mid a(n)\ (n\ge13)$ — **formalized.**
 - $v_2(a(n))\to\infty$ — **formalized.**
 - Growth: $(a(n)/n!)^{1/n}\to\infty$, with $(\log n)^{\theta+o(1)}$, $2\ln\varphi-\varphi^{-2}\le\theta\le\log2$.
-- **Open:** whether the 2-adic deficit $v_2(n!)-v_2(a(n))$ is unbounded — a Selberg-type parity problem.
+- The 2-adic deficit at the peaks $n=2^k+1$, through a mechanism: two exact valuation theorems for odd
+  permanents give $D_{N_0}(2^k+1)=2k-4$ for the **weight-zero grade** $N_0$ whenever a computable
+  "achiever parity" is odd. Transfer to $a$ itself needs $v_2(a)=v_2(N_0)$, verified only for $k\le5$.
+- **Open:** whether that parity is odd infinitely often — a Selberg-type parity problem.
 
 ### Paper 4 — Coefficient stability of $d$-matching polynomials
 `paper4_note/` · [note.pdf](paper4_note/note.pdf)
 
 For $\mu_{d,G}$ (Hall–Puder–Sawin) and fixed $k$, $[x^{|V|d-2k}]\mu_{d,G}$ is a degree-$k$ polynomial in
-$d$; explicit top coefficients in graph invariants (edges, 2-paths, claws, triangles), with
-$c_k(0)=$ signed count of $k$-edge cyclic subgraphs ($c_3(0)=-\#\triangle(G)$).
+$d$; explicit top coefficients in graph invariants (edges, 2-paths, claws, triangles). At $k=3$ the
+constant term counts triangles, $c_3(0)=-\#\triangle(G)$; for $k\ge4$ it is a genuinely higher invariant,
+**not** a simple count of $k$-edge cyclic subgraphs. **Formalized:** the coefficient extraction
+(`Paper4Coeff`), the inclusion–exclusion for an arbitrary conflict relation (`ConflictIE`), and the
+cover counts $M=|E|d$, $p_2=Pd$ (`CoverCounts`).
 
 ### Paper 1 — Integers $n$ with $n\mid p(n)-1$
 `paper1_partition_self_divisibility.md` — a minor note. The sequence is OEIS
