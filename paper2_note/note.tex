@@ -1349,6 +1349,74 @@ So $R_e\ge x/2>0$ for $x\ge2\sqrt a$, and $F_A=R_eF_{A^{(e)}}$ has no root there
 $F_A$ is even or odd, so all roots lie in $[-2\sqrt a,2\sqrt a]$.
 \end{proof}
 
+The leading cross term can be evaluated exactly, and it is a square.
+
+\begin{theorem}\label{thm:C2}
+Let $A$ be a weighted $2$-plane family on $\mathbb R^m$ and $e$ a unit vector, and put
+$f_k=\iota_e\omega_k$, $\omega_k'=\omega_k-e\wedge f_k$ and $u_k=\iota_{f_k}\omega_k'$.
+Then
+\[
+C_2=\Bigl\|\sum_kf_k\otimes\omega_k'\Bigr\|^2-\Bigl\|\sum_ku_k\Bigr\|^2 ,
+\]
+and $\sum_ku_k$ is the off-diagonal $(e,e^\perp)$ block of $\operatorname{Adj}(A)$. So if
+$\operatorname{Adj}(A)=aI$ then
+\[
+C_2=\Bigl\|\sum_kf_k\otimes\omega_k'\Bigr\|^2\ \ge\ 0,
+\]
+with equality if and only if $\sum_kf_k\otimes\omega_k'=0$.
+\end{theorem}
+
+\begin{proof}
+For a vector $u$ and forms $\alpha,\gamma$ one has
+$\iota_w(u\wedge\alpha)=\langle w,u\rangle\alpha-u\wedge\iota_w\alpha$, hence
+\begin{equation}\label{eq:wedgeip}
+\langle u\wedge\alpha,\ w\wedge\gamma\rangle
+=\langle u,w\rangle\langle\alpha,\gamma\rangle-\langle\iota_w\alpha,\iota_u\gamma\rangle .
+\end{equation}
+Applying \eqref{eq:wedgeip} to each cross term with $\alpha=\omega_l'$,
+$\gamma=\omega_k'$ gives
+$C_2=\sum_{k\ne l}\bigl[\langle f_k,f_l\rangle\langle\omega_k',\omega_l'\rangle
+-\langle u_k,u_l\rangle\bigr]$.
+
+Now $f_k=\iota_e\omega_k$ lies in the plane of $\omega_k$, and it is orthogonal to $e$,
+so it lies in the image of that plane under the projection to $e^\perp$ --- which is the
+plane of $\omega_k'$. Hence $f_k\wedge\omega_k'=0$, and since
+$\|f_k\|^2\|\omega_k'\|^2=\|\iota_{f_k}\omega_k'\|^2+\|f_k\wedge\omega_k'\|^2$ for simple
+$\omega_k'$, this says exactly
+$\|f_k\|^2\|\omega_k'\|^2=\|u_k\|^2$. Therefore
+\[
+\sum_{k\ne l}\langle f_k,f_l\rangle\langle\omega_k',\omega_l'\rangle
+=\Bigl\|\sum_kf_k\otimes\omega_k'\Bigr\|^2-\sum_k\|u_k\|^2,
+\qquad
+\sum_{k\ne l}\langle u_k,u_l\rangle=\Bigl\|\sum_ku_k\Bigr\|^2-\sum_k\|u_k\|^2,
+\]
+and subtracting gives the display. For the last claim, polarizing
+$\langle v,\Theta_kv\rangle=\|\iota_v\omega_k\|^2$ at $v=e$ against $v\in e^\perp$ gives
+$\langle e,\operatorname{Adj}(A)v\rangle=-\langle v,\sum_k u_k\rangle$, so
+$\operatorname{Adj}(A)=aI$ forces $\sum_ku_k=0$.
+\end{proof}
+
+Theorem~\ref{thm:C2} is sharp in the way the data show: over coordinate families
+$\min_eC_2=0$ to machine precision, attained exactly at the coordinate directions, where
+each summand $f_k\otimes\omega_k'$ vanishes separately --- every $\omega_k$ either
+contains $e$ in its plane, so $\omega_k'=0$, or is orthogonal to it, so $f_k=0$. That is
+precisely why the classical recursion has no cross terms. Off that locus the minimum is
+strictly positive.
+
+It is worth being exact about what this settles. Writing the condition $X_e\le0$ at
+$x=2\sqrt a$ in the form
+\begin{equation}\label{eq:Chat}
+\sum_{r\ge2}(-1)^rC_r\,(4a)^{2-r}\ \ge\ 0 ,
+\end{equation}
+Theorem~\ref{thm:C2} is the leading coefficient of \eqref{eq:Chat}, that is the case
+$a\to\infty$. It gives $X_e\le0$ outright when $m\le5$, where $C_2$ is the only cross
+term; for $m\le7$ the condition is exactly $4a\,C_2\ge C_3$, which held in every family
+tested with a factor of $12.2$ to spare at $m=6$, falling to $3.6$ at $m=8$ and $1.94$ at
+$m=10$. The range $m\le5$ does not improve on the two-moment bounds above, so
+Theorem~\ref{thm:C2} does not by itself enlarge the unconditional range; what it supplies
+is the first structural reason for the sign, and a proof that the obstruction to
+\eqref{eq:Chat} lies entirely in the odd coefficients $C_3,C_5,\dots$.
+
 The constant is therefore not an artefact of the estimate: $\sqrt a$ is the fixed
 point of $\rho\mapsto x-a/\rho$ at $x=2\sqrt a$, the value at which the two roots of
 $\rho^2-x\rho+a$ collide. For $x>2\sqrt a$ the inductive hypothesis has an interval
@@ -1357,9 +1425,10 @@ a point and it has none. That is exactly why $2\sqrt a$, and not the conjectured
 $2\sqrt{a-1}$, is the ceiling of every argument of this shape. The cross terms
 $C_r=N_r-\sum_k\theta_kM''_{k,r-1}
 =\sum_{|T|=r}\sum_{k\ne l\in T}\langle f_k\wedge\omega'_{T\setminus k},
-f_l\wedge\omega'_{T\setminus l}\rangle$ were nonnegative in every family tested. That
-nonnegativity is not termwise, and it is worth recording that it is not, since the
-termwise statement is the natural thing to try and it is false: single pairs $(k,l)$
+f_l\wedge\omega'_{T\setminus l}\rangle$ were nonnegative in every family tested, and at
+$r=2$ that is now Theorem~\ref{thm:C2}. The nonnegativity is not termwise, and it is
+worth recording that it is not, since the termwise statement is the natural thing to try
+and it is false: single pairs $(k,l)$
 and even whole summands $\sum_{k\ne l\in T}$ take negative values, the smallest
 observed being $-1.9\cdot10^{-3}$ and $-3.8\cdot10^{-3}$ over weighted plane
 families in dimensions six and eight. If $C_r\ge0$ holds it is therefore a statement about the sum over all
@@ -1943,7 +2012,16 @@ band edges are the single condition $\pi_{\max}\le4(a-1)/a^2$
 (\texttt{band\_iff\_pi}), and that the strictly weaker $\pi_{\max}\le4/a$ already
 yields $a+2\sqrt a$, which beats the Marchenko--Pastur edge for every $a$ and the
 product bound $ab$ for $a>4$ (\texttt{weak\_bound}, \texttt{weak\_beats\_mp},
-\texttt{weak\_beats\_ab}). \texttt{RamaLean/VertexSplit.lean} carries the Gram form of
+\texttt{weak\_beats\_ab}). \texttt{RamaLean/CrossTerm.lean} carries Theorem~\ref{thm:C2}. Its two geometric
+inputs are hypotheses --- \texttt{hsimple}, that $f_k\wedge\omega_k'=0$ in its metric form
+$\|f_k\|^2\|\omega_k'\|^2=\|u_k\|^2$, and \texttt{htight}, that $\sum_ku_k=0$ --- and
+\texttt{crossTerm\_eq\_sq} proves that they force $C_2$ to equal
+$\sum_{i,j}\bigl(\sum_k(f_k)_i(\omega_k')_j\bigr)^2$, with \texttt{crossTerm\_nonneg} and
+\texttt{crossTerm\_eq\_zero\_iff} the consequences. The supporting
+\texttt{sum\_gram\_prod\_eq\_sum\_sq} is the Schur product theorem in the case needed,
+that $\sum_{k,l}\langle f_k,f_l\rangle\langle w_k,w_l\rangle$ is a sum of squares. No
+exterior algebra is involved: the bivectors enter only through their coordinates.
+\texttt{RamaLean/VertexSplit.lean} carries the Gram form of
 Theorem~\ref{thm:vertexrec}. Its core, \texttt{det\_add\_vecMulVec}, is the adjugate
 form \eqref{eq:mdl} of the matrix determinant lemma; Mathlib has the lemma only as
 $\det(A+uv^{\mathsf T})=\det A\cdot\det(1+v^{\mathsf T}A^{-1}u)$ and records the
