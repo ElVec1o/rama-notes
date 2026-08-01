@@ -1585,7 +1585,25 @@ $\dfrac{1}{G(2\sqrt a)}\Big/\sqrt a=\dfrac{\sqrt a+2}{\sqrt a+1}=1+\dfrac1{1+\sq
 
 So the cavity ratio exceeds the threshold the induction can propagate by exactly
 $1/(1+\sqrt a)$, and the excess tends to $0$ as $a$ grows --- which is the analytic shadow
-of $2\sqrt a$ being asymptotically attained. Against the exact values the prediction is
+of $2\sqrt a$ being asymptotically attained.
+
+The limit appears to be attained from above, never crossed, which suggests that
+Proposition~\ref{prop:km} states an infimum rather than merely a limit:
+
+\begin{conjecture}\label{conj:km}
+For every weighted $2$-plane family with $\operatorname{Adj}(A)=aI$ and every unit $e$,
+\[
+\frac{R_e}{x/2}\ \ge\ 1+\frac1{1+\sqrt a}\qquad\text{at }x=2\sqrt a .
+\]
+\end{conjecture}
+
+This was not violated in any family tested, over graphs and over general weighted plane
+families, minimizing over directions; the smallest margin observed was
+$2.2\cdot10^{-4}$, at the highest-girth cubic graph, which is where
+Proposition~\ref{prop:km} says it should be. Conjecture~\ref{conj:km} is strictly
+stronger than $X_e\le0$, which is its $c=1$ case, and by Proposition~\ref{prop:rigid} it
+cannot be proved by this induction either --- the recursion propagates $c=1$ and nothing
+else, whatever is true. Against the exact values the prediction is
 $1.366025$ at $a=3$, $1.333333$ at $a=4$ and $1.309017$ at $a=5$, and the error decays
 with the girth exactly as Kesten--McKay convergence requires: over cubic graphs
 $3.2\cdot10^{-3}$ at girth $4$ (the cube), $9.2\cdot10^{-4}$ at girth $5$ (Petersen), and
@@ -2229,6 +2247,21 @@ plane with explicit coefficients $-\langle e,b_2\rangle$ and $\langle e,b_1\rang
 than an assumption. \texttt{crossTerm\_nonneg\_plucker} assembles everything:
 \textbf{for a tight family of rank-two blocks and any unit vector, $C_2\ge0$ is
 machine-checked with no hypothesis remaining}.
+
+The same holds at every level. \texttt{GramDet.border\_gram} identifies the bordered Gram
+matrix of $[v\mid M]$ with the Gram matrix of the bordered family;
+\texttt{border\_det\_eq\_zero\_of\_mem\_span} then gives $f\wedge\omega=0$ whenever $f$
+lies in the column span, which it always does; and \texttt{hsimple\_of\_mem\_span} combines
+them into $\|f\|^2\|\omega\|^2=\|\iota_f\omega\|^2$ for a wedge of \emph{any} number of
+vectors. So the hypothesis \texttt{hsimple} of Theorem~\ref{thm:Cr} is discharged at every
+$r$, not only at $r=2$, and what Theorem~\ref{thm:Cr} asserts --- that each $S$-summand of
+$C_r$ is a Schur square minus the square of a contraction --- is machine-checked
+unconditionally. Finally \texttt{gram\_det\_basis\_of\_injective} and
+\texttt{gram\_det\_basis\_of\_not\_injective} prove that for a coordinate family the Gram
+determinant of a set of blocks is $1$ on matchings and $0$ otherwise, that is
+$F_A=\mu_G$; that is the first of the two inputs to Proposition~\ref{prop:km}, and the
+second, the Kesten--McKay limit, is the only analytic ingredient anywhere in this section
+and is cited rather than proved.
 \texttt{RamaLean/CrossTerm.lean} carries Theorems~\ref{thm:C2} and~\ref{thm:Cr}.
 \texttt{crossTerm\_eq\_sq\_sub} is the general level: with no hypothesis beyond
 \texttt{hsimple} it proves

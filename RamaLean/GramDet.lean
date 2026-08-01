@@ -110,4 +110,108 @@ theorem contraction_sq_nonneg {G : Matrix p p ℝ} (hG : G.PosDef) (r : p → �
     rw [hq]
     simpa [Finsupp.sum_fintype, Finset.mul_sum, mul_assoc] using hquad.le
 
+/-! ### The border vanishes at every level
+
+`hsimple_of_border_zero` needs the bordered Gram determinant to vanish.  That happens
+exactly when the border lies in the span of the rest, and here it always does: `f_k` lies
+in the plane of `ω'_k`, hence in the span of `ω'_k ∧ ω'_S` for any `S`.  The two lemmas
+below turn that into the hypothesis-free form, at **every** level `r`, so that
+Theorem `thm:Cr` needs no assumption beyond tightness. -/
+
+/-- The bordered Gram matrix of `[v | M]` is the Gram matrix of the bordered family. -/
+theorem border_gram {m : Type*} [Fintype m] [DecidableEq m]
+    (M : Matrix m p ℝ) (v : m → ℝ) :
+    Matrix.fromBlocks (Matrix.of fun _ _ : Unit => v ⬝ᵥ v)
+        (Matrix.replicateRow Unit (Mᵀ *ᵥ v)) (Matrix.replicateCol Unit (Mᵀ *ᵥ v)) (Mᵀ * M)
+      = (Matrix.of fun (i : m) (j : Unit ⊕ p) =>
+            Sum.elim (fun _ => v i) (fun j' => M i j') j)ᵀ *
+        (Matrix.of fun (i : m) (j : Unit ⊕ p) =>
+            Sum.elim (fun _ => v i) (fun j' => M i j') j) := by
+  ext a b
+  cases a <;> cases b <;>
+    simp [Matrix.mul_apply, Matrix.fromBlocks, dotProduct, Matrix.mulVec,
+      Matrix.vecMul, mul_comm]
+
+/-- **The border always vanishes.**  If `v` is in the column span of `M`, the bordered
+Gram determinant is zero — which is `f ∧ ω = 0`. -/
+theorem border_det_eq_zero_of_mem_span {m : Type*} [Fintype m] [DecidableEq m]
+    (M : Matrix m p ℝ) (y : p → ℝ) :
+    (Matrix.fromBlocks (Matrix.of fun _ _ : Unit => (M *ᵥ y) ⬝ᵥ (M *ᵥ y))
+        (Matrix.replicateRow Unit (Mᵀ *ᵥ (M *ᵥ y)))
+        (Matrix.replicateCol Unit (Mᵀ *ᵥ (M *ᵥ y))) (Mᵀ * M)).det = 0 := by
+  classical
+  set N : Matrix m (Unit ⊕ p) ℝ := Matrix.of fun (i : m) (j : Unit ⊕ p) =>
+    Sum.elim (fun _ => (M *ᵥ y) i) (fun j' => M i j') j with hN
+  rw [border_gram M (M *ᵥ y), ← hN]
+  refine det_gram_eq_zero_of_dep N (x := Sum.elim (fun _ => (-1 : ℝ)) y) ?_ ?_
+  · intro h
+    have := congrFun h (Sum.inl ())
+    simp at this
+  · funext i
+    simp only [Matrix.mulVec, dotProduct, Fintype.sum_sum_type, hN, Matrix.of_apply,
+      Sum.elim_inl, Sum.elim_inr, Pi.zero_apply]
+    simp [Matrix.mulVec, dotProduct]
+
+/-- **`hsimple` at every level, with no hypothesis.**  For `v` in the column span of `M`
+and `Mᵀ M` invertible, `‖v‖² det(MᵀM) = rᵀ adj(MᵀM) r` with `r = Mᵀ v` — that is
+`‖f‖²‖ω‖² = ‖ι_f ω‖²`. -/
+theorem hsimple_of_mem_span {m : Type*} [Fintype m] [DecidableEq m]
+    (M : Matrix m p ℝ) (y : p → ℝ) (hG : IsUnit (Mᵀ * M).det) :
+    ((M *ᵥ y) ⬝ᵥ (M *ᵥ y)) * (Mᵀ * M).det
+      = (Mᵀ *ᵥ (M *ᵥ y)) ⬝ᵥ ((Mᵀ * M).adjugate *ᵥ (Mᵀ *ᵥ (M *ᵥ y))) :=
+  hsimple_of_border_zero hG _ _ (border_det_eq_zero_of_mem_span M y)
+
+/-! ### Coordinate families are matchings
+
+For a coordinate (graph) family every block is a pair of standard basis vectors, and the
+Gram determinant of a set of blocks is `1` when all the indices involved are distinct —
+that is, when the set is a matching — and `0` otherwise.  So `‖ω_T‖² = [T is a matching]`,
+which is `F_A = μ_G`: the polynomial of a coordinate family is the matching polynomial.
+That is the first of the two inputs to the Kesten–McKay identification, and it is proved
+here; the second, the Kesten–McKay limit itself, is analytic and is cited. -/
+
+/-- The matrix whose `j`-th column is the standard basis vector `e_{c j}`. -/
+def basisCols {m : Type*} [DecidableEq m] (c : p → m) : Matrix m p ℝ :=
+  Matrix.of fun i j => if i = c j then 1 else 0
+
+theorem gram_basisCols {m : Type*} [Fintype m] [DecidableEq m] (c : p → m) (j l : p) :
+    ((basisCols c)ᵀ * basisCols c) j l = if c j = c l then 1 else 0 := by
+  simp only [Matrix.mul_apply, Matrix.transpose_apply, basisCols, Matrix.of_apply]
+  by_cases h : c j = c l
+  · simp [h, Finset.sum_ite_eq' Finset.univ (c l) (fun _ => (1:ℝ))]
+  · rw [if_neg h]
+    refine Finset.sum_eq_zero fun i _ => ?_
+    by_cases h1 : i = c j <;> by_cases h2 : i = c l <;> simp_all
+
+/-- **A matching contributes `1`.**  If the indices are distinct the Gram matrix is the
+identity. -/
+theorem gram_det_basis_of_injective {m : Type*} [Fintype m] [DecidableEq m]
+    {c : p → m} (hc : Function.Injective c) :
+    ((basisCols c)ᵀ * basisCols c).det = 1 := by
+  have : (basisCols c)ᵀ * basisCols c = (1 : Matrix p p ℝ) := by
+    ext j l
+    rw [gram_basisCols, Matrix.one_apply]
+    by_cases h : j = l
+    · simp [h]
+    · rw [if_neg (fun hcc => h (hc hcc)), if_neg h]
+  rw [this, Matrix.det_one]
+
+/-- **A non-matching contributes `0`.**  If two indices coincide the family is dependent. -/
+theorem gram_det_basis_of_not_injective {m : Type*} [Fintype m] [DecidableEq m]
+    {c : p → m} {j l : p} (hjl : j ≠ l) (hc : c j = c l) :
+    ((basisCols c)ᵀ * basisCols c).det = 0 := by
+  classical
+  refine det_gram_eq_zero_of_dep (basisCols c)
+    (x := fun t => if t = j then 1 else if t = l then -1 else 0) ?_ ?_
+  · intro h
+    have := congrFun h j
+    simp at this
+  · funext i
+    simp only [Matrix.mulVec, dotProduct, basisCols, Matrix.of_apply, Pi.zero_apply]
+    rw [Finset.sum_eq_add_of_mem j l (Finset.mem_univ j) (Finset.mem_univ l) hjl]
+    · rw [if_pos rfl, if_neg (Ne.symm hjl), if_pos rfl, hc]
+      ring
+    · intro t _ ht
+      rw [if_neg ht.1, if_neg ht.2, mul_zero]
+
 end GramDet
