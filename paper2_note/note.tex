@@ -1296,6 +1296,27 @@ are orthogonal, so the norms add; summing over $|T|=r$ gives the first display, 
 the second is that display multiplied by $(-1)^rx^{\,m-2r}$ and summed.
 \end{proof}
 
+The exterior algebra can be dispensed with entirely, and doing so identifies the
+theorem with a known lemma. Let $C$ be the $m\times2r$ matrix whose columns are the
+factors of $\omega_T$, so that $\|\omega_T\|^2=\det(C^{\mathsf T}C)$. Splitting off
+$e$ is the decomposition $C=eg^{\mathsf T}+C'$ with $g=C^{\mathsf T}e$ and
+$C'=(I-ee^{\mathsf T})C$ the compressed factor matrix; since $e^{\mathsf T}C'=0$ and
+$\|e\|=1$,
+\[
+C^{\mathsf T}C=C'^{\mathsf T}C'+gg^{\mathsf T} .
+\]
+So the content of Theorem~\ref{thm:vertexrec} is the \emph{matrix determinant lemma}
+\begin{equation}\label{eq:mdl}
+\det\bigl(A+gg^{\mathsf T}\bigr)=\det A+g^{\mathsf T}\operatorname{adj}(A)\,g,
+\qquad A=C'^{\mathsf T}C' ,
+\end{equation}
+and the nonnegativity of the cavity term is nothing but positivity of the adjugate of
+a positive semidefinite matrix. In particular $M_r(A)\ge M_r(A^{(e)})$ needs no
+computation at all. Splitting $g$ into its $r$ blocks of two identifies the pieces:
+the block-diagonal part of the quadratic form \eqref{eq:mdl} is
+$\sum_k\theta_kM''_{k,r-1}$ and the off-block-diagonal part is $C_r$, which is how the
+cross terms should be read.
+
 For a coordinate family at a coordinate direction $e=e_v$ one has $f_k=\pm e_u$ for
 the edges $k=uv$ and $f_k=0$ otherwise, the cross terms vanish, and
 $N_r(e_v)=\sum_{u\sim v}m_{r-1}(G-v-u)$: the theorem is then the Heilmann--Lieb
@@ -1336,7 +1357,13 @@ a point and it has none. That is exactly why $2\sqrt a$, and not the conjectured
 $2\sqrt{a-1}$, is the ceiling of every argument of this shape. The cross terms
 $C_r=N_r-\sum_k\theta_kM''_{k,r-1}
 =\sum_{|T|=r}\sum_{k\ne l\in T}\langle f_k\wedge\omega'_{T\setminus k},
-f_l\wedge\omega'_{T\setminus l}\rangle$ were nonnegative in every family tested, and
+f_l\wedge\omega'_{T\setminus l}\rangle$ were nonnegative in every family tested. That
+nonnegativity is not termwise, and it is worth recording that it is not, since the
+termwise statement is the natural thing to try and it is false: single pairs $(k,l)$
+and even whole summands $\sum_{k\ne l\in T}$ take negative values, the smallest
+observed being $-1.9\cdot10^{-3}$ and $-3.8\cdot10^{-3}$ over weighted plane
+families in dimensions six and eight. If $C_r\ge0$ holds it is therefore a statement about the sum over all
+$T$ of a given size, not about its terms. Finally
 $X_e=\sum_{r\ge2}(-1)^{r-1}C_rx^{\,m-2r}$ was negative at $x=2\sqrt a$ in every case,
 including under direct maximization over the sphere of directions; the identity of
 Theorem~\ref{thm:vertexrec} was checked to $10^{-13}$ on graph, projection and
@@ -1910,7 +1937,18 @@ band edges are the single condition $\pi_{\max}\le4(a-1)/a^2$
 (\texttt{band\_iff\_pi}), and that the strictly weaker $\pi_{\max}\le4/a$ already
 yields $a+2\sqrt a$, which beats the Marchenko--Pastur edge for every $a$ and the
 product bound $ab$ for $a>4$ (\texttt{weak\_bound}, \texttt{weak\_beats\_mp},
-\texttt{weak\_beats\_ab}). \texttt{RamaLean/CavityThreshold.lean} carries
+\texttt{weak\_beats\_ab}). \texttt{RamaLean/VertexSplit.lean} carries the Gram form of
+Theorem~\ref{thm:vertexrec}. Its core, \texttt{det\_add\_vecMulVec}, is the adjugate
+form \eqref{eq:mdl} of the matrix determinant lemma; Mathlib has the lemma only as
+$\det(A+uv^{\mathsf T})=\det A\cdot\det(1+v^{\mathsf T}A^{-1}u)$ and records the
+adjugate form as an explicit \texttt{TODO}, so this supplies it, under the hypothesis
+that $\det A$ is a unit --- which is what the application needs, the Gram matrix of an
+independent family being positive definite. \texttt{det\_le\_det\_add\_vecMulVec} is
+the inequality the recursion consumes, $M_r(A)\ge M_r(A^{(e)})$, deduced from
+\texttt{AdjugatePSD.adjugate\_posDef}. The singular case is scoped out as in
+\texttt{AdjugatePSD}: both sides of \eqref{eq:mdl} are polynomial in the entries, so it
+extends by continuity from $A+\varepsilon I$, and that limit is not formalized.
+\texttt{RamaLean/CavityThreshold.lean} carries
 Proposition~\ref{prop:cross}: \texttt{cavity\_step} is the induction step, that
 child ratios at least $x/2$, nonnegative weights of total at most $a$, a nonpositive
 remainder and $4a\le x^2$ force the parent ratio to be at least $x/2$ again;
