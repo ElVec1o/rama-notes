@@ -265,4 +265,78 @@ theorem remainder_upper {ι : Type*} [Fintype ι] {a x L Fp We X : ℝ} {θ q : 
   have := trace_le_of_rayleigh hθ hsum hq
   linarith [hid]
 
+/-! ### The target in ratio form, and why Kesten–McKay satisfies it
+
+`remainder_upper` reduces the band to a spectral bound on the child's vertex matrix,
+`λ_max(W^(e)) ≤ x F_A/a - 3 F_{A^(e)}`.  Writing that in terms of the normalized cavity
+ratios `r = R_e/(x/2)` and `r' = (max_{e'} R'_{e'})/(x/2)` — using
+`λ_max(W^(e)) = F_{A^(e)} - x·min_{e'} F_{A''}` and `min F'' = F_{A^(e)}/max R'` — the
+condition becomes `2/r' ≥ 4 - 2r`, that is
+
+  `r' ≤ 1/(2 - r)`.                                                              (★)
+
+`ratio_form` below is that equivalence.  What makes it interesting is that the
+Kesten–McKay value of `KestenMcKay.inv_G_div_edge`, `r = r' = 1 + u` with
+`u = 1/(1+√a)`, satisfies (★) *automatically*: `(1+u)(1-u) = 1 - u² ≤ 1`.  So the
+target is not merely consistent with the Kesten–McKay picture, it is implied by it, with
+slack exactly `u²/(1-u) = 1/(√a(1+√a))` — which vanishes like `1/a`, matching the
+asymptotic tightness of the bound `2√a`.
+
+This does not prove the band: `r` and `r'` are not known to equal their Kesten–McKay
+values (that is `conj:km`, and its analogue one level down).  What it shows is that the
+remaining gap is exactly the gap between the true ratios and the Kesten–McKay ones. -/
+
+/-- **The target, in ratio form.**  For `r < 2` and `r' > 0`, the condition
+`2/r' ≥ 4 - 2r` is `r' ≤ 1/(2 - r)`. -/
+theorem ratio_form {r rp : ℝ} (hrp : 0 < rp) (hr : r < 2) :
+    2 / rp ≥ 4 - 2 * r ↔ rp ≤ 1 / (2 - r) := by
+  have h2r : 0 < 2 - r := by linarith
+  rw [ge_iff_le, le_div_iff₀ hrp, le_div_iff₀ h2r]
+  constructor <;> intro h <;> nlinarith [h]
+
+/-- **`1 + u` always satisfies it.**  For `0 ≤ u < 1`, `1 + u ≤ 1/(1 - u)`, because
+`(1+u)(1-u) = 1 - u² ≤ 1`. -/
+theorem one_add_le_inv_one_sub {u : ℝ} (h0 : 0 ≤ u) (h1 : u < 1) :
+    1 + u ≤ 1 / (1 - u) := by
+  have hpos : 0 < 1 - u := by linarith
+  rw [le_div_iff₀ hpos]
+  nlinarith [sq_nonneg u]
+
+/-- The slack is exactly `u²/(1-u)`. -/
+theorem inv_one_sub_sub_one_add {u : ℝ} (h1 : u < 1) :
+    1 / (1 - u) - (1 + u) = u ^ 2 / (1 - u) := by
+  have hne : (1 : ℝ) - u ≠ 0 := by intro h; linarith [h]
+  field_simp
+  ring
+
+/-- The slack, computed. -/
+theorem km_slack_calc {s : ℝ} (hs : 0 < s) :
+    (1 / (1 + s)) ^ 2 / (1 - 1 / (1 + s)) = 1 / (s * (1 + s)) := by
+  have h1 : (1:ℝ) + s ≠ 0 := by linarith
+  have hsne : s ≠ 0 := ne_of_gt hs
+  have h2 : (1:ℝ) - 1 / (1 + s) = s / (1 + s) := by
+    field_simp
+    ring
+  rw [h2, div_div_eq_mul_div, div_pow, one_pow]
+  field_simp
+
+/-- **The Kesten–McKay value satisfies the target, with explicit slack.**  With
+`u = 1/(1+√a)`, taking `r = r' = 1 + u` gives `r' ≤ 1/(2 - r)`, and the slack is
+`1/(√a(1+√a))`, which tends to `0` like `1/a`. -/
+theorem km_satisfies_target {a : ℝ} (ha : 0 < a) :
+    (1 + 1 / (1 + Real.sqrt a)) ≤ 1 / (2 - (1 + 1 / (1 + Real.sqrt a)))
+    ∧ 1 / (2 - (1 + 1 / (1 + Real.sqrt a))) - (1 + 1 / (1 + Real.sqrt a))
+        = 1 / (Real.sqrt a * (1 + Real.sqrt a)) := by
+  have hs : 0 < Real.sqrt a := Real.sqrt_pos.mpr ha
+  set u : ℝ := 1 / (1 + Real.sqrt a) with hu
+  have hu0 : 0 < u := by rw [hu]; positivity
+  have hu1 : u < 1 := by
+    rw [hu, div_lt_one (by linarith)]
+    linarith
+  have hrw : 2 - (1 + u) = 1 - u := by ring
+  refine ⟨?_, ?_⟩
+  · rw [hrw]; exact one_add_le_inv_one_sub hu0.le hu1
+  · rw [hrw, inv_one_sub_sub_one_add hu1, hu]
+    exact km_slack_calc hs
+
 end CavityThreshold

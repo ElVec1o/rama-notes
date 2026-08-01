@@ -1698,7 +1698,34 @@ This is the first upper bound on $X_e$ in the development --- every earlier stat
 bounded it below or computed it exactly --- and the trace step is not lossy where it
 matters: on $K_5$ and $K_6$, where $X_e=0$, it holds with equality. Together with
 Proposition~\ref{prop:defstep}, whose target is strictly positive, the band is therefore
-reduced to a spectral bound on the child's vertex matrix. We have not proved that bound.
+reduced to a spectral bound on the child's vertex matrix.
+
+That bound has a clean form in the cavity ratios, and the form explains what is left.
+Write $r=R_e/(x/2)$ and $r'=\bigl(\max_{e'}R'_{e'}\bigr)/(x/2)$. Since
+$\lambda_{\max}(W^{(e)})=F_{A^{(e)}}-x\min_{e'}F_{A''}$ and
+$\min_{e'}F_{A''}=F_{A^{(e)}}/\max_{e'}R'_{e'}$, the bound
+$\lambda_{\max}(W^{(e)})\le xF_A/a-3F_{A^{(e)}}$ is exactly
+\begin{equation}\label{eq:ratiotarget}
+r'\ \le\ \frac1{2-r}.
+\end{equation}
+
+\begin{proposition}\label{prop:kmtarget}
+The Kesten--McKay value of Proposition~\ref{prop:km} satisfies \eqref{eq:ratiotarget}
+automatically: with $u=1/(1+\sqrt a)$ and $r=r'=1+u$, one has $(1+u)(1-u)=1-u^2\le1$, and
+the slack is exactly
+\[
+\frac1{1-u}-(1+u)=\frac{u^2}{1-u}=\frac1{\sqrt a\,(1+\sqrt a)} .
+\]
+\end{proposition}
+
+So the target is not merely consistent with the Kesten--McKay picture --- it is
+\emph{implied} by it, with a slack that vanishes like $1/a$, matching the asymptotic
+tightness of $2\sqrt a$. On the graphs tested \eqref{eq:ratiotarget} holds throughout, and
+it is tight exactly where $X_e=0$: at $K_5$ and $K_6$ the two sides agree to four digits
+($1.5673$ and $1.5194$), while the larger-girth graphs have margin. What remains
+unproved is therefore not \eqref{eq:ratiotarget} in the abstract but the gap between the
+true ratios and their Kesten--McKay values --- which is Conjecture~\ref{conj:km} together
+with its analogue one level down.
 
 The constant is therefore not an artefact of the estimate: $\sqrt a$ is the fixed
 point of $\rho\mapsto x-a/\rho$ at $x=2\sqrt a$, the value at which the two roots of
@@ -2377,9 +2404,12 @@ form of the same statement, the factorization
 $\rho^2-2\sqrt a\,\rho+a=(\rho-\sqrt a)^2$ that collapses the interval of admissible
 thresholds to a point; and \texttt{no\_slack\_propagates} is
 Proposition~\ref{prop:rigid}; \texttt{cavity\_step\_deficient} is
-Proposition~\ref{prop:defstep}, the strengthened step; and \texttt{compression\_sum},
+Proposition~\ref{prop:defstep}, the strengthened step; \texttt{compression\_sum},
 \texttt{trace\_le\_of\_rayleigh} and \texttt{remainder\_upper} are
-Proposition~\ref{prop:twolevel}. Proposition~\ref{prop:deficient} is
+Proposition~\ref{prop:twolevel}; and \texttt{ratio\_form},
+\texttt{one\_add\_le\_inv\_one\_sub}, \texttt{inv\_one\_sub\_sub\_one\_add},
+\texttt{km\_slack\_calc} and \texttt{km\_satisfies\_target} are
+\eqref{eq:ratiotarget} and Proposition~\ref{prop:kmtarget}. Proposition~\ref{prop:deficient} is
 \texttt{Tightness.adj\_compressed}, with the per-block splitting
 \texttt{Tightness.iota\_split}. \texttt{RamaLean/KestenMcKay.lean} carries
 Proposition~\ref{prop:km}: \texttt{radical\_at\_edge} that the radical is exactly $2$ at

@@ -39,3 +39,4 @@ import RamaLean.Tightness
 import RamaLean.KestenMcKay
 import RamaLean.Plucker
 import RamaLean.Paper4Coeff
+import RamaLean.ConflictIE
