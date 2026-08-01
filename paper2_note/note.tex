@@ -1565,7 +1565,32 @@ a & \text{graphs} & R_e/(x/2) & \text{spread}\\
 The ratio is a function of $a$ alone to three digits, independent of the graph and of the
 dimension, and exceeds the threshold by a third. The slack $-X_e/(F_{A^{(e)}}\sqrt a)$
 likewise \emph{increases} with $m$, running $0.033,0.044,0.049,0.058$ over the four cubic
-graphs above. So the inequality is far from tight. None of that is available to the
+graphs above.
+
+That constant can be identified exactly. Averaging the vertex identity over directions
+gives $\mathbb E_eF_{A^{(e)}}=F_A'/m$ --- which is $F_A'=\sum_iF_{A^{(e_i)}}$ again --- so
+the direction-averaged ratio is
+\[
+\bar R=\frac{mF_A}{F_A'}=\Bigl(\frac1m\sum_i\frac1{x-\rho_i}\Bigr)^{-1}=\frac1{G(x)},
+\]
+$G$ the Stieltjes transform of the root measure of $F_A$. For a coordinate family $F_A$ is
+the matching polynomial, and for $a$-regular graphs of growing girth its root measure
+converges to the Kesten--McKay measure, whose Stieltjes transform is
+$G(z)=2(a-1)/\bigl((a-2)z+a\sqrt{z^2-4(a-1)}\bigr)$. At $z=2\sqrt a$ the radical is
+\emph{exactly} $2$, and everything collapses:
+
+\begin{proposition}\label{prop:km}
+$\dfrac{1}{G(2\sqrt a)}\Big/\sqrt a=\dfrac{\sqrt a+2}{\sqrt a+1}=1+\dfrac1{1+\sqrt a}$.
+\end{proposition}
+
+So the cavity ratio exceeds the threshold the induction can propagate by exactly
+$1/(1+\sqrt a)$, and the excess tends to $0$ as $a$ grows --- which is the analytic shadow
+of $2\sqrt a$ being asymptotically attained. Against the exact values the prediction is
+$1.366025$ at $a=3$, $1.333333$ at $a=4$ and $1.309017$ at $a=5$, and the error decays
+with the girth exactly as Kesten--McKay convergence requires: over cubic graphs
+$3.2\cdot10^{-3}$ at girth $4$ (the cube), $9.2\cdot10^{-4}$ at girth $5$ (Petersen), and
+$2.2\cdot10^{-4}$, $1.7\cdot10^{-4}$, $1.2\cdot10^{-4}$, $1.2\cdot10^{-4}$ at girth $6$
+(Heawood, M\"obius--Kantor, Pappus, Desargues). None of that slack is available to the
 argument:
 
 \begin{proposition}\label{prop:rigid}
@@ -2193,10 +2218,17 @@ $e^\perp$ does not change the pairing against $f_k$; and that each $\iota_{f_k}\
 already lies in $e^\perp$. \texttt{tight\_sum\_contraction\_eq\_zero} assembles them, and
 \texttt{crossTerm\_nonneg\_of\_tight} composes the result with
 \texttt{CrossTerm.crossTerm\_nonneg}, so that Theorem~\ref{thm:C2} is machine-checked from
-the tightness hypothesis alone. What is \emph{not} formalized is the bookkeeping that
-identifies the coordinate vector \texttt{w} of \texttt{CrossTerm} with the Pl\"ucker
-coordinates of $\omega_k'$; each ingredient is proved, in its own coordinates, and the
-identification between them is by hand.
+the tightness hypothesis alone. \texttt{RamaLean/Plucker.lean} closes the last link, the identification of
+\texttt{CrossTerm}'s coordinate vector \texttt{w} with the Pl\"ucker coordinates of
+$\omega_k'$. Representing $b_1\wedge b_2$ by its antisymmetric array on \emph{ordered}
+pairs scaled by $1/\sqrt2$ makes \texttt{pl\_dot}, that the resulting inner product is the
+Gram determinant, hold with no $i<j$ bookkeeping: the double count and the two factors of
+$1/\sqrt2$ cancel. \texttt{iota\_eq\_comb} writes $f_k=\iota_e\omega_k$ in the compressed
+plane with explicit coefficients $-\langle e,b_2\rangle$ and $\langle e,b_1\rangle$, and
+\texttt{hsimple\_of\_comb} then makes \texttt{hsimple} a \texttt{ring} identity rather
+than an assumption. \texttt{crossTerm\_nonneg\_plucker} assembles everything:
+\textbf{for a tight family of rank-two blocks and any unit vector, $C_2\ge0$ is
+machine-checked with no hypothesis remaining}.
 \texttt{RamaLean/CrossTerm.lean} carries Theorems~\ref{thm:C2} and~\ref{thm:Cr}.
 \texttt{crossTerm\_eq\_sq\_sub} is the general level: with no hypothesis beyond
 \texttt{hsimple} it proves
@@ -2233,7 +2265,14 @@ only if} $x\ge2\sqrt a$; \texttt{double\_root\_at\_threshold} is the structural
 form of the same statement, the factorization
 $\rho^2-2\sqrt a\,\rho+a=(\rho-\sqrt a)^2$ that collapses the interval of admissible
 thresholds to a point; and \texttt{no\_slack\_propagates} is
-Proposition~\ref{prop:rigid}. The vertex recursion of Theorem~\ref{thm:vertexrec} and the
+Proposition~\ref{prop:rigid}. \texttt{RamaLean/KestenMcKay.lean} carries
+Proposition~\ref{prop:km}: \texttt{radical\_at\_edge} that the radical is exactly $2$ at
+the threshold, \texttt{G\_at\_edge} the closed form there, \texttt{inv\_G\_div\_edge} the
+constant $1+1/(1+\sqrt a)$, and \texttt{excess\_eq}, \texttt{excess\_pos},
+\texttt{excess\_lt} that the excess is exactly $1/(1+\sqrt a)$, positive for every $a>1$
+and below any $\varepsilon$ once $\sqrt a>1/\varepsilon$. The two inputs it does not
+formalize are the ones that are not arithmetic: that $F_A$ is the matching polynomial,
+which is Theorem~\ref{thm:matchingform}, and the Kesten--McKay limit, which is cited. The vertex recursion of Theorem~\ref{thm:vertexrec} and the
 sign of $X_e$ enter as hypotheses; what is machine-checked is that they close the
 induction, and that they close it exactly at $2\sqrt a$.
 \texttt{RamaLean/TracePSD.lean} and

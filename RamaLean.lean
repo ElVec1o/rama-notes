@@ -36,3 +36,5 @@ import RamaLean.VertexSplit
 import RamaLean.CrossTerm
 import RamaLean.GramDet
 import RamaLean.Tightness
+import RamaLean.KestenMcKay
+import RamaLean.Plucker
