@@ -38,13 +38,15 @@ elementary; the lower bound is a doubly stochastic construction from
 prime-divisibility blocks (via Van der Waerden--Falikman--Egorychev) whose
 per-prime gains $g_p$ satisfy $p\,g_p\to 2\ln\varphi-\varphi^{-2}$ (with
 $\varphi$ the golden ratio), so
-$\sum_pg_p=\infty$ by Mertens---giving $c_\infty=\infty$ unconditionally.
-Finally, we determine the exact $2$-adic \emph{deficit} $v_2(n!)-v_2(a(n))$ at $n=2^k+1$ through a
+$\sum_pg_p=\infty$ by Mertens \cite{HW}---giving $c_\infty=\infty$ unconditionally.
+Finally, we explain the $2$-adic \emph{deficit} $v_2(n!)-v_2(a(n))$ at $n=2^k+1$ through a
 mechanism rather than opaque cancellation: two exact valuation theorems for odd permanents (of size
 $2^a$, resp.\ $2^a+1$, driven by the first, resp.\ second, permanental symmetric function) combine to
-give $D(2^k+1)=2k-4$ whenever a computable, permanent-free ``achiever parity'' is odd---which occurs
-for $11$ of the $20$ values $k\le23$, so the deficit is $\Theta(\log n)$ conditional on that parity's
-infinitude, the one open step. Reducing that parity through a chain of verified identities
+give $D_{N_0}(2^k+1)=2k-4$ --- for the \emph{weight-zero grade} $N_0$ of $a$, not for $a$ itself ---
+whenever a computable, permanent-free ``achiever parity'' is odd, which occurs for $11$ of the $20$
+values $k\le23$. So that grade's deficit is $\Theta(\log n)$ conditional on the parity's infinitude,
+one open step; transferring the conclusion to $a$ itself needs $v_2(a)=v_2(N_0)$, which we verify only
+at $k\le5$ and where the grade margins are small, so we do not claim it in general. Reducing that parity through a chain of verified identities
 (machine-checked at five links) yields the following description: the boundary contribution of each
 prime $p\equiv3\ (4)$ is exactly the \emph{binary expansion of $1/p$}, and the resulting words'
 statistics form a class-number ladder of \emph{depth exactly three}---density, digit-pair, and
@@ -59,7 +61,7 @@ character-sum (Pólya--Vinogradov) tail.
 \section{The sequence}
 $a(n)=\sum_{\sigma\in S_n}\prod_{i=1}^n\gcd(i,\sigma(i))$ begins
 $1,3,14,112,872,14372,154480,\dots$ (30 terms computed exactly, by a Gray-code
-Ryser evaluation and, for $n>27$, a modular Ryser with CRT). It is sequence
+Ryser evaluation \cite{Ryser} and, for $n>27$, a modular Ryser with CRT). It is sequence
 \texttt{A085244} in the OEIS (Dekel, 2003, with a $b$-file to $n=38$); its
 arithmetic---the subject of this note---appears not to have been studied, and the
 derived $2$-adic valuation, deficit, and achiever-parity sequences are new.
@@ -225,7 +227,9 @@ combination of these terms, $v_2(a(n))$ is at least this common bound.
 
 \begin{remark}
 The method is tight in \emph{shape} (linear) but not in constant: numerically $v_2(a(n))\approx
-v_2(n!)\sim n$ (slope $1$; deficit $v_2(n!)-v_2(a(n))\in[-1,6]$ through $n=34$, and $\sim2\log_2 n$ along the peaks $n=2^k+1$, where $D(2^k+1)=2k-4$; see Section~\ref{sec:deficit}), and the stronger
+v_2(n!)\sim n$ (slope $1$; deficit $v_2(n!)-v_2(a(n))\in[-1,6]$ through $n=34$, and $D(2^k+1)=2k-4$ at the peaks $n=2^k+1$ for
+$k\le5$, with the corresponding statement for the weight-zero grade proved at every $k$ of odd
+achiever parity; see Section~\ref{sec:deficit}), and the stronger
 $v_2(a(n))\ge v_2(\lceil n/2\rceil!)$ holds for every $n\le20$. The factor-$2$ loss comes from
 using only the $\lceil n/2\rceil$ odd positions' freedom; the even positions carry a comparable
 $2$-adic contribution that a single application of the all-ones lemma does not see.
@@ -445,10 +449,14 @@ $\varphi^{-2}$ is the signature of the entropy tradeoff $\Psi$.
 
 Theorem~\ref{thm:c1} gives $v_2(a(n))\ge n-2\lfloor\log_2n\rfloor-2$, i.e.\ the deficit
 $D(n):=v_2(n!)-v_2(a(n))$ is $O(\log n)$. We now explain its \emph{value}. Exact Gray-code Ryser data
-at the peaks $n=2^k+1$ gives $v_2(a)=3,5,11,25$ for $k=2,3,4,5$, i.e.
+at the peaks $n=2^k+1$ gives $v_2(a)=3,5,11,25$ for $k=2,3,4,5$, which is
 \begin{equation}\label{eq:defline}
-   v_2\big(a(2^k+1)\big)=2^k-2k+3,\qquad D(2^k+1)=2k-4\sim2\log_2 n .
+   v_2\big(a(2^k+1)\big)=2^k-2k+3,\qquad D(2^k+1)=2k-4\sim2\log_2 n
+   \qquad(k=2,3,4,5).
 \end{equation}
+We stress that \eqref{eq:defline} is data, not a theorem: what follows explains those four values
+and proves the corresponding statement for the weight-zero grade $N_0$ of $a$, at every $k$ with odd
+achiever parity. Whether $v_2(a)=v_2(N_0)$ persists beyond $k=5$ we do not know.
 The mechanism behind~\eqref{eq:defline} is two exact 2-adic valuation theorems for odd permanents.
 For an $s\times s$ all-odd matrix write $M=2e+J$ ($J$ all-ones); the column-multilinear expansion is
 $\perm(2e+J)=\sum_{k=0}^{s}2^k(s-k)!\,\pi_k(e)$, $\pi_k=\sum_{|R|=|S|=k}\perm(e[R,S])$, so term $k$ has
@@ -514,7 +522,7 @@ $C(k)=1$ for all $k\equiv5\pmod6$; equivalently $D_{N_0}(2^k+1)=2k-4$ on this cl
 Conjecture~\ref{conj:io}.
 \end{conjecture}
 \noindent This is a lead, not a near-theorem: six independent structural approaches (dominant-stratum, achiever involution, small-prime CRT localization,
-period-$6$ recurrence, $\chi_4$-reduction, and a MacWilliams character-sum expansion) each terminate at the same parity barrier.
+period-$6$ recurrence, $\chi_4$-reduction, and a MacWilliams \cite{MS} character-sum expansion) each terminate at the same parity barrier.
 The achiever counts on the class are $1,211,12659,\dots$ (odd but large and growing), so the
 constancy is the parity of a genuine correlation, not a lone surviving term. Two facts survive as
 rigorous byproducts. First, a cleaner form of the target: the achiever set is exactly the
@@ -832,7 +840,9 @@ period whose unique fixed point $w=v$ contributes iff $v\equiv3\ (4)$). So sub-p
 v\equiv1\ (4)$, complement-word $\iff v\equiv3\ (4)$. \emph{Weight evaluation}: for full-orbit primes $\mathrm{wt}(p)=(p{-}1)/2$,
 so every prime $p\equiv3\ (4)$ with $2$ primitive root carries an odd-sum word; and for
 \emph{half-orbit} primes $p\equiv3\ (4)$ ($2$ a quadratic residue, $\mathrm{ord}=(p{-}1)/2$), the
-classical residue-distribution formula gives
+classical residue-distribution formula for $p\equiv3\pmod4$ --- the count of quadratic residues in
+$(0,p/2)$ exceeds the expected $(p-1)/4$ by $h(-p)/2$, a standard consequence of the class number
+formula \cite[\S6]{Dav} --- gives
 \[
    \sum_i \mathrm{word}_p[i]\ \equiv\ \mathrm{wt}(p)\ =\ \tfrac{(p-1)/2-h(-p)}{2}\pmod 2,
 \]
@@ -914,5 +924,14 @@ determinant}, Proc.\ London Math.\ Soc.\ (1876).
 permanent}, Theoret.\ Comput.\ Sci.\ \textbf{8} (1979).
 \bibitem{Ego} G.P.\ Egorychev, \emph{The solution of van der Waerden's problem
 for permanents}, Adv.\ Math.\ \textbf{42} (1981); D.I.\ Falikman (1981).
+\bibitem{Ryser} H.J.\ Ryser, \emph{Combinatorial Mathematics}, Carus Mathematical
+Monographs \textbf{14}, MAA, 1963.
+\bibitem{Dav} H.\ Davenport, \emph{Multiplicative Number Theory}, 3rd ed.,
+Graduate Texts in Mathematics \textbf{74}, Springer, 2000. (Class number formula and
+the distribution of quadratic residues; P\'olya--Vinogradov.)
+\bibitem{HW} G.H.\ Hardy, E.M.\ Wright, \emph{An Introduction to the Theory of
+Numbers}, 6th ed., Oxford, 2008. (Mertens' theorems.)
+\bibitem{MS} F.J.\ MacWilliams, N.J.A.\ Sloane, \emph{The Theory of
+Error-Correcting Codes}, North-Holland, 1977.
 \end{thebibliography}
 \end{document}
