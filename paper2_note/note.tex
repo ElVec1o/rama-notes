@@ -62,6 +62,12 @@ sees the graph. Letting the common rank vary with the trace and the sum held fix
 the extreme roots move monotonically from the tree band at rank $b$ to
 Marchenko--Pastur at rank $p$: each obstruction is sharp for the class it sees, and
 the conjecture is the assertion that minimal rank contracts the interval all the way.
+We also give a vertex recursion for weighted $2$-plane families valid in every
+direction, not only along coordinate axes, whose cavity term is a sum of squares
+level by level and which is the Heilmann--Lieb recursion in the diagonal case; it
+reduces the band $[a-2\sqrt a,\,a+2\sqrt a]$ for the whole class to the sign of a
+single cross term, and shows that $2\sqrt a$ is the fixed point of the induction
+rather than an artefact of the estimate.
 The closed form, the exponential formula, the subdivision bound, the coefficient
 identities including the $4$-cycle term, the reflection, the $ab$ bound and the
 positivity behind the extremal computation are machine-checked in Lean~4 over
@@ -1239,6 +1245,104 @@ W(2\sqrt a)+F_A(2\sqrt a)\,I\ \succeq\ 0 ,
 \]
 a coordinate-free statement with no recursion in it.
 
+The matrix $W$ has a closed form. If $\omega_T=c_1\wedge\cdots\wedge c_{2r}$ is
+decomposable with factor matrix $C=[c_1|\cdots|c_{2r}]$ and Gram matrix $G=C^{\mathsf T}C$,
+then $\langle\omega_{\hat\jmath},\omega_{\hat l}\rangle$ is the $(l,j)$ cofactor of
+$G$, so
+\begin{equation}\label{eq:Momega}
+M_{\omega_T}=C\,\operatorname{adj}(G)\,C^{\mathsf T},
+\end{equation}
+whence $\operatorname{tr}M_{\omega_T}=2r\|\omega_T\|^2$ and
+$\operatorname{tr}\Theta^{(r)}=2rM_r$, which is the identity
+$\operatorname{tr}W=mF_A-xF_A'$ again. Two of the levels are forced to be scalar:
+$\Theta^{(1)}=\operatorname{Adj}(A)=aI$ by hypothesis, and when $m$ is even
+$\Theta^{(m/2)}=M_{m/2}\,I$, since a top-degree form is a multiple of the volume
+form and $\|\iota_v\omega\|^2=\|\omega\|^2\|v\|^2$ for such. Hence for $m\le4$ every
+level is scalar, $W(x)$ is a scalar matrix, and the matrix inequality degenerates to
+a scalar one; from $m=5$ on it does not, and that is where the content begins.
+
+Behind the matrix inequality there is a vertex recursion valid in every direction,
+which the graph case sees only along the coordinate axes.
+
+\begin{theorem}\label{thm:vertexrec}
+Let $A$ be a weighted $2$-plane family on $\mathbb R^m$ with bivectors $\omega_k$,
+and let $e$ be a unit vector. Put $f_k=\iota_e\omega_k$, so that
+\[
+\omega_k=e\wedge f_k+\omega_k',\qquad
+f_k,\ \omega_k'\in e^\perp ,
+\]
+and $\omega_k'$ is the bivector of the compressed family $A^{(e)}$. Then for every
+$r\ge1$
+\[
+M_r(A)=M_r\bigl(A^{(e)}\bigr)
++\sum_{|T|=r}\Bigl\|\sum_{k\in T}f_k\wedge\omega'_{T\setminus k}\Bigr\|^2 ,
+\]
+and consequently, with $N_r(e)$ denoting that sum of squares,
+\[
+F_A(x)=x\,F_{A^{(e)}}(x)-N_e(x),\qquad
+N_e(x)=\sum_{r\ge1}(-1)^{r-1}N_r(e)\,x^{\,m-2r}.
+\]
+\end{theorem}
+
+\begin{proof}
+Since $e$ is a unit vector, $\iota_e(\omega_k-e\wedge f_k)=f_k-f_k=0$, so
+$\omega_k-e\wedge f_k$ lies in $\Lambda^2(e^\perp)$; writing $b_i=\beta_ie+b_i'$
+identifies it as $b_1'\wedge b_2'$, the bivector of the compressed block. As
+$e\wedge f_k$ is a $2$-form it commutes with the other factors, and $e\wedge e=0$
+kills every term using two of them, so
+$\omega_T=\omega_T'+e\wedge\sum_{k\in T}f_k\wedge\omega'_{T\setminus k}$. The two
+summands lie in $\Lambda^{2r}(e^\perp)$ and $e\wedge\Lambda^{2r-1}(e^\perp)$, which
+are orthogonal, so the norms add; summing over $|T|=r$ gives the first display, and
+the second is that display multiplied by $(-1)^rx^{\,m-2r}$ and summed.
+\end{proof}
+
+For a coordinate family at a coordinate direction $e=e_v$ one has $f_k=\pm e_u$ for
+the edges $k=uv$ and $f_k=0$ otherwise, the cross terms vanish, and
+$N_r(e_v)=\sum_{u\sim v}m_{r-1}(G-v-u)$: the theorem is then the Heilmann--Lieb
+vertex recursion. At a generic direction, or for a family that is not diagonal, the
+cross terms do not vanish and the recursion is not the classical one. Two things
+follow at once. First, taking $r$ arbitrary, $M_r(A)\ge M_r(A^{(e)})$ for every unit
+$e$: the matching numbers of a plane family decrease under compression in every
+direction, which for graphs is $m_r(G)\ge m_r(G-v)$. Second, the whole band reduces
+to the sign of the cross terms.
+
+\begin{proposition}\label{prop:cross}
+Write $X_e:=N_e-\sum_k\theta_kF_{A''_k}$ for the cross-term part of $N_e$, where
+$\theta_k=\|f_k\|^2$ and $A''_k$ is the compression to $\{e,f_k\}^\perp$. If
+$X_e(x)\le0$ for every weighted $2$-plane family with $\operatorname{Adj}\preceq aI$,
+every unit $e$ and every $x\ge2\sqrt a$, then every such family satisfies the band
+$[a-2\sqrt a,\,a+2\sqrt a]$.
+\end{proposition}
+
+\begin{proof}
+Induct on $m$. Put $R_e=F_A/F_{A^{(e)}}$ and $R_k'=F_{A^{(e)}}/F_{A''_k}$. Dividing
+Theorem~\ref{thm:vertexrec} by $F_{A^{(e)}}$,
+\[
+R_e=x-\sum_k\frac{\theta_k}{R_k'}-\frac{X_e}{F_{A^{(e)}}} .
+\]
+The class is closed under compression, so the inductive hypothesis $R_k'\ge x/2$
+applies, and $\sum_k\theta_k=\sum_k\|\iota_e\omega_k\|^2
+=\langle e,\operatorname{Adj}(A)e\rangle\le a$. Hence $R_e\ge x-2a/x$, and
+$x-2a/x\ge x/2$ exactly when $x\ge2\sqrt a$. The base case $m\le1$ is $R_e=x$.
+So $R_e\ge x/2>0$ for $x\ge2\sqrt a$, and $F_A=R_eF_{A^{(e)}}$ has no root there;
+$F_A$ is even or odd, so all roots lie in $[-2\sqrt a,2\sqrt a]$.
+\end{proof}
+
+The constant is therefore not an artefact of the estimate: $\sqrt a$ is the fixed
+point of $\rho\mapsto x-a/\rho$ at $x=2\sqrt a$, the value at which the two roots of
+$\rho^2-x\rho+a$ collide. For $x>2\sqrt a$ the inductive hypothesis has an interval
+of admissible thresholds and the argument has slack; at $x=2\sqrt a$ the interval is
+a point and it has none. That is exactly why $2\sqrt a$, and not the conjectured
+$2\sqrt{a-1}$, is the ceiling of every argument of this shape. The cross terms
+$C_r=N_r-\sum_k\theta_kM''_{k,r-1}
+=\sum_{|T|=r}\sum_{k\ne l\in T}\langle f_k\wedge\omega'_{T\setminus k},
+f_l\wedge\omega'_{T\setminus l}\rangle$ were nonnegative in every family tested, and
+$X_e=\sum_{r\ge2}(-1)^{r-1}C_rx^{\,m-2r}$ was negative at $x=2\sqrt a$ in every case,
+including under direct maximization over the sphere of directions; the identity of
+Theorem~\ref{thm:vertexrec} was checked to $10^{-13}$ on graph, projection and
+general weighted plane families at generic directions
+(\texttt{code/hl\_Wspec.py}, \texttt{code/hl\_Xsign.py}).
+
 Two bounds follow unconditionally from real-rootedness alone. Writing
 $F_A=x^m-M_1x^{m-2}+M_2x^{m-4}-\cdots$, one has $M_1=\tfrac12\operatorname{tr}
 \operatorname{Adj}(A)\le am/2$ and, using $\|\omega_j\wedge\omega_l\|^2\ge
@@ -1806,7 +1910,18 @@ band edges are the single condition $\pi_{\max}\le4(a-1)/a^2$
 (\texttt{band\_iff\_pi}), and that the strictly weaker $\pi_{\max}\le4/a$ already
 yields $a+2\sqrt a$, which beats the Marchenko--Pastur edge for every $a$ and the
 product bound $ab$ for $a>4$ (\texttt{weak\_bound}, \texttt{weak\_beats\_mp},
-\texttt{weak\_beats\_ab}). \texttt{RamaLean/TracePSD.lean} and
+\texttt{weak\_beats\_ab}). \texttt{RamaLean/CavityThreshold.lean} carries
+Proposition~\ref{prop:cross}: \texttt{cavity\_step} is the induction step, that
+child ratios at least $x/2$, nonnegative weights of total at most $a$, a nonpositive
+remainder and $4a\le x^2$ force the parent ratio to be at least $x/2$ again;
+\texttt{threshold\_iff} is its sharpness, that $x-2a/x\ge x/2$ holds \emph{if and
+only if} $x\ge2\sqrt a$; and \texttt{double\_root\_at\_threshold} is the structural
+form of the same statement, the factorization
+$\rho^2-2\sqrt a\,\rho+a=(\rho-\sqrt a)^2$ that collapses the interval of admissible
+thresholds to a point. The vertex recursion of Theorem~\ref{thm:vertexrec} and the
+sign of $X_e$ enter as hypotheses; what is machine-checked is that they close the
+induction, and that they close it exactly at $2\sqrt a$.
+\texttt{RamaLean/TracePSD.lean} and
 \texttt{RamaLean/AdjugatePSD.lean} carry the two positivity facts the extremal
 computation and the kernel recursion run on. In both, the standard input is a
 visible hypothesis rather than a hidden one: \texttt{trace\_sq\_le\_sq\_trace}
