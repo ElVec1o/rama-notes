@@ -1500,6 +1500,38 @@ from $m=16$. By Theorem~\ref{thm:Cr} every term is a Schur square minus the squa
 contraction, so what a proof must supply is control of the alternating sum of the $Q_S$
 across levels.
 
+How much room the inequality actually has is worth measuring, and the answer is that
+there is a great deal --- and that the recursion cannot use any of it. Evaluating the
+exact ratio $R_e=F_A/F_{A^{(e)}}$ at $x=2\sqrt a$ on regular graphs, in units of the
+threshold $x/2=\sqrt a$:
+\[
+\begin{array}{lccc}
+\hline
+a & \text{graphs} & R_e/(x/2) & \text{spread}\\
+\hline
+3 & \text{cube, Petersen, Franklin, Heawood} & 1.3662\text{--}1.3692 & 3.0\cdot10^{-3}\\
+4 & C_8(1,2),\,C_{10}(1,2),\,C_{12}(1,2) & 1.3488\text{--}1.3497 & 8.6\cdot10^{-4}\\
+5 & C_8(1,2,4),\,C_{10}(1,2,5) & 1.3246\text{--}1.3322 & 7.5\cdot10^{-3}\\
+\hline
+\end{array}
+\]
+The ratio is a function of $a$ alone to three digits, independent of the graph and of the
+dimension, and exceeds the threshold by a third. The slack $-X_e/(F_{A^{(e)}}\sqrt a)$
+likewise \emph{increases} with $m$, running $0.033,0.044,0.049,0.058$ over the four cubic
+graphs above. So the inequality is far from tight. None of that is available to the
+argument:
+
+\begin{proposition}\label{prop:rigid}
+Fix $a>0$ and suppose the inductive hypothesis of Proposition~\ref{prop:cross} is
+strengthened from $R\ge x/2$ to $R\ge c\,(x/2)$ for some $c>0$. At $x=2\sqrt a$ the
+recursion sustains this only for $c=1$.
+\end{proposition}
+
+\begin{proof}
+Propagating $R\ge c\sqrt a$ requires $c\sqrt a\le2\sqrt a-a/(c\sqrt a)$, which after
+clearing the denominator is $a(c-1)^2\le0$, so $c=1$.
+\end{proof}
+
 The constant is therefore not an artefact of the estimate: $\sqrt a$ is the fixed
 point of $\rho\mapsto x-a/\rho$ at $x=2\sqrt a$, the value at which the two roots of
 $\rho^2-x\rho+a$ collide. For $x>2\sqrt a$ the inductive hypothesis has an interval
@@ -2104,9 +2136,20 @@ $\det\bigl[\begin{smallmatrix}a&r^{\mathsf T}\\ c&G\end{smallmatrix}\bigr]
 determinant on a dependent family; and \texttt{hsimple\_of\_border\_zero} combines them
 into $\|f_k\|^2\|\omega_k'\|^2=\|\iota_{f_k}\omega_k'\|^2$, which is precisely the
 hypothesis \texttt{hsimple} used below --- so that hypothesis is now proved rather than
-assumed. What remains carried as a hypothesis is \texttt{htight}, that
-$\operatorname{Adj}(A)=aI$ forces $\sum_k\iota_{f_k}\omega_k'=0$; that is the polarization
-step, and it is the only unformalized input to Theorems~\ref{thm:C2} and~\ref{thm:Cr}.
+assumed. \texttt{RamaLean/Tightness.lean} supplies the other input, \texttt{htight}: that
+$\operatorname{Adj}(A)=aI$ forces $\sum_k\iota_{f_k}\omega_k'=0$. Working in coordinates,
+with a rank-two block presented by its two spanning vectors, the polarization step becomes
+three elementary facts --- \texttt{iota\_antisymm}, that
+$\langle a,\iota_b\omega\rangle=-\langle b,\iota_a\omega\rangle$, which is a two-term
+\texttt{ring} identity; \texttt{iota\_proj\_of\_orthogonal}, that compressing the block to
+$e^\perp$ does not change the pairing against $f_k$; and that each $\iota_{f_k}\omega_k'$
+already lies in $e^\perp$. \texttt{tight\_sum\_contraction\_eq\_zero} assembles them, and
+\texttt{crossTerm\_nonneg\_of\_tight} composes the result with
+\texttt{CrossTerm.crossTerm\_nonneg}, so that Theorem~\ref{thm:C2} is machine-checked from
+the tightness hypothesis alone. What is \emph{not} formalized is the bookkeeping that
+identifies the coordinate vector \texttt{w} of \texttt{CrossTerm} with the Pl\"ucker
+coordinates of $\omega_k'$; each ingredient is proved, in its own coordinates, and the
+identification between them is by hand.
 \texttt{RamaLean/CrossTerm.lean} carries Theorems~\ref{thm:C2} and~\ref{thm:Cr}.
 \texttt{crossTerm\_eq\_sq\_sub} is the general level: with no hypothesis beyond
 \texttt{hsimple} it proves
@@ -2139,10 +2182,11 @@ Proposition~\ref{prop:cross}: \texttt{cavity\_step} is the induction step, that
 child ratios at least $x/2$, nonnegative weights of total at most $a$, a nonpositive
 remainder and $4a\le x^2$ force the parent ratio to be at least $x/2$ again;
 \texttt{threshold\_iff} is its sharpness, that $x-2a/x\ge x/2$ holds \emph{if and
-only if} $x\ge2\sqrt a$; and \texttt{double\_root\_at\_threshold} is the structural
+only if} $x\ge2\sqrt a$; \texttt{double\_root\_at\_threshold} is the structural
 form of the same statement, the factorization
 $\rho^2-2\sqrt a\,\rho+a=(\rho-\sqrt a)^2$ that collapses the interval of admissible
-thresholds to a point. The vertex recursion of Theorem~\ref{thm:vertexrec} and the
+thresholds to a point; and \texttt{no\_slack\_propagates} is
+Proposition~\ref{prop:rigid}. The vertex recursion of Theorem~\ref{thm:vertexrec} and the
 sign of $X_e$ enter as hypotheses; what is machine-checked is that they close the
 induction, and that they close it exactly at $2\sqrt a$.
 \texttt{RamaLean/TracePSD.lean} and

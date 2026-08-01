@@ -104,4 +104,31 @@ theorem cavity_step {ι : Type*} [Fintype ι] {a x X F R : ℝ} {θ R' : ι → 
   rw [hR]
   linarith
 
+/-- **No slack can be propagated at the threshold.**  Suppose one tried to strengthen the
+inductive hypothesis from `R ≥ x/2` to `R ≥ c·(x/2)` for some `c > 0`.  At `x = 2√a` the
+recursion sustains that only if `c = 1`.
+
+This matters because the slack is real: numerically `R_e/(x/2)` sits around `1.33`–`1.37`
+over `3 ≤ a ≤ 5`, essentially independent of the graph and of the dimension.  The theorem
+says the recursion cannot use any of it — the fixed point at the threshold is rigid,
+which is `double_root_at_threshold` seen from the other side. -/
+theorem no_slack_propagates {a c : ℝ} (ha : 0 < a) (hc : 0 < c)
+    (h : c * Real.sqrt a ≤ 2 * Real.sqrt a - a / (c * Real.sqrt a)) : c = 1 := by
+  have hsa : 0 < Real.sqrt a := Real.sqrt_pos.mpr ha
+  have hsq : Real.sqrt a ^ 2 = a := Real.sq_sqrt ha.le
+  have hden : 0 < c * Real.sqrt a := mul_pos hc hsa
+  -- clear the denominator
+  have h' : c * Real.sqrt a * (c * Real.sqrt a)
+      ≤ (2 * Real.sqrt a) * (c * Real.sqrt a) - a := by
+    have := mul_le_mul_of_nonneg_right h hden.le
+    rw [sub_mul, div_mul_cancel₀ _ (ne_of_gt hden)] at this
+    linarith
+  -- which is `a (c-1)² ≤ 0`
+  have hkey : a * (c - 1) ^ 2 ≤ 0 := by nlinarith [hsq, hsa]
+  have : (c - 1) ^ 2 ≤ 0 := by nlinarith [sq_nonneg (c - 1), hkey, ha]
+  have hz : (c - 1) ^ 2 = 0 := le_antisymm this (sq_nonneg _)
+  have : c - 1 = 0 := by
+    exact pow_eq_zero_iff two_ne_zero |>.mp hz
+  linarith
+
 end CavityThreshold

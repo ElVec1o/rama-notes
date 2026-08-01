@@ -35,3 +35,4 @@ import RamaLean.CavityThreshold
 import RamaLean.VertexSplit
 import RamaLean.CrossTerm
 import RamaLean.GramDet
+import RamaLean.Tightness

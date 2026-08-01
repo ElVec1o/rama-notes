@@ -201,3 +201,48 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+# ---------------------------------------------------------------------------
+#  The exact ratio R_e = F_A / F_{A^(e)} at the threshold, and the slack.
+#  Backs the table in prop:rigid's paragraph.  Run as: python3 -c
+#  "import hl_Cr; hl_Cr.ratio_table()"
+# ---------------------------------------------------------------------------
+def circ(n, S):
+    return sorted({tuple(sorted((i, (i + s) % n))) for i in range(n) for s in S})
+
+
+def ratio_table():
+    """R_e/(x/2) and the slack -X_e/(F_{A^(e)} sqrt a), exactly, at x = 2 sqrt a."""
+    print(f"{'graph':24} {'m':>3} {'q':>3} {'a':>4} {'slack':>9} {'R_e/(x/2)':>10}")
+    rows = []
+    for nm, ed, m in (("cube (a=3)", hp.cube_edges(), 8),
+                      ("Petersen (a=3)", hp.petersen_edges(), 10),
+                      ("Franklin (a=3)", lcf(12, [5, -5]), 12),
+                      ("Heawood (a=3)", lcf(14, [5, -5]), 14),
+                      ("C8(1,2)  (a=4)", circ(8, [1, 2]), 8),
+                      ("C10(1,2) (a=4)", circ(10, [1, 2]), 10),
+                      ("C12(1,2) (a=4)", circ(12, [1, 2]), 12),
+                      ("C8(1,2,4) (a=5)", circ(8, [1, 2, 4]), 8),
+                      ("C10(1,2,5)(a=5)", circ(10, [1, 2, 5]), 10)):
+        Bs = hp.graph_blocks(ed, m)
+        dg = np.diag(hp.Adj(Bs))
+        if dg.min() != dg.max():
+            continue
+        a = float(dg[0])
+        x = 2 * math.sqrt(a)
+        e = np.random.default_rng(1000 + m).normal(size=m)
+        e /= np.linalg.norm(e)
+        d = hp.recursion(Bs, m, e)
+        X = float(np.polyval(d['X'], x))
+        FA = float(np.polyval(d['FA'], x))
+        FAc = float(np.polyval(d['FAc'], x))
+        r = (FA / FAc) / (x / 2)
+        rows.append((a, r))
+        print(f"{nm:24} {m:3} {len(Bs):3} {a:4.0f} "
+              f"{-X / (FAc * math.sqrt(a)):9.5g} {r:10.5g}")
+    print()
+    for a in sorted({t[0] for t in rows}):
+        v = [t[1] for t in rows if t[0] == a]
+        print(f"  a={a:.0f}:  R_e/(x/2) = {min(v):.4f} .. {max(v):.4f}"
+              f"   (spread {max(v) - min(v):.1e})")
