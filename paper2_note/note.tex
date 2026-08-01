@@ -1363,11 +1363,17 @@ termwise statement is the natural thing to try and it is false: single pairs $(k
 and even whole summands $\sum_{k\ne l\in T}$ take negative values, the smallest
 observed being $-1.9\cdot10^{-3}$ and $-3.8\cdot10^{-3}$ over weighted plane
 families in dimensions six and eight. If $C_r\ge0$ holds it is therefore a statement about the sum over all
-$T$ of a given size, not about its terms. Finally
-$X_e=\sum_{r\ge2}(-1)^{r-1}C_rx^{\,m-2r}$ was negative at $x=2\sqrt a$ in every case,
-including under direct maximization over the sphere of directions; the identity of
-Theorem~\ref{thm:vertexrec} was checked to $10^{-13}$ on graph, projection and
-general weighted plane families at generic directions
+$T$ of a given size, not about its terms. Summed, it survives minimization over the
+sphere, and sharply: for coordinate families $\min_e C_2=0$ to machine precision,
+attained exactly at the coordinate directions, where the classical recursion lives,
+while for noncommuting projection and general plane families the minimum is strictly
+positive, growing from $0.048$ at $m=4$ to $0.777$ at $m=8$. Finally
+$X_e=\sum_{r\ge2}(-1)^{r-1}C_rx^{\,m-2r}$ was nonpositive at $x=2\sqrt a$ in every case
+under direct maximization over the sphere --- zero to $4\cdot10^{-12}$ for coordinate
+families, strictly negative otherwise --- over graph families in dimensions $4,5,6$,
+projection families in dimensions $4,6$ and weighted plane families in dimension $4$.
+The identity of Theorem~\ref{thm:vertexrec} was checked to $10^{-13}$ on graph,
+projection and general weighted plane families at generic directions
 (\texttt{code/hl\_Wspec.py}, \texttt{code/hl\_Xsign.py}).
 
 Two bounds follow unconditionally from real-rootedness alone. Writing
