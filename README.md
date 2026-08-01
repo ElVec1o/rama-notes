@@ -1,5 +1,7 @@
 # RAMA-NOTEBOOK
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21433867.svg)](https://doi.org/10.5281/zenodo.21433867)
+
 Four short number-theory / combinatorics notes and a methodology note, each pairing a computational
 result with a Lean 4 + Mathlib formalization. Everything here builds and is machine-checked; conjectures
 are labeled as such.
@@ -79,6 +81,12 @@ modes.
 - Lean: `lake build` (needs Lean 4 + a Mathlib cache; see `LEAN_README.md`).
 - Data: the Python in `code/` is self-contained (`python3 code/paper3_gcd_permanent.py`, etc.).
 
-## License
-Dual-licensed — code (Apache-2.0), papers (CC-BY-4.0). See [`LICENSING.md`](LICENSING.md). Cite via
+## Citing
+Archived on Zenodo. Cite the concept DOI
+[10.5281/zenodo.21433867](https://doi.org/10.5281/zenodo.21433867), which always resolves to the newest
+release. The current release is **v2.0** (2026-08-01),
+[10.5281/zenodo.21739117](https://doi.org/10.5281/zenodo.21739117). Machine-readable metadata is in
 [`CITATION.cff`](CITATION.cff).
+
+## License
+Dual-licensed — code (Apache-2.0), papers (CC-BY-4.0). See [`LICENSING.md`](LICENSING.md).
