@@ -24,7 +24,7 @@ import numpy as np
 
 import hl_planes as hp
 
-BUDGET_S = 460.0
+BUDGET_S = 900.0
 _T0 = time.monotonic()
 
 
@@ -45,6 +45,31 @@ def C_direct(Bc, fs, q, r):
         for k, l in itertools.permutations(T, 2):
             tot += gram([fs[k]] + cols(Bc, [j for j in T if j != k]),
                         [fs[l]] + cols(Bc, [j for j in T if j != l]))
+    return tot
+
+
+def C_fast(Bc, fs, q, r):
+    """The same C_r, with one precomputed Gram matrix so the inner loop is index
+    arithmetic and a small determinant.  Columns 0..q-1 hold the f_k, then columns
+    q+2j, q+2j+1 hold the two columns of block j."""
+    X = np.column_stack([fs[k] for k in range(q)]
+                        + [Bc[j][:, c] for j in range(q) for c in (0, 1)])
+    G = X.T @ X
+
+    def idx(k, T):
+        out = [k]
+        for j in T:
+            if j != k:
+                out += [q + 2 * j, q + 2 * j + 1]
+        return out
+
+    tot, n = 0.0, 0
+    for T in itertools.combinations(range(q), r):
+        if (n & 1023) == 0 and time.monotonic() - _T0 > BUDGET_S:
+            return None
+        for k, l in itertools.permutations(T, 2):
+            tot += np.linalg.det(G[np.ix_(idx(k, T), idx(l, T))])
+            n += 1
     return tot
 
 
@@ -104,24 +129,52 @@ def main():
 
     print()
     print("=" * 88)
-    print("PART 2.  the two-term criterion 4a C_2 >= C_3, and the partial sums of (*)")
+    print("PART 2.  ||W_S||^2 against Q_S at level r = 3")
     print("=" * 88)
-    print(f"{'graph':24} {'m':>3} {'4aC2/C3':>9}   Sigma_2, Sigma_3, Sigma_4, Sigma_5")
+    print("For ODD r we need C_r = sum_S (Q_S - ||W_S||^2) SMALL, so we want ||W_S||^2")
+    print("close to Q_S.  It is not: the ratio decays, so C_3 is essentially sum_S Q_S,")
+    print("an undamped sum of Schur squares.")
+    print(f"{'graph':22} {'m':>3} {'Q_0=C_2':>9} {'sum Q_n':>10} {'sum|W_n|^2':>11} "
+          f"{'C_3':>9} {'|W|^2/Q':>8}")
+    for nm, ed, m in (("cube", hp.cube_edges(), 8), ("Petersen", hp.petersen_edges(), 10),
+                      ("Franklin", lcf(12, [5, -5]), 12), ("Heawood", lcf(14, [5, -5]), 14),
+                      ("Mobius-Kantor", lcf(16, [5, -5]), 16)):
+        if time.monotonic() - _T0 > BUDGET_S:
+            print("  [budget]")
+            break
+        Bs = hp.graph_blocks(ed, m)
+        Bc, fs = setup(Bs, m, np.random.default_rng(1000 + m).normal(size=m))
+        q = len(Bs)
+        Q0, _ = Q_and_W(Bc, fs, q, [])
+        sQ = sW = 0.0
+        for n in range(q):
+            Q, W = Q_and_W(Bc, fs, q, [n])
+            sQ += Q
+            sW += W
+        print(f"{nm:22} {m:3} {Q0:9.4g} {sQ:10.5g} {sW:11.5g} {sQ - sW:9.4g} {sW / sQ:8.4f}")
+
+    print()
+    print("=" * 88)
+    print("PART 3.  the two-term criterion 4a C_2 >= C_3, and the partial sums of (*)")
+    print("=" * 88)
+    print(f"{'graph':24} {'m':>3} {'4aC2/C3':>9}   Sigma_2, Sigma_3, ...")
     for nm, ed, m, rmax in (("cube (8,cubic)", hp.cube_edges(), 8, 4),
                             ("Petersen", hp.petersen_edges(), 10, 5),
-                            ("Franklin (12,cubic)", lcf(12, [5, -5]), 12, 5),
-                            ("Heawood (14,cubic)", lcf(14, [5, -5]), 14, 4),
-                            ("Mobius-Kantor (16)", lcf(16, [5, -5]), 16, 4),
-                            ("Pappus (18,cubic)", lcf(18, [5, 7, -7, 7, -7, -5]), 18, 3)):
+                            ("Franklin (12,cubic)", lcf(12, [5, -5]), 12, 6),
+                            ("Heawood (14,cubic)", lcf(14, [5, -5]), 14, 6),
+                            ("Mobius-Kantor (16)", lcf(16, [5, -5]), 16, 6),
+                            ("Pappus (18,cubic)", lcf(18, [5, 7, -7, 7, -7, -5]), 18, 5),
+                            ("Desargues (20)", lcf(20, [5, -5, 9, -9]), 20, 5),
+                            ("Nauru (24)", lcf(24, [5, -9, 7, -7, 9, -5]), 24, 4)):
         if time.monotonic() - _T0 > BUDGET_S:
             print("  [wall-clock budget reached]")
             break
         Bs = hp.graph_blocks(ed, m)
         av = float(np.trace(hp.Adj(Bs)) / m)
-        Bc, fs = setup(Bs, m, rng.normal(size=m))
+        Bc, fs = setup(Bs, m, np.random.default_rng(1000 + m).normal(size=m))
         Cs = []
         for r in range(2, min(rmax, m // 2) + 1):
-            v = C_direct(Bc, fs, len(Bs), r)
+            v = C_fast(Bc, fs, len(Bs), r)
             if v is None:
                 break
             Cs.append(v)
@@ -135,10 +188,14 @@ def main():
             part.append(acc)
         print(f"{nm:24} {m:3} {ratio:9.4g}   "
               + ", ".join(f"{p:8.4g}" for p in part))
+        print(f"{'':24} {'':3} {'':9}   |terms|: "
+              + ", ".join(f"{abs(c) * (4 * av) ** (2 - (i + 2)):8.4g}"
+                          for i, c in enumerate(Cs)))
     print()
-    print("The ratio crosses below 1 at m = 16, so C_3 <= 4a C_2 is false in general;")
-    print("Sigma_3 goes negative there and Sigma_4 recovers, so (*) is a three-term")
-    print("statement and any proof must carry C_4.")
+    print("The ratio crosses below 1 at m = 16, so C_3 <= 4a C_2 is false in general.")
+    print("The terms peak at r = 3 and then decay geometrically, but the number needed")
+    print("grows with m: three nearly suffice at m = 14, four at m = 16, and at m = 20")
+    print("five have not settled.  So the criterion is not a bounded-length statement.")
     print(f"elapsed {time.monotonic() - _T0:.0f}s of {BUDGET_S:.0f}s")
 
 
