@@ -113,6 +113,20 @@ theorem root_mem_bands {n : ℕ} {θ : Fin n → ℝ} {B : Fin n → Set ℝ}
     (hmem : ∀ k, θ k ∈ B k) (k : Fin n) : θ k ∈ ⋃ j, B j :=
   Set.mem_iUnion.mpr ⟨k, hmem k⟩
 
+/-- **Conjecture 10 wherever the abelian cover already exhausts the universal one.**
+
+The hypothesis `B k ⊆ univSpec` says every Floquet band lies in `spec(T)`, which holds
+exactly when `spec(G^ab) ⊆ spec(T)`.  For `b₁(G) = 1` the deck group is `F_1 = ℤ`, already
+abelian, so `G^ab = T` and the hypothesis is automatic: BAND recovers the unicyclic case of
+Conjecture 10, which the note proves by Floquet theory, and sharpens it to `θ_k ∈ B_k`.
+
+The hypothesis fails as soon as `b₁ ≥ 2`.  For `K_4` the top band contains the Perron value
+`3`, while `ρ(T) = 2√2 < 3`.  That failure is the whole distance still to be covered. -/
+theorem conj10_of_bands_subset {n : ℕ} {θ : Fin n → ℝ} {B : Fin n → Set ℝ}
+    {univSpec : Set ℝ} (hmem : ∀ k, θ k ∈ B k) (hsub : ∀ k, B k ⊆ univSpec) (k : Fin n) :
+    θ k ∈ univSpec :=
+  hsub k (hmem k)
+
 /-! ## The theorem, with the two classical inputs visible -/
 
 /-- **BAND, conditionally.**
