@@ -163,13 +163,14 @@ def main():
 
         print(f"\n{name}  b={b}  bands {[('%.3f' % a, '%.3f' % c) for a, c in bs]}")
         print(f"{'x':>9}{'delta':>7}{'m0':>8}{'m1':>8}{'m2':>8}"
-              f"{'avg det':>12}{'sign ok':>9}")
+              f"{'I match':>11}{'I other':>11}{'margin':>9}{'ok':>6}")
         for x in gaps:
             k = kappa_above(es, ds, n, x)
             NF = roots_above(cF, x)
             delta = round(k) - NF
             tot = steps ** b
             cnt = [0, 0, 0]
+            I = [0.0, 0.0, 0.0]      # integrals of |det S| by inertia class
             acc = 0.0
             for t in range(tot):
                 th, r = [], t
@@ -179,16 +180,30 @@ def main():
                 S = 0.5 * (S + S.conj().T)
                 w = np.linalg.eigvalsh(S)
                 j = int(np.sum(w < 0))
+                d = np.real(np.linalg.det(S))
                 if 0 <= j <= 2:
                     cnt[j] += 1
-                acc += np.real(np.linalg.det(S))
+                    I[j] += abs(d)
+                acc += d
             m = [c / tot for c in cnt]
+            I = [v / tot for v in I]
             avg = acc / tot
+            # the class matching delta versus the rest, in INTEGRAL not measure
+            if delta % 2 == 1:
+                match, other = I[1], I[0] + I[2]
+            else:
+                match, other = I[0] + I[2], I[1]
+            margin = (match - other) / max(match + other, 1e-300)
             ok = (avg > 0) == (delta % 2 == 0)
             print(f"{x:>9.4f}{delta:>7}{m[0]:>8.3f}{m[1]:>8.3f}{m[2]:>8.3f}"
-                  f"{avg:>12.4f}{('YES' if ok else 'NO'):>9}")
-    print("\nm_j is the fraction of the torus with j negative eigenvalues of S(x,z);")
-    print("a landslide would be a lead, a near tie would say G24 is delicate")
+                  f"{match:>11.4f}{other:>11.4f}{margin:>9.4f}"
+                  f"{('YES' if ok else 'NO'):>6}")
+    print("\nm_j is the fraction of the torus with j negative eigenvalues of S(x,z).")
+    print("I match / I other are the integrals of |det S| over the parity class agreeing")
+    print("with delta and over the rest; margin = (match - other)/(match + other).")
+    print("G33 is the assertion that margin > 0 always. A margin near 1 means the")
+    print("wrong-parity class contributes almost nothing despite occupying real measure,")
+    print("which is what an estimate would have to exploit.")
     return 0
 
 

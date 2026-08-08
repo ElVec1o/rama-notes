@@ -75,4 +75,33 @@ theorem gapcount_of_domination {I₀ I₁ I₂ q : ℝ} {δ : ℕ}
     have := avg_neg_of_dominant h₀ h₂ hdom
     linarith
 
+/-! ## The measured form -/
+
+/-- The quantity `code/inertia_split.py` reports.  With `M` the integral over the parity
+class agreeing with `δ` and `O` the integral over the rest, the margin is
+`(M - O)/(M + O)`, and G33 is exactly the assertion that it is positive. -/
+noncomputable def margin (M O : ℝ) : ℝ := (M - O) / (M + O)
+
+/-- **Positive margin is domination.**  The measured quantity is positive exactly when the
+matching class dominates, so the numerics are testing the criterion itself and not a proxy
+for it. -/
+theorem margin_pos_iff {M O : ℝ} (hsum : 0 < M + O) :
+    0 < margin M O ↔ O < M := by
+  rw [margin, div_pos_iff]
+  constructor
+  · rintro (⟨h, _⟩ | ⟨_, h2⟩)
+    · linarith
+    · linarith
+  · intro h
+    exact Or.inl ⟨by linarith, hsum⟩
+
+/-- **What the observed suppression would buy.**  The measurements show the wrong-parity
+class contributing an integral of order the square of its measure, far below its share.  If
+that is made quantitative as `O ≤ κ · m²` with `m` the wrong-parity measure and `M` bounded
+below, domination follows as soon as `κ m² < M`.  Recorded as the shape an estimate would
+take; the bound on `O` itself is open. -/
+theorem domination_of_quadratic_bound {M O m κ : ℝ}
+    (hO : O ≤ κ * m ^ 2) (hlt : κ * m ^ 2 < M) : O < M :=
+  lt_of_le_of_lt hO hlt
+
 end InertiaSplit

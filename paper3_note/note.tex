@@ -135,7 +135,10 @@ even for $n\ge3$. Thus $2\Sigma\equiv0\pmod4$, and $4\mid a(n)$ for $n\ge4$.
 Proposition~\ref{prop:four} is formalized \emph{end to end} in Lean 4/Mathlib
 (\texttt{RamaLean/Paper3FourDivides.lean}, standard axioms only, no
 \texttt{sorry}): the chain includes Smith's determinant
-$\det[\gcd(i,j)]=\prod_{k\le n}\varphi(k)$ (via the factorization $M=LDL^\top$)
+$\det[\gcd(i,j)]=\prod_{k\le n}\varphi(k)$, which is itself machine-checked in the general
+form $\det[\sum_{d\mid\gcd(i,j)}f(d)]=\prod_{k\le n}f(k)$ for an arbitrary $f$ over a
+commutative ring (\texttt{SmithDeterminant.det\_gcdDivSum}, specialised at $f=\varphi$ by
+\texttt{det\_gcd\_eq\_prod\_totient}), via the factorization $M=LDL^\top$
 and the involution argument for $2\mid\Sigma$ over $\mathbb Z/2$.
 
 \begin{theorem}[the $2$-adic tower]\label{thm:v2}
@@ -243,7 +246,8 @@ $2^{\lceil n/2\rceil-\lfloor\log_2 n\rfloor-1}\mid a(n)$, three standard axioms,
 \texttt{sorry})---the \emph{same} constant $c=\tfrac12$ proved above. The Lean proof formalizes
 the permanent's Smith expansion $a(n)=\sum_x\bigl(\prod_i\varphi(x_i)\bigr)\perm(M_x)$
 (column multilinearity via \texttt{Finset.prod\_univ\_sum}), the all-ones-column divisibility
-$c_1!\mid\perm(M_x)$ (a free \texttt{Perm(Fin }$c_1$\texttt{)} action, from the reusable engine
+$c_1!\mid\perm(M_x)$ (\texttt{PermanentFactorial.factorial\_dvd\_permanent\_of\_ones\_rows},
+a free \texttt{Perm(Fin }$c_1$\texttt{)} action, from the reusable engine
 \texttt{card\_dvd\_sum\_of\_free\_invariant}: a free finite-group action with invariant summand
 makes $|G|$ divide the sum over any commutative ring), the \emph{exact} factorial valuation
 $v_2(c_1!)=c_1-s_2(c_1)$ (\texttt{Nat.sub\_one\_mul\_factorization\_factorial}), and the
@@ -503,7 +507,11 @@ These are the minimum-valuation terms of $N_0$, so the leading-term rule gives
    v_2(N_0)=2^k-2k+3\iff\#\{v:\pi_1(A_v),\pi_2(B_v)\text{ both odd}\}\text{ is odd},
 \]
 reproducing $v_2(N_0)=11,25,58$ at $k=4,5,6$ exactly (the $58$ is the even-parity lift off $55$). This
-achiever count is computable in $O(n\log n)$ with no permanent (a divisor sieve); it is odd for
+achiever count is computable in $O(n\log n)$ with no permanent (a divisor sieve). Its arithmetic
+entry point is machine-checked: a $\gcd$ of two odds is odd and $(g-1)/2$ is odd exactly when
+$g\equiv3\pmod4$, so the parity of $\pi_1$ is the parity of the number of entries $\equiv3\pmod 4$,
+a count weighted by the non-principal character $\chi_4$ (\texttt{Paper3Chi4.odd\_half\_iff} and
+\texttt{sum\_half\_parity}). It is odd for
 $k\in\{4,5,7,8,11,14,16,17,18,22,23\}$ within $k\le23$ ($11$ of $20$, recurring), so
 $D_{N_0}(2^k+1)=2k-4$ there, reaching $42$ at $k=23$ and setting a new record at every odd-parity peak.
 
@@ -631,7 +639,8 @@ the $2$-kernel and Mahler's method apply and to which the analytic parity barrie
 sequence $n=2^k+1$; it does not force us to use it. The engines generalize: if $s=2^a+d$ with
 $\max_{0\le y\le d}s_2(y)\le a-2$, then the unique maximizer of $s_2(s-t)$ is $s-t=2^a-1$ (any
 $x=2^a+y$, $y\le d$, has $s_2=1+s_2(y)\le a-1$), so \emph{$\pi_{d+1}$ odd forces
-$v_2(\perm(2e+J))=s-a$ exactly} (the case $d=0,1$ recovers
+$v_2(\perm(2e+J))=s-a$ exactly} (machine-checked as
+\texttt{GeneralEngine.two\_pow\_dvd\_permanent\_odd\_general}; the case $d=0,1$ recovers
 Theorems~\ref{thm:engineA}--\ref{thm:engineB}; the side condition is sharp---$a=3$, $d=3$ fails via the
 tie $s_2(7)=3$). Consequently, for \emph{every} odd $c$ with $d=(c-1)/2$ small and $k\ge5$, the peak
 $n=2^k+c$ has factor sizes $2^{k-1}+d$ and $2^{k-1}+d+1$, both engine-covered, and

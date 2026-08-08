@@ -886,9 +886,17 @@ machine-checked in \texttt{RamaLean/Cavity.lean}; convergence is not claimed.
 A Rust sweep (\texttt{code/covercheck}) applies this to every connected graph of feedback
 vertex number at most two on up to seven vertices, computing the root count by
 Budan--Fourier, which is exact for a real-rooted polynomial, and $\kappa$ by the cavity
-equations. Over $46\,400$ graphs and $87\,344$ gap points there is no failure of
-Conjecture~\ref{conj:gap} and none of Conjecture~\ref{conj:gapcount}, with $\kappa$ never
-further than $0.205$ from an integer.
+equations. Over $55\,131$ graphs and $99\,487$ gap points there is no failure of
+Conjecture~\ref{conj:gap} and none of Conjecture~\ref{conj:gapcount}, no run is discarded by
+the validity gate, and $\kappa$ is never further than $0.205$ from an integer.
+
+The measurement also shows what an estimate would have to exploit. The wrong-parity class
+is not merely small in measure, it is suppressed quadratically in integral: at two triangles
+joined by an edge, in the gap at $x=-1.767$, it occupies $0.013$ of the torus and
+contributes $0.0007$ of the integral of $|\det S|$, a margin of $0.9987$. The reason is
+structural: the wrong-parity region is a shell around $\{z:\det S(x,z)=0\}$, where one
+eigenvalue has just crossed and $|\det S|$ is correspondingly small. Small measure and small
+integrand together, which is why the competition is not close.
 
 \section{The coefficient ladder}
 

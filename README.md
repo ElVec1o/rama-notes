@@ -42,7 +42,7 @@ is the matching-polynomial form of their Question 6.3 and contains Problem 1 of 
   statement, with the tie-break settled. Two barriers close the obvious routes: there is no
   unital $*$-homomorphism $C^*_r(F_b)\to C(\mathbb T^b)$, and the abelian spectrum fills in
   precisely the region where the universal cover still has gaps. No counterexample in
-  47,600 graphs and 89,000 gap points. **Formalized** across `GapLabel`, `BandTheorem`,
+  55,131 graphs and 99,487 gap points. **Formalized** across `GapLabel`, `BandTheorem`,
   `BandCount`, `Interlacing`, `FeedbackGapCount`, `FeedbackTwo`, `TieBreak`, `Congruence`,
   `NoQuotient`, `InertiaSplit`, `Cavity`.
 - $\mu_G(2\sqrt{d-1})$ counts pseudo-forests, answering a question of Csikvári using his own
