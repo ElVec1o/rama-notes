@@ -685,6 +685,211 @@ the conjecture. \emph{They are the two ends of one interval}, so
 what is missing is exactly half of a two-sided Heilmann--Lieb theorem for
 biregular bipartite graphs.
 
+\section{A counting refinement}\label{sec:gapcount}
+
+Conjecture~\ref{conj:gap} asserts a non-vanishing, which offers no handle. This section
+records a strictly stronger statement that equates two integers, the cases it settles, and
+the two barriers that close off the obvious routes to the rest. Labels are stated
+throughout: what is machine-checked, what is proved modulo a cited classical theorem, and
+what is open.
+
+Let $T$ be the universal cover of a finite connected loopless $G$ on $n$ vertices, and
+$b=b_1(G)$. Writing $A_G$ for the universal-cover adjacency operator as a matrix over
+$C^*_r(F_b)$, a real $x$ lies outside $\operatorname{spec}(T)$ exactly when $xI-A_G$ is
+invertible there, and then the trace of its negative spectral projection,
+\[
+\kappa(x)=\tau_n\bigl(\mathbf 1_{(-\infty,0)}(xI-A_G)\bigr),
+\]
+is an integer in $[0,n]$, because $K_0(C^*_r(F_b))=\mathbb{Z}\cdot[1]$ by Pimsner--Voiculescu.
+
+\begin{conjecture}[GAPCOUNT]\label{conj:gapcount}
+For every $x\notin\operatorname{spec}(T)$, the number of roots of $\mu_G$ strictly above
+$x$, with multiplicity, equals $\kappa(x)$.
+\end{conjecture}
+
+Conjecture~\ref{conj:gapcount} implies Conjecture~\ref{conj:gap} at $d=1$: $\kappa$ is
+constant across a gap while the root count jumps at any root, so a gap contains none. That
+implication, the fact that an integer-valued locally constant function is determined on a
+connected gap, and the boundary conditions $\kappa=0$ above $\rho(T)$ and $\kappa=n$ below
+$-\rho(T)$, are machine-checked in \texttt{RamaLean/GapLabel.lean}. All the content is in
+what happens as a band is crossed.
+
+\subsection{The abelian shadow}
+
+Put a circle variable on each cotree edge and let $A_G(z)$ be the magnetic adjacency matrix,
+$B_k=\lambda_k(\mathbb T^b)$ the $k$-th Floquet band, and $\theta_1\ge\dots\ge\theta_n$ the
+roots of $\mu_G$.
+
+\begin{proposition}[BAND]\label{prop:band}
+$\theta_k\in B_k$ for every $k$. Consequently, for $x\notin\operatorname{spec}(G^{\mathrm{ab}})$
+the number of roots above $x$ equals the number of bands above $x$.
+\end{proposition}
+
+\begin{proof}
+Godsil--Gutman writes $\mu_G$ as the average characteristic polynomial over $\pm1$ edge
+signings, and Marcus--Spielman--Srivastava \cite{MSS} make those signings an interlacing
+family. The common interlacing lemma brackets the average at every index, not only the
+largest, so $\lambda_k(A_s)\le\theta_k\le\lambda_k(A_{s'})$ for two signings. Both are points
+of $\mathbb T^b$, and $B_k$ is the continuous image of a connected space, hence an interval.
+\end{proof}
+
+Everything downstream of those two classical inputs is machine-checked in
+\texttt{RamaLean/BandTheorem.lean}: that bands are order connected
+(\texttt{ordConnected\_range\_of\_continuous}), the squeeze
+(\texttt{mem\_of\_squeezed}), the count identity (\texttt{countAbove\_eq\_countBands}) and
+the recovery of the unicyclic case (\texttt{conj10\_of\_bands\_subset}). The inputs
+themselves enter \texttt{band\_of} as hypotheses.
+
+The core of the common interlacing lemma is machine-checked in
+\texttt{RamaLean/Interlacing.lean}: a sign argument fixes the parity of a root count and
+nothing more, an interlacing confines that count to a window of width two, and parity with
+such a window determines the value. What is not formalized, and is cited to \cite{MSS}, is
+that the signings have a common interlacing at all.
+
+Proposition~\ref{prop:band} settles Conjecture~\ref{conj:gap} whenever every band lies in
+$\operatorname{spec}(T)$, which is exactly $b_1(G)=1$, since $F_1=\mathbb{Z}$ makes the maximal
+abelian cover the universal cover. That recovers Section~\ref{sec:uni} by a different route
+and sharpens it to $\theta_k\in B_k$. The hypothesis fails at $b_1\ge2$: for $K_4$ the top
+band carries the Perron value $3$ while $\rho(T)=2\sqrt2$.
+
+The counting half of Proposition~\ref{prop:band} does not need \cite{MSS}. If $x$ avoids
+every $\lambda_k(z)$ then $\{z:\lambda_k(z)>x\}$ is clopen, so on a connected parameter space
+the eigenvalue count above $x$ is the same integer for every $z$; every member of the family
+then has the same sign at $x$, so the average does too. Parity follows at once, and parity
+upgrades to equality by counting: crossing one component of the spectrum, each component
+carries an odd number of roots, and $n$ odd positive integers summing to $n$ are all $1$.
+Both steps are machine-checked in \texttt{RamaLean/BandCount.lean}.
+
+\subsection{Feedback vertex number one}
+
+Suppose some vertex $v$ has $F=G-v$ a forest, so every cycle passes through $v$; the first
+Betti number is unrestricted, and flowers, theta graphs and every $K_{2,q}$ qualify.
+
+\begin{proposition}\label{prop:fvs1}
+Conjecture~\ref{conj:gapcount}, hence Conjecture~\ref{conj:gap} at $d=1$, holds for every
+such $G$, modulo Pimsner--Voiculescu and Godsil's path tree.
+\end{proposition}
+
+\begin{proof}
+Eliminating the preimage of $F$ gives a Schur complement $S_v(x)$ which is a \emph{finite}
+sum of group elements, so it lies in the group algebra inside $C^*_r(F_b)$ and not merely in
+$L(F_b)$; that distinction is what makes projectionlessness applicable, since $L(F_b)$ is a
+$\mathrm{II}_1$ factor full of projections. Haynsworth additivity gives
+$\kappa(x)=N_F(x)+\delta(x)$ with $\delta(x)\in\{0,1\}$, and
+$\tau(S_v(x))=\mu_G(x)/\mu_{G-v}(x)$, so definiteness fixes the parity of $N_G-N_F$. Godsil's
+path tree makes $\mu_{G-v}$ interlace $\mu_G$, confining $N_G-N_F$ to $\{0,1\}$. A window of
+width two and a parity determine the value.
+\end{proof}
+
+The assembly is \texttt{FeedbackGapCount.gapcount\_fvs\_one\_of}, with the three classical
+inputs as explicit hypotheses, and \texttt{conj10\_fvs\_one\_of} composes it with the
+skeleton of Section~\ref{sec:gapcount}.
+
+Three remarks on that proof. The combinatorial core, that in an acyclic graph two distinct
+neighbours of $v$ cannot be joined without passing through $v$, is machine-checked
+(\texttt{FeedbackVertex.no\_bypass}); it is why a walk returning to the same lift must enter
+and leave at the same attachment point. The trace formula requires $G$ \emph{simple}: the
+argument uses that a lifted attachment point has exactly one neighbouring lift of $v$.
+Haynsworth additivity needs no appeal to Sylvester's law in a von Neumann algebra: the block
+matrix is congruent to the direct sum of the corner and the Schur complement by explicit
+unipotent factors, and scaling the off-diagonal part keeps every point of the path
+invertible, so the trace of the negative spectral projection is constant along it. That is
+machine-checked in \texttt{RamaLean/Congruence.lean}.
+
+\subsection{Feedback vertex number two, and where it stops}
+
+At $k=2$ the argument breaks in a locatable place: $M_2(C^*_r(F_b))$ is \emph{not}
+projectionless, $\operatorname{diag}(1,0)$ being a counterexample, so $S(x)$ can be
+indefinite. What survives is the $K$-theory, which keeps $\delta(x)\in\{0,1,2\}$. Two
+deletions give a window of width three, so parity leaves a two-way choice between
+$\delta=0$ and $\delta=2$, and one further bit is needed. That bit exists.
+
+\begin{proposition}\label{prop:tiebreak}
+Let $F=G-v_1-v_2$ and let $a,b_1,b_2,c$ count the roots above $x$ of
+$\mu_G,\mu_{G-v_1},\mu_{G-v_2},\mu_F$. If $a-c$ is even then $b_1=b_2$, and
+\[
+a=c\quad\Longleftrightarrow\quad \mu_F(x)\ \text{and}\ \mu_{G-v_1}(x)+\mu_{G-v_2}(x)\ \text{agree in sign}.
+\]
+\end{proposition}
+
+\begin{proof}
+Vertex-deletion interlacing gives $a-b_i\in\{0,1\}$ and $b_i-c\in\{0,1\}$. If $a=c$ then
+$c\le b_i\le a=c$; if $a=c+2$ then $c+1=a-1\le b_i\le c+1$. Either way $b_1=b_2$, so the two
+polynomials share a sign at $x$ and so does their sum.
+\end{proof}
+
+Proposition~\ref{prop:tiebreak} is machine-checked in \texttt{RamaLean/TieBreak.lean}, and it
+needs no hypothesis about $\operatorname{spec}(T)$. It is not enough. The remaining gap is the
+parity itself: at $k=1$ it came free from $\tau(S_v)=\mu_G/\mu_F$ and definiteness, while at
+$k=2$ the corresponding object is the constant term of the abelianised determinant of a
+$2\times2$ matrix over a noncommutative algebra, whose sign has no evident reason to be
+$(-1)^{\delta}$. So feedback vertex number two is \emph{reduced, not proved}. The arithmetic
+that would close it once the parity is supplied, a window of width three together with a
+parity and one tie-break bit, is \texttt{FeedbackTwo.eq\_of\_window3}, and
+\texttt{gapcount\_fvs\_two\_sign} discharges the tie-break using
+Proposition~\ref{prop:tiebreak}, leaving the parity as the sole remaining hypothesis.
+
+What it reduces to is now quantitative. Since $\mu_G/\mu_F$ is the average over
+$\mathbb T^b$ of $\det S(x,z)$, and $\operatorname{sign}\det S(x,z)=(-1)^{\delta_{\mathrm{ab}}(x,z)}$,
+writing $I_j$ for the integral of $|\det S|$ over $\{\delta_{\mathrm{ab}}=j\}$ gives
+$\mu_G/\mu_F=I_0-I_1+I_2$, and the required sign is exactly the assertion that the parity
+class matching $\delta$ dominates the others \emph{in integral}. Measurement
+(\texttt{code/inertia\_split.py}) shows the split is lopsided but not degenerate: at two
+triangles joined by an edge, in a genuine gap with $\delta=1$, the class
+$\delta_{\mathrm{ab}}=1$ occupies $0.987$ of the torus and $\delta_{\mathrm{ab}}=2$ occupies
+$0.013$. The integrand therefore does change sign, so no argument asserting that it does not
+can work. The decomposition and the criterion are recorded in
+\texttt{RamaLean/InertiaSplit.lean}, with a witness that measure alone does not decide it.
+
+\subsection{Two barriers}
+
+Both close off routes that look available.
+
+\begin{proposition}\label{prop:nohom}
+For $b\ge2$ there is no unital $*$-homomorphism $C^*_r(F_b)\to C(\mathbb T^b)$ carrying the
+generators to the coordinates.
+\end{proposition}
+
+\begin{proof}
+Such a map would carry units to units, so $S(x)$ invertible would force $S(x,z)$ invertible
+for every $z$, hence $\det(xI-A_G(z))=\mu_F(x)\det S(x,z)$ nonzero for every $z$, hence
+$\operatorname{spec}(G^{\mathrm{ab}})\subseteq\operatorname{spec}(T)\cup\{\mu_F=0\}$. For
+$K_4$ with a two-element feedback set that fails at $x=3$: the Perron value lies in
+$\operatorname{spec}(G^{\mathrm{ab}})$, while $\rho(T)=2\sqrt2<3$ and $\mu_{K_2}(3)=8$.
+\end{proof}
+
+The refutation shape is machine-checked in \texttt{RamaLean/NoQuotient.lean}. The underlying
+reason is that a quotient descends to reduced $C^*$-algebras when the \emph{kernel} is
+amenable, and $[F_b,F_b]$ is free of infinite rank.
+
+The second barrier is that the abelian cover cannot see into the region that matters. Every
+argument above that runs on the torus family needs $x$ outside
+$\operatorname{spec}(G^{\mathrm{ab}})$, and computation shows
+$\operatorname{spec}(G^{\mathrm{ab}})$ has almost no internal gaps: on $K_4$, two triangles
+joined by an edge, the theta graph and $K_4$ with pendants, the only ones are above and below
+the whole spectrum, plus $x=0$ in the last case. The abelian spectrum fills in precisely
+where the universal cover still has gaps, which is why every route through the torus family
+has been vacuous rather than merely difficult.
+
+\subsection{Evidence}
+
+\texttt{code/universal\_cover.py} computes $\operatorname{spec}(T)$ and $\kappa$ for an
+arbitrary finite graph, by the non-backtracking cavity equations on the directed edges. Its
+regression check is $K_4$ with a pendant at each vertex, where
+$\operatorname{spec}(T)=\pm[\sqrt3-\sqrt2,\sqrt3+\sqrt2]$ in closed form; the solver returns
+$[-3.1456,-0.3163]$ and $[0.3184,3.1477]$. Runs whose density fails to integrate to one are
+discarded, since point spectrum makes the cavity fixed point singular and a diverged
+$\kappa$ reads exactly like a violated Conjecture~\ref{conj:gapcount}. That the cavity map
+preserves the lower half plane, so the iteration is total and the density non-negative, is
+machine-checked in \texttt{RamaLean/Cavity.lean}; convergence is not claimed.
+
+A Rust sweep (\texttt{code/covercheck}) applies this to every connected graph of feedback
+vertex number at most two on up to seven vertices, computing the root count by
+Budan--Fourier, which is exact for a real-rooted polynomial, and $\kappa$ by the cavity
+equations. Over $46\,400$ graphs and $87\,344$ gap points there is no failure of
+Conjecture~\ref{conj:gap} and none of Conjecture~\ref{conj:gapcount}, with $\kappa$ never
+further than $0.205$ from an integer.
+
 \section{The coefficient ladder}
 
 This also explains the boundary between what is proved and what is not, and the

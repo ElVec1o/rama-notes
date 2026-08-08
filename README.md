@@ -35,6 +35,18 @@ is the matching-polynomial form of their Question 6.3 and contains Problem 1 of 
   $\operatorname{spec}(G^{\mathrm{ab}})$ (`AbelianCover`); feedback vertex number one, modulo
   Pimsner–Voiculescu, which is not in Mathlib (`FeedbackVertex`); and two closure operations
   that carry the conjecture to all $d$ (`TreeSubstitution`).
+- **A counting refinement (GAPCOUNT).** The conjecture is implied by an equality of two
+  integers: the number of matching roots above a gap equals the trace of the negative
+  spectral projection of the universal cover there. **Proved** for $b_1=1$ and for feedback
+  vertex number one; **reduced** at feedback vertex number two to a single quantitative
+  statement, with the tie-break settled. Two barriers close the obvious routes: there is no
+  unital $*$-homomorphism $C^*_r(F_b)\to C(\mathbb T^b)$, and the abelian spectrum fills in
+  precisely the region where the universal cover still has gaps. No counterexample in
+  47,600 graphs and 89,000 gap points. **Formalized** across `GapLabel`, `BandTheorem`,
+  `BandCount`, `Interlacing`, `FeedbackGapCount`, `FeedbackTwo`, `TieBreak`, `Congruence`,
+  `NoQuotient`, `InertiaSplit`, `Cavity`.
+- $\mu_G(2\sqrt{d-1})$ counts pseudo-forests, answering a question of Csikvári using his own
+  machinery with Bencs. **Formalized** (`PseudoForest`, `EvenEval`).
 - A vertex recursion for weighted 2-plane families valid in *every* direction, whose cavity term is a
   sum of squares; in Gram coordinates it is the matching determinant lemma. **Formalized.**
 - The leading cross term is a perfect square, hence $\ge 0$ — **formalized with no hypotheses.**
