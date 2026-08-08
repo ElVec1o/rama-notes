@@ -1785,18 +1785,33 @@ statement for reciprocals is $|1/S_1-1/S_2|=|S_2-S_1|/(S_1S_2)$.
 \begin{remark}\label{rem:csik}
 Csikv\'ari asks (personal communication, August 2026) whether $\mu_G(2\sqrt{d-1})$ has a
 combinatorial meaning for $d$-regular $G$ with $|V(G)|$ even, observing that it should at
-least be a positive integer. We have nothing on the meaning: that evaluation point is the
-edge of the Heilmann--Lieb support, whereas everything above happens strictly outside it,
-and the mechanism of Proposition~\ref{prop:transfer} says nothing there. The observation
-itself is elementary and holds. With $|V(G)|$ even every exponent in $\mu_G$ is even, so
-$\mu_G$ is a polynomial in $x^2$ with integer coefficients and $x^2=4(d-1)$ is an integer;
-positivity holds because a monic polynomial is positive above its largest root, and
-Heilmann--Lieb is strict on a finite graph. Both halves are machine-checked in
+least be a positive integer. It does, and the answer is in his own paper with Bencs
+\cite{BCs}. Their polynomial
+$R_G(z)=\sum_{M}(-z)^{|M|}\prod_{v\notin V(M)}(z+d_v-1)$ is, for $d$-regular $G$, a
+transformation of the matching polynomial: comparing coefficients termwise,
+\[
+R_G(z)=z^{n/2}\,\mu_G\!\Bigl(\frac{z+d-1}{\sqrt z}\Bigr).
+\]
+The point $2\sqrt{d-1}$ is not an arbitrary argument of that substitution. Solving
+$(\sqrt z+ (d-1)/\sqrt z)=2\sqrt{d-1}$ gives $(\sqrt z-\sqrt{d-1})^2=0$, so it is exactly
+the \emph{double root}, attained only at $z=d-1$. Their Corollary 2.7 expands
+$R_G(w)=\sum_{A\in\mathcal{PF}}2^{c(A)}(w-1)^{n-|A|}$ over pseudo-forests $A$, edge sets each
+of whose components carries at most one cycle, with $c(A)$ the number of cycles. Putting
+$w=d-1$,
+\begin{equation}\label{eq:pf}
+\mu_G\bigl(2\sqrt{d-1}\bigr)\;=\;(d-1)^{-n/2}\sum_{A\in\mathcal{PF}(G)}2^{c(A)}(d-2)^{\,n-|A|}.
+\end{equation}
+At $d=3$ the weight is $1$ and \eqref{eq:pf} reads: $2^{n/2}\mu_G(2\sqrt2)$ is the number of
+pseudo-forests of $G$ counted with multiplicity $2$ per cycle. The values are $19$, $74$,
+$76$, $297$, $1162$ for $K_4$, $K_{3,3}$, the prism, the cube and Petersen.
+
+The transformation, the double root and the evaluation are machine-checked in
+\texttt{RamaLean/PseudoForest.lean}; Corollary 2.7 is \cite{BCs} and enters as a hypothesis.
+Identity \eqref{eq:pf} is verified by brute force in \texttt{code/pseudoforest.py} on nine
+regular graphs of degrees $3$ and $4$ and orders $4$ to $10$, in exact arithmetic. The
+positivity and integrality Csikv\'ari notes in passing are separately machine-checked in
 \texttt{RamaLean/EvenEval.lean}, together with the observation that the parity hypothesis is
-needed: for $|V(G)|$ odd the value is $2\sqrt{d-1}$ times an integer. The values themselves
-(\texttt{code/csikvari\_eval.py}, exact) show no pattern we can see: at $d=3$ they run
-$19$, $74$, $76$, $297$, $1162$, $18408$, $73825$, $295979$ for $K_4$, $K_{3,3}$, the prism,
-the cube, Petersen, Heawood, M\"obius--Kantor and Pappus.
+needed: for $|V(G)|$ odd the value is $2\sqrt{d-1}$ times an integer.
 \end{remark}
 
 Propositions~\ref{prop:moments} and~\ref{prop:transfer} together bound the distance from
@@ -2782,6 +2797,8 @@ Theory \textbf{5} (1981), 285--297.
 \bibitem{ACFK} M.~Ab\'ert, P.~Csikv\'ari, P.~E.~Frenkel, G.~Kun, \emph{Matchings
 in Benjamini--Schramm convergent graph sequences}, Trans.\ Amer.\ Math.\ Soc.\
 \textbf{368} (2016), 4197--4218.
+\bibitem{BCs} F.~Bencs, P.~Csikv\'ari, \emph{Evaluations of Tutte polynomials of
+regular graphs}, arXiv:2105.06798 (2021).
 \end{thebibliography}
 
 \end{document}
