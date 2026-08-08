@@ -48,10 +48,11 @@ Cost, stated plainly (difficulty is conserved): that statement is not proved her
 mean lies in the convex hull of the range of `λ_{k₀}`, which is the band `B_{k₀}`, and
 `B_{k₀}` is not contained in `spec(T)` precisely because `x` sits in `B_{k₀} \ spec(T)`.  So
 the containment is not automatic and the remaining work is real.  What has changed is its
-shape: one scalar in one interval, in place of two integrals of comparable size.  Over `708`
-points with `κ = 1`, the weighted mean lies in `spec(T)` every time and is never closer than
-`0.183` to `x` (`code/wmean_test.py`), so the statement survives a deliberate attempt to break
-it.  The `κ ≥ 2` points are not covered by anything here.
+shape: one scalar in one interval, in place of two integrals of comparable size.  Over all
+`2206` points with `κ = 1`, the weighted mean lies in `spec(T)` every time and is never closer
+than `0.167` to `x` (`code/wmean_test.py`), so the statement survives a deliberate attempt to
+break it; a single coincidence there would have refuted the conjecture outright.  The `183`
+points with `κ ≥ 2` are not covered by anything here.
 -/
 
 namespace ParitySplit

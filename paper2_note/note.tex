@@ -1021,16 +1021,31 @@ of $P_x$ is $(-1)^{N(z)}$, and the localization of \S\ref{sec:further} gives
    I_p=\int_{\{N\equiv p\ (2)\}}|P_x| ,
 \]
 with no feedback vertex hypothesis, no restriction on $b$, and no $\mu_F$. It also makes the
-Lipschitz constant exact instead of measured: $\partial A/\partial\theta_j$ has a single entry
-of modulus one together with its conjugate, so its operator norm is $1$, and Weyl gives
-$L=\sqrt b$ outright.
+Lipschitz constant explicit instead of measured, and better than the obvious bound. Crudely,
+$\partial A/\partial\theta_j$ has a single entry of modulus one together with its conjugate,
+so its operator norm is $1$ and $\|A(z)-A(w)\|\le\sum_j|\Delta\theta_j|$, which costs a factor
+$b$. First-order perturbation theory does better: $\partial\lambda_k/\partial\theta_j$ is the
+quadratic form of that one edge against a unit eigenvector $v$, so it is at most
+$|v_{u_j}|^2+|v_{v_j}|^2$, and summing over cotree edges charges each vertex once per incident
+cotree edge. Hence
+\[
+   \sum_j\Bigl|\frac{\partial\lambda_k}{\partial\theta_j}\Bigr|\;\le\;D ,
+\]
+with $D$ the largest number of cotree edges at a vertex. $D\le2$ whenever the cotree edges can
+be chosen vertex-disjoint and $D\le\Delta(G)$ always, so $D$ does not grow with the graph while
+$b$ does. The per-edge estimate (\texttt{BandLipschitz.quad\_form\_bound}), the double count
+(\texttt{sum\_deg\_bound}) and the assembly (\texttt{grad\_l1\_bound}) are machine-checked;
+first-order perturbation theory is not in Mathlib and enters \texttt{grad\_l1\_bound} as a
+hypothesis in the shape the argument consumes.
 
 Let $\kappa$ be the number of bands whose range contains $x$. If $\kappa=0$ the localization
-settles $x$, and how often that happens depends sharply on $b$: over $888$ gap midpoints of
-graphs on up to seven vertices, $80.2\%$ of the $b=2$ points lie outside
-$\operatorname{spec}(G^{\mathrm{ab}})$ against a few percent of the $b=3$ points
+settles $x$, and how often that happens depends sharply on $b$: $80.2\%$ of $486$ midpoints
+with $b=2$ lie outside $\operatorname{spec}(G^{\mathrm{ab}})$, against $3.4\%$ of $493$
+midpoints with $b=3$, where a further $69.8\%$ are certified inside and $26.8\%$ undecided,
+so at most $30\%$ of the $b=3$ points can be settled this way
 (\texttt{code/residue\_sweep.py}, \texttt{code/residue\_b3.py}). More torus directions fill
-the gaps in. Over $3433$ residue points the minority-parity region has measure at most
+the gaps in. Over $5971$ residue points, with $\kappa=1$ at $5397$ and $\kappa=2$ at $574$
+and no point with $\kappa\ge3$, the minority-parity region has measure at most
 $0.0674$ and
 $\min(I_{\mathrm{even}},I_{\mathrm{odd}})/\max(I_{\mathrm{even}},I_{\mathrm{odd}})$ is at
 most $0.0169$ (\texttt{code/minority.py}), so the two classes are not close to cancelling.
@@ -1060,13 +1075,17 @@ that the $|Q|$-weighted mean of the crossing band lies in $\operatorname{spec}(T
 means are $-2.149,-1.483,1.483,2.143,2.150$ on gaps whose interiors sit near $\pm1.77$, so
 they are far from $x$ and inside $\operatorname{spec}(T)$.
 
-Two caveats keep this in proportion. First, $\kappa=1$ holds at about $97\%$ of residue
-points and $\kappa\ge2$ at the rest, so Proposition~\ref{prop:wmean} covers most of the
-residue and not all of it. Second, the statement it reduces to is a conjecture and is
-labelled as one; what can be said is that a deliberate attempt to break it failed. Over $708$
-points with $\kappa=1$ the weighted mean lies in $\operatorname{spec}(T)$ every time and is
-never closer than $0.183$ to $x$ (\texttt{code/wmean\_test.py}), and a single coincidence
-there would have refuted Conjecture~\ref{conj:gap} outright.
+Two caveats keep this in proportion. First, over $4900$ gap midpoints $\kappa=1$ at $2206$
+residue points and $\kappa\ge2$ at $183$, so Proposition~\ref{prop:wmean} covers $92.3\%$ of
+the residue and not all of it. Second, the statement it reduces to,
+\[
+   \text{the } |Q|\text{-weighted mean of the crossing band lies in }\operatorname{spec}(T),
+\]
+is a conjecture and is labelled as one; what can be said is that a deliberate attempt to
+break it failed. Over all $2206$ points with $\kappa=1$ the weighted mean lies in
+$\operatorname{spec}(T)$ every time and is never closer than $0.167$ to $x$
+(\texttt{code/wmean\_test.py}), and a single coincidence there would have refuted
+Conjecture~\ref{conj:gap} outright.
 
 Difficulty is conserved and it is worth saying where it went. A weighted mean lies in the
 convex hull of the range of $\lambda_{k_0}$, which is the band containing $x$, and that band
