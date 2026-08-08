@@ -27,6 +27,14 @@ is the matching-polynomial form of their Question 6.3 and contains Problem 1 of 
   $\Phi_{n,r}=\chi_{C_n}U_{r-1}(T_n(x/2))$, equivalent to Hall's conjecture (first proved by
   Cochran–Groothuis–Herring–Rohatgi–Stucky, 2018), by an independent elementary route. **Formalized.**
 - **Proved** for every subdivision at $d=1$, settling the case $\min(d,r)=2$ of Song–Fan–Miao.
+- **Proved** for every complete bipartite $K_{p,q}$, $p\ge2$, by Gershgorin on the Laguerre
+  Jacobi matrix; every row bound collapses to $\alpha^2\ge0$. This enters the range
+  $\min(a,b)\ge3$ left open elsewhere, $K_{3,4}$ included. **Formalized** (`LaguerreBand`),
+  apart from the classical passage $\mu_{K_{p,q}}\to L_p^{(q-p)}\to$ Jacobi matrix.
+- Three further reductions, at the status stated in the note: every matching root lies in
+  $\operatorname{spec}(G^{\mathrm{ab}})$ (`AbelianCover`); feedback vertex number one, modulo
+  Pimsner–Voiculescu, which is not in Mathlib (`FeedbackVertex`); and two closure operations
+  that carry the conjecture to all $d$ (`TreeSubstitution`).
 - A vertex recursion for weighted 2-plane families valid in *every* direction, whose cavity term is a
   sum of squares; in Gram coordinates it is the matching determinant lemma. **Formalized.**
 - The leading cross term is a perfect square, hence $\ge 0$ — **formalized with no hypotheses.**

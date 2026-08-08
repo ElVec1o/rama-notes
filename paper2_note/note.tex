@@ -42,7 +42,9 @@ family, and the hypothesis cannot be relaxed. For the cycle it specializes to
 $\Phi_{n,r}=\chi_{C_n}\cdot U_{r-1}(T_n(x/2))$, equivalent to Hall's conjecture, by
 an elementary route through the exponential formula. We also prove the conjecture
 for every subdivision at $d=1$, which settles the case $\min(d,r)=2$ of Problem~1 of
-Song, Fan and Miao.
+Song, Fan and Miao, and for every complete bipartite $K_{p,q}$ with $p\ge2$, by
+Gershgorin on the Laguerre Jacobi matrix; the latter enters the range
+$\min(a,b)\ge3$ that we otherwise leave open, $K_{3,4}$ included.
 
 For $(a,b)$-biregular $G$ the conjecture becomes a two-sided Heilmann--Lieb
 statement, of which the upper half is Godsil's. We determine the top five
@@ -116,10 +118,15 @@ C_n(2t)=2T_n(t)$ and the composition identity
 $U_{dn+n-1}=U_d(T_n)\,U_{n-1}$) to \emph{Hall's conjecture}
 $\mathcal C_{n,d}=\mathcal P_d(\mathcal C_n)$, proved combinatorially in \cite{CGHRS}.
 That preprint has remained unrefereed since 2018 --- it carries no journal reference or
-DOI as of August 2026 --- which is worth stating plainly, since it is the only other proof
-of Hall's conjecture we are aware of. We do not doubt it; we record it because a reader
-weighing what is established about this identity should know that the present derivation
-is, as far as we can tell, the first refereed or machine-checked one.
+DOI as of August 2026 --- and the reason is not mathematical. Chris Hall, who posed the
+conjecture, has told us (personal communication, August 2026) that Andrew Herring was his
+first doctoral student; Hall gave him the conjecture, Herring presented it as a problem at
+a workshop, and the group of \cite{CGHRS} solved it there. They submitted the result, met
+a couple of rejections, and abandoned the attempt for want of motivation rather than for
+any defect. Hall regards the proof as correct, and so do we. We record the episode because
+a reader weighing what is established about this identity should know both that the
+combinatorial proof stands and that the present derivation is, as far as we can tell, the
+first refereed or machine-checked one.
 Our route is different and elementary; we make no use of matching-polynomial
 combinatorics.
 
@@ -447,8 +454,9 @@ Ramanujan $2$-covering. The case $d=2$ follows as well, since $B_H$ is a
 bipartite graph and $\mu_{B_H}$ does not distinguish its two sides: a
 $(2,r)$-regular hypergraph has for incidence graph the subdivision of an
 $r$-regular graph, and the quantity $|\sqrt{d-1}-\sqrt{r-1}|$ is symmetric in
-$d$ and $r$. The case $\min(d,r)\ge3$ of their problem remains open, as does
-Conjecture~\ref{conj:gap} for $\min(a,b)\ge3$.
+$d$ and $r$. The case $\min(d,r)\ge3$ of their problem remains open in general, as does
+Conjecture~\ref{conj:gap} for $\min(a,b)\ge3$; Theorem~\ref{thm:kpq} below settles the
+complete bipartite graphs inside that range, $K_{3,4}$ among them.
 
 \begin{proof}
 By the subdivision identity $\mu_{S(H)}(x)=x^{|E|-|V|}\,\mu_H(x^2-D)$
@@ -485,6 +493,148 @@ $\operatorname{spec}(T)$, so they should approach the gap edge without crossing
 it. The evidence is therefore not merely that the bound holds but that it is
 approached, though no computation here reaches the regime where the ratio is
 close to $1$.
+
+\subsection{Complete bipartite graphs}\label{sec:kpq}
+
+The smallest graph in the open range $\min(a,b)\ge3$ is $K_{3,4}$, which is
+$(4,3)$-biregular. The complete bipartite family is settled outright, by an exact
+computation rather than by transport from a regular graph.
+
+\begin{theorem}\label{thm:kpq}
+Let $2\le p\le q$. Every root of $\mu_{K_{p,q}}$ lies in
+\[
+\{0\}\cup\pm\bigl[\sqrt{q-1}-\sqrt{p-1},\ \sqrt{q-1}+\sqrt{p-1}\bigr],
+\]
+the spectrum of the $(q,p)$-biregular tree. So Conjecture~\ref{conj:gap} holds for
+every $K_{p,q}$ at $d=1$.
+\end{theorem}
+
+\begin{proof}
+Since $m_k(K_{p,q})=\binom pk\binom qk k!$, comparison of coefficients with
+$L_p^{(\alpha)}(t)=\sum_k(-1)^k\binom{p+\alpha}{p-k}t^k/k!$ at $\alpha=q-p$ gives
+\[
+\mu_{K_{p,q}}(x)=x^{\,q-p}(-1)^p\,p!\;L_p^{(q-p)}(x^2),
+\]
+so the nonzero roots are the square roots of the zeros of a Laguerre polynomial.
+Those zeros are the eigenvalues of the $p\times p$ symmetric tridiagonal Jacobi
+matrix $J$ with $J_{kk}=2k+\alpha+1$ and $J_{k,k+1}=J_{k+1,k}=\sqrt{(k+1)(k+\alpha+1)}$,
+$0\le k\le p-1$.
+
+Put $c=p+q-2$ and $g(u)=\sqrt{u(u+\alpha)}-u$, and apply Gershgorin to $J-cI$. The
+shifted diagonal in row $k$ is $2k-2p+3$, which is at most $-1$ for $k\le p-2$, so
+the radius of an interior row is
+\[
+(2p-3-2k)+\sqrt{k(k+\alpha)}+\sqrt{(k+1)(k+1+\alpha)}\;=\;2p-2+g(k)+g(k+1),
+\]
+the index cancelling exactly. The step inequality
+\begin{equation}\label{eq:amgm}
+\sqrt{u(u+\alpha)}+1\;\le\;\sqrt{(u+1)(u+1+\alpha)}
+\end{equation}
+reduces, on squaring, to $\sqrt{u(u+\alpha)}\le u+\alpha/2$, which is
+$\alpha^2\ge0$. It makes $g$ nondecreasing along the integers, so the radius is
+largest at $k=p-2$, where it is $1+\sqrt{(p-2)(p-2+\alpha)}+\sqrt{(p-1)(q-1)}$ and
+\eqref{eq:amgm} at $u=p-2$ bounds it by $2\sqrt{(p-1)(q-1)}$. The last row has
+shifted diagonal $1$ and the single off-diagonal entry $\sqrt{(p-1)(q-1)}$, so its
+radius lies within the same bound as soon as $(p-1)(q-1)\ge1$, which holds for
+$p\ge2$. Hence every eigenvalue $t$ of $J$ satisfies
+$|t-(p+q-2)|\le2\sqrt{(p-1)(q-1)}$; since
+$\bigl(\sqrt{q-1}\pm\sqrt{p-1}\bigr)^2=(p+q-2)\pm2\sqrt{(p-1)(q-1)}$, that disc is
+exactly the stated band for $x^2=t$. The factor $x^{q-p}$ contributes the root $0$,
+which lies in the tree spectrum.
+\end{proof}
+
+The bound is sharp: at $p=q$ every interior Gershgorin row attains it, and the
+conclusion is then the Heilmann--Lieb interval for the $p$-regular $K_{p,p}$. It
+does need $p\ge2$: at $p=1$ the only zero is $q$ while the band degenerates to
+$\{q-1\}$, the $(q,1)$-``biregular tree'' being the finite star $K_{1,q}$. For
+$K_{3,4}$ the Laguerre factor is $t^3-12t^2+36t-24$, with zeros
+$0.935,\ 3.30,\ 7.76$ against the band $[0.101,\ 9.899]$.
+
+Inequality \eqref{eq:amgm}, the two row bounds, the endpoint identity and the
+Gershgorin step are machine-checked in Lean~4 as \texttt{LaguerreBand.sqrt\_step},
+\texttt{rowRadius\_le}, \texttt{lastRow\_le}, \texttt{band\_endpoints} and
+\texttt{laguerre\_band}. The coefficient identification and the passage to the Jacobi
+matrix are classical and remain by hand.
+
+\subsection{Three further reductions}\label{sec:further}
+
+The following arose from a conversation Chris Hall conducted with a language model and
+shared with us in August 2026. We have checked them, and record them here with their
+status, which differs sharply between the three. None is used elsewhere in this note.
+
+\paragraph{Localization in the maximal abelian cover.}
+Put a circle variable on each of the $b_1(G)$ cotree edges and let $A_G(z)$ be the
+resulting magnetic adjacency matrix. Haar integration over $\mathbb T^{b_1}$ annihilates
+every permutation cycle of length at least three, since a simple cycle must use a cotree
+edge and therefore carries a nontrivial character; fixed points and transpositions survive,
+and those are exactly the matchings. Hence
+\[
+\mu_G(x)=\int_{\mathbb T^{b_1}}\det\bigl(xI-A_G(z)\bigr)\,dz .
+\]
+For $|z|=1$ the matrix $A_G(z)$ is Hermitian, so the integrand is real for real $x$; and a
+continuous real function on a connected space whose average vanishes must vanish somewhere.
+Therefore every matching root is an eigenvalue of some $A_G(z)$, that is
+$\operatorname{Zeros}(\mu_G)\subseteq\operatorname{spec}(G^{\mathrm{ab}})$, and
+Conjecture~\ref{conj:gap} at $d=1$ becomes
+\[
+\operatorname{Zeros}(\mu_G)\cap\bigl(\operatorname{spec}(G^{\mathrm{ab}})\setminus
+\operatorname{spec}(T)\bigr)=\emptyset .
+\]
+The realness of the integrand, the vanishing-average argument and the reduction are
+machine-checked (\texttt{AbelianCover.det\_sub\_smul\_one\_im},
+\texttt{exists\_zero\_of\_integral\_zero}, \texttt{root\_mem\_of\_average},
+\texttt{reduction}); the Godsil--Gutman expansion over cycle types is by hand. The
+localization is useful in the negative direction too: any counterexample must live in
+$\operatorname{spec}(G^{\mathrm{ab}})\setminus\operatorname{spec}(T)$.
+
+\paragraph{Feedback vertex number one.}
+Suppose some vertex $v$ has $F=G-v$ a forest, so that every cycle of $G$ passes through
+$v$; the first Betti number is then unrestricted, and flowers, theta graphs and every
+$K_{2,q}$ qualify. Writing the universal cover's adjacency operator as a matrix over
+$C^*_r(F_{b_1})$ and eliminating the preimage of $F$, the Schur complement $S_v(x)$ onto
+the fibre over $v$ is a \emph{finite} sum of group elements, so it lies in the group
+algebra inside $C^*_r(F_{b_1})$ rather than merely in the von Neumann algebra
+$L(F_{b_1})$. That is the load-bearing point, since $L(F_{b_1})$ is a $\mathrm{II}_1$
+factor full of projections while $C^*_r(F_{b_1})$ is projectionless by Pimsner--Voiculescu.
+A self-adjoint invertible element of a projectionless $C^*$-algebra is definite, so its
+canonical trace cannot vanish. And that trace is
+\[
+\tau\bigl(S_v(x)\bigr)=x-\sum_{p\sim v}\frac{\mu_{F-p}(x)}{\mu_F(x)}
+=\frac{\mu_G(x)}{\mu_{G-v}(x)} ,
+\]
+the first equality because returning to the same lift of $v$ forces a walk to enter and
+leave a lifted component of $F$ at the same attachment point --- two distinct attachment
+points of one component sit under distinct lifts of $v$, else the universal cover would
+contain a cycle --- and the second by the matching recursion at $v$ together with the
+cofactor formula for a forest resolvent. A root of $\mu_G$ that is not a root of
+$\mu_{G-v}$ therefore makes $\tau(S_v)$ vanish, forcing $S_v$ to be non-invertible, hence
+the root lies in $\operatorname{spec}(T)$.
+
+We machine-check the pieces that can be: the combinatorial core
+(\texttt{FeedbackVertex.no\_bypass}), the resolvent diagonal
+(\texttt{resolvent\_diag}), the algebraic collapse of the trace formula
+(\texttt{matching\_ratio}), and the trace step (\texttt{trace\_ne\_zero\_of\_definite}).
+Pimsner--Voiculescu is not in Mathlib, so \texttt{feedback\_one\_of} carries it as an
+explicit hypothesis in the shape the argument consumes. We therefore state this as
+established modulo that classical input, and not as machine-checked end to end.
+
+\paragraph{Two closure operations.}
+Attaching a fixed rooted tree $R$ at every vertex sends $\mu_{d,H}$ to
+$\beta^{N}\mu_{d,H}(\alpha/\beta)$ with $\alpha=\mu_R$, $\beta=\mu_{R-o}$ and
+$N=d\,|V(H)|$, because an uncovered vertex leaves its whole copy of $R$ free while a
+covered one leaves $R-o$; the same ratio $\alpha/\beta$ is what the Schur complement of
+the universal cover produces, so the conjecture is inherited. Starting from a regular
+graph, where the conjecture is immediate, this yields graphs of arbitrarily large first
+Betti number whose universal covers have genuine gaps. Independently, the subdivision
+identity survives averaging over $d$-covers, since suppressing the degree-two fibres of a
+cover of $S(H)$ gives a cover of $H$ and a product of independent uniform permutations is
+uniform; that upgrades Theorem~\ref{thm:subdiv} from $d=1$ to every $d$, and with it the
+whole $(D,2)$-biregular family. The substitution identity and the root transfer are
+machine-checked (\texttt{TreeSubstitution.homogenize}, \texttt{star\_ratio},
+\texttt{subdivision\_root}, \texttt{subdivision\_abs}); the covering combinatorics, which
+is the same fibre bookkeeping as \texttt{CoverCounts}, is by hand. Neither operation
+touches the irreducible core: both reduce the spectral problem to a \emph{scalar} transfer
+function, and the difficulty begins where elimination leaves a matrix-valued one.
 
 \subsection{The biregular case is one interval, and we have one end of it}
 Let $G$ be $(a,b)$-biregular bipartite, $s=\sqrt{a-1}$, $t=\sqrt{b-1}$. Since
@@ -2433,6 +2583,31 @@ visible hypothesis rather than a hidden one: \texttt{trace\_sq\_le\_sq\_trace}
 takes the spectral decomposition of a positive semidefinite matrix as an explicit
 assumption, and \texttt{adjugate\_posDef} is proved in the definite case, the
 semidefinite limit $A+\varepsilon I$ being left by hand.
+
+\texttt{RamaLean/LaguerreBand.lean} carries Theorem~\ref{thm:kpq} in full on the
+inequality side: \texttt{sqrt\_amgm} and \texttt{sqrt\_step} are the arithmetic--geometric
+mean step \eqref{eq:amgm}, \texttt{rowRadius\_le} and \texttt{lastRow\_le} are the two
+Gershgorin row bounds, \texttt{band\_endpoints} identifies the disc with the biregular
+tree band, and \texttt{laguerre\_band} assembles them through Mathlib's
+\texttt{eigenvalue\_mem\_ball}. What is not formalized is the classical passage from
+$\mu_{K_{p,q}}$ to the Laguerre polynomial and thence to its Jacobi matrix; that
+identification is a coefficient comparison and is done by hand above.
+
+The three developments of Section~\ref{sec:further} are formalized to the extent stated
+there. \texttt{RamaLean/AbelianCover.lean} proves that the integrand is real
+(\texttt{det\_sub\_smul\_one\_im}), that a continuous real function with vanishing average
+on a connected space has a zero (\texttt{exists\_zero\_of\_integral\_zero}), and the
+resulting localization and reduction; the Godsil--Gutman expansion is assumed as the
+hypothesis \texttt{haverage}. \texttt{RamaLean/TreeSubstitution.lean} proves the
+substitution identity as a homogenization (\texttt{homogenize}), fixes its orientation on
+the star (\texttt{star\_ratio}), and transports Heilmann--Lieb through a subdivision
+(\texttt{subdivision\_root}, \texttt{subdivision\_abs}); the covering combinatorics is by
+hand. \texttt{RamaLean/FeedbackVertex.lean} proves the combinatorial core
+(\texttt{no\_bypass}, via Mathlib's characterization of acyclicity by path uniqueness), the
+resolvent diagonal, the algebraic collapse of the trace formula, and the trace step; the
+Pimsner--Voiculescu input appears as an explicit hypothesis of
+\texttt{feedback\_one\_of}, since it is not in Mathlib. Every theorem in all four files
+depends only on the three standard axioms, and none uses \texttt{native\_decide}.
 
 \begin{remark}
 Everything here is stated for the uniform permutation model; by

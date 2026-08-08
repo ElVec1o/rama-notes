@@ -41,3 +41,7 @@ import RamaLean.Plucker
 import RamaLean.Paper4Coeff
 import RamaLean.ConflictIE
 import RamaLean.CoverCounts
+import RamaLean.LaguerreBand
+import RamaLean.TreeSubstitution
+import RamaLean.AbelianCover
+import RamaLean.FeedbackVertex
