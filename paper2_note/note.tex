@@ -1026,8 +1026,12 @@ of modulus one together with its conjugate, so its operator norm is $1$, and Wey
 $L=\sqrt b$ outright.
 
 Let $\kappa$ be the number of bands whose range contains $x$. If $\kappa=0$ the localization
-settles $x$. Over $532$ residue points of graphs on up to seven vertices with $2\le b\le3$,
-the minority-parity region has measure at most $0.0674$ and
+settles $x$, and how often that happens depends sharply on $b$: over $888$ gap midpoints of
+graphs on up to seven vertices, $80.2\%$ of the $b=2$ points lie outside
+$\operatorname{spec}(G^{\mathrm{ab}})$ against a few percent of the $b=3$ points
+(\texttt{code/residue\_sweep.py}, \texttt{code/residue\_b3.py}). More torus directions fill
+the gaps in. Over $3433$ residue points the minority-parity region has measure at most
+$0.0674$ and
 $\min(I_{\mathrm{even}},I_{\mathrm{odd}})/\max(I_{\mathrm{even}},I_{\mathrm{odd}})$ is at
 most $0.0169$ (\texttt{code/minority.py}), so the two classes are not close to cancelling.
 
@@ -1055,6 +1059,14 @@ estimate at all. Conjecture~\ref{conj:gap} at a point with $\kappa=1$ becomes th
 that the $|Q|$-weighted mean of the crossing band lies in $\operatorname{spec}(T)$. Measured
 means are $-2.149,-1.483,1.483,2.143,2.150$ on gaps whose interiors sit near $\pm1.77$, so
 they are far from $x$ and inside $\operatorname{spec}(T)$.
+
+Two caveats keep this in proportion. First, $\kappa=1$ holds at about $97\%$ of residue
+points and $\kappa\ge2$ at the rest, so Proposition~\ref{prop:wmean} covers most of the
+residue and not all of it. Second, the statement it reduces to is a conjecture and is
+labelled as one; what can be said is that a deliberate attempt to break it failed. Over $708$
+points with $\kappa=1$ the weighted mean lies in $\operatorname{spec}(T)$ every time and is
+never closer than $0.183$ to $x$ (\texttt{code/wmean\_test.py}), and a single coincidence
+there would have refuted Conjecture~\ref{conj:gap} outright.
 
 Difficulty is conserved and it is worth saying where it went. A weighted mean lies in the
 convex hull of the range of $\lambda_{k_0}$, which is the band containing $x$, and that band

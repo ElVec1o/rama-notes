@@ -64,3 +64,4 @@ import RamaLean.JensenRoute
 import RamaLean.MahlerRoute
 import RamaLean.TorusGodsilGutman
 import RamaLean.ParitySplit
+import RamaLean.BandLipschitz
