@@ -61,3 +61,5 @@ import RamaLean.Congruence
 import RamaLean.InertiaSplit
 import RamaLean.ShellBound
 import RamaLean.JensenRoute
+import RamaLean.MahlerRoute
+import RamaLean.TorusGodsilGutman

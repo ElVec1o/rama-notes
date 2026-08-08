@@ -582,9 +582,39 @@ Conjecture~\ref{conj:gap} at $d=1$ becomes
 The realness of the integrand, the vanishing-average argument and the reduction are
 machine-checked (\texttt{AbelianCover.det\_sub\_smul\_one\_im},
 \texttt{exists\_zero\_of\_integral\_zero}, \texttt{root\_mem\_of\_average},
-\texttt{reduction}); the Godsil--Gutman expansion over cycle types is by hand. The
-localization is useful in the negative direction too: any counterexample must live in
+\texttt{reduction}). The cancellation over cycle types, left by hand above, reduces to one
+statement: a sum of nonzero vectors with pairwise disjoint supports is nonzero. The cycles of
+a permutation are vertex-disjoint, hence use disjoint edge sets, hence have homology classes
+of disjoint support, and each class is nonzero because a cycle must use a cotree edge. That
+lemma is \texttt{TorusGodsilGutman.sum\_ne\_zero\_of\_disjoint\_support}, and the sign and
+averaging steps are re-proved in the same file in the compact form
+\texttt{sign\_const\_of\_nonvanishing}, \texttt{nonvanishing\_average\_ne\_zero},
+\texttt{mu\_ne\_zero\_of\_nonvanishing}, the last being the contrapositive actually used.
+Only the passage from the permutation expansion to homology classes remains informal. The
+identity is checked numerically to $7\cdot10^{-15}$ on seven graphs with $b_1$ up to four
+(\texttt{code/torus\_gg.py}).
+
+It is worth being precise about what the connectedness of $\mathbb T^{b_1}$ contributes,
+since Godsil--Gutman average over the $2^{|E|}$ signings and obtain the same identity. A
+nonvanishing continuous function on a finite discrete set may take both signs, so no
+conclusion about the average follows; on a connected space it may not. The inclusion
+$\operatorname{Zeros}(\mu_G)\subseteq\operatorname{spec}(G^{\mathrm{ab}})$ is a consequence of
+the topology of the parameter space, not of the averaging.
+
+The localization is useful in the negative direction too: any counterexample must live in
 $\operatorname{spec}(G^{\mathrm{ab}})\setminus\operatorname{spec}(T)$.
+
+Two 2025 papers settle the companion question for the \emph{point} spectrum, in the opposite
+direction. Li, Magee, Sabri and Thomas \cite{LMST} characterise the eigenvalues of
+$G^{\mathrm{ab}}$ as the reals that are roots of $\mu_{G\setminus\Gamma}$ for every
+$2$-regular subgraph $\Gamma$, which at $\Gamma=\emptyset$ gives
+$\operatorname{pointspec}(G^{\mathrm{ab}})\subseteq\operatorname{Zeros}(\mu_G)$; Spier
+\cite{Sp} proves that $G^{\mathrm{uni}}$ and $G^{\mathrm{ab}}$ have the same eigenvalues.
+Those concern flat bands, so neither contains nor is contained in the inclusion above, which
+concerns the full spectrum. But Spier's theorem says the two covers are indistinguishable at
+the level of point spectrum, and the residue
+$\operatorname{spec}(G^{\mathrm{ab}})\setminus\operatorname{spec}(T)$ is exactly where they
+become distinguishable, so that is where a proof of Conjecture~\ref{conj:gap} has to act.
 
 \paragraph{Feedback vertex number one.}
 Suppose some vertex $v$ has $F=G-v$ a forest, so that every cycle of $G$ passes through
@@ -862,14 +892,28 @@ The refutation shape is machine-checked in \texttt{RamaLean/NoQuotient.lean}. Th
 reason is that a quotient descends to reduced $C^*$-algebras when the \emph{kernel} is
 amenable, and $[F_b,F_b]$ is free of infinite rank.
 
-The second barrier is that the abelian cover cannot see into the region that matters. Every
-argument above that runs on the torus family needs $x$ outside
-$\operatorname{spec}(G^{\mathrm{ab}})$, and computation shows
-$\operatorname{spec}(G^{\mathrm{ab}})$ has almost no internal gaps: on $K_4$, two triangles
-joined by an edge, the theta graph and $K_4$ with pendants, the only ones are above and below
-the whole spectrum, plus $x=0$ in the last case. The abelian spectrum fills in precisely
-where the universal cover still has gaps, which is why every route through the torus family
-has been vacuous rather than merely difficult.
+The second barrier is narrower than it first appeared. Every argument that runs on the torus family needs $x$ outside
+$\operatorname{spec}(G^{\mathrm{ab}})$, and on the smallest examples that fails: for $K_4$,
+two triangles joined by an edge, the theta graph and $K_4$ with pendants, the internal gaps
+of $\operatorname{spec}(T)$ are swallowed by bands of the abelian cover. It would be wrong to
+read that as a general obstruction. A certified search over two growing families
+(\texttt{code/torus\_gg.py}) finds the opposite behaviour as soon as the graphs are larger:
+ten of fourteen gap midpoints lie outside $\operatorname{spec}(G^{\mathrm{ab}})$, with a
+margin that grows with the number of vertices: for two $c$-cycles joined by an edge it runs
+$1.18,\,7.52,\,21.50,\,51.35$ as $c$ goes from four to seven. So the torus family is vacuous
+on the smallest graphs and informative as they grow, the reverse of what the first
+computation suggested, and the localization of \S\ref{sec:further} settles
+Conjecture~\ref{conj:gap} outright at every such point, for every first Betti number and with
+no feedback vertex hypothesis.
+
+Nor is that settlement subsumed by Heilmann--Lieb. Those graphs have maximum degree three, so
+Heilmann--Lieb excludes roots only outside $[-2\sqrt2,2\sqrt2]$, while the certified points
+sit at $\pm1.93,\pm1.99,\pm2.04,\pm2.06$, all interior. The certification cannot be a grid
+minimum, which proves nothing when the zero set of $\det(xI-A_G(z))$ is a curve: that
+determinant has degree one in each $z_e$, so its $3^{b_1}$ Fourier coefficients are recovered
+exactly by a three-point transform, they bound the gradient, and a grid search together with
+that Lipschitz constant certifies a positive lower bound, while a sign change on the grid
+certifies the opposite verdict.
 
 \subsection{Evidence}
 
@@ -3069,6 +3113,10 @@ Theory \textbf{5} (1981), 285--297.
 \bibitem{ACFK} M.~Ab\'ert, P.~Csikv\'ari, P.~E.~Frenkel, G.~Kun, \emph{Matchings
 in Benjamini--Schramm convergent graph sequences}, Trans.\ Amer.\ Math.\ Soc.\
 \textbf{368} (2016), 4197--4218.
+\bibitem{LMST} W.~Li, M.~Magee, M.~Sabri, D.~Thomas, \emph{Eigenvalues of maximal
+  abelian covers}, arXiv:2508.17332 (2025).
+\bibitem{Sp} T.~J.~Spier, \emph{Eigenvalues of universal covers and the matching
+  polynomial}, arXiv:2510.05041 (2025).
 \bibitem{BCs} F.~Bencs, P.~Csikv\'ari, \emph{Evaluations of Tutte polynomials of
 regular graphs}, arXiv:2105.06798 (2021).
 \end{thebibliography}
