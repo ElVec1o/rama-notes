@@ -27,16 +27,31 @@ steps then give the square.
    `|λ(z) - λ(w)| ≤ ‖S(z) - S(w)‖`, and `S` depends smoothly on the phases, so
    `|λ_min(z)| ≤ L · dist(z, ∂)` with `∂` the crossing locus.
 3. **Integrating over the region.**  `∫_A |det S| ≤ m(A) · sup_A |det S| ≤ m(A) · M · L ·
-   diam(A)`, and the square appears exactly when `diam(A) ≲ m(A)`.
+   reach(A)`, where `reach(A) = sup_{z ∈ A} dist(z, ∂A)` is the **inradius**.  The square
+   appears exactly when `reach(A) ≲ m(A)`.
 
-## The missing link, stated
+The relevant quantity is the inradius and emphatically **not** the diameter.  A shell that
+wraps around the torus has diameter of order one however thin it is, so `diam ≲ m` is simply
+false here; what is small is the distance from a point of the shell to its own boundary.
 
-Step 3's last inequality is the open one.  A region of measure `m` in `b` dimensions has
-diameter at least of order `m^{1/b}`, so `diam ≲ m` is **not** automatic; it holds for a
-shell of width `w` around a codimension-one locus of bounded area, where both the measure
-and the diameter are of order `w`.  Establishing that the wrong-parity region is such a
-shell, with the area of the crossing locus bounded uniformly, is `G38`, and it is what
-remains of the upper half.
+## The link is not missing: it is free
+
+An earlier version of this file conjectured `reach ≲ m`, on the picture that the
+wrong-parity region is a thin shell.  **That is false.**  Measurement
+(`code/shell_geometry.py`) gives `reach/m` running `2.60, 3.10, 4.63, 5.94, 9.80` as `m`
+falls from `0.052` to `0.0053`: the ratio diverges, because the region is a blob and not a
+wrapping shell, with `m` of order `reach²`.
+
+The correct bound needs no hypothesis at all.  A region of inradius `r` contains a ball of
+radius `r`, so its measure is at least `c_b r^b`, giving
+
+  `reach ≤ (m / c_b)^{1/b}`   unconditionally,
+
+and hence `I_wrong ≤ M · L · c_b^{-1/b} · m^{1 + 1/b}`.  At `b = 2` that is `m^{3/2}`, which
+is weaker than the `m²` the numerics suggest but stronger than anything needed: all that
+domination requires is a bound tending to zero faster than `I_right` does.  So the upper
+half of `G37` is **unconditional**, and the conjecture it was waiting on was both false and
+unnecessary.
 
 The lower half, a bound `I_right ≥ c > 0`, is **not** addressed here and is not obviously
 available: the natural route, pushing invertibility of `S(x)` down to every phase, is
@@ -66,7 +81,8 @@ theorem abs_det_le {a b M : ℝ} (hM : max |a| |b| ≤ M) : |a * b| ≤ M * min 
 
 /-- **Pointwise on the shell.**  With the norm bounded by `M`, the smaller eigenvalue
 Lipschitz with constant `L` in the distance to the crossing locus, and that distance at
-most `D`, the determinant is at most `M · L · D`. -/
+most `D`, the determinant is at most `M · L · D`.  `D` is a bound on the distance to the
+crossing locus, so the quantity to substitute is the inradius, not the diameter. -/
 theorem det_le_on_shell {a b M L D d : ℝ} (hM : max |a| |b| ≤ M) (hM0 : 0 ≤ M)
     (hlip : min |a| |b| ≤ L * d) (hL : 0 ≤ L) (hd : d ≤ D) :
     |a * b| ≤ M * (L * D) := by
@@ -78,11 +94,32 @@ theorem det_le_on_shell {a b M L D d : ℝ} (hM : max |a| |b| ≤ M) (hM0 : 0 �
 
 /-! ## Integrating, and where the square comes from -/
 
-/-- **The square, from the shell hypothesis.**  If the region's diameter is at most `c`
-times its measure, the pointwise bound `M · L · diam` integrates to `M · L · c · m²`.  The
-hypothesis `hshell` is `G38` and is the open link: in `b` dimensions a region of measure `m`
-has diameter at least of order `m^{1/b}`, so this is a statement about the geometry of the
-crossing locus and not a triviality. -/
+/-- **The inradius is bounded by the measure, for free.**  A region of inradius `r` contains
+a ball of radius `r`, so `c r^b ≤ m`.  At `b = 2` this reads `c r² ≤ m`, hence
+`r ≤ √(m/c)`. -/
+theorem reach_le_sqrt {r m c : ℝ} (hc : 0 < c) (hr : 0 ≤ r) (hball : c * r ^ 2 ≤ m) :
+    r ≤ Real.sqrt (m / c) := by
+  have hm : r ^ 2 ≤ m / c := by rw [le_div_iff₀ hc]; linarith
+  calc r = Real.sqrt (r ^ 2) := (Real.sqrt_sq hr).symm
+    _ ≤ Real.sqrt (m / c) := Real.sqrt_le_sqrt hm
+
+/-- **The upper half, unconditionally.**  Combining the pointwise bound with the free
+inradius bound gives `I ≤ M · L · √(m/c) · m`, an exponent of `3/2` in the measure at
+`b = 2`.  No shell hypothesis appears: the earlier `G38` was false and is not needed. -/
+theorem integral_le_three_halves {I m r c M L : ℝ}
+    (hm : 0 ≤ m) (hM : 0 ≤ M) (hL : 0 ≤ L) (hc : 0 < c) (hr : 0 ≤ r)
+    (hball : c * r ^ 2 ≤ m) (hint : I ≤ m * (M * (L * r))) :
+    I ≤ M * L * Real.sqrt (m / c) * m := by
+  have hrb := reach_le_sqrt hc hr hball
+  have h1 : M * (L * r) ≤ M * (L * Real.sqrt (m / c)) :=
+    mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left hrb hL) hM
+  calc I ≤ m * (M * (L * r)) := hint
+    _ ≤ m * (M * (L * Real.sqrt (m / c))) := mul_le_mul_of_nonneg_left h1 hm
+    _ = M * L * Real.sqrt (m / c) * m := by ring
+
+/-- **The square, from a shell hypothesis, retained only for comparison.**  This is the
+statement the earlier version aimed at.  Its hypothesis is false for the region at hand, and
+`integral_le_three_halves` supersedes it. -/
 theorem quadratic_of_shell {I m c M L : ℝ}
     (hm : 0 ≤ m) (hM : 0 ≤ M) (hL : 0 ≤ L)
     (hshell : ∀ D, D ≤ c * m → I ≤ m * (M * (L * D)))

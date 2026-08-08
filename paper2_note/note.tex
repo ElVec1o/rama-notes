@@ -910,12 +910,27 @@ $|\det S|=\lVert S\rVert\cdot\min(|\lambda_1|,|\lambda_2|)$
 (\texttt{abs\_mul\_eq\_max\_mul\_min}), and on the shell only the crossing eigenvalue
 matters. Weyl makes that eigenvalue Lipschitz in the phase, giving
 $|\det S(z)|\le ML\operatorname{dist}(z,\partial)$ and hence
-$I_{\mathrm{wrong}}\le m_{\mathrm{wrong}}\,ML\operatorname{diam}$
-(\texttt{det\_le\_on\_shell}, \texttt{quadratic\_of\_shell}). The square then requires
-$\operatorname{diam}\lesssim m$, which is not automatic in $b$ dimensions and holds for a
-shell of width $w$ around a codimension-one locus of bounded area; establishing that is what
-remains of the upper half. The lower half, a bound $I_{\mathrm{right}}\ge c>0$, is open, and
-its natural route is precisely what Proposition~\ref{prop:nohom} rules out.
+$I_{\mathrm{wrong}}\le m_{\mathrm{wrong}}\,ML\operatorname{reach}$, where
+$\operatorname{reach}=\sup_{z\in A}\operatorname{dist}(z,\partial A)$ is the inradius
+(\texttt{det\_le\_on\_shell}). The relevant quantity is the inradius and not the diameter: a
+shell wrapping the torus has diameter of order one however thin it is.
+
+The inradius is then bounded for free. A region of inradius $r$ contains a ball of radius
+$r$, so $c_br^b\le m$ and $\operatorname{reach}\le(m/c_b)^{1/b}$, giving
+\[
+   I_{\mathrm{wrong}}\ \le\ ML\,c_b^{-1/b}\,m_{\mathrm{wrong}}^{\,1+1/b},
+\]
+which at $b=2$ is $m^{3/2}$ (\texttt{reach\_le\_sqrt},
+\texttt{integral\_le\_three\_halves}). The upper half of the estimate is therefore
+unconditional. It is worth recording that we first conjectured
+$\operatorname{reach}\lesssim m$, on the picture of a thin shell, and that this is
+\emph{false}: measurement gives $\operatorname{reach}/m$ running $2.60$, $3.10$, $4.63$,
+$5.94$, $9.80$ as $m$ falls from $0.052$ to $0.0053$, since the region is a blob with $m$ of
+order $\operatorname{reach}^2$ rather than a shell. The exponent $3/2$ is weaker than the
+$m^2$ the numerics suggest and stronger than anything needed. The lower half, a bound $I_{\mathrm{right}}\ge c>0$, is open, and
+its natural route is precisely what Proposition~\ref{prop:nohom} rules out. That is now the
+only missing piece: with the upper half unconditional, a lower bound on
+$I_{\mathrm{right}}$ that beats $m^{3/2}$ would settle feedback vertex number two.
 
 \section{The coefficient ladder}
 
