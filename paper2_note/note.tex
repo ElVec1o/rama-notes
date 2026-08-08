@@ -928,9 +928,34 @@ $\operatorname{reach}\lesssim m$, on the picture of a thin shell, and that this 
 $5.94$, $9.80$ as $m$ falls from $0.052$ to $0.0053$, since the region is a blob with $m$ of
 order $\operatorname{reach}^2$ rather than a shell. The exponent $3/2$ is weaker than the
 $m^2$ the numerics suggest and stronger than anything needed. The lower half, a bound $I_{\mathrm{right}}\ge c>0$, is open, and
-its natural route is precisely what Proposition~\ref{prop:nohom} rules out. That is now the
-only missing piece: with the upper half unconditional, a lower bound on
-$I_{\mathrm{right}}$ that beats $m^{3/2}$ would settle feedback vertex number two.
+its natural route is precisely what Proposition~\ref{prop:nohom} rules out.
+
+The obvious substitute is circular, and it is worth saying why. Splitting the average by
+inertia class gives $\mu_G/\mu_F=I_0-I_1+I_2$ \emph{identically}, so
+$I_{\mathrm{right}}-I_{\mathrm{wrong}}=|\mu_G/\mu_F|$ and bounding $I_{\mathrm{right}}$
+below by $|\mu_G/\mu_F|$ assumes exactly the sign at issue. No independent lower bound on
+$|\mu_G(x)|$ is available inside a gap, since Heilmann--Lieb gives root-free intervals only
+outside $[-\rho,\rho]$, where the conjecture is already known.
+
+A substitute that is not circular is the geometric mean. Jensen gives
+\[
+   I_{\mathrm{right}}+I_{\mathrm{wrong}}\;=\;\int_{\mathbb T^b}|\det S|\;\ge\;
+   \exp\Bigl(\int_{\mathbb T^b}\log|\det S|\Bigr)\;=:\;\Delta ,
+\]
+a Mahler measure of the abelian cover, which owes nothing to the sign of $\mu_G$. Hence
+$I_{\mathrm{right}}\ge\Delta-I_{\mathrm{wrong}}$, and domination holds as soon as
+$\Delta>2I_{\mathrm{wrong}}$. Combined with the unconditional upper half this reduces
+feedback vertex number two to a single inequality, $\Delta>2ML c^{-1/2}m^{3/2}$
+(\texttt{RamaLean/JensenRoute.lean}). The geometric mean, which appeared above as the source
+of the obstruction, is here the tool.
+
+Measured across both internal gaps of two triangles joined by an edge, $\Delta$ lies between
+$0.759$ and $0.823$ while $I_{\mathrm{wrong}}$ runs from $10^{-4}$ to $10^{-2}$, so
+$\Delta/2I_{\mathrm{wrong}}$ runs between $41$ and $3927$
+(\texttt{code/jensen\_route.py}); the same script verifies the circularity identity to
+$10^{-15}$. What remains open is a lower bound on $\Delta$ uniform enough to beat $m^{3/2}$,
+which unlike its predecessors is a question about a Mahler measure, where coefficient bounds
+are available and are not circular.
 
 \section{The coefficient ladder}
 
