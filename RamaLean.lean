@@ -49,3 +49,5 @@ import RamaLean.GapLabel
 import RamaLean.BandTheorem
 import RamaLean.Interlacing
 import RamaLean.FeedbackGapCount
+import RamaLean.BandCount
+import RamaLean.FeedbackTwo
