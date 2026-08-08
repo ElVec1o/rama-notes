@@ -1,6 +1,7 @@
 import Mathlib
 import RamaLean.GapLabel
 import RamaLean.FeedbackGapCount
+import RamaLean.TieBreak
 
 /-!
 # Feedback vertex number two
@@ -37,28 +38,28 @@ That is exactly one bit short, and the missing bit is available:
 
 `eq_of_window3` is the arithmetic that closes it, and `gapcount_fvs_two_of` assembles.
 
-## Status: one hypothesis is not yet earned
+## Status: `hcount0` is now proved, and `hparity` is the gap
 
-Four of the hypotheses are classical, none of them in Mathlib: Haynsworth additivity in a
-traced von Neumann algebra, the K-theoretic integrality of `δ`, vertex-deletion interlacing
-of matching polynomials, and the trace formula.
+`hcount0` asserts that the root count reads the tie-break sign back.  It **is** a theorem,
+`TieBreak.tiebreak_iff`, and it needs nothing but vertex-deletion interlacing: in the even
+case the squeeze forces `N_{G-v₁} = N_{G-v₂}`, so the two summands of `τ(S)` share a sign
+and their sum has it.  No condition on `spec(T)` enters.  `gapcount_fvs_two_sign` below
+discharges it.
 
-`hcount0` is **not**.  It asserts that the root count reads the tie-break sign back, i.e.
-`N_G(x) = N_F(x) ⟺ τ(S(x)) > 0` in the even case.  With `htie` that is exactly what the
-argument needs, and it does not follow from the other four: the two summands of
-`τ(S) = (μ_{G-v₁} + μ_{G-v₂})/μ_F` have signs `(-1)^{N_{G-v_i} - N_F}` which interlacing
-confines to `{0,1}` each but does not tie to `N_G - N_F`.  When the two summands disagree
-in sign the sum is not determined by them.
+The remaining gap is `hparity`, `N_G ≡ N_F + δ` mod 2.  At `k = 1` that came free, because
+`τ(S_v) = μ_G/μ_F` and a definite element has a strictly signed trace.  At `k = 2` the
+corresponding object is `μ_G/μ_F = CT_z det S(x,z)`, the constant term of the abelianised
+determinant, and there is no evident reason for its sign to be `(-1)^δ`: `S(x)` is `2×2`
+over a noncommutative algebra and `CT det` is not a determinant of scalars.  Assuming it
+would be assuming part of what is to be proved.
 
-So feedback vertex number two is **reduced**, not proved.  What remains is one statement
-about matching polynomials alone, with no operator algebra in it:
+So feedback vertex number two is **reduced, not proved**, and the reduction is now to a
+single statement with the operator algebra still in it:
 
-  for `x` outside `spec(T)` with `N_G(x) - N_F(x)` even,
-  `N_G(x) = N_F(x)` if and only if `μ_{G-v₁}(x) + μ_{G-v₂}(x)` and `μ_F(x)` agree in sign.
+  for `x` outside `spec(T)`, `N_G(x) - N_F(x)` is odd exactly when `S(x)` is indefinite.
 
-`code/fvs2_tiebreak.py` checks that on ten graphs at 966 even sample points in exact
-arithmetic with no violation, so it has HEURISTIC support and nothing more.  It is stated
-here as `hcount0` rather than hidden inside a proof.
+`code/fvs2_tiebreak.py` and `code/tiebreak_sweep.py` cover the tie-break, which is settled.
+Nothing yet covers the parity.
 -/
 
 namespace FeedbackTwo
@@ -153,6 +154,31 @@ theorem gapcount_fvs_two_of {NG N1 NF delta kappa : ℝ → ℕ} {trS : ℝ → 
   refine eq_of_window3 (window_two (hstep1 x) (hstep2 x)) (hdelta x) (hparity x) ?_
   intro hne
   exact (hcount0 x hne).trans (htie x hne)
+
+/-- **The same, with `hcount0` discharged.**
+
+`TieBreak.tiebreak_iff` supplies the tie-break from the sign data, so the caller no longer
+has to assume it.  What is left to assume, besides the classical inputs, is `hparity`
+alone: see the note at the head of this file. -/
+theorem gapcount_fvs_two_sign {NG N1 N2 NF delta kappa : ℝ → ℕ}
+    {mB1 mB2 mF : ℝ → ℝ}
+    (hsB1 : ∀ x, 0 < (-1 : ℝ) ^ (N1 x) * mB1 x)
+    (hsB2 : ∀ x, 0 < (-1 : ℝ) ^ (N2 x) * mB2 x)
+    (hsF : ∀ x, 0 < (-1 : ℝ) ^ (NF x) * mF x)
+    (hinertia : ∀ x, kappa x = NF x + delta x)
+    (hdelta : ∀ x, delta x = 0 ∨ delta x = 1 ∨ delta x = 2)
+    (hstep1 : ∀ x, NG x = N1 x ∨ NG x = N1 x + 1)
+    (hstep1' : ∀ x, N1 x = NF x ∨ N1 x = NF x + 1)
+    (hstep2 : ∀ x, NG x = N2 x ∨ NG x = N2 x + 1)
+    (hstep2' : ∀ x, N2 x = NF x ∨ N2 x = NF x + 1)
+    (hparity : ∀ x, (-1 : ℝ) ^ (NG x) = (-1 : ℝ) ^ (NF x + delta x))
+    (htie : ∀ x, delta x ≠ 1 → (0 < mF x * (mB1 x + mB2 x) ↔ delta x = 0))
+    (heven : ∀ x, delta x ≠ 1 → (NG x = NF x ∨ NG x = NF x + 2)) :
+    ∀ x, NG x = kappa x := by
+  refine gapcount_fvs_two_of hinertia hdelta hstep1 hstep1' hparity
+    (fun x hx => htie x hx) (fun x hx => ?_)
+  exact TieBreak.tiebreak_iff (hsB1 x) (hsB2 x) (hsF x)
+    (hstep1 x) (hstep1' x) (hstep2 x) (hstep2' x) (heven x hx)
 
 /-- **Conjecture 10 at feedback vertex number two, through GAPCOUNT.** -/
 theorem conj10_fvs_two_of {R : Multiset ℝ} {N1 NF delta kappa : ℝ → ℕ} {trS : ℝ → ℝ}
