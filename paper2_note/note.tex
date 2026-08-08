@@ -898,6 +898,25 @@ structural: the wrong-parity region is a shell around $\{z:\det S(x,z)=0\}$, whe
 eigenvalue has just crossed and $|\det S|$ is correspondingly small. Small measure and small
 integrand together, which is why the competition is not close.
 
+Scanning a whole gap rather than one point confirms the exponent. Across both internal gaps
+of two triangles joined by an edge, $I_{\mathrm{wrong}}/m_{\mathrm{wrong}}^2$ stays between
+$2.4$ and $5.2$ and the margin never falls below $0.977$
+(\texttt{code/margin\_scan.py}); there is no blow-up at the gap edges, where the
+wrong-parity class is largest and the ratio is smallest. The chain that would turn this into
+an estimate is machine-checked in \texttt{RamaLean/ShellBound.lean}. Its first step is an
+identity rather than a bound: for a $2\times2$ Hermitian matrix the operator norm is the
+larger eigenvalue in absolute value, so
+$|\det S|=\lVert S\rVert\cdot\min(|\lambda_1|,|\lambda_2|)$
+(\texttt{abs\_mul\_eq\_max\_mul\_min}), and on the shell only the crossing eigenvalue
+matters. Weyl makes that eigenvalue Lipschitz in the phase, giving
+$|\det S(z)|\le ML\operatorname{dist}(z,\partial)$ and hence
+$I_{\mathrm{wrong}}\le m_{\mathrm{wrong}}\,ML\operatorname{diam}$
+(\texttt{det\_le\_on\_shell}, \texttt{quadratic\_of\_shell}). The square then requires
+$\operatorname{diam}\lesssim m$, which is not automatic in $b$ dimensions and holds for a
+shell of width $w$ around a codimension-one locus of bounded area; establishing that is what
+remains of the upper half. The lower half, a bound $I_{\mathrm{right}}\ge c>0$, is open, and
+its natural route is precisely what Proposition~\ref{prop:nohom} rules out.
+
 \section{The coefficient ladder}
 
 This also explains the boundary between what is proved and what is not, and the
