@@ -17,7 +17,7 @@ are labeled as such.
 ## Papers
 
 ### Paper 2 — Roots of $d$-matching polynomials and the spectrum of the universal cover
-`paper2_note/` · [note.pdf](paper2_note/note.pdf) · 40pp
+`paper2_note/` · [note.pdf](paper2_note/note.pdf) · 48pp
 
 Hall–Puder–Sawin place the roots of $\mu_{d,G}$ in the interval $[-\rho,\rho]$. We conjecture they lie in
 $\operatorname{spec}(T)$ itself — a proper subset whenever the universal cover has a spectral gap — which
