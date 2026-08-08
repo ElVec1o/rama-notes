@@ -59,3 +59,4 @@ import RamaLean.Cavity
 import RamaLean.NoQuotient
 import RamaLean.Congruence
 import RamaLean.InertiaSplit
+import RamaLean.ShellBound
