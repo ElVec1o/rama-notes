@@ -1729,14 +1729,67 @@ the direction-averaged ratio is
 \bar R=\frac{mF_A}{F_A'}=\Bigl(\frac1m\sum_i\frac1{x-\rho_i}\Bigr)^{-1}=\frac1{G(x)},
 \]
 $G$ the Stieltjes transform of the root measure of $F_A$. For a coordinate family $F_A$ is
-the matching polynomial, and for $a$-regular graphs of growing girth its root measure
-converges to the Kesten--McKay measure, whose Stieltjes transform is
-$G(z)=2(a-1)/\bigl((a-2)z+a\sqrt{z^2-4(a-1)}\bigr)$. At $z=2\sqrt a$ the radical is
-\emph{exactly} $2$, and everything collapses:
+the matching polynomial, and the Kesten--McKay measure of parameter $a$ has Stieltjes
+transform $G(z)=2(a-1)/\bigl((a-2)z+a\sqrt{z^2-4(a-1)}\bigr)$. At $z=2\sqrt a$ the radical
+is \emph{exactly} $2$, and everything collapses:
 
 \begin{proposition}\label{prop:km}
 $\dfrac{1}{G(2\sqrt a)}\Big/\sqrt a=\dfrac{\sqrt a+2}{\sqrt a+1}=1+\dfrac1{1+\sqrt a}$.
 \end{proposition}
+
+The passage from a finite graph to that value is usually made by citing convergence of the
+matching measure. It need not be: the evaluation point lies strictly outside the support,
+so the whole step can be made finite and effective, with an explicit rate. We are grateful
+to P\'eter Csikv\'ari for pointing us to the mechanism, which is his with P.\ E.\ Frenkel
+\cite{CsF}, after Ab\'ert and Hubai for the chromatic polynomial.
+
+Their theorem is that for a monic multiplicative graph polynomial of bounded exponential
+type, the power sum $p_j(G)$ of the roots is a fixed linear combination of counts of
+\emph{connected} subgraphs of $G$; the matching polynomial is such a polynomial. In
+Godsil's formulation \cite{Go} the matching-measure moments count closed \emph{tree-like}
+walks, and the trace of such a walk of length $j$ carries at most $j/2$ edges. Since a
+subgraph with fewer than $\operatorname{girth}(G)$ edges is a forest, and since in an
+$a$-regular graph the number of copies of a fixed tree is $|V(G)|$ times a function of $a$
+alone, one gets an identity rather than a limit.
+
+\begin{proposition}\label{prop:moments}
+Let $G$ be $a$-regular of girth $g$. Then $p_j(G)/|V(G)|$ equals the $j$-th moment of the
+Kesten--McKay measure of parameter $a$ for every $j<2g$. The threshold is sharp: for
+$K_4$, $K_5$, $K_{3,3}$, $K_{4,4}$, the cube, Petersen and Heawood, the first differing
+moment is exactly $2g$ whenever one exists at all
+\textup{(}\texttt{code/moment\_girth.py}, exact arithmetic\textup{)}.
+\end{proposition}
+
+Because Heilmann--Lieb confines the roots to $[-\rho,\rho]$ with $\rho=2\sqrt{a-1}$, while
+the evaluation point is $x=2\sqrt a$, the ratio $\rho/x=\sqrt{1-1/a}$ is strictly below
+one. A finite geometric expansion with remainder, and no infinite series anywhere, then
+converts matching moments into matching transforms.
+
+\begin{proposition}\label{prop:transfer}
+Let $\nu_1,\nu_2$ be probability measures on $[-\rho,\rho]$ whose moments agree up to order
+$k$, and let $x>\rho$. Then
+\[
+\bigl|G_{\nu_1}(x)-G_{\nu_2}(x)\bigr|\ \le\ \frac{2\rho^{k+1}}{x^{k+1}(x-\rho)},
+\]
+and if both transforms are at least $c>0$ the reciprocals differ by at most that quantity
+divided by $c^2$.
+\end{proposition}
+
+\begin{proof}
+For $|t|\le\rho<x$ one has the identity
+$1/(x-t)=\sum_{j\le k}t^j/x^{j+1}+t^{k+1}/\bigl(x^{k+1}(x-t)\bigr)$, whose right-hand side
+does not depend on $k$. Integrating, the polynomial parts agree by hypothesis, and each
+remainder is at most $\rho^{k+1}/\bigl(x^{k+1}(x-\rho)\bigr)$ in absolute value. The
+statement for reciprocals is $|1/S_1-1/S_2|=|S_2-S_1|/(S_1S_2)$.
+\end{proof}
+
+Propositions~\ref{prop:moments} and~\ref{prop:transfer} together bound the distance from
+the finite-graph ratio to the value of Proposition~\ref{prop:km} by a quantity decaying
+like $(1-1/a)^{g}$, with no convergence theorem invoked. The bound is not tight, since
+$|m_j|\le\rho^j$ discards the $j^{-3/2}$ decay of the Kesten--McKay moments at the edge: at
+$a=3$ it gives $0.62$, $0.41$, $0.28$ at girths $4,5,6$ against observed errors of
+$3.2\cdot10^{-3}$, $9.2\cdot10^{-4}$, $2.2\cdot10^{-4}$. What it does give, and the
+citation did not, is an effective statement about a finite graph.
 
 So the cavity ratio exceeds the threshold the induction can propagate by exactly
 $1/(1+\sqrt a)$, and the excess tends to $0$ as $a$ grows --- which is the analytic shadow
@@ -2573,7 +2626,14 @@ constant $1+1/(1+\sqrt a)$, and \texttt{excess\_eq}, \texttt{excess\_pos},
 \texttt{excess\_lt} that the excess is exactly $1/(1+\sqrt a)$, positive for every $a>1$
 and below any $\varepsilon$ once $\sqrt a>1/\varepsilon$. The two inputs it does not
 formalize are the ones that are not arithmetic: that $F_A$ is the matching polynomial,
-which is Theorem~\ref{thm:matchingform}, and the Kesten--McKay limit, which is cited. The vertex recursion of Theorem~\ref{thm:vertexrec} and the
+which is Theorem~\ref{thm:matchingform}. The Kesten--McKay step is no longer cited as a
+limit: \texttt{RamaLean/MomentTransfer.lean} carries Proposition~\ref{prop:transfer} in
+full, namely the exact geometric expansion with remainder
+(\texttt{geom\_remainder}), the remainder bound (\texttt{remainder\_le}), the moment
+transfer (\texttt{stieltjes\_close}), its form for reciprocals (\texttt{inv\_close}) and the
+positivity of the gap between the support and the evaluation point
+(\texttt{edge\_gap\_pos}). What remains cited is the locality of root moments, which is
+\cite{CsF} after \cite{AH}, and Godsil's tree-like walk formulation \cite{Go}. The vertex recursion of Theorem~\ref{thm:vertexrec} and the
 sign of $X_e$ enter as hypotheses; what is machine-checked is that they close the
 induction, and that they close it exactly at $2\sqrt a$.
 \texttt{RamaLean/TracePSD.lean} and
@@ -2697,6 +2757,17 @@ coverings}, Discrete Math.\ \textbf{142} (1995) 295--298.
 \bibitem{MSS} A.~Marcus, D.~Spielman, N.~Srivastava, \emph{Interlacing
 families I: Bipartite Ramanujan graphs of all degrees}, Ann.\ of Math.\
 \textbf{182} (2015), 307--325.
+\bibitem{CsF} P.~Csikv\'ari, P.~E.~Frenkel, \emph{Benjamini--Schramm continuity
+of root moments of graph polynomials}, European J.\ Combin.\ \textbf{52} (2016),
+part B, 302--320.
+\bibitem{AH} M.~Ab\'ert, T.~Hubai, \emph{Benjamini--Schramm convergence and the
+distribution of chromatic roots for sparse graphs}, Combinatorica \textbf{35}
+(2015), 127--151.
+\bibitem{Go} C.~D.~Godsil, \emph{Matchings and walks in graphs}, J.\ Graph
+Theory \textbf{5} (1981), 285--297.
+\bibitem{ACFK} M.~Ab\'ert, P.~Csikv\'ari, P.~E.~Frenkel, G.~Kun, \emph{Matchings
+in Benjamini--Schramm convergent graph sequences}, Trans.\ Amer.\ Math.\ Soc.\
+\textbf{368} (2016), 4197--4218.
 \end{thebibliography}
 
 \end{document}
