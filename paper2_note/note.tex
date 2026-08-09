@@ -590,7 +590,14 @@ lemma is \texttt{TorusGodsilGutman.sum\_ne\_zero\_of\_disjoint\_support}, and th
 averaging steps are re-proved in the same file in the compact form
 \texttt{sign\_const\_of\_nonvanishing}, \texttt{nonvanishing\_average\_ne\_zero},
 \texttt{mu\_ne\_zero\_of\_nonvanishing}, the last being the contrapositive actually used.
-Only the passage from the permutation expansion to homology classes remains informal. The
+The two graph-theoretic inputs it consumes are also machine-checked. That every cycle uses at
+least one cotree edge is \texttt{CotreeCycle.exists\_cotree\_edge}: if all its edges lay in
+the tree, the walk would transfer to a cycle there, which acyclicity forbids, and no relation
+between the tree and $G$ is needed beyond acyclicity. That vertex-disjoint cycles use disjoint
+edge sets is \texttt{disjoint\_edges\_of\_disjoint\_support}. What remains informal is only
+the identification of the monomial attached to a permutation with the sum of the homology
+classes of its cycles, which is bookkeeping about how the magnetic matrix is set up rather
+than a mathematical step. The
 identity is checked numerically to $7\cdot10^{-15}$ on seven graphs with $b_1$ up to four
 (\texttt{code/torus\_gg.py}).
 
