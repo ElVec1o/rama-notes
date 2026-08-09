@@ -1089,6 +1089,51 @@ Conjecture~\ref{conj:threeconn} is narrow enough that it should be treated as pr
 honest summary is that which of the two effects dominates is open, and that it is the question
 the collapse of C1 leaves behind.
 
+\subsection{The threshold is the minimum degree, and it sits at three}\label{sec:mindeg3}
+
+Conjecture~\ref{conj:threeconn} is the wrong statement of the right idea, because it is
+confounded. A graph of vertex connectivity $\kappa$ has minimum degree at least $\kappa$, so
+demanding $3$-connectedness silently demands minimum degree three; and every counterexample in
+this note has minimum degree at most two. Hall's has leaves, the $31$-vertex graph has
+degree-2 vertices, and so do all three graphs of \S\ref{sec:twocut}. The evidence for
+Conjecture~\ref{conj:threeconn} is therefore equally evidence for a quite different statement.
+
+The two readings separate cleanly, because the same engine can be run with the only change
+being the minimum degree. Take the two-hub construction of \S\ref{sec:twocut}, which refuted
+C1, and give it branches in which every vertex has degree at least three: ladders anchored at
+both ends of both rails, prisms, and $K_{3,q}$ blocks with two of the three degree-$q$ vertices
+anchored. This yields $102$ graphs of minimum degree three whose vertex connectivity is
+\emph{two}, so each has the separating pair the engine needs, and $77$ of them have a gap of
+width at least $0.05$, several wider than $2.9$. The three counterexamples of
+\S\ref{sec:twocut} sit in gaps of width $0.066$ to $0.148$, so the targets here are up to
+twenty times wider. No root lands in any of them (\texttt{code/mindeg3.py}).
+
+\begin{conjecture}[D3]\label{conj:mindeg3}
+Every finite graph of minimum degree at least three satisfies
+$\operatorname{Zeros}(\mu_G)\subseteq\operatorname{spec}(T_G)$.
+\end{conjecture}
+
+Conjecture~\ref{conj:mindeg3} implies Conjecture~\ref{conj:threeconn}, since $\kappa\ge3$ forces
+$\delta\ge3$ (\texttt{MinimumDegreeThreshold.C2\_of\_D3}), and it is the better statement on
+two counts. It is local where connectivity is global, and it is sharp: minimum degree two is
+refuted by the $31$-vertex graph, so under Conjecture~\ref{conj:mindeg3} three is the
+\emph{least} sufficient bound, which is \texttt{threshold\_is\_three}.
+
+Two remarks fix how much this claims. First, the narrowing of gaps that motivated
+Conjecture~\ref{conj:threeconn} is real but is not annihilation: over $38$ graphs the mean total
+gap width falls from $0.99$ at $\delta\le2$ to $0.09$ at $\delta\ge3$, yet individual gaps at
+$\delta=3$ reach $2.9$ (\texttt{code/gapscale.py}). So Conjecture~\ref{conj:mindeg3} is not
+true for the trivial reason that there is nowhere to hide. Second, the regular case \emph{is}
+trivial, and it is worth saying so. For a $d$-regular graph the universal cover is the
+$d$-regular tree, whose spectrum is exactly $[-2\sqrt{d-1},2\sqrt{d-1}]$ by Kesten, and every
+root of $\mu_G$ lies in that same interval by Heilmann and Lieb. The two coincide and there is
+nothing to violate; this is \texttt{conj10\_of\_regular}, with both classical facts entering as
+hypotheses. Consistently, no regular graph we tested has any gap at all. The content of
+Conjecture~\ref{conj:mindeg3} is entirely in the irregular case.
+
+Conjecture~\ref{conj:mindeg3} has not been attacked as hard as C1 was, and C1 survived three
+hours.
+
 \subsection{What survives}
 
 The counterexample has $b_1=20$, feedback vertex number $5$, and is neither biregular nor
