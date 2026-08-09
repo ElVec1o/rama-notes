@@ -853,13 +853,32 @@ the smallest having $92$ vertices, against $41$ for Hall's. So the leaves make t
 construction cheaper without being necessary to it.
 
 For $(k,p,q)=(5,7,7)$, on $92$ vertices with $140$ edges and degrees between two and nine,
-the root is the algebraic number $2.85290\ldots$ with minimal polynomial
-$x^8-26x^6+187x^4-350x^2+91$, and the cavity fixed point at that value is real, with all
-$280$ directed-edge ratio equations satisfied to $3\cdot10^{-15}$, all ratios nonzero, and
-decay rate $\rho=0.96669$ carrying a Collatz--Wielandt certificate. The $280$ directed edges
-fall into $11$ orbits, so an exact certificate in the style of \cite{HallCE} is within reach;
-until it is written the statement rests on a numerical ratio system rather than an exact one,
-and we label it accordingly. Verified in \texttt{code/mindeg2.py}.
+the root is the algebraic number $\theta=2.852901286261237\ldots$, the largest root of the
+irreducible octic $x^8-26x^6+187x^4-350x^2+91$, which divides $x\mu_H-p\mu_{H-v}$ and hence
+$\mu_G$.
+
+The spectral exclusion is certified, in a different form from \cite{HallCE} and for a
+structural reason. A ratio system exists for \emph{every} $\lambda$ outside
+$\operatorname{spec}(A_T)$, so the ratio equations impose no condition on $\lambda$ and there
+is nothing to eliminate; exact algebra in a fixed number field is therefore not available in
+the way it is for Hall's example, where the ratios happen to lie in
+$\mathbb{Q}(\sqrt5,\sqrt{41})$. Instead the certificate is a posteriori. The $280$ directed
+edges fall into $11$ orbits, listed in \texttt{code/mindeg2\_exact.py} together with their
+non-backtracking follower counts, and the orbit equations are checked against the full
+$280$-edge fixed point. Newton at $80$ digits gives ratios with residual
+$5.6\cdot10^{-81}$, all nonzero; since $\|J^{-1}\|_\infty=204.8$, the Newton--Kantorovich
+bound places an exact solution within $1.1\cdot10^{-78}$ of the computed one. The decay rate
+there is
+\[
+   \rho=0.9666941618858803717\ldots,\qquad 1-\rho=0.0333,
+\]
+while the entrywise Lipschitz constant of the orbit quotient in the ratios is $45$, so $\rho$
+can move by at most $5.7\cdot10^{-76}$ over the certified ball: the margin exceeds that by a
+factor $6\cdot10^{73}$. Hence $\rho<1$ for the exact solution, and by \cite{AFH}
+$\theta\notin\operatorname{spec}(A_T)$. A Collatz--Wielandt vector gives the same conclusion
+independently, at $0.9829$. The statement is thus rigorous modulo Newton--Kantorovich exactly
+as it is rigorous modulo \cite{AFH}, both classical. Verified in \texttt{code/mindeg2.py} and
+\texttt{code/mindeg2\_exact.py}.
 
 \subsection{What survives}
 
