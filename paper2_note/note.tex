@@ -1187,6 +1187,45 @@ replaces the single knob $p$ by a pair $(p_1,p_2)$, produces graphs of minimum d
 with gaps up to $1.48$ and no root in any of them; the mixed-branch expansion is checked
 against a brute-force matching polynomial before use.
 
+\subsection{The biregular margin, and the soft edge}\label{sec:softedge}
+
+Theorem~\ref{thm:margin} covers only $K_{\delta,q}$, and the complete bipartite graph turns out
+not to be extremal. Random $(\delta,q)$-biregular graphs have smaller margins, and the margin
+falls as they grow. Writing $g=\sqrt{q-1}-\sqrt{\delta-1}$ for the inner edge of the
+$(\delta,q)$-biregular tree spectrum and $x_{\min}$ for the smallest positive root, so that the
+biregular case of Conjecture 10 is exactly $x_{\min}\ge g$, the minimum margin over twelve
+samples at each size falls monotonically across fourteen sizes for $(3,6)$, from $0.5301$ at
+$n=12$ to $0.2009$ at $n=51$. A log-log fit gives
+\begin{equation}\label{eq:softedge}
+   x_{\min}-g\;\approx\;2.78\,n^{-0.6675},\qquad R^2=0.9999,
+\end{equation}
+with $(3,9)$ giving exponent $-0.6331$ at $R^2=0.9995$ (\texttt{code/softedge.py}). Matchings
+are counted exactly, by a bitmask permanent over the smaller side rather than by vertex
+deletion, which is what makes the range reachable.
+
+The exponent is $-2/3$, and that is not an arbitrary number: $n^{-2/3}$ is the soft-edge scale
+of random matrix theory, the rate at which extreme eigenvalues approach a spectral edge. Read
+that way the picture changes character. The margin tends to zero, so no size-free bound can
+prove the biregular case; but it tends to zero \emph{from above}, so the statement is true and
+merely tight; and the right target is a Friedman-type edge theorem, in which the roots of
+$\mu_G$ fill out $\operatorname{spec}(T)$ without escaping it, exactly as the eigenvalues of a
+random $d$-regular graph fill out $[-2\sqrt{d-1},2\sqrt{d-1}]$ without escaping. This is the
+Alon--Boppana analogy of \S\ref{sec:biregblock} with an exponent attached.
+
+The structural consequence is worth stating precisely, because it disqualifies a class of
+proofs including our own. A quantity that is strictly positive at every size may still admit no
+uniform positive lower bound, and then every argument producing a constant independent of $n$
+is insufficient in general. That is \texttt{SoftEdge.no\_uniform\_lower\_bound}, with
+\texttt{power\_law\_tendsto\_zero} recording that an inverse power law has exactly this shape.
+The Gershgorin constant of Theorem~\ref{thm:margin} is such a constant, so it cannot generalise
+beyond the complete bipartite family however it is sharpened.
+
+Two limits on this. Equation~\eqref{eq:softedge} rests on fourteen sizes in one family and six
+in another, up to $n=68$; the families $(4,8)$, $(4,12)$ and $(5,10)$ did not yield enough
+connected samples to fit. And the identification of $-0.6675$ with $-2/3$ is an inference from
+the random matrix analogy, not a derivation. What is not in doubt is the monotone decline and
+the quality of the power-law fit.
+
 \subsection{What survives}
 
 The counterexample has $b_1=20$, feedback vertex number $5$, and is neither biregular nor
