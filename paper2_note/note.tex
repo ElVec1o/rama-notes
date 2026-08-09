@@ -1480,9 +1480,12 @@ hold with no violations, and with zero slack in four of them, so both are attain
 proof are formalized in \texttt{PathCount}: \texttt{blocked\_le\_left} and
 \texttt{unblocked\_le} are the set-counting steps, and \texttt{alt\_count} is the alternation
 count, proved on lists recording which side each path vertex lies on, with
-\texttt{alt\_count\_last} transferring it from the first vertex to the last. What is not
-formalized is the recursion over the path tree, which is the standard well-founded induction on
-a finite tree.
+\texttt{alt\_count\_last} transferring it from the first vertex to the last. The recursion over the path tree is carried out in
+\texttt{PathTreeInduction}: \texttt{invariant} propagates both halves of the bound by strong
+induction on a height function, and \texttt{no\_vanishing} concludes that no ratio vanishes. The
+path tree enters only through an abstraction carrying a side map, a children map and a height
+that strictly decreases along edges, so nothing in the chain from hypotheses to conclusion is
+left unformalized.
 
 Assembling both sides gives a system in a single constant $m>0$, the lower bound on $|F|$ at
 right-type vertices. With $\kappa(t)=\lambda+t/m$ bounding left-type ratios at child count $t$,
@@ -1504,12 +1507,27 @@ Let $G$ be $(d,q)$-biregular with $r$ vertices of degree $q$, and $\lambda\in(0,
 \eqref{eq:closure} admits some $m>0$, then $\mu_G(\lambda)\neq0$.
 \end{theorem}
 
-Solving numerically, the condition holds throughout the gap for $(d,q,r)=(4,8,4)$, $(4,12,4)$
-and $(5,10,4)$, and on part of it elsewhere: to $61\%$ of $g$ for $(3,6,4)$, $78\%$ for
-$(3,9,4)$, $83\%$ for $(3,12,4)$ and $29\%$ for $(3,6,5)$ (\texttt{code/coupled.py}). This is
-the first proof of the inner end of \eqref{eq:twosided} for a nontrivial class. The invariant is
-measured to hold outside that range too, so \eqref{eq:closure} is lossy there; closing the rest
-needs a sharper combinatorial input than Lemma~\ref{lem:blocking}.
+Solving numerically, \eqref{eq:closure} holds throughout the gap for $(d,q,r)=(4,8,4)$,
+$(4,12,4)$ and $(5,10,4)$, and on part of it elsewhere: to $61\%$ of $g$ for $(3,6,4)$, $78\%$
+for $(3,9,4)$, $83\%$ for $(3,12,4)$ and $29\%$ for $(3,6,5)$ (\texttt{code/coupled.py}).
+
+A single constant $m$ is more than the argument needs, and measuring the slack says where. The
+left bound $\kappa$ is tight, attained with ratio $1.0000$ at every vertex measured, while the
+right bound is slack by factors of $1.19$ to $1.94$ (\texttt{code/slack.py}). Sharpening it costs
+nothing new: Lemma~\ref{lem:blocking} came from an alternation count that applies at every depth,
+not only between a parent and a child. A path of $\ell$ vertices ending in $L$ has
+$\lfloor\ell/2\rfloor$ vertices in $R$, so a left-type vertex has at most
+$\min(d-1,\,r-\lfloor\ell/2\rfloor)$ children, and a right-type one at least
+$q-\lfloor\ell/2\rfloor$. Both tighten with depth and the first reaches zero, which is what
+forces leaves. Indexing $\kappa$ and $m$ by depth turns \eqref{eq:closure} from a fixed point
+into a finite backward recursion from the deepest level, and Theorem~\ref{thm:biregclass} holds
+verbatim with the height-indexed bounds, by
+\texttt{PathTreeInduction.invariant\_depth}. That closes the whole gap for six of the seven
+families rather than three: $(3,6,4)$, $(3,9,4)$ and $(3,12,4)$ join the first three, and
+$(3,6,5)$ improves from $29\%$ to $69\%$ (\texttt{code/depthind.py}).
+
+This is the first proof of the inner end of \eqref{eq:twosided} for a nontrivial class. The
+invariant is measured to hold outside the range too, so the bound remains lossy for $(3,6,5)$.
 
 Combined with \S\ref{sec:softedge}, the constraints on a proof of Problem~1 are now sharp on
 four sides: it must produce a size-dependent bound (\texttt{no\_uniform\_lower\_bound}), reach

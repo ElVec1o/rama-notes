@@ -89,6 +89,8 @@ parent is at most `λ - k/κ(k-D)`.  The invariant propagates when that is at mo
 
   `λ + m ≤ k / κ(k-D)`   for every attainable `k`, that is `D ≤ k ≤ q-1`.
 
+The recursion consuming these steps is `PathTreeInduction.invariant`.
+
 **This is a fixed-point condition on `m`, not a closed form**, and an earlier version of this
 file asserted otherwise.  It took `m = D/λ - 2λ`, on the reasoning that `μ(j) = j/κ(j-D) - λ`
 decreases to that limit.  The limit is `D/λ - 3λ`, so `μ(j)` drops *below* the value fed into
@@ -119,9 +121,10 @@ That the *uniform* certificate closes on every path tree is `FALSE`, failing on 
 vertices in one measured case; `right_step_sharp` repairs it.  The earlier closed-form closure
 condition is `FALSE` and withdrawn.
 
-The biregular case of Conjecture 10 wherever the fixed point is positive is `PROVED`: every step
-is verified, and the recursion over the path tree is the standard well-founded one on a finite
-tree, not itself formalized here.  Outside that range, and the sign separation, remain
+The biregular case of Conjecture 10 wherever the fixed point is positive is `VERIFIED`: every
+step is verified, and the recursion over the path tree is now carried out in
+`PathTreeInduction.invariant`, with `no_vanishing` concluding that no ratio vanishes.  Nothing
+in the chain from hypotheses to conclusion is left unformalized.  Outside that range, and the sign separation, remain
 `HEURISTIC` on the measurements cited.  The general biregular case remains a `CONJECTURE`.
 -/
 
