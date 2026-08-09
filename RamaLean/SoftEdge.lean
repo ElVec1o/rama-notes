@@ -72,8 +72,9 @@ upper bound, so a proof must reach the measured exponent and not merely some pow
 
 ## Status
 
-`no_uniform_lower_bound`, `power_law_tendsto_zero`, `exponent_floor`, `inf_not_attained` and
-`edge_unimprovable` are `VERIFIED`.  That
+`no_uniform_lower_bound`, `power_law_tendsto_zero`, `exponent_floor`, `inf_not_attained`,
+`edge_unimprovable`, `edge_scale`, `antitone_pos_tendsto_glb` and `unimprovable_iff_iInf_zero`
+are `VERIFIED`.  That
 the margin obeys a power law is `HEURISTIC` but strong: eight families, `d = 3` to `6`, thirteen
 or fourteen sizes each, `R² ≥ 0.999` throughout.  That the exponent is exactly `-2/3` is
 `FALSE` as a universal claim; it holds for `q = 2d` and drifts to about `-0.61` at `q = 4d`.
@@ -136,6 +137,40 @@ theorem exponent_floor {C c α β : ℝ} (hC : 0 < C) (hc : 0 < c) (hlt : β < �
     rw [div_le_iff₀ hC]; linarith [hle]
   exact absurd hsmall (not_lt.mpr this)
 
+/-! ## Where the exponent comes from -/
+
+/-- **The edge scaling law.**  If the roots accumulate at the edge with density vanishing like
+`(x-g)^β`, the expected number within `δ` is `C N δ^(β+1)`, and the extreme root sits where
+that count is one.  Solving gives the scale `δ = (CN)^(-1/(β+1))`, so the exponent in `N` is
+`-1/(β+1)`. -/
+theorem edge_scale {β C N δ : ℝ} (hβ : 0 ≤ β) (hC : 0 < C) (hN : 0 < N) (hδ : 0 < δ)
+    (hcount : C * N * δ ^ (β + 1) = 1) :
+    δ = (C * N) ^ (-(1 / (β + 1))) := by
+  have hb1 : (0 : ℝ) < β + 1 := by linarith
+  have hCN : (0 : ℝ) < C * N := mul_pos hC hN
+  have hpow : δ ^ (β + 1) = (C * N)⁻¹ := by
+    field_simp at hcount ⊢
+    linarith [hcount]
+  calc δ = δ ^ ((β + 1) * (1 / (β + 1))) := by
+            rw [mul_one_div, div_self (ne_of_gt hb1), Real.rpow_one]
+    _ = (δ ^ (β + 1)) ^ (1 / (β + 1)) := Real.rpow_mul hδ.le _ _
+    _ = ((C * N)⁻¹) ^ (1 / (β + 1)) := by rw [hpow]
+    _ = (C * N) ^ (-(1 / (β + 1))) := by
+            rw [← Real.rpow_neg_one, ← Real.rpow_mul hCN.le]; congr 1; ring
+
+/-- **A square-root edge forces the exponent `-2/3`.**  The `(d,q)`-biregular tree has spectral
+density proportional to `√((x²-g²)(S²-x²)) / (x(dq-x²))` on its band, which vanishes like
+`√(x-g)` at the inner edge, so `β = 1/2` for *every* `(d,q)`.  The predicted exponent is then
+`-2/3` universally, with no dependence on the aspect ratio.
+
+This is in tension with the measurement, which gives `-2/3` at `q = 2d` but about `-0.62` for
+`q ≥ 3d`, and the tension is unresolved: at the sizes reachable each graph has only `r ≈ 15`
+positive roots, so any window narrow enough to probe the edge contains about one root per
+graph, which is the margin itself.  The direct measurement of `β` is therefore circular and
+cannot arbitrate (`code/edgedensity.py`).  The likeliest reading is that the `q ≥ 3d` families
+are pre-asymptotic. -/
+theorem sqrt_edge_exponent : -(1 / ((1 : ℝ) / 2 + 1)) = -(2 / 3) := by norm_num
+
 /-! ## The Friedman picture: sharp, attained only in the limit -/
 
 /-- **The edge is the infimum and is never reached.**  If the margin is strictly positive at
@@ -162,6 +197,36 @@ theorem edge_unimprovable {a : ℕ → ℝ} {g : ℝ}
     ∀ g', g < g' → ∃ n, a n < g' := by
   intro g' hg'
   exact (hlim.eventually_lt_const hg').exists
+
+/-! ## The reduction the monotone decline buys -/
+
+/-- A margin that is positive and antitone converges to its infimum, which is non-negative.
+The decline is observed in every family, so this applies. -/
+theorem antitone_pos_tendsto_glb {marg : ℕ → ℝ} (hanti : Antitone marg)
+    (hpos : ∀ n, 0 < marg n) :
+    Tendsto marg atTop (𝓝 (⨅ n, marg n)) ∧ 0 ≤ ⨅ n, marg n := by
+  have hbdd : BddBelow (Set.range marg) := ⟨0, by rintro x ⟨n, rfl⟩; exact (hpos n).le⟩
+  exact ⟨tendsto_atTop_ciInf hanti hbdd, le_ciInf fun n => (hpos n).le⟩
+
+/-- **The whole question reduces to one number.**  Given positivity, which is the conjecture,
+and the observed monotone decline, the bound `g` is unimprovable exactly when the infimum of
+the margin is zero.  So the Friedman picture is not an extra hypothesis on top of the
+conjecture: it is the single remaining question of whether that infimum vanishes. -/
+theorem unimprovable_iff_iInf_zero {marg : ℕ → ℝ} (hpos : ∀ n, 0 < marg n) :
+    (∀ ε : ℝ, 0 < ε → ∃ n, marg n < ε) ↔ (⨅ n, marg n) = 0 := by
+  have hbdd : BddBelow (Set.range marg) := ⟨0, by rintro x ⟨n, rfl⟩; exact (hpos n).le⟩
+  have hge : 0 ≤ ⨅ n, marg n := le_ciInf fun n => (hpos n).le
+  constructor
+  · intro h
+    by_contra hne
+    obtain ⟨n, hn⟩ := h _ (lt_of_le_of_ne hge (Ne.symm hne))
+    exact absurd (ciInf_le hbdd n) (not_le.mpr hn)
+  · intro h ε hε
+    by_contra hcon
+    have hle : ε ≤ ⨅ n, marg n :=
+      le_ciInf fun n => not_lt.mp fun hlt => hcon ⟨n, hlt⟩
+    rw [h] at hle
+    exact absurd hle (not_le.mpr hε)
 
 /-- **Problem 1, restated as a margin.**  The biregular case of Conjecture 10 says the smallest
 positive root clears the inner edge of the biregular tree spectrum.  Recorded so that the

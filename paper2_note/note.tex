@@ -1250,6 +1250,27 @@ not decay more slowly than the measured upper bound: if the margin is at most $C
 then no bound $cn^{-\beta}$ with $\beta<\alpha$ can hold, so a proof must reach the measured
 exponent and not merely some power of $n$. That is \texttt{exponent\_floor}.
 
+There is however a derivation that cuts against the measurement, and it should be recorded
+because it is the stronger evidence. The soft-edge mechanism is explicit: if the roots
+accumulate at the inner edge with density vanishing like $(x-g)^\beta$, the expected number
+within $\delta$ is $CN\delta^{\beta+1}$, and the extreme root sits where that count is one, so
+$\delta=(CN)^{-1/(\beta+1)}$ (\texttt{SoftEdge.edge\_scale}). The $(d,q)$-biregular tree has
+spectral density proportional to
+$\sqrt{(x^2-g^2)\bigl((\sqrt{d-1}+\sqrt{q-1})^2-x^2\bigr)}/\bigl(x(dq-x^2)\bigr)$ on its band,
+which vanishes like $\sqrt{x-g}$ at the inner edge. So $\beta=\tfrac12$ for \emph{every}
+$(d,q)$, and the predicted exponent is $-2/3$ universally, with no aspect-ratio dependence at
+all (\texttt{sqrt\_edge\_exponent}).
+
+We cannot resolve the tension at the sizes reached, and an attempt to do so failed
+informatively. Measuring $\beta$ directly requires resolving the density within a window narrow
+compared with the band; but each graph contributes only $r\approx15$ positive roots, so such a
+window holds about one root per graph, which is the margin itself. The estimate is circular: it
+returns $\beta\approx0.16$ where $\tfrac12$ is derivable, and collapses to negative values as
+the window narrows (\texttt{code/edgedensity.py}). The likeliest reading is that the $q\ge3d$
+families are pre-asymptotic and the true exponent is the universal $-2/3$, but the local-slope
+test of \S\ref{sec:softedge} does not show them converging over the range available, so we
+leave the discrepancy open and flag it as the weakest point in this section.
+
 What the decay says about the conjecture is worth stating as a shape rather than a number. If
 the margin is positive at every size and tends to zero, then the spectral edge $g$ is the
 greatest lower bound of the smallest positive roots and is never attained
@@ -1258,6 +1279,13 @@ greatest lower bound of the smallest positive roots and is never attained
 $\operatorname{spec}(T)$ right up to its edge without ever escaping, so $g$ always works and
 nothing larger ever does. It is also why the conjecture cannot be softened: there is no
 $\varepsilon$ to spare.
+
+The monotone decline buys one further reduction. A margin that is positive and antitone
+converges to its infimum (\texttt{antitone\_pos\_tendsto\_glb}), and given positivity, which is
+the conjecture itself, the bound $g$ is unimprovable exactly when that infimum is zero
+(\texttt{unimprovable\_iff\_iInf\_zero}). So the Friedman picture is not an additional
+hypothesis stacked on the conjecture; it is the single remaining question of whether one number
+vanishes.
 
 The limits are the obvious ones. The fits reach $n=98$; the identification of any particular
 rational number as the exponent is an inference from the random matrix analogy rather than a
