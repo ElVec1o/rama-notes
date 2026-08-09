@@ -1203,28 +1203,47 @@ with $(3,9)$ giving exponent $-0.6331$ at $R^2=0.9995$ (\texttt{code/softedge.py
 are counted exactly, by a bitmask permanent over the smaller side rather than by vertex
 deletion, which is what makes the range reachable.
 
-The exponent is $-2/3$, and that is not an arbitrary number: $n^{-2/3}$ is the soft-edge scale
-of random matrix theory, the rate at which extreme eigenvalues approach a spectral edge. Read
-that way the picture changes character. The margin tends to zero, so no size-free bound can
-prove the biregular case; but it tends to zero \emph{from above}, so the statement is true and
-merely tight; and the right target is a Friedman-type edge theorem, in which the roots of
-$\mu_G$ fill out $\operatorname{spec}(T)$ without escaping it, exactly as the eigenvalues of a
-random $d$-regular graph fill out $[-2\sqrt{d-1},2\sqrt{d-1}]$ without escaping. This is the
-Alon--Boppana analogy of \S\ref{sec:biregblock} with an exponent attached.
+On that evidence we read the exponent as $-2/3$, the soft-edge scale of random matrix theory.
+Eight families correct that reading. With a generator that never rejects, a deterministic
+biregular base followed by degree-preserving double-edge swaps, and a vectorised bitmask
+permanent, the fit runs over $d=3,4,5,6$ at $R^2\ge0.999$ throughout, and the exponent is not
+universal. It tracks the aspect ratio $q/d$:
 
-The structural consequence is worth stating precisely, because it disqualifies a class of
-proofs including our own. A quantity that is strictly positive at every size may still admit no
-uniform positive lower bound, and then every argument producing a constant independent of $n$
-is insufficient in general. That is \texttt{SoftEdge.no\_uniform\_lower\_bound}, with
-\texttt{power\_law\_tendsto\_zero} recording that an inverse power law has exactly this shape.
-The Gershgorin constant of Theorem~\ref{thm:margin} is such a constant, so it cannot generalise
-beyond the complete bipartite family however it is sharpened.
+\begin{center}
+\begin{tabular}{lrl}
+$q/d$ & families & exponent\\\hline
+$2$ & $4$ & $-0.6703\pm0.015$\\
+$3$ & $3$ & $-0.6267\pm0.007$\\
+$4$ & $1$ & $-0.6102$\\
+\end{tabular}
+\end{center}
 
-Two limits on this. Equation~\eqref{eq:softedge} rests on fourteen sizes in one family and six
-in another, up to $n=68$; the families $(4,8)$, $(4,12)$ and $(5,10)$ did not yield enough
-connected samples to fit. And the identification of $-0.6675$ with $-2/3$ is an inference from
-the random matrix analogy, not a derivation. What is not in doubt is the monotone decline and
-the quality of the power-law fit.
+The within-group spreads are far below the between-group gaps, and refitting on the upper half
+of each range shows no drift toward a common value, so the dependence is real. The value $-2/3$
+is right for $q=2d$ and wrong elsewhere. The constant behaves the same way: with the exponent
+held at $-2/3$, $C/(\sqrt{d-1}+\sqrt{q-1})$ has mean $0.766$ with a $6\%$ spread that is again
+monotone in $q/d$ (\texttt{code/softedge2.py}).
+
+What survives, and it is what matters, is that the exponent is positive. The margin tends to
+zero, so no size-free bound can prove the biregular case; it tends to zero from above, so the
+statement is true and merely tight; and the right target is a Friedman-type edge theorem, in
+which the roots of $\mu_G$ fill out $\operatorname{spec}(T)$ without escaping it, exactly as the
+eigenvalues of a random $d$-regular graph fill out $[-2\sqrt{d-1},2\sqrt{d-1}]$ without
+escaping. This is the Alon--Boppana analogy of \S\ref{sec:biregblock} with a measured rate.
+
+Two structural consequences are worth stating precisely, because between them they disqualify a
+class of proofs including our own. First, a quantity strictly positive at every size may admit
+no uniform positive lower bound, so every argument producing a constant independent of $n$ is
+insufficient in general; that is \texttt{SoftEdge.no\_uniform\_lower\_bound}, and the Gershgorin
+constant of Theorem~\ref{thm:margin} is exactly such a constant, so it cannot generalise beyond
+the complete bipartite family however it is sharpened. Second, and sharper, a lower bound may
+not decay more slowly than the measured upper bound: if the margin is at most $Cn^{-\alpha}$
+then no bound $cn^{-\beta}$ with $\beta<\alpha$ can hold, so a proof must reach the measured
+exponent and not merely some power of $n$. That is \texttt{exponent\_floor}.
+
+The limits are the obvious ones. The fits reach $n=90$; the identification of any particular
+rational number as the exponent is an inference from the random matrix analogy rather than a
+derivation; and the aspect-ratio dependence is measured, not explained.
 
 \subsection{What survives}
 

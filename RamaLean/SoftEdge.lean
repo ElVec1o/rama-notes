@@ -19,12 +19,27 @@ at `n = 51`, and a log-log fit gives
 
   `margin ≈ 2.78 · n^(-0.6675)`,  `R² = 0.9999`,
 
-with `(3,9)` giving `-0.6331` at `R² = 0.9995` (`code/softedge.py`).  The exponent is `-2/3`.
+with `(3,9)` giving `-0.6331` at `R² = 0.9995` (`code/softedge.py`).  On that evidence the
+exponent was read as `-2/3`, the soft-edge scale of random matrix theory.
+
+**That reading was too strong, and eight families correct it.**  With a generator that does not
+reject (a deterministic biregular base plus degree-preserving double-edge swaps) and a
+vectorised bitmask permanent, the fit runs over `d = 3,4,5,6` at `R² ≥ 0.999` throughout, and
+the exponent is *not* universal.  It tracks the aspect ratio `q/d`:
+
+  `q/d = 2` (four families): `-0.6703 ± 0.015`
+  `q/d = 3` (three families): `-0.6267 ± 0.007`
+  `q/d = 4` (one family):     `-0.6102`
+
+The within-group spreads are far smaller than the between-group gaps, so the dependence is
+real and not noise, and the upper-half-of-range refits show no drift toward a common value.
+`-2/3` is right for `q = 2d` and wrong elsewhere.  The constant behaves the same way: with the
+exponent fixed at `-2/3`, `C/(√(d-1)+√(q-1))` has mean `0.766` but a 6% spread that is again
+monotone in `q/d` (`code/softedge2.py`).
 
 ## Why the exponent matters
 
-`n^(-2/3)` is the soft-edge scale of random matrix theory, the rate at which extreme
-eigenvalues approach a spectral edge.  Read that way the picture is:
+Whatever its exact value, it is positive, and that is what changes the character of the problem:
 
 * the margin **tends to zero**, so no size-free bound can ever prove Problem 1 or D3;
 * it tends to zero **from above**, so both are true and merely tight;
@@ -32,7 +47,7 @@ eigenvalues approach a spectral edge.  Read that way the picture is:
   spectrum of the universal cover without escaping it, exactly as the eigenvalues of a random
   `d`-regular graph fill out `[-2√(d-1), 2√(d-1)]` without escaping.
 
-That is the Alon-Boppana analogy the note already draws, now with an exponent on it.
+That is the Alon-Boppana analogy the note already draws, now with a measured rate.
 
 ## What this file proves
 
@@ -43,14 +58,17 @@ precise sense in which the conjecture is *true but tight*, and it is a genuine c
 proof: every argument that produces a constant independent of `n`, as the Gershgorin bound of
 `CompleteBipartiteMargin` does, is thereby known to be insufficient in general.
 
-`power_law_tendsto_zero` records that an inverse power law has exactly this shape.
+`power_law_tendsto_zero` records that an inverse power law has exactly this shape, and
+`exponent_floor` sharpens the constraint: no lower bound may decay *slower* than the measured
+upper bound, so a proof must reach the measured exponent and not merely some power.
 
 ## Status
 
-`no_uniform_lower_bound` and `power_law_tendsto_zero` are `VERIFIED`.  That the margin obeys
-`n^(-2/3)` is `HEURISTIC`, on fourteen sizes in one family and six in another, with the fit
-quality quoted above.  That it stays positive, which is D3 restricted to biregular graphs, is a
-`CONJECTURE`.
+`no_uniform_lower_bound`, `power_law_tendsto_zero` and `exponent_floor` are `VERIFIED`.  That
+the margin obeys a power law is `HEURISTIC` but strong: eight families, `d = 3` to `6`, thirteen
+or fourteen sizes each, `R² ≥ 0.999` throughout.  That the exponent is exactly `-2/3` is
+`FALSE` as a universal claim; it holds for `q = 2d` and drifts to about `-0.61` at `q = 4d`.
+That the margin stays positive, which is D3 restricted to biregular graphs, is a `CONJECTURE`.
 -/
 
 namespace SoftEdge
@@ -85,6 +103,29 @@ theorem power_law_pos_not_uniform {C a : ℝ} (hC : 0 < C) (ha : 0 < a)
     (∀ n : ℕ, 0 < C * (n : ℝ) ^ (-a)) ∧
       ¬ ∃ c, 0 < c ∧ ∀ n : ℕ, c ≤ C * (n : ℝ) ^ (-a) :=
   no_uniform_lower_bound hpos (power_law_tendsto_zero hC ha)
+
+/-- **The exponent is a floor on any proof.**  If the margin is bounded above by `C n^(-α)`,
+then no lower bound `c n^(-β)` with `β < α` can hold: a slower-decaying lower bound would
+eventually exceed the upper bound.  So a proof of Problem 1 must produce a bound decaying at
+least as fast as the measured rate, which rules out every argument that stops short of it. -/
+theorem exponent_floor {C c α β : ℝ} (hC : 0 < C) (hc : 0 < c) (hlt : β < α)
+    (h : ∀ n : ℕ, 1 ≤ n → c * (n : ℝ) ^ (-β) ≤ C * (n : ℝ) ^ (-α)) : False := by
+  have hlim : Tendsto (fun n : ℕ => (n : ℝ) ^ (-(α - β))) atTop (𝓝 0) :=
+    (tendsto_rpow_neg_atTop (by linarith)).comp tendsto_natCast_atTop_atTop
+  obtain ⟨n, hsmall, hn1⟩ :=
+    ((hlim.eventually_lt_const (div_pos hc hC)).and (eventually_ge_atTop 1)).exists
+  have hn0 : (0 : ℝ) < n := by exact_mod_cast hn1
+  have hrw : (n : ℝ) ^ (-β) * (n : ℝ) ^ (-(α - β)) = (n : ℝ) ^ (-α) := by
+    rw [← Real.rpow_add hn0]; congr 1; ring
+  have hb := h n hn1
+  have hcomm : C * (n : ℝ) ^ (-α) = (C * (n : ℝ) ^ (-(α - β))) * (n : ℝ) ^ (-β) := by
+    rw [← hrw]; ring
+  rw [hcomm] at hb
+  have hpos : (0 : ℝ) < (n : ℝ) ^ (-β) := Real.rpow_pos_of_pos hn0 _
+  have hle : c ≤ C * (n : ℝ) ^ (-(α - β)) := le_of_mul_le_mul_right hb hpos
+  have : c / C ≤ (n : ℝ) ^ (-(α - β)) := by
+    rw [div_le_iff₀ hC]; linarith [hle]
+  exact absurd hsmall (not_lt.mpr this)
 
 /-- **Problem 1, restated as a margin.**  The biregular case of Conjecture 10 says the smallest
 positive root clears the inner edge of the biregular tree spectrum.  Recorded so that the
