@@ -1131,6 +1131,23 @@ nothing to violate; this is \texttt{conj10\_of\_regular}, with both classical fa
 hypotheses. Consistently, no regular graph we tested has any gap at all. The content of
 Conjecture~\ref{conj:mindeg3} is entirely in the irregular case.
 
+One further family is worth recording because it is unlike the others. Wheels, a hub joined to a
+cycle, have minimum degree three, are non-bipartite by construction, and their universal covers
+carry wide gaps, from $(2.02,2.08)$ at $W_5$ out to $(2.02,3.20)$ at $W_{11}$. Every family
+previously tested against Conjecture~\ref{conj:mindeg3} came from the two-hub engine or from
+$3$-connected constructions, all bipartite or nearly so, so this is a genuine new test. No wheel
+up to $W_{14}$ has a root in any gap, and at the closest approach the verdict is confirmed by
+the density-of-states ladder rather than inferred from a gap edge: for $W_{10}$ through
+$W_{20}$ the largest root below $2$ has density of states constant to four significant figures
+across four decades of $\eta$, so it lies in the spectrum (\texttt{code/wheels.py}).
+
+The wheels also show what does \emph{not} transfer. The certificate of \S\ref{sec:barrier} is
+sign-alternating, and that alternation came from the bipartition. On wheels no natural class
+determines the sign of a path-tree ratio: endpoint degree, depth parity and child count are each
+mixed (\texttt{code/d3ratio.py}). So the ratio route proves the biregular case for a reason that
+does not survive the loss of bipartiteness, which is worth knowing before it is aimed at
+Conjecture~\ref{conj:mindeg3} in general.
+
 Conjecture~\ref{conj:mindeg3} has not been attacked as hard as C1 was, and C1 survived three
 hours.
 
