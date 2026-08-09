@@ -746,6 +746,8 @@ the conjecture. \emph{They are the two ends of one interval}, so
 what is missing is exactly half of a two-sided Heilmann--Lieb theorem for
 biregular bipartite graphs.
 
+\part{The conjecture, its refutation, and the threshold}
+
 \section{Hall's counterexample}\label{sec:hallce}
 
 Everything in this section except \S\ref{sec:hallfamily} is due to Chris Hall, who
@@ -1421,6 +1423,20 @@ $(3,9,4)$, $(3,12,4)$, $(4,8,4)$, $(4,12,4)$ and $(5,10,4)$, and to $69\%$ of th
 $(3,6,5)$ (\texttt{code/depthind.py}). This is the first proof of the inner end of
 \eqref{eq:twosided} for a nontrivial class.
 
+This has to be reconciled with \S\ref{sec:must}, which rules out cavity recursions. The
+obstruction there is that every $b$-regular bipartite graph is an induced subgraph of some
+$(a,b)$-biregular graph, and over $b$-regular bipartite graphs the least root tends to zero, so
+on the closure of the biregular graphs under vertex deletion the inequality to be proved is
+false; an induction carrying the target statement through that closure cannot work.
+Theorem~\ref{thm:biregclass} is an induction over vertex-deleted subgraphs, but it does not carry
+the target statement through them. It carries the interval bounds, and those are guarded by
+$\Delta=q-r\ge1$: when $\Delta\le0$ a right-type path-tree vertex may have no children at all,
+the sign alternation fails at once, and \eqref{eq:closure} admits no positive $m$. A $b$-regular
+bipartite graph with parts of equal size has $\Delta=b-r<0$, so the family witnessing the
+obstruction is exactly what the hypothesis excludes. The condition $\Delta\ge1$ is therefore not
+a technical convenience; it is what \S\ref{sec:must} forces, and it is the reason the route
+reaches a nontrivial class rather than nothing or everything.
+
 Two limits are known. For $(3,6,5)$ the certificate is saturated at the point it reaches, both
 bounds being attained with ratio $1.0000$, so no choice of constants does better
 (\texttt{saturation\_blocks\_improvement}); the only other counting fact available, the
@@ -1429,6 +1445,13 @@ depth bound (\texttt{code/combined.py}). And the sign separation is a consequenc
 bipartiteness: on wheels no natural class determines the sign of a path-tree ratio, endpoint
 degree, depth parity and child count each being mixed (\texttt{code/d3ratio.py}), so the
 certificate does not transfer to Conjecture~\ref{conj:mindeg3} in general.
+
+\part{The biregular case by other routes}
+
+The biregular case is what survives, and \S\ref{sec:ratio} settles it on a nontrivial class by
+the ratio recursion. This part records a second and independent line of attack on the same
+statement, through counting, the coefficient ladder and the operator form, together with the
+obstructions each of them meets. It is self-contained and is not used in Part~I.
 
 \section{A counting refinement}\label{sec:gapcount}
 
@@ -3551,7 +3574,9 @@ infimum of the least root is $0$, and the inequality to be proved is simply
 false there. Any argument that deletes vertices and applies an inductive
 hypothesis, cavity recursions, stability transfer, the Heilmann--Lieb
 induction, is an induction over that closure, and therefore cannot work,
-not because biregularity is lost but because the statement itself fails. For
+not because biregularity is lost but because the statement itself fails. An induction that
+carries something other than the target statement is not excluded, and \S\ref{sec:ratio} gives
+one: its hypothesis $q-r\ge1$ is precisely a hypothesis the padding family above violates. For
 $\mathrm{AG}(2,3)$, where $(s-t)^2=0.10102$, the minimum over all choices of $d$
 deleted vertices on the larger side runs $0.3593$, $0.2424$, $0.1383$, $0.0549$
 for $d=0,1,2,3$: it drops below the target at depth three.
