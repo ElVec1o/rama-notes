@@ -73,3 +73,4 @@ import RamaLean.SubcubicCounterexample
 import RamaLean.BiregularBlocking
 import RamaLean.RootSeparation
 import RamaLean.PowerSumCertificate
+import RamaLean.RatioCertificate
