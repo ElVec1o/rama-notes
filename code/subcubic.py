@@ -89,7 +89,7 @@ def main():
     print(f"{'m':>3}{'arity':>6}{'d':>3}{'n':>5}{'Dmax':>6}{'Dmin':>6}"
           f"{'root':>10}{'DOS/eta':>24}{'verdict':>10}", flush=True)
     hits=[]
-    for m in (3,4,5,6):
+    for m in (3,4,5,6,7,8):
         for arity in (2,3):
             for depth in (2,3,4):
                 A,B,n,edges = build(m,arity,depth)
@@ -98,8 +98,13 @@ def main():
                 co=sp.Poly(sp.expand(A),x).all_coeffs()
                 while co and co[-1]==0: co.pop()
                 if len(co)<2: continue
-                rts=[sp.re(r) for r in sp.Poly(co,x).nroots(n=25,maxsteps=900)
-                     if abs(sp.im(r))<1e-12 and sp.re(r)>1e-9]
+                try:
+                    rts=[sp.re(r) for r in sp.Poly(co,x).nroots(n=15,maxsteps=3000)
+                         if abs(sp.im(r))<1e-10 and sp.re(r)>1e-9]
+                except Exception:
+                    print(f"{m:>3}{arity:>6}{depth:>3}{n:>5}  root-finding failed, skipped",
+                          flush=True)
+                    continue
                 found=False
                 for r in rts:
                     lad=dos_ladder(n,edges,float(r))

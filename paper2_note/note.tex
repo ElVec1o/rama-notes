@@ -861,6 +861,18 @@ edges with residual $5\cdot10^{-41}$ and every ratio nonzero, with decay rate
 The margin $1-\rho=0.0073$ is thinner than elsewhere in this section but is resolved far
 beyond the precision used. Verified in \texttt{code/subcubic.py}.
 
+The polynomial half is machine-checked in \texttt{RamaLean/SubcubicCounterexample.lean}. The
+quartic is not an accident of the depth: at depth two the recursion already factors as
+\[
+   X\!\cdot\!A_1-2B_1=X^2(X^2-3)(X^4-7X^2+8)
+\]
+(\texttt{quartic\_factor}), so the quartic divides $A_2$ and hence $\mu_G=A_3$
+(\texttt{quartic\_dvd\_A3}), whose degree is confirmed to be $31$
+(\texttt{degree\_A3}). What depth three supplies is not the root but the gap: at depth two the
+same root lies inside $\operatorname{spec}(T)$, and only the deeper skeleton opens a gap
+around it. That is worth stating because it separates the two halves of a counterexample
+cleanly, and says which one is the binding constraint here.
+
 The construction explains why the earlier families needed large degrees: there the number of
 branches was the degree of the central vertex, so many branches forced high degree. A tree
 skeleton separates the two, supplying arbitrarily many branches at degree three. What the
