@@ -832,8 +832,39 @@ $\operatorname{spec}(T)$, with the diagnostic separated by three orders of magni
 at the root, which vanishes linearly in $\eta$ outside the spectrum and tends to a positive
 limit inside, and which avoids the cavity mass gate that these flat-band graphs fail.
 
-That observation is real but it does not mean what it appears to mean, and in particular
-minimum degree at least two does \emph{not} repair Conjecture~\ref{conj:gap}.
+That observation is real but it does not mean what it appears to mean. Neither minimum
+degree at least two nor bounded maximum degree repairs Conjecture~\ref{conj:gap}, and a
+single graph on $31$ vertices, smaller than Hall's, refutes both at once.
+
+\begin{proposition}\label{prop:subcubic}
+There is a simple connected graph on $31$ vertices, with every degree equal to two or three,
+having a root of its matching polynomial in an internal gap of $\operatorname{spec}(T)$.
+\end{proposition}
+
+Take the rooted binary tree of depth three and identify each of its eight leaves with a
+vertex of an attached triangle. Internal skeleton vertices have degree three, each attachment
+vertex has degree three, the remaining triangle vertices have degree two, and the skeleton
+root has degree two, so the degree set is exactly $\{2,3\}$ and there are $31$ vertices and
+$38$ edges. The matching polynomial has the factor $x^4-7x^2+8$, whose smaller positive root
+\[
+   \theta=\sqrt{\tfrac{7-\sqrt{17}}{2}}=1.19935282014558573\ldots
+\]
+lies in an internal gap of $\operatorname{spec}(T)$: the gap is narrow, of width about
+$0.016$, with spectrum on both sides. The factorisation was computed twice by independent
+routes, the rooted pair recursion for a tree of blocks and a memoised vertex-deletion
+recursion, and the spectral exclusion is certified as in \S\ref{sec:hallce}: Newton at $40$
+digits, seeded from the cavity fixed point, gives a real ratio system on all $76$ directed
+edges with residual $5\cdot10^{-41}$ and every ratio nonzero, with decay rate
+\[
+   \rho=0.99273509760803033\ldots<1 .
+\]
+The margin $1-\rho=0.0073$ is thinner than elsewhere in this section but is resolved far
+beyond the precision used. Verified in \texttt{code/subcubic.py}.
+
+The construction explains why the earlier families needed large degrees: there the number of
+branches was the degree of the central vertex, so many branches forced high degree. A tree
+skeleton separates the two, supplying arbitrarily many branches at degree three. What the
+mechanism needs is branches, not degree.
 
 \begin{proposition}\label{prop:mindeg2}
 There are simple connected bipartite graphs of minimum degree two with a root of the matching
@@ -893,12 +924,19 @@ $\operatorname{spec}(G^{\mathrm{ab}})\setminus\operatorname{spec}(T)$ that
 \S\ref{sec:further} identifies as the only place a counterexample could live, so the
 framework was pointed at the right region; what it lacked was any reason for that region to
 be empty. The open problem is now to characterise the graphs for which
-$\operatorname{Zeros}(\mu_{d,G})\subseteq\operatorname{spec}(T)$ holds. By
-Proposition~\ref{prop:mindeg2} minimum degree at least two is not the answer. What every
-counterexample so far has in common is a wide spread of degrees, from two up to nine in the
-smallest one, so a regularity hypothesis rather than a connectivity one is the natural place
-to look next; the biregular Problem~1 of Song, Fan and Miao is untouched, as is the
-first Betti number one case, where the conjecture is a theorem.
+$\operatorname{Zeros}(\mu_{d,G})\subseteq\operatorname{spec}(T)$ holds. Two natural
+hypotheses are already excluded: minimum degree at least two by
+Proposition~\ref{prop:mindeg2}, and bounded maximum degree by
+Proposition~\ref{prop:subcubic}, which excludes both simultaneously on a graph with degrees
+in $\{2,3\}$. Degree conditions are therefore the wrong currency. What does survive is
+regularity in the strict sense, but vacuously: for $d$-regular $G$ the universal cover is the
+$d$-regular tree, $\operatorname{spec}(T)=[-2\sqrt{d-1},2\sqrt{d-1}]$ has no internal gaps at
+all, and Conjecture~\ref{conj:gap} is exactly Heilmann--Lieb. The content lies entirely in
+graphs whose universal cover has gaps, and the canonical such family is the
+$(a,b)$-biregular one, which is Problem~1 of Song, Fan and Miao and is untouched by every
+counterexample here: all of them have at least three distinct degrees. That, together with
+the first Betti number one case where the conjecture is a theorem, is where the remaining
+interest lies.
 
 \section{A counting refinement}\label{sec:gapcount}
 
