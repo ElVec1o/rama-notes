@@ -1382,6 +1382,47 @@ also exactly the object the Angel--Friedman--Hoory decay rate controls on the un
 which is how membership of $\operatorname{spec}(T)$ is certified numerically throughout this
 note. That is where we would look for a proof.
 
+\subsubsection*{A sign-alternating certificate}
+
+The route can be made concrete. By Godsil $\mu_G$ divides $\mu_P$ for the path tree $P$, and on
+a tree the deletion recurrence is exact and local: $F_v=\lambda-\sum_{u}1/F_u$ over the children
+$u$ of $v$, with $F=\lambda$ at leaves. So $\mu_G(\lambda)\ne0$ follows once no $F$ vanishes.
+
+A positive invariant interval cannot do it. If every child ratio lay in $[a,b]$ with $a>0$,
+invariance would need $a\le\lambda-k/a$, that is $a^2-\lambda a+k\le0$, which has a positive
+solution only for $\lambda\ge2\sqrt k$: the Heilmann--Lieb bound again, so such an interval
+exists above the band and never inside a gap.
+
+What replaces it is visible in the ratios themselves. Computing every cavity ratio on path
+trees of $(d,q)$-biregular graphs at gap points, over twenty-two thousand path-tree vertices,
+the signs separate by vertex type with no exceptions: every degree-$d$ vertex has $F>0$ and
+every degree-$q$ vertex has $F<0$. For $(3,9)$ at $\lambda=0.354$ the left ratios fill
+$[0.3536,0.5353]$, the left endpoint being the leaf value $\lambda$, and the right ratios fill
+$[-22.27,-13.79]$ (\texttt{code/pathratio.py}). The certificate is therefore sign-alternating,
+a positive interval on one side of the bipartition and a negative interval on the other, and
+its two steps are elementary:
+
+\begin{proposition}\label{prop:ratiosteps}
+Let $\lambda>0$.
+\begin{enumerate}
+\item[(i)] If $F_1,\dots,F_k\in[-C,-c]$ with $c>0$, then
+$\lambda\le\lambda-\sum_j 1/F_j\le\lambda+k/c$.
+\item[(ii)] If $F_1,\dots,F_k\in[a,B]$ with $0<a\le B$ and $k>\lambda B$, then
+$\lambda-\sum_j 1/F_j<0$.
+\end{enumerate}
+\end{proposition}
+
+These are \texttt{RatioRoute.left\_step} and \texttt{right\_step}, and
+\texttt{no\_vanishing} closes the induction: a ratio that is either at least $\lambda$ or at
+most $-c$ is nonzero. Part (i) holds for every $k$, so a path-tree vertex missing some of its
+children is still covered, which is what makes truncation harmless on that side.
+
+The remaining gap is exactly the hypothesis $k>\lambda B$ of (ii). A degree-$q$ path-tree vertex
+has $q$ children minus those neighbours already lying on the path, so what is needed is a lower
+bound on unblocked neighbours at high-degree vertices of the path tree. That is a combinatorial
+statement about self-avoiding walks, not a spectral one, which is the point of taking this
+route; it is open.
+
 Combined with \S\ref{sec:softedge}, the constraints on a proof of Problem~1 are now sharp on
 four sides: it must produce a size-dependent bound (\texttt{no\_uniform\_lower\_bound}), reach
 the exponent $-2/3$ (\texttt{exponent\_floor}), match the constant \eqref{eq:constant}
