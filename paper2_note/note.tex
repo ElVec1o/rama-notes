@@ -1526,8 +1526,17 @@ verbatim with the height-indexed bounds, by
 families rather than three: $(3,6,4)$, $(3,9,4)$ and $(3,12,4)$ join the first three, and
 $(3,6,5)$ improves from $29\%$ to $69\%$ (\texttt{code/depthind.py}).
 
-This is the first proof of the inner end of \eqref{eq:twosided} for a nontrivial class. The
-invariant is measured to hold outside the range too, so the bound remains lossy for $(3,6,5)$.
+This is the first proof of the inner end of \eqref{eq:twosided} for a nontrivial class.
+
+For $(3,6,5)$, the one family not closing, the certificate is at its limit rather than merely
+unrefined. At the largest $\lambda$ the recursion reaches, both bounds are \emph{saturated}: the
+ratio of actual value to bound is $1.0000$ on each side, attained at path lengths $11$ and $10$
+(\texttt{code/slack2.py}). Where both bounds are attained no other choice of constants is
+better at those heights (\texttt{PathTreeInduction.saturation\_blocks\_improvement}), so the
+remaining range is out of reach of this certificate and not merely unproved by it. The invariant
+is measured to hold there, so what is missing is an ingredient that distinguishes the
+worst-case configuration the counting permits from the configurations that actually occur;
+better bookkeeping will not supply it.
 
 Combined with \S\ref{sec:softedge}, the constraints on a proof of Problem~1 are now sharp on
 four sides: it must produce a size-dependent bound (\texttt{no\_uniform\_lower\_bound}), reach
