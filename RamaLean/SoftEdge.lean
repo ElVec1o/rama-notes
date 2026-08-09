@@ -31,9 +31,17 @@ the exponent is *not* universal.  It tracks the aspect ratio `q/d`:
   `q/d = 3` (three families): `-0.6267 ± 0.007`
   `q/d = 4` (one family):     `-0.6102`
 
-The within-group spreads are far smaller than the between-group gaps, so the dependence is
-real and not noise, and the upper-half-of-range refits show no drift toward a common value.
-`-2/3` is right for `q = 2d` and wrong elsewhere.  The constant behaves the same way: with the
+`-2/3` is right for `q = 2d` and wrong elsewhere, and three checks say the dependence is real.
+Local exponents between consecutive sizes do not converge across aspect ratios: their spread is
+`0.016` at small `r` and `0.021` at large `r`, so it is not a correction-term artefact.  It is
+also not a matter of which size variable is used, since `n`, `r`, `m` and the edge count are
+all proportional at fixed `(d,q)`, so the exponent against any of them is identical.  And it is
+not a sampling artefact: the margin is estimated as a minimum over random graphs, whose upward
+bias grows with `r`, but moving from three to sixteen samples shifts the exponent by at most
+`0.005`, and the unbiased sample-*mean* estimator shows the same spread across families
+(`± 0.016`) as the minimum does (`± 0.018`).  Extending to `q/d = 5, 6` the exponent flattens
+near `-0.62` rather than continuing to drift, so the picture is two regimes: `-2/3` at
+`q = 2d`, and about `-0.62` for `q ≥ 3d` (`code/softedge3.py`).  The constant behaves the same way: with the
 exponent fixed at `-2/3`, `C/(√(d-1)+√(q-1))` has mean `0.766` but a 6% spread that is again
 monotone in `q/d` (`code/softedge2.py`).
 
@@ -64,7 +72,8 @@ upper bound, so a proof must reach the measured exponent and not merely some pow
 
 ## Status
 
-`no_uniform_lower_bound`, `power_law_tendsto_zero` and `exponent_floor` are `VERIFIED`.  That
+`no_uniform_lower_bound`, `power_law_tendsto_zero`, `exponent_floor`, `inf_not_attained` and
+`edge_unimprovable` are `VERIFIED`.  That
 the margin obeys a power law is `HEURISTIC` but strong: eight families, `d = 3` to `6`, thirteen
 or fourteen sizes each, `R² ≥ 0.999` throughout.  That the exponent is exactly `-2/3` is
 `FALSE` as a universal claim; it holds for `q = 2d` and drifts to about `-0.61` at `q = 4d`.
@@ -126,6 +135,33 @@ theorem exponent_floor {C c α β : ℝ} (hC : 0 < C) (hc : 0 < c) (hlt : β < �
   have : c / C ≤ (n : ℝ) ^ (-(α - β)) := by
     rw [div_le_iff₀ hC]; linarith [hle]
   exact absurd hsmall (not_lt.mpr this)
+
+/-! ## The Friedman picture: sharp, attained only in the limit -/
+
+/-- **The edge is the infimum and is never reached.**  If the margin is strictly positive at
+every size but tends to zero, the spectral edge `g` is the greatest lower bound of the smallest
+positive roots and is not among them.  This is the exact shape of a Friedman-type theorem: the
+roots fill out `spec(T)` right up to its edge without ever escaping. -/
+theorem inf_not_attained {a : ℕ → ℝ} {g : ℝ}
+    (hgt : ∀ n, g < a n) (hlim : Tendsto a atTop (𝓝 g)) :
+    IsGLB (Set.range a) g ∧ g ∉ Set.range a := by
+  refine ⟨⟨?_, ?_⟩, ?_⟩
+  · rintro x ⟨n, rfl⟩
+    exact (hgt n).le
+  · intro b hb
+    exact ge_of_tendsto hlim (Filter.Eventually.of_forall fun n => hb ⟨n, rfl⟩)
+  · rintro ⟨n, hn⟩
+    exact absurd hn (hgt n).ne'
+
+/-- **The bound is unimprovable.**  No constant above the spectral edge bounds the smallest
+positive roots from below, so `g` is not merely a bound but the best one.  Together with
+`inf_not_attained` this says the conjecture, if true, is sharp in both directions: `g` always
+works and nothing larger ever does. -/
+theorem edge_unimprovable {a : ℕ → ℝ} {g : ℝ}
+    (hlim : Tendsto a atTop (𝓝 g)) :
+    ∀ g', g < g' → ∃ n, a n < g' := by
+  intro g' hg'
+  exact (hlim.eventually_lt_const hg').exists
 
 /-- **Problem 1, restated as a margin.**  The biregular case of Conjecture 10 says the smallest
 positive root clears the inner edge of the biregular tree spectrum.  Recorded so that the

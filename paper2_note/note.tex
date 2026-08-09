@@ -1218,9 +1218,18 @@ $4$ & $1$ & $-0.6102$\\
 \end{tabular}
 \end{center}
 
-The within-group spreads are far below the between-group gaps, and refitting on the upper half
-of each range shows no drift toward a common value, so the dependence is real. The value $-2/3$
-is right for $q=2d$ and wrong elsewhere. The constant behaves the same way: with the exponent
+The value $-2/3$ is right for $q=2d$ and wrong elsewhere, and three checks say the dependence
+is real rather than an artefact. It is not a matter of which size variable is used: at fixed
+$(d,q)$ the quantities $n$, $r$, $m$ and the edge count are all proportional, so the exponent
+against any of them is identical. It is not a correction term: local exponents taken between
+consecutive sizes do not converge across aspect ratios, their spread being $0.016$ at small $r$
+and $0.021$ at large $r$. And it is not a sampling artefact, which was the serious worry, since
+the margin is estimated as a minimum over random graphs and that minimum is biased upward by an
+amount growing with $r$; moving from three samples to sixteen shifts the exponent by at most
+$0.005$, and the unbiased sample-\emph{mean} estimator shows the same spread across families,
+$\pm0.016$ against $\pm0.018$ for the minimum. Extending to $q/d=5,6$ the exponent flattens near
+$-0.62$ rather than continuing to drift, so the picture is two regimes: $-2/3$ at $q=2d$, and
+about $-0.62$ for $q\ge3d$ (\texttt{code/softedge3.py}). The constant behaves the same way: with the exponent
 held at $-2/3$, $C/(\sqrt{d-1}+\sqrt{q-1})$ has mean $0.766$ with a $6\%$ spread that is again
 monotone in $q/d$ (\texttt{code/softedge2.py}).
 
@@ -1241,7 +1250,16 @@ not decay more slowly than the measured upper bound: if the margin is at most $C
 then no bound $cn^{-\beta}$ with $\beta<\alpha$ can hold, so a proof must reach the measured
 exponent and not merely some power of $n$. That is \texttt{exponent\_floor}.
 
-The limits are the obvious ones. The fits reach $n=90$; the identification of any particular
+What the decay says about the conjecture is worth stating as a shape rather than a number. If
+the margin is positive at every size and tends to zero, then the spectral edge $g$ is the
+greatest lower bound of the smallest positive roots and is never attained
+(\texttt{SoftEdge.inf\_not\_attained}), and no constant above $g$ bounds them below
+(\texttt{edge\_unimprovable}). That is exactly a Friedman-type statement: the roots fill out
+$\operatorname{spec}(T)$ right up to its edge without ever escaping, so $g$ always works and
+nothing larger ever does. It is also why the conjecture cannot be softened: there is no
+$\varepsilon$ to spare.
+
+The limits are the obvious ones. The fits reach $n=98$; the identification of any particular
 rational number as the exponent is an inference from the random matrix analogy rather than a
 derivation; and the aspect-ratio dependence is measured, not explained.
 
