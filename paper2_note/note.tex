@@ -1417,11 +1417,32 @@ These are \texttt{RatioRoute.left\_step} and \texttt{right\_step}, and
 most $-c$ is nonzero. Part (i) holds for every $k$, so a path-tree vertex missing some of its
 children is still covered, which is what makes truncation harmless on that side.
 
-The remaining gap is exactly the hypothesis $k>\lambda B$ of (ii). A degree-$q$ path-tree vertex
-has $q$ children minus those neighbours already lying on the path, so what is needed is a lower
-bound on unblocked neighbours at high-degree vertices of the path tree. That is a combinatorial
-statement about self-avoiding walks, not a spectral one, which is the point of taking this
-route; it is open.
+The two steps determine the constants rather than leaving them free. Taking $a=\lambda$,
+$B=\lambda+(d-1)/c$ from (i) and $c=k_0/B-\lambda$ from (ii), with $k_0$ the least number of
+children at a right-type vertex, eliminates $c$: the system closes exactly when
+\begin{equation}\label{eq:certquad}
+   \lambda B^2-B(k_0+\lambda^2-d+1)+\lambda k_0=0,
+\end{equation}
+which is \texttt{RatioRoute.certificate\_closes}. Two features of \eqref{eq:certquad} decide the
+route. Its discriminant vanishes exactly at the gap edge: writing $s=\sqrt{d-1}$, $t=\sqrt{q-1}$
+with $g=t-s$ and $k_0=q-1=t^2$, one has $k_0+\lambda^2-d+1=2t(t-s)$ at $\lambda=g$, so the
+discriminant is $4t^2(t-s)^2-4(t-s)^2t^2=0$ (\texttt{discriminant\_vanishes\_at\_edge}); it is
+positive throughout the open gap in every family tested. And the smaller root of
+\eqref{eq:certquad} equals the universal cover's cavity fixed point $F_d$, agreeing to fifteen
+digits in every case checked (\texttt{code/certificate.py}). The certificate constants are not
+chosen; they are the fixed point the path tree already tracks, and the certificate degenerates
+precisely where the gap closes.
+
+What the certificate does not yet do is close on every path tree. The requirement is
+$k>\lambda B$ at each right-type vertex, which near the gap edge tends to
+$(q-1)-\sqrt{(d-1)(q-1)}$; measured on real path trees it holds in most cases but not all, and
+for a $(3,6)$-biregular graph on $15$ vertices at $\lambda=0.99g$ it fails at $0.21\%$ of
+right-type vertices. The defect is precise: such a vertex is in fact safe, because one whose
+children are mostly blocked has those children's ratios sitting well below $B$, but a
+\emph{uniform} interval cannot express that correlation. Closing the route therefore requires
+either an interval depending on the number of children, or an argument that few children force
+small child ratios. That is a combinatorial statement about self-avoiding walks rather than a
+spectral one, which is the point of the route; it is open.
 
 Combined with \S\ref{sec:softedge}, the constraints on a proof of Problem~1 are now sharp on
 four sides: it must produce a size-dependent bound (\texttt{no\_uniform\_lower\_bound}), reach

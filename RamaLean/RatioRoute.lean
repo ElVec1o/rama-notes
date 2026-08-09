@@ -42,19 +42,47 @@ as soon as `k > λB`.
 
 Together they close the induction on `P` and give `no_vanishing`.
 
+## The constants are forced, and they are the tree fixed point
+
+The two steps determine each other.  Taking `a = λ` (the leaf value), `B = λ + (d-1)/c` from
+`left_step` and `c = k₀/B - λ` from `right_step`, where `k₀` is the least number of children at
+a right-type vertex, eliminates `c`.  What is left is that `B` closes the system exactly when
+
+  `λB² - B(k₀ + λ² - d + 1) + λk₀ = 0`,
+
+which is `certificate_closes`.  Two facts about that quadratic decide the route.
+
+Its discriminant `(k₀ + λ² - d + 1)² - 4λ²k₀` vanishes **exactly at the gap edge**.  With
+`s = √(d-1)`, `t = √(q-1)`, `k₀ = q-1 = t²` and `λ = g = t - s`, one has
+`k₀ + λ² - d + 1 = 2t(t-s)`, so the discriminant is `4t²(t-s)² - 4(t-s)²t² = 0`; that is
+`discriminant_vanishes_at_edge`.  Numerically it is positive throughout the open gap and zero at
+the edge in every family tested (`code/certificate.py`).  A certificate that degenerates
+precisely where the gap closes is the right object.
+
+And its smaller root is the universal cover's cavity fixed point `F_d`, agreeing to fifteen
+digits in every case checked.  So the certificate constants are not chosen; they are the fixed
+point the path tree is already tracking.
+
 ## What remains
 
-`right_step` needs *enough* children, `k > λB`.  A degree-`q` path-tree vertex has `q` minus the
-number of its neighbours already on the path, so the hypothesis is a lower bound on unblocked
-neighbours at high-degree vertices of the path tree.  That is the whole remaining gap, and it is
-combinatorial rather than spectral, which is the point of taking this route.
+`right_step` needs *enough* children, `k > λB`.  Near the gap edge `B → √(q-1)`, so the
+requirement tends to `(q-1) - √((d-1)(q-1))`.  Measured on real path trees the uniform
+certificate closes in most cases but **not all**: for a `(3,6)`-biregular graph on `15` vertices
+at `λ = 0.99g`, `0.21%` of right-type vertices have too few children (`code/certificate.py`).
+
+The defect is precise.  A right vertex with few children is still safe, because a vertex whose
+children are mostly blocked has those children's ratios sitting well below `B`; but a *uniform*
+interval cannot express that correlation.  So the certificate needs the interval to depend on
+the number of children, or an argument that few children forces small child ratios.  That is
+the remaining work, and it is combinatorial rather than spectral, which is the point of taking
+this route.
 
 ## Status
 
-`left_step`, `right_step` and `no_vanishing` are `VERIFIED`.  The hypothesis of `right_step` is
-`CONJECTURE` as a statement about path trees of biregular graphs; the sign separation it would
-give is `HEURISTIC`, on the measurement above.  The biregular case of Conjecture 10 remains a
-`CONJECTURE`.
+`left_step`, `right_step`, `certificate_closes`, `discriminant_vanishes_at_edge` and
+`no_vanishing` are `VERIFIED`.  The sign separation is `HEURISTIC`, on the measurement above.
+That the uniform certificate closes on every path tree is `FALSE`: it fails on `0.21%` of
+vertices in one measured case.  The biregular case of Conjecture 10 remains a `CONJECTURE`.
 -/
 
 namespace RatioRoute
@@ -101,6 +129,27 @@ theorem right_step {k : ℕ} (F : Fin k → ℝ) (lam a B : ℝ) (ha : 0 < a) (h
       _ ≤ ∑ j, 1 / F j := sum_le_sum hge
   have : lam < (k : ℝ) / B := by rw [lt_div_iff₀ hB]; linarith
   linarith
+
+/-- **The constants are forced.**  With `c` defined by `cB = k₀ - λB`, the requirement
+`B = λ + (d-1)/c` of `left_step` holds exactly when `B` satisfies the quadratic
+`λB² - B(k₀ + λ² - d + 1) + λk₀ = 0`.  So the two steps do not leave the constants free: they
+determine them. -/
+theorem certificate_closes {lam B k0 dd c : ℝ} (hB : B ≠ 0)
+    (hcdef : c * B = k0 - lam * B)
+    (hquad : lam * B ^ 2 - B * (k0 + lam ^ 2 - dd + 1) + lam * k0 = 0) :
+    B * c = lam * c + (dd - 1) := by
+  refine mul_right_cancel₀ hB ?_
+  have e1 : B * c * B = B * (c * B) := by ring
+  have e2 : (lam * c + (dd - 1)) * B = lam * (c * B) + (dd - 1) * B := by ring
+  rw [e1, e2, hcdef]
+  linear_combination -hquad
+
+/-- **The certificate degenerates exactly at the gap edge.**  Writing `s = √(d-1)`, `t = √(q-1)`
+so that `g = t - s` and `k₀ = q - 1 = t²`, the discriminant of that quadratic at `λ = g` is
+identically zero.  Inside the gap it is positive, so the certificate exists throughout the open
+gap and fails precisely where the gap itself closes. -/
+theorem discriminant_vanishes_at_edge (s t : ℝ) :
+    (t ^ 2 + (t - s) ^ 2 - s ^ 2) ^ 2 - 4 * (t - s) ^ 2 * t ^ 2 = 0 := by ring
 
 /-- **The two steps close the induction.**  A ratio that is either at least `λ > 0` or at most
 `-c < 0` is nonzero; `left_step` delivers the first alternative and `right_step` the second, so
