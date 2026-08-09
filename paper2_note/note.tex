@@ -1538,6 +1538,14 @@ is measured to hold there, so what is missing is an ingredient that distinguishe
 worst-case configuration the counting permits from the configurations that actually occur;
 better bookkeeping will not supply it.
 
+Two further checks confirm this. The depth-indexed recursion fails at \emph{shallow} path
+lengths, the largest failing one moving from $2$ at $\lambda=0.70g$ to $8$ at $0.99g$: near the
+root the path blocks little, so a right-type vertex has nearly all its children, and what fails
+is the left-type bound one level below, whose weakness compounds toward the root. And combining
+the depth bound with the parent-to-child drop of Lemma~\ref{lem:blocking}, which is the only
+other counting fact available, extends the range by nothing at all, since $q-r=1$ here makes the
+drop strictly weaker than the depth bound (\texttt{code/combined.py}).
+
 Combined with \S\ref{sec:softedge}, the constraints on a proof of Problem~1 are now sharp on
 four sides: it must produce a size-dependent bound (\texttt{no\_uniform\_lower\_bound}), reach
 the exponent $-2/3$ (\texttt{exponent\_floor}), match the constant \eqref{eq:constant}
