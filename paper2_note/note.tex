@@ -984,6 +984,35 @@ that, since there $H-v$ is a star of odd order. It therefore blocks the subcubic
 not his, and on the subcubic branch it gives $|\theta|\ge1/6$ against a true smallest root of
 $0.662$: valid, and far from sharp.
 
+The vacuity is removable. If $F(0)=0$, divide out the zero: writing $F=x^mG$ with $G(0)\neq0$,
+the nonzero roots of $F$ are the roots of $G$, and $G$ is what should be bounded. For Hall's
+branch $F=x^5(x^4-16x^2+55)$, so $G(0)=55$ and the obstruction disappears; the bound then
+gives $0.991$ against a true root of $\sqrt5$. Carried out on the matching polynomial itself,
+where $\mu_G(x)=\pm x^{\,n-2\nu}g(x^2)$ with $\nu$ the matching number and $g(0)=\pm m_\nu$,
+the classical Cauchy estimate becomes a statement purely about matching numbers.
+
+\begin{proposition}\label{prop:rootsep}
+Let $G$ be a finite graph with matching number $\nu$ and $k$-matching numbers $m_k$. Then
+every nonzero root $\theta$ of $\mu_G$ satisfies
+\[
+   \theta^2\;\ge\;\frac{m_\nu}{m_\nu+\max_{k<\nu}m_k}.
+\]
+\end{proposition}
+
+The estimate is Cauchy's and is classical; only its reading in terms of matching numbers is
+being recorded here. It is machine-checked as \texttt{RootSeparation.cauchy\_lower} and
+\texttt{matching\_root\_sep}, with no hypothesis on the graph.
+
+What makes it worth stating is that the inequality points the useful way. By
+\texttt{biregular\_reduction}, Conjecture~\ref{conj:gap} for an $(a,b)$-biregular graph is
+exactly the absence of a nonzero root below $\tau$, so any graph whose bound reaches $\tau$
+satisfies the conjecture, unconditionally and with no appeal to \cite{AFH}; that implication
+is \texttt{RootSeparation.sfm\_of\_separation}. Run on random biregular graphs
+(\texttt{code/rootsep.py}) it settles three of nine, the smaller ones, the bound falling as
+$0.63,0.45,0.28$ against a fixed $\tau=0.318$ for $(3,4)$-biregular as the graph grows. So it
+decides small cases outright and is too weak for large ones, which is the first positive
+result on the conjecture since the counterexample and is stated as the partial result it is.
+
 Empirically the statement is robust. Over $180$ random $(a,b)$-biregular bipartite graphs on
 up to $40$ vertices, for $(a,b)$ ranging over eight pairs, no root falls below $\tau$; the
 smallest nonzero root stays a factor $1.25$ to $2.2$ above it
