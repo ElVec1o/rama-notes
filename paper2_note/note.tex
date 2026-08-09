@@ -825,12 +825,41 @@ with $41,43,43,49,50,55,57,64,71$ vertices; Hall's $(5,5)$ is the smallest. The 
 that works is $7,6,5,6,7$ for $q=3,4,5,6,7$, so the phenomenon is cheapest exactly at
 $p=q=5$.
 
-The pendant leaves are not incidental. Removing them, so that every $w_i$ has degree $q$,
-destroys the effect: over the same $36$ parameter pairs the root always lies inside
-$\operatorname{spec}(T)$, with the diagnostic separated by three orders of magnitude.
-Verified in \texttt{code/hall\_family.py}; the test is the scaling of the density of states
+Removing the pendant leaves altogether, so that every $w_i$ has degree $q$, destroys the
+effect over the same range: for all $36$ pairs with $2\le p,q\le7$ the root lies inside
+$\operatorname{spec}(T)$, with the diagnostic separated by three orders of magnitude
+(\texttt{code/hall\_family.py}). The test throughout is the scaling of the density of states
 at the root, which vanishes linearly in $\eta$ outside the spectrum and tends to a positive
 limit inside, and which avoids the cavity mass gate that these flat-band graphs fail.
+
+That observation is real but it does not mean what it appears to mean, and in particular
+minimum degree at least two does \emph{not} repair Conjecture~\ref{conj:gap}.
+
+\begin{proposition}\label{prop:mindeg2}
+There are simple connected bipartite graphs of minimum degree two with a root of the matching
+polynomial in an internal gap of $\operatorname{spec}(T)$.
+\end{proposition}
+
+Replace each pendant leaf of $G(p,q)$ by a pendant cycle $C_k$ attached at $w_i$. Every new
+vertex then has degree two, as do the middle vertices of $K_{2,q}$, so the graph has minimum
+degree two, and the branches still meet only at $c$, so the deletion recurrence still
+computes $\mu_G$. The effect survives, at a price in size: it needs larger $p$ and $q$ than
+the pendant-leaf version, which is why a search stopping at $p,q\le7$ sees it only for
+$k=5$. Counterexamples occur at
+\[
+   (k,p,q)\in\{(5,7,7),(4,7,8),(3,8,8),(5,7,8),(5,8,7),(4,8,8),(5,8,8)\},
+\]
+the smallest having $92$ vertices, against $41$ for Hall's. So the leaves make the
+construction cheaper without being necessary to it.
+
+For $(k,p,q)=(5,7,7)$, on $92$ vertices with $140$ edges and degrees between two and nine,
+the root is the algebraic number $2.85290\ldots$ with minimal polynomial
+$x^8-26x^6+187x^4-350x^2+91$, and the cavity fixed point at that value is real, with all
+$280$ directed-edge ratio equations satisfied to $3\cdot10^{-15}$, all ratios nonzero, and
+decay rate $\rho=0.96669$ carrying a Collatz--Wielandt certificate. The $280$ directed edges
+fall into $11$ orbits, so an exact certificate in the style of \cite{HallCE} is within reach;
+until it is written the statement rests on a numerical ratio system rather than an exact one,
+and we label it accordingly. Verified in \texttt{code/mindeg2.py}.
 
 \subsection{What survives}
 
@@ -845,9 +874,12 @@ $\operatorname{spec}(G^{\mathrm{ab}})\setminus\operatorname{spec}(T)$ that
 \S\ref{sec:further} identifies as the only place a counterexample could live, so the
 framework was pointed at the right region; what it lacked was any reason for that region to
 be empty. The open problem is now to characterise the graphs for which
-$\operatorname{Zeros}(\mu_{d,G})\subseteq\operatorname{spec}(T)$ holds. Minimum degree at
-least two is the first candidate hypothesis, on the evidence of \S\ref{sec:hallfamily}, and
-the biregular Problem~1 of Song, Fan and Miao is untouched.
+$\operatorname{Zeros}(\mu_{d,G})\subseteq\operatorname{spec}(T)$ holds. By
+Proposition~\ref{prop:mindeg2} minimum degree at least two is not the answer. What every
+counterexample so far has in common is a wide spread of degrees, from two up to nine in the
+smallest one, so a regularity hypothesis rather than a connectivity one is the natural place
+to look next; the biregular Problem~1 of Song, Fan and Miao is untouched, as is the
+first Betti number one case, where the conjecture is a theorem.
 
 \section{A counting refinement}\label{sec:gapcount}
 
