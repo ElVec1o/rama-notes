@@ -73,7 +73,8 @@ upper bound, so a proof must reach the measured exponent and not merely some pow
 ## Status
 
 `no_uniform_lower_bound`, `power_law_tendsto_zero`, `exponent_floor`, `inf_not_attained`,
-`edge_unimprovable`, `edge_scale`, `discriminant_factors`, `inner_edge_simple`,
+`edge_unimprovable`, `edge_scale`, `sqrt_edge_quantile`, `discriminant_factors`,
+`inner_edge_simple`,
 `antitone_pos_tendsto_glb` and `unimprovable_iff_iInf_zero` are `VERIFIED`.  That
 the margin obeys a power law is `HEURISTIC` but strong: eight families, `d = 3` to `6`, thirteen
 or fourteen sizes each, `R² ≥ 0.999` throughout.  The asymptotic exponent is `-2/3`
@@ -203,11 +204,43 @@ aspect-ratio-dependent effective exponents at the sizes reachable.  **The measur
 a finite-size effect and the asymptotic exponent is the universal `-2/3`**
 (`code/quantile.py`).
 
-Two residuals are not explained.  The measured spread `0.0176` is about three times the
-analytic `0.0052` at comparable `n`, and the measured exponents sit about `0.088` above the
-analytic quantile's at the same `n`.  Both say the finite-graph root distribution departs from
-the tree measure near the edge by more than the quantile heuristic allows. -/
+One residual is real and now quantified.  Computing `N_obs = n ∫_g^{x_min} ρ`, the root count
+the analytic density places below each *observed* smallest root, gives a number near `0.5`,
+which is an acceptable convention, but it **drifts like `n^{+0.101}`**, consistently across all
+twelve families (`0.085` to `0.117`).  So the finite-graph root distribution does depart from
+the tree measure at the edge, and that is what the `0.088` exponent offset measures; the two are
+consistent, since `N_obs` should scale as the `3/2` power of the margin ratio.
+
+Whether the departure persists is unknown.  Everything at these sizes is pre-asymptotic,
+including the analytic quantile itself, so the drift may be one more finite-size effect; that
+possibility is recorded rather than resolved, having been the exact mistake made once already
+in this file. -/
 theorem sqrt_edge_exponent : -(1 / ((1 : ℝ) / 2 + 1)) = -(2 / 3) := by norm_num
+
+/-- **The asymptotic margin, in closed form.**  Near the inner edge the density is
+`ρ(x) = κ√(x-g) + O(x-g)`, so the mass within `δ` is `(2κ/3)δ^{3/2}` and the quantile at which
+the expected root count reaches one is
+
+  `δ = (3/(2κn))^{2/3}`.
+
+The constant is therefore explicit for every `(d,q)`, with `κ` read off the density, and it is
+confirmed numerically: `(3/(2κ))^{2/3} n^{-2/3}` agrees with the analytic quantile to four
+significant figures at `n = 10⁶` in all twelve families (`code/offset.py`).
+
+This upgrades the target.  Problem 1 is no longer "prove the margin is positive" but "prove a
+bound of exactly this size", since anything weaker is ruled out by `exponent_floor` and anything
+size-free by `no_uniform_lower_bound`. -/
+theorem sqrt_edge_quantile {κ n δ : ℝ} (hκ : 0 < κ) (hn : 0 < n) (hδ : 0 < δ)
+    (hmass : n * ((2 * κ / 3) * δ ^ ((3 : ℝ) / 2)) = 1) :
+    δ = (3 / (2 * κ * n)) ^ ((2 : ℝ) / 3) := by
+  have h32 : δ ^ ((3 : ℝ) / 2) = 3 / (2 * κ * n) := by
+    have hnz : (2 : ℝ) * κ * n ≠ 0 := by positivity
+    field_simp at hmass ⊢
+    linarith [hmass]
+  calc δ = δ ^ (((3 : ℝ) / 2) * ((2 : ℝ) / 3)) := by
+            rw [show ((3 : ℝ) / 2) * ((2 : ℝ) / 3) = 1 by norm_num, Real.rpow_one]
+    _ = (δ ^ ((3 : ℝ) / 2)) ^ ((2 : ℝ) / 3) := Real.rpow_mul hδ.le _ _
+    _ = (3 / (2 * κ * n)) ^ ((2 : ℝ) / 3) := by rw [h32]
 
 /-! ## The Friedman picture: sharp, attained only in the limit -/
 

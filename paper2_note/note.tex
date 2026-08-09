@@ -1292,10 +1292,28 @@ is the universal $-2/3$ (\texttt{code/quantile.py}).
 This overturns the reading recorded above, that the aspect-ratio dependence was real. It is not;
 what the three confound checks established is only that it is not an artefact of the size
 variable, of a correction term or of sampling, and the true explanation is that every size
-reachable here is pre-asymptotic. Two residuals remain unexplained: the measured spread is about
-three times the analytic one at comparable $n$, and the measured exponents sit about $0.088$
-above the analytic quantile's. Both indicate that the finite-graph root distribution departs
-from the tree measure near the edge by more than the quantile heuristic allows.
+reachable here is pre-asymptotic. One residual is real and can now be quantified. Writing
+$N_{\mathrm{obs}}=n\int_g^{x_{\min}}\rho$ for the root count the analytic density places below
+each \emph{observed} smallest root, the quantile convention would make it constant. It is not:
+it sits near $0.5$ but drifts like $n^{+0.101}$, consistently across all twelve families,
+between $0.085$ and $0.117$ (\texttt{code/offset.py}). So the finite-graph root distribution
+does depart from the tree measure at the edge, and that departure is what the $0.088$ exponent
+offset measures; the two are consistent, since $N_{\mathrm{obs}}$ scales as the $3/2$ power of
+the margin ratio. Whether the departure survives to infinity is unknown, since everything at
+these sizes is pre-asymptotic, the analytic quantile included.
+
+The asymptotic margin is nevertheless pinned exactly, not merely up to an exponent. Near the
+inner edge $\rho(x)=\kappa\sqrt{x-g}+O(x-g)$, so the mass within $\delta$ is
+$\tfrac{2\kappa}{3}\delta^{3/2}$ and the quantile at which the expected count reaches one is
+\begin{equation}\label{eq:constant}
+   \delta=\Bigl(\frac{3}{2\kappa n}\Bigr)^{2/3},
+\end{equation}
+which is \texttt{SoftEdge.sqrt\_edge\_quantile}. With $\kappa$ read off the density this is
+explicit for every $(d,q)$, and it checks out: $(3/2\kappa)^{2/3}n^{-2/3}$ agrees with the
+analytic quantile to four significant figures at $n=10^6$ in all twelve families. So
+Problem~1 is no longer ``prove the margin is positive'' but ``prove a bound of exactly the size
+\eqref{eq:constant}'', anything weaker being excluded by \texttt{exponent\_floor} and anything
+size-free by \texttt{no\_uniform\_lower\_bound}.
 
 What the decay says about the conjecture is worth stating as a shape rather than a number. If
 the margin is positive at every size and tends to zero, then the spectral edge $g$ is the
