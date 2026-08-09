@@ -1041,11 +1041,25 @@ $m$-th roots avoided so that the check is exact rational arithmetic. Measured in
 decimal places, and the certificate settles all nine biregular graphs tested, including every
 size at which the Cauchy and harmonic forms fail.
 
-This is a decision procedure rather than a proof of the conjecture, and the distinction
-matters. For a fixed graph the bound converges to the truth, so the procedure succeeds
-whenever the conjecture holds with room to spare; proving Song--Fan--Miao for \emph{all}
-biregular graphs would require $P_m$ bounded uniformly in the size of the graph, which is not
-supplied here and is exactly what remains.
+Run at scale it certifies $417$ of $417$ random biregular graphs across nine degree pairs and
+sizes up to $40$ vertices, in exact rational arithmetic throughout
+(\texttt{code/certify\_biregular.py}). Each of those is an unconditional proof of
+Conjecture~\ref{conj:gap} for that graph.
+
+It is a decision procedure and not a proof of the conjecture, and the distinction is not a
+matter of effort. For a finite family of positive reals the $\ell^m$ norm of the reciprocals
+\emph{decreases to} the $\ell^\infty$ norm, so
+\[
+   \sup_m P_m^{-1/m}=y_1
+\]
+exactly: optimising the certificate over $m$ computes the smallest root rather than bounding
+it. Numerically the agreement is already to five decimal places by $m=16$
+(\texttt{code/powersum\_limit.py}). Consequently the certificate succeeds for a graph
+precisely when $y_1>\tau^2$, which is Song--Fan--Miao for that graph, and a bound on $P_m$
+uniform in the size of the graph strong enough to give the conjecture would already be the
+conjecture. The difficulty has not moved, and the route is recorded as closed rather than
+promising. What the certificate does supply is a complete and exact decision procedure, which
+is worth having and is all it is.
 
 Empirically the statement is robust. Over $180$ random $(a,b)$-biregular bipartite graphs on
 up to $40$ vertices, for $(a,b)$ ranging over eight pairs, no root falls below $\tau$; the
