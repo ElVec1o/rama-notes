@@ -945,10 +945,57 @@ regularity in the strict sense, but vacuously: for $d$-regular $G$ the universal
 $d$-regular tree, $\operatorname{spec}(T)=[-2\sqrt{d-1},2\sqrt{d-1}]$ has no internal gaps at
 all, and Conjecture~\ref{conj:gap} is exactly Heilmann--Lieb. The content lies entirely in
 graphs whose universal cover has gaps, and the canonical such family is the
-$(a,b)$-biregular one, which is Problem~1 of Song, Fan and Miao and is untouched by every
-counterexample here: all of them have at least three distinct degrees. That, together with
-the first Betti number one case where the conjecture is a theorem, is where the remaining
-interest lies.
+$(a,b)$-biregular one, which is Problem~1 of Song, Fan and Miao.
+
+\subsection{Why the biregular case survives}\label{sec:biregblock}
+
+For an $(a,b)$-biregular graph the universal cover is the $(a,b)$-biregular tree, whose
+spectrum is $\{0\}\cup\{x:\tau\le|x|\le\rho\}$ with
+$\tau=|\sqrt{a-1}-\sqrt{b-1}|$ and $\rho=\sqrt{a-1}+\sqrt{b-1}$. Since \cite{HPS} already
+places every root in $[-\rho,\rho]$, Conjecture~\ref{conj:gap} for such a graph is
+\emph{equivalent} to the assertion that no nonzero root satisfies $|x|<\tau$, which is
+Problem~1 of Song, Fan and Miao. That reduction is machine-checked as
+\texttt{BiregularBlocking.biregular\_reduction}, with the tree spectrum and the
+Hall--Puder--Sawin interval as the two hypotheses; neither is in Mathlib. So the biregular
+case is not one fragment of the conjecture among others, it is the whole of what survives.
+
+Both mechanisms of \S\ref{sec:hallce} are structurally blocked there, and for different
+reasons. The subcubic construction hangs branches on a tree skeleton, and a graph in which
+every vertex has degree at least two is not a tree, by handshaking against the edge count of
+a tree (\texttt{no\_tree\_of\_two\_le\_degree}); a biregular graph with $a,b\ge2$ has minimum
+degree at least two and so admits no such skeleton. Hall's construction needs a wide spread of
+degrees, and a biregular graph has exactly two. Beyond that, the two constructions place their
+roots in \emph{bulk} gaps, at $1.20$, $2.24$ and $2.85$ in the examples above, whereas the
+only gap available in the biregular case is the one at the origin: a counterexample there
+would need a root just above zero, which is a question about near-deficiency of matchings
+rather than about band structure.
+
+There is also a quantitative obstruction, in the direction one would want, though it is not
+complete. At a cut vertex with $p$ isomorphic branches the matching polynomial factors through
+$F=x\mu_H-p\mu_{H-v}$, and $F(0)=-p\,\mu_{H-v}(0)$, so a Lipschitz bound gives
+\[
+   |\theta|\;\ge\;\frac{p\,|\mu_{H-v}(0)|}{M},\qquad M=\sup|F'| ,
+\]
+for every root $\theta$ (\texttt{branch\_root\_sep}). The separation grows linearly in the
+number of branches: strengthening the mechanism drives its roots away from zero, which is the
+opposite of what a biregular counterexample requires. The bound is conditional on
+$\mu_{H-v}(0)\neq0$, that is on $H-v$ having a perfect matching, and Hall's own branch fails
+that, since there $H-v$ is a star of odd order. It therefore blocks the subcubic mechanism and
+not his, and on the subcubic branch it gives $|\theta|\ge1/6$ against a true smallest root of
+$0.662$: valid, and far from sharp.
+
+Empirically the statement is robust. Over $180$ random $(a,b)$-biregular bipartite graphs on
+up to $40$ vertices, for $(a,b)$ ranging over eight pairs, no root falls below $\tau$; the
+smallest nonzero root stays a factor $1.25$ to $2.2$ above it
+(\texttt{code/biregular.py}). Random sampling is the wrong instrument for a structured
+phenomenon, so an adversarial local search was run as well, descending on the smallest nonzero
+root by degree-preserving edge swaps, which stay inside the biregular class exactly. It barely
+moves the quantity, from $0.6076$ to $0.6005$ over $1200$ swaps in the hardest case, and the
+final ratios to $\tau$ run from $1.42$ to $1.97$ (\texttt{code/biregular\_anneal.py}). The
+smallest nonzero root appears to be rigid inside the biregular class.
+
+That, together with the first Betti number one case where the conjecture is a theorem, is
+where the remaining interest lies.
 
 \section{A counting refinement}\label{sec:gapcount}
 
