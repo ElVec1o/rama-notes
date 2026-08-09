@@ -65,24 +65,36 @@ point the path tree is already tracking.
 
 ## What remains
 
-`right_step` needs *enough* children, `k > λB`.  Near the gap edge `B → √(q-1)`, so the
-requirement tends to `(q-1) - √((d-1)(q-1))`.  Measured on real path trees the uniform
-certificate closes in most cases but **not all**: for a `(3,6)`-biregular graph on `15` vertices
-at `λ = 0.99g`, `0.21%` of right-type vertices have too few children (`code/certificate.py`).
+The uniform form of `right_step` needs `k > λB`, and that **fails**: for a `(3,6)`-biregular
+graph on `15` vertices at `λ = 0.99g`, `0.21%` of right-type vertices have too few children
+(`code/certificate.py`).
 
-The defect is precise.  A right vertex with few children is still safe, because a vertex whose
-children are mostly blocked has those children's ratios sitting well below `B`; but a *uniform*
-interval cannot express that correlation.  So the certificate needs the interval to depend on
-the number of children, or an argument that few children forces small child ratios.  That is
-the remaining work, and it is combinatorial rather than spectral, which is the point of taking
-this route.
+The defect is repaired by dropping the uniform interval.  Measuring the child ratios directly,
+a right-type vertex at the minimum child count carries children that are *leaves*, of ratio
+exactly `λ`: `0.8136` against `λ = 0.8136` at `k = 1`, and the same at the minimum `k` of every
+family tested.  So the correct hypothesis is a bound on the ratios rather than on the counts,
+and `right_step_sharp` supplies it: child ratios below `k/λ` suffice, which is what the path
+trees satisfy with slack `0.42` to `4.47` and **zero violations** over every vertex measured
+(`code/childbound.py`).  The requirement thereby drops from `k > λB` to `k > λ²`, strictly
+weaker since `B > λ`, and the failing case is covered: at `k = 1` it needs `F < 1/λ = 1.229`
+against an observed `0.8136`.
+
+## What remains
+
+  **A10′.**  Every child ratio at a right-type path-tree vertex with `k` children is below
+  `k/λ`.
+
+That is the whole remaining gap.  It is a statement about how blocking propagates from a vertex
+to its children along a self-avoiding walk, so it is combinatorial rather than spectral, which
+is the point of taking this route.
 
 ## Status
 
-`left_step`, `right_step`, `certificate_closes`, `discriminant_vanishes_at_edge` and
-`no_vanishing` are `VERIFIED`.  The sign separation is `HEURISTIC`, on the measurement above.
-That the uniform certificate closes on every path tree is `FALSE`: it fails on `0.21%` of
-vertices in one measured case.  The biregular case of Conjecture 10 remains a `CONJECTURE`.
+`left_step`, `right_step`, `right_step_sharp`, `right_step_leaves`, `certificate_closes`,
+`discriminant_vanishes_at_edge` and `no_vanishing` are `VERIFIED`.  That the *uniform*
+certificate closes on every path tree is `FALSE`, failing on `0.21%` of vertices in one measured
+case; the sharp form repairs it.  A10′ and the sign separation are `HEURISTIC`, on the
+measurements cited.  The biregular case of Conjecture 10 remains a `CONJECTURE`.
 -/
 
 namespace RatioRoute
@@ -129,6 +141,40 @@ theorem right_step {k : ℕ} (F : Fin k → ℝ) (lam a B : ℝ) (ha : 0 < a) (h
       _ ≤ ∑ j, 1 / F j := sum_le_sum hge
   have : lam < (k : ℝ) / B := by rw [lt_div_iff₀ hB]; linarith
   linarith
+
+/-- **The sharp right step.**  If every child ratio is positive and below `k/λ`, each
+reciprocal exceeds `λ/k`, the sum exceeds `λ`, and the parent is strictly negative.
+
+This replaces the uniform hypothesis `k > λB` of `right_step` by a bound on the child ratios
+themselves, which is what a path tree actually satisfies, and it repairs the defect: the
+requirement drops from `k > λB` to `k > λ²`, strictly weaker since `B > λ`. -/
+theorem right_step_sharp {k : ℕ} (hk : 0 < k) (F : Fin k → ℝ) (lam : ℝ) (hlam : 0 < lam)
+    (hF : ∀ j, 0 < F j ∧ F j < (k : ℝ) / lam) :
+    lam - ∑ j, 1 / F j < 0 := by
+  have hkR : (0 : ℝ) < k := by exact_mod_cast hk
+  have hne : (univ : Finset (Fin k)).Nonempty := by
+    rw [univ_nonempty_iff]; exact Fin.pos_iff_nonempty.mp hk
+  have hlt : ∀ j ∈ (univ : Finset (Fin k)), lam / (k : ℝ) < 1 / F j := by
+    intro j _
+    rw [div_lt_div_iff₀ hkR (hF j).1]
+    have h2 := (hF j).2
+    rw [lt_div_iff₀ hlam] at h2
+    nlinarith [h2]
+  have hs : ∑ _j : Fin k, lam / (k : ℝ) < ∑ j, 1 / F j := sum_lt_sum_of_nonempty hne hlt
+  have hconst : ∑ _j : Fin k, lam / (k : ℝ) = lam := by
+    rw [sum_const, card_univ, Fintype.card_fin, nsmul_eq_mul]
+    field_simp
+  linarith
+
+/-- **The extreme case is the leaf case.**  A child with no children of its own has ratio
+exactly `λ`, so a right-type vertex all of whose children are leaves has ratio `λ - k/λ`, which
+is negative precisely when `k > λ²`.  Measurement says this is the binding case: at the minimum
+child count on every path tree examined, every child is a leaf, its ratio equal to `λ` to the
+last digit. -/
+theorem right_step_leaves {k : ℕ} (lam : ℝ) (hlam : 0 < lam) (hk : lam ^ 2 < k) :
+    lam - (k : ℝ) / lam < 0 := by
+  rw [sub_neg, lt_div_iff₀ hlam]
+  nlinarith
 
 /-- **The constants are forced.**  With `c` defined by `cB = k₀ - λB`, the requirement
 `B = λ + (d-1)/c` of `left_step` holds exactly when `B` satisfies the quadratic

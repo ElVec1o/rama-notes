@@ -1433,16 +1433,33 @@ digits in every case checked (\texttt{code/certificate.py}). The certificate con
 chosen; they are the fixed point the path tree already tracks, and the certificate degenerates
 precisely where the gap closes.
 
-What the certificate does not yet do is close on every path tree. The requirement is
-$k>\lambda B$ at each right-type vertex, which near the gap edge tends to
-$(q-1)-\sqrt{(d-1)(q-1)}$; measured on real path trees it holds in most cases but not all, and
-for a $(3,6)$-biregular graph on $15$ vertices at $\lambda=0.99g$ it fails at $0.21\%$ of
-right-type vertices. The defect is precise: such a vertex is in fact safe, because one whose
-children are mostly blocked has those children's ratios sitting well below $B$, but a
-\emph{uniform} interval cannot express that correlation. Closing the route therefore requires
-either an interval depending on the number of children, or an argument that few children force
-small child ratios. That is a combinatorial statement about self-avoiding walks rather than a
-spectral one, which is the point of the route; it is open.
+The uniform form of (ii) requires $k>\lambda B$ at each right-type vertex, and that fails: for a
+$(3,6)$-biregular graph on $15$ vertices at $\lambda=0.99g$ it is violated at $0.21\%$ of
+right-type vertices.
+
+Dropping the uniform interval repairs it. Measuring child ratios directly, a right-type vertex
+at the minimum child count carries children that are \emph{leaves}, of ratio exactly $\lambda$:
+$0.8136$ against $\lambda=0.8136$ at $k=1$, and likewise at the minimum $k$ of every family
+tested. The correct hypothesis is therefore a bound on the ratios, not on the counts.
+
+\begin{proposition}\label{prop:sharp}
+Let $\lambda>0$ and $k\ge1$. If $0<F_j<k/\lambda$ for $j=1,\dots,k$ then
+$\lambda-\sum_j 1/F_j<0$.
+\end{proposition}
+
+This is \texttt{RatioRoute.right\_step\_sharp}, and \texttt{right\_step\_leaves} records the
+extreme case: all children leaves gives $\lambda-k/\lambda$, negative exactly when $k>\lambda^2$.
+The requirement thus drops from $k>\lambda B$ to $k>\lambda^2$, strictly weaker since $B>\lambda$,
+and the failing case is covered, needing $F<1/\lambda=1.229$ against an observed $0.8136$. The
+hypothesis of Proposition~\ref{prop:sharp} holds with slack $0.42$ to $4.47$ and no violations
+over every path-tree vertex measured (\texttt{code/childbound.py}).
+
+What remains is exactly that hypothesis:
+\begin{conjecture}[A10$'$]\label{conj:childbound}
+Every child ratio at a right-type path-tree vertex with $k$ children is below $k/\lambda$.
+\end{conjecture}
+It concerns how blocking propagates from a vertex to its children along a self-avoiding walk, so
+it is combinatorial rather than spectral, which is the point of the route; it is open.
 
 Combined with \S\ref{sec:softedge}, the constraints on a proof of Problem~1 are now sharp on
 four sides: it must produce a size-dependent bound (\texttt{no\_uniform\_lower\_bound}), reach
