@@ -1010,8 +1010,42 @@ satisfies the conjecture, unconditionally and with no appeal to \cite{AFH}; that
 is \texttt{RootSeparation.sfm\_of\_separation}. Run on random biregular graphs
 (\texttt{code/rootsep.py}) it settles three of nine, the smaller ones, the bound falling as
 $0.63,0.45,0.28$ against a fixed $\tau=0.318$ for $(3,4)$-biregular as the graph grows. So it
-decides small cases outright and is too weak for large ones, which is the first positive
-result on the conjecture since the counterexample and is stated as the partial result it is.
+decides small cases outright and is too weak for large ones.
+
+The weakness is not intrinsic: Cauchy's estimate uses only the moduli of the coefficients and
+discards the one structural fact available. By Heilmann--Lieb $\mu_G$ is real-rooted, so $g$
+has all roots real and \emph{positive}. For a finite family of positive reals the $\ell^m$
+norm of the reciprocals decreases to the $\ell^\infty$ norm, so with
+$P_m=\sum_i y_i^{-m}$,
+\[
+   \min_i y_i\;\ge\;P_m^{-1/m},
+\]
+sharpening as $m$ grows and exact in the limit. The case $m=1$ is the harmonic bound
+$m_\nu/m_{\nu-1}$, already better than Cauchy; and the $P_m$ are computed exactly from the
+matching numbers by Newton's identities on the reversed polynomial, so every quantity is
+rational.
+
+\begin{proposition}\label{prop:powersum}
+Let $G$ be biregular with $\tau=|\sqrt{a-1}-\sqrt{b-1}|$, and let $q\ge\tau^2$ be rational.
+If $P_m\,q^m\le1$ for some $m\ge1$, then no nonzero root of $\mu_G$ has $|\theta|<\tau$, so
+Conjecture~\ref{conj:gap} holds for $G$.
+\end{proposition}
+
+\begin{proof}
+$y_i^{-m}\le P_m\le q^{-m}$ for each $i$, hence $y_i\ge q\ge\tau^2$.
+\end{proof}
+
+Machine-checked as \texttt{PowerSumCertificate.roots\_ge\_of\_powersum}, with division and
+$m$-th roots avoided so that the check is exact rational arithmetic. Measured in
+\texttt{code/powersum.py}, $m=8$ already agrees with the true smallest root to three or four
+decimal places, and the certificate settles all nine biregular graphs tested, including every
+size at which the Cauchy and harmonic forms fail.
+
+This is a decision procedure rather than a proof of the conjecture, and the distinction
+matters. For a fixed graph the bound converges to the truth, so the procedure succeeds
+whenever the conjecture holds with room to spare; proving Song--Fan--Miao for \emph{all}
+biregular graphs would require $P_m$ bounded uniformly in the size of the graph, which is not
+supplied here and is exactly what remains.
 
 Empirically the statement is robust. Over $180$ random $(a,b)$-biregular bipartite graphs on
 up to $40$ vertices, for $(a,b)$ ranging over eight pairs, no root falls below $\tau$; the
