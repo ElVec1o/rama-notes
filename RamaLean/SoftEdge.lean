@@ -74,7 +74,7 @@ upper bound, so a proof must reach the measured exponent and not merely some pow
 
 `no_uniform_lower_bound`, `power_law_tendsto_zero`, `exponent_floor`, `inf_not_attained`,
 `edge_unimprovable`, `edge_scale`, `sqrt_edge_quantile`, `discriminant_factors`,
-`inner_edge_simple`,
+`inner_edge_simple`, `rayleigh_between`, `rayleigh_in_gap`,
 `antitone_pos_tendsto_glb` and `unimprovable_iff_iInf_zero` are `VERIFIED`.  That
 the margin obeys a power law is `HEURISTIC` but strong: eight families, `d = 3` to `6`, thirteen
 or fourteen sizes each, `R² ≥ 0.999` throughout.  The asymptotic exponent is `-2/3`
@@ -211,10 +211,13 @@ twelve families (`0.085` to `0.117`).  So the finite-graph root distribution doe
 the tree measure at the edge, and that is what the `0.088` exponent offset measures; the two are
 consistent, since `N_obs` should scale as the `3/2` power of the margin ratio.
 
-Whether the departure persists is unknown.  Everything at these sizes is pre-asymptotic,
-including the analytic quantile itself, so the drift may be one more finite-size effect; that
-possibility is recorded rather than resolved, having been the exact mistake made once already
-in this file. -/
+Two explanations for the drift are ruled out.  It is not the girth, which is exactly `4` for
+every graph over the whole range and so cannot drive a smooth trend.  And it is not the
+minimum-over-samples estimator: recomputing `N_obs` from the unbiased sample *mean* gives a
+drift of `+0.110`, if anything larger than the minimum's `+0.093`, with `R² > 0.98` in every
+family (`code/nobs.py`).  Whether the departure persists to infinity is still unknown, since
+everything at these sizes is pre-asymptotic, the analytic quantile included; that possibility is
+recorded rather than resolved, having been the exact mistake made once already in this file. -/
 theorem sqrt_edge_exponent : -(1 / ((1 : ℝ) / 2 + 1)) = -(2 / 3) := by norm_num
 
 /-- **The asymptotic margin, in closed form.**  Near the inner edge the density is
@@ -241,6 +244,46 @@ theorem sqrt_edge_quantile {κ n δ : ℝ} (hκ : 0 < κ) (hn : 0 < n) (hδ : 0 
             rw [show ((3 : ℝ) / 2) * ((2 : ℝ) / 3) = 1 by norm_num, Real.rpow_one]
     _ = (δ ^ ((3 : ℝ) / 2)) ^ ((2 : ℝ) / 3) := Real.rpow_mul hδ.le _ _
     _ = (3 / (2 * κ * n)) ^ ((2 : ℝ) / 3) := by rw [h32]
+
+/-! ## Why the tool that gives the outer half cannot give the inner half -/
+
+/-- **Rayleigh quotients see the outer edges.**  For a diagonal form with entries `μ i`, every
+Rayleigh quotient lies between the least and the greatest entry.  Because that is a statement
+about quadratic forms it passes to every subspace, which is exactly why the path-tree
+compression argument delivers `Zeros(μ_G) ⊆ [-ρ(T), ρ(T)]`: the path tree is an induced subtree
+of `T`, so its adjacency form is a compression of `T`'s, and the outer bound is inherited.  This
+is the proved half of the two-sided statement. -/
+theorem rayleigh_between {ι : Type*} [Fintype ι] (μ c : ι → ℝ) {m M : ℝ}
+    (hm : ∀ i, m ≤ μ i) (hM : ∀ i, μ i ≤ M) (hc : 0 < ∑ i, c i ^ 2) :
+    m ≤ (∑ i, μ i * c i ^ 2) / (∑ i, c i ^ 2) ∧
+      (∑ i, μ i * c i ^ 2) / (∑ i, c i ^ 2) ≤ M := by
+  constructor
+  · rw [le_div_iff₀ hc]
+    calc m * ∑ i, c i ^ 2 = ∑ i, m * c i ^ 2 := by rw [Finset.mul_sum]
+      _ ≤ ∑ i, μ i * c i ^ 2 :=
+          Finset.sum_le_sum fun i _ => mul_le_mul_of_nonneg_right (hm i) (sq_nonneg _)
+  · rw [div_le_iff₀ hc]
+    calc ∑ i, μ i * c i ^ 2 ≤ ∑ i, M * c i ^ 2 :=
+          Finset.sum_le_sum fun i _ => mul_le_mul_of_nonneg_right (hM i) (sq_nonneg _)
+      _ = M * ∑ i, c i ^ 2 := by rw [Finset.mul_sum]
+
+/-- **But they cannot see a gap.**  With entries `-1` and `1` the spectrum is `{-1,1}` and
+`(-1,1)` is a gap; the vector `(1,1)` has Rayleigh quotient `0`, strictly inside it.  So a
+compression can take values a gap of the original excludes, and no argument phrased in Rayleigh
+quotients or compressions can rule them out, however refined.
+
+**The tool that proves the outer half of the two-sided statement provably cannot prove the
+inner half.**  This is the `P₈`-inside-the-`(3,2)`-biregular-tree phenomenon at its smallest,
+and it is why Heilmann-Lieb, Godsil's path tree and the Marcus-Spielman-Srivastava interlacing
+machinery all deliver one end of the interval and are silent about the other.  Any proof of
+Problem 1 must use something that sees gaps. -/
+theorem rayleigh_in_gap :
+    ∃ μ c : Fin 2 → ℝ, (∀ i, μ i = -1 ∨ μ i = 1) ∧ (0 < ∑ i, c i ^ 2) ∧
+      (∑ i, μ i * c i ^ 2) / (∑ i, c i ^ 2) ∈ Set.Ioo (-1 : ℝ) 1 := by
+  refine ⟨![-1, 1], ![1, 1], ?_, ?_, ?_⟩
+  · intro i; fin_cases i <;> simp
+  · norm_num [Fin.sum_univ_two]
+  · norm_num [Fin.sum_univ_two]
 
 /-! ## The Friedman picture: sharp, attained only in the limit -/
 

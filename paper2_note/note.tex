@@ -1299,8 +1299,13 @@ it sits near $0.5$ but drifts like $n^{+0.101}$, consistently across all twelve 
 between $0.085$ and $0.117$ (\texttt{code/offset.py}). So the finite-graph root distribution
 does depart from the tree measure at the edge, and that departure is what the $0.088$ exponent
 offset measures; the two are consistent, since $N_{\mathrm{obs}}$ scales as the $3/2$ power of
-the margin ratio. Whether the departure survives to infinity is unknown, since everything at
-these sizes is pre-asymptotic, the analytic quantile included.
+the margin ratio. Two explanations for the drift are ruled out. It is not the girth,
+which is exactly $4$ for every graph over the whole range and so cannot drive a smooth trend;
+and it is not the minimum-over-samples estimator, since recomputing $N_{\mathrm{obs}}$ from the
+unbiased sample \emph{mean} gives a drift of $+0.110$, if anything larger than the minimum's
+$+0.093$, at $R^2>0.98$ in every family (\texttt{code/nobs.py}). Whether the departure survives
+to infinity is still unknown, since everything at these sizes is pre-asymptotic, the analytic
+quantile included.
 
 The asymptotic margin is nevertheless pinned exactly, not merely up to an exponent. Near the
 inner edge $\rho(x)=\kappa\sqrt{x-g}+O(x-g)$, so the mass within $\delta$ is
@@ -1334,6 +1339,33 @@ vanishes.
 The limits are the obvious ones. The fits reach $n=98$; the identification of any particular
 rational number as the exponent is an inference from the random matrix analogy rather than a
 derivation; and the aspect-ratio dependence is measured, not explained.
+
+\subsection{Why the available machinery cannot close it}\label{sec:barrier}
+
+There is a structural reason the outer half of \eqref{eq:twosided} is a theorem and the inner
+half is not, and it disqualifies the tools that proved the outer half.
+
+The outer bound is a statement about quadratic forms. For a diagonal form with entries $\mu_i$,
+every Rayleigh quotient lies between the least and the greatest entry
+(\texttt{SoftEdge.rayleigh\_between}), and being a statement about forms it passes to every
+subspace. That is exactly the path-tree argument: the path tree is an induced subtree of $T$, so
+its adjacency form is a compression of $T$'s, and it inherits
+$\operatorname{Zeros}(\mu_G)\subseteq[-\rho(T),\rho(T)]$.
+
+A gap is not a statement about quadratic forms, and compressions do not inherit it. With
+entries $-1$ and $1$ the spectrum is $\{-1,1\}$ and $(-1,1)$ is a gap, but the vector $(1,1)$
+has Rayleigh quotient $0$, strictly inside it (\texttt{rayleigh\_in\_gap}). So a compression can
+take values the original excludes, and no argument phrased in Rayleigh quotients or
+compressions can rule them out however it is refined. This is the $P_8$-inside-the
+$(3,2)$-biregular-tree phenomenon of \S\ref{sec:further} at its smallest, and it explains why
+Heilmann--Lieb, Godsil's path tree and the Marcus--Spielman--Srivastava interlacing machinery
+all deliver one end of the interval and are silent about the other.
+
+Combined with \S\ref{sec:softedge}, the constraints on a proof of Problem~1 are now sharp on
+four sides: it must produce a size-dependent bound (\texttt{no\_uniform\_lower\_bound}), reach
+the exponent $-2/3$ (\texttt{exponent\_floor}), match the constant \eqref{eq:constant}
+(\texttt{sqrt\_edge\_quantile}), and use something other than a compression argument
+(\texttt{rayleigh\_in\_gap}).
 
 \subsection{What survives}
 
