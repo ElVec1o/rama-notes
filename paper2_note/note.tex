@@ -1087,6 +1087,50 @@ $\operatorname{spec}(T)$ every time and is never closer than $0.167$ to $x$
 (\texttt{code/wmean\_test.py}), and a single coincidence there would have refuted
 Conjecture~\ref{conj:gap} outright.
 
+\subsection{Separating the band geometry from the weight}\label{sec:split}
+
+Proposition~\ref{prop:wmean} mixes two unrelated things: where the crossing band sits
+relative to $x$, and how much the remaining factors vary. Separating them removes the
+restriction to one crossing band and gives a criterion whose two halves can be attacked
+independently.
+
+Let $K=\{k:x\in B_k\}$ be the crossing set and put
+\[
+   \pi(z)=\prod_{k\in K}\bigl(x-\lambda_k(z)\bigr),\qquad
+   w(z)=\Bigl|\prod_{k\notin K}\bigl(x-\lambda_k(z)\bigr)\Bigr| .
+\]
+The factors outside $K$ never vanish, so their product has a constant sign $s$ and
+$\mu_G(x)=s\int\pi w$.
+
+\begin{proposition}\label{prop:split}
+Write $\pi=\pi_+-\pi_-$ and $J_\pm=\int_{\mathbb T^b}\pi_\pm$, and suppose
+$0<q_{\mathrm{lo}}\le w\le q_{\mathrm{hi}}$. If
+\[
+   \frac{J_+}{J_-}\;>\;\Lambda:=\frac{q_{\mathrm{hi}}}{q_{\mathrm{lo}}} ,
+\]
+then $\mu_G(x)\neq0$. No hypothesis on $|K|$ is used.
+\end{proposition}
+
+\begin{proof}
+$\int\pi w=\int\pi_+w-\int\pi_-w\ge q_{\mathrm{lo}}J_+-q_{\mathrm{hi}}J_->0$.
+\end{proof}
+
+Machine-checked as \texttt{CrossingSplit.ne\_zero\_of\_split}, with the ratio form as
+\texttt{crit\_of\_ratio}. The point is that $J_\pm$ involve only the crossing bands and
+$\Lambda$ only the rest, so a bound on either half is useful on its own; the weighted mean of
+Proposition~\ref{prop:wmean} admits no such division. It is also not the wasteful estimate:
+bounding the whole integrand by $\sup w$ loses the four orders of magnitude that
+$\sup w/\inf w$ can reach, whereas here $\inf w$ is applied to the majority term and $\sup w$
+only to the minority term.
+
+Over $208$ residue points the criterion fires every time, with worst margin $2.149$ and
+median $173$ (\texttt{code/jsplit.py}). It is therefore tight rather than comfortable at the
+hardest points, and the sample contains only two points with $|K|\ge2$, so it says almost
+nothing about those. What the criterion buys is a target with structure: $J_+/J_-$ is large
+because $x$ sits near an edge of the crossing band, the minority measure never exceeding
+$0.0674$, and $\Lambda$ is a product of band-distance ratios over the non-crossing bands.
+Bounding either one is a self-contained problem.
+
 Difficulty is conserved and it is worth saying where it went. A weighted mean lies in the
 convex hull of the range of $\lambda_{k_0}$, which is the band containing $x$, and that band
 is not inside $\operatorname{spec}(T)$ precisely because $x$ is in it and outside
