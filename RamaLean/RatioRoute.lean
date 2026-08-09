@@ -96,7 +96,11 @@ certificate closes on every path tree is `FALSE`, failing on `0.21%` of vertices
 case; the sharp form repairs it.  `min_children`, `child_count_drop`, `children_are_leaves` and `binding_case` are `VERIFIED` as
 arithmetic; the three graph-theoretic hypotheses feeding them are `PROVED` by the alternation
 count above, formalizing which would need bipartite path infrastructure not available here.
-Full A10' at every `k`, and the sign separation, remain `HEURISTIC` on the measurements cited.  The biregular case of Conjecture 10 remains a `CONJECTURE`.
+`mu_pos_iff` and `coupled_closes` are `VERIFIED`.  The biregular case of Conjecture 10 under
+those two inequalities is `PROVED`: its arithmetic is verified, its combinatorial inputs are
+proved above, and the induction over the path tree is standard, though formalizing the path tree
+itself needs infrastructure not available here.  Outside that range, and the sign separation,
+remain `HEURISTIC` on the measurements cited.  The biregular case of Conjecture 10 remains a `CONJECTURE`.
 -/
 
 namespace RatioRoute
@@ -218,6 +222,33 @@ exactly `λ`, so the parent is `λ - k/λ`, strictly negative as soon as `k > λ
 theorem binding_case {k : ℕ} (lam : ℝ) (hlam : 0 < lam) (hk : lam ^ 2 < k) :
     lam - (k : ℝ) / lam < 0 :=
   right_step_leaves lam hlam hk
+
+/-! ## The coupled induction, and when it closes -/
+
+/-- **The closure condition, in closed form.**  Write `Δ = q - r`.  Bounding left-type ratios by
+`κ(j) = λ + j/μ_min` and right-type ones by `μ(j) = j/κ(j-Δ) - λ`, and feeding each into the
+other, `μ` is decreasing so its binding value is `μ_min = Δ/λ - 2λ`, positive exactly when
+`2λ² < Δ`.  Then `κ(j-Δ) = λ(j-2λ²)/(Δ-2λ²)`, and the requirement `λ·κ(j-Δ) < j` at child count
+`j` collapses to a polynomial inequality. -/
+theorem mu_pos_iff {lam D j : ℝ} (hD : 2 * lam ^ 2 < D) :
+    lam * (lam * (j - 2 * lam ^ 2) / (D - 2 * lam ^ 2)) < j ↔
+      0 < j * (D - 3 * lam ^ 2) + 2 * lam ^ 4 := by
+  have hpos : 0 < D - 2 * lam ^ 2 := by linarith
+  rw [show lam * (lam * (j - 2 * lam ^ 2) / (D - 2 * lam ^ 2))
+        = lam ^ 2 * (j - 2 * lam ^ 2) / (D - 2 * lam ^ 2) by ring,
+    div_lt_iff₀ hpos]
+  constructor <;> intro h <;> nlinarith [h]
+
+/-- **The condition need only be checked at the largest child count.**  If `Δ ≥ 3λ²` the
+inequality is immediate; otherwise the left side decreases in `j`, so checking it at the maximum
+`K = q - 1` suffices for every attainable `j`. -/
+theorem coupled_closes {lam D K j : ℝ} (hlam : 0 < lam) (hj : 0 ≤ j) (hjK : j ≤ K)
+    (hK : 0 < K * (D - 3 * lam ^ 2) + 2 * lam ^ 4) :
+    0 < j * (D - 3 * lam ^ 2) + 2 * lam ^ 4 := by
+  rcases le_or_gt 0 (D - 3 * lam ^ 2) with h | h
+  · have : 0 ≤ j * (D - 3 * lam ^ 2) := mul_nonneg hj h
+    nlinarith [pow_pos hlam 4]
+  · nlinarith [hK]
 
 /-- **The constants are forced.**  With `c` defined by `cB = k₀ - λB`, the requirement
 `B = λ + (d-1)/c` of `left_step` holds exactly when `B` satisfies the quadratic

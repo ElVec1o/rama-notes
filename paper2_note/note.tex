@@ -1480,9 +1480,35 @@ hold with no violations, and with zero slack in four of them, so both are attain
 elementary counting steps in the proof above, whose formalization would need bipartite path
 infrastructure we do not have.
 
-What is still missing is A10$'$ at intermediate $k$, where the children are not leaves and their
-ratios must be controlled by a coupled induction across the bipartition. Lemma~\ref{lem:blocking}
-supplies that induction's combinatorial input; assembling it is open.
+Assembling the coupled induction closes the route on a nontrivial class. Write $\Delta=q-r$ and
+bound left-type ratios by $\kappa(j)=\lambda+j/\mu_{\min}$ and right-type ones by
+$\mu(j)=j/\kappa(j-\Delta)-\lambda$, using Lemma~\ref{lem:blocking} on both sides: every
+right-type child count is at least $\Delta$, and the left-type ones are capped at $j-\Delta$.
+Since $\mu$ decreases in $j$ its binding value is $\mu_{\min}=\Delta/\lambda-2\lambda$, positive
+exactly when $2\lambda^2<\Delta$; then $\kappa(j-\Delta)=\lambda(j-2\lambda^2)/(\Delta-2\lambda^2)$
+and the requirement $\lambda\kappa(j-\Delta)<j$ collapses to $j(\Delta-3\lambda^2)+2\lambda^4>0$,
+which is monotone in $j$ and so need only be checked at $j=q-1$.
+
+\begin{theorem}\label{thm:biregclass}
+Let $G$ be $(d,q)$-biregular with $r$ vertices of degree $q$, and put $\Delta=q-r$. If
+$\lambda\in(0,g)$ satisfies
+\[
+   2\lambda^2<\Delta \qquad\text{and}\qquad (q-1)(\Delta-3\lambda^2)+2\lambda^4>0,
+\]
+then $\mu_G(\lambda)\neq0$.
+\end{theorem}
+
+The two inequalities are \texttt{RatioRoute.mu\_pos\_iff} and \texttt{coupled\_closes}. Verified
+exactly in radical arithmetic at $\lambda=g$, they hold on the closed gap for $(3,6,4)$,
+$(4,8,4)$, $(4,12,4)$ and $(5,10,4)$, and for $(3,9,4)$ the second is exactly $0$ at the edge, so
+the theorem covers the open gap and degenerates precisely where the gap closes, as
+\eqref{eq:certquad} does (\texttt{code/coupled.py}). This is the first proof of the inner end of
+\eqref{eq:twosided} for a nontrivial class.
+
+The conditions are not everything. They fail when $\Delta\le0$, and cover only part of the gap
+for $(3,6,5)$, to $72\%$ of $g$, and $(3,12,4)$, to $96\%$. The invariant is measured to hold
+there too, so the bounds are lossy in that range; closing it needs a sharper combinatorial input
+than Lemma~\ref{lem:blocking} alone.
 
 Combined with \S\ref{sec:softedge}, the constraints on a proof of Problem~1 are now sharp on
 four sides: it must produce a size-dependent bound (\texttt{no\_uniform\_lower\_bound}), reach
