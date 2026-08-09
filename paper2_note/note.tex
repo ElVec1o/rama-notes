@@ -16,7 +16,7 @@
 \newcommand{\Q}{\mathbb{Q}}
 
 \title{Roots of $d$-matching polynomials and the spectrum of the universal cover:\\
-a closed form at first Betti number one, a conjecture,\\
+a closed form at first Betti number one, a refuted conjecture,\\
 and the biregular case}
 \author{Vico Bonfioli\thanks{Lean~4 sources: \texttt{RamaLean/} in the \texttt{rama-notes} repository. Correspondence: \texttt{vicobonfioli@gmail.com}.}}
 \date{August 2026}
@@ -27,11 +27,22 @@ and the biregular case}
 \begin{abstract}
 Hall, Puder and Sawin place the roots of the $d$-matching polynomial $\mu_{d,G}$ in
 the interval $[-\rho,\rho]$, $\rho$ the spectral radius of the universal cover $T$.
-We conjecture that they lie in $\operatorname{spec}(T)$ itself, which is a proper
+We conjectured that they lie in $\operatorname{spec}(T)$ itself, which is a proper
 subset of that interval whenever $T$ has a spectral gap: no root ever enters a gap.
 This strengthens their theorem, is the matching-polynomial form of their Question
 6.3, and contains Problem~1 of Song, Fan and Miao (its biregular case at $d=1$), extending it to
 all graphs and all $d$.
+
+\textbf{That conjecture is false, and the counterexample is due to Chris Hall}
+\cite{HallCE}. His graph is simple, connected, loopless and bipartite on $41$ vertices:
+five copies of $K_{2,5}$, a pendant leaf on one degree-five vertex of each, and a central
+vertex joined to the other five. Its matching polynomial is
+$x^{21}(x^4-11x^2+25)^4(x^2-5)(x^2-11)$, and $\sqrt5$ lies in an internal gap of
+$\operatorname{spec}(T)$, certified by an exact ratio system in the sense of
+Angel--Friedman--Hoary \cite{AFH} with decay rate below one. We verified his certificate
+independently and machine-checked its algebra. Extending it, we show his example is the
+smallest member of a two-parameter family, and that the pendant leaves are essential: over
+$36$ parameter pairs the leafless variant never produces a counterexample.
 
 We prove the conjecture for every connected $G$ of first Betti number one and every
 $d$, by giving $\mu_{d,G}$ in closed form: it is $V_d$ for the three-term recurrence
@@ -70,10 +81,13 @@ level by level and which is the Heilmann--Lieb recursion in the diagonal case; i
 reduces the band $[a-2\sqrt a,\,a+2\sqrt a]$ for the whole class to the sign of a
 single cross term, and shows that $2\sqrt a$ is the fixed point of the induction
 rather than an artefact of the estimate.
-The closed form, the exponential formula, the subdivision bound, the coefficient
-identities including the $4$-cycle term, the reflection, the $ab$ bound and the
-positivity behind the extremal computation are machine-checked in Lean~4 over
-Mathlib, with no axioms beyond Lean's standard three.
+Every positive result below is proved under hypotheses the counterexample violates, and
+so survives it; what the refutation changes is the question, from whether spectral
+localization always holds to which graphs it holds for. The closed form, the exponential
+formula, the subdivision bound, the coefficient identities including the $4$-cycle term,
+the reflection, the $ab$ bound, the positivity behind the extremal computation, and the
+algebra of Hall's certificate are machine-checked in Lean~4 over Mathlib, with no axioms
+beyond Lean's standard three.
 \end{abstract}
 
 \section{Introduction and statement}
@@ -369,6 +383,16 @@ Corollary~\ref{cor:floquet}, for every $d$. We therefore propose:
 For every finite graph $G$ and every $d\ge1$, all roots of $\mu_{d,G}$ lie in
 $\operatorname{spec}(T)$, the spectrum of the universal cover of $G$.
 \end{conjecture}
+
+\begin{theorem}[Hall \cite{HallCE}]\label{thm:hallce}
+Conjecture~\ref{conj:gap} is false, already at $d=1$ and already for simple connected
+loopless bipartite graphs.
+\end{theorem}
+
+The counterexample and its certificate are entirely due to Chris Hall. We record it here
+because it settles the central question of this note, and because everything else in the
+note has to be read in its light. \S\ref{sec:hallce} states his construction, our
+independent verification of it, and what we can add.
 
 The biregular case of Conjecture~\ref{conj:gap} at $d=1$ is not new. It is
 Problem~1 of Song, Fan and Miao \cite{SFM}, posed in 2023: they ask whether the
@@ -722,6 +746,109 @@ the conjecture. \emph{They are the two ends of one interval}, so
 what is missing is exactly half of a two-sided Heilmann--Lieb theorem for
 biregular bipartite graphs.
 
+\section{Hall's counterexample}\label{sec:hallce}
+
+Everything in this section except \S\ref{sec:hallfamily} is due to Chris Hall, who
+constructed the graph, found the certificate, and wrote the verification note
+\cite{HallCE}. Our contribution is the independent check, the formalization of the
+algebra, and the family in \S\ref{sec:hallfamily}.
+
+\subsection{The graph and its matching polynomial}
+
+Let $G$ consist of a central vertex $c$; for $1\le i\le5$ a copy of $K_{2,5}$ with
+degree-five vertices $v_i,w_i$ and middle vertices $u_{i,1},\dots,u_{i,5}$; a pendant leaf
+$\ell_i$ at each $w_i$; and the edges $cv_i$. It is simple, connected, loopless and
+bipartite, with $41$ vertices, $60$ edges and $b_1(G)=20$.
+
+Writing $H$ for one branch after deleting $c$, the vertex-deletion recurrence gives
+$\mu_{H-v}=x^5(x^2-6)$ and $\mu_H=x^4(x^4-11x^2+25)$, and then
+\begin{equation}\label{eq:hallmu}
+   \mu_G(x)=\mu_H(x)^4\bigl(x\mu_H(x)-5\mu_{H-v}(x)\bigr)
+   =x^{21}(x^4-11x^2+25)^4(x^2-5)(x^2-11),
+\end{equation}
+so $\sqrt5$ is a simple root. Identity \eqref{eq:hallmu}, the simplicity of the root, and
+the value of the cofactor are machine-checked in \texttt{RamaLean/HallCounterexample.lean}
+as an identity in $\mathbb Z[X]$ (\texttt{muG\_eq}, \texttt{muG\_root\_sqrt5},
+\texttt{muG\_root\_simple}).
+
+\subsection{The spectral exclusion}
+
+Angel, Friedman and Hoory \cite{AFH} characterise invertibility of $A_T-\lambda I$ by the
+existence of a finite nonzero \emph{ratio system}: an assignment $r_e$ to directed edges
+with $\lambda=1/r_e+\sum_{e\to f}r_f$, whose decay matrix $\mathcal R_{e,f}=|r_f|^2$ on
+non-backtracking pairs has spectral radius below one. Hall exhibits such a system at
+$\lambda=\sqrt5$ with eight edge types and ratios in $\mathbb Q(\sqrt5,\sqrt{41})$. Its
+decay matrix has $120$ states; the ten states at the leaves are transient, and the
+recurrent block of $110$ states reduces by symmetry to a $6\times6$ orbit quotient $K$ for
+which
+\[
+   x=(20,121,47,33,28,16)^{\mathsf T}\quad\text{satisfies}\quad Kx<x
+\]
+componentwise, so $\rho(K)<1$ by Perron--Frobenius. Hence $\sqrt5\notin
+\operatorname{spec}(A_T)$, and with \eqref{eq:hallmu} this proves
+Theorem~\ref{thm:hallce}. Since $G$ is bipartite the same holds at $-\sqrt5$, and
+Hall--Puder--Sawin place $\pm\sqrt5$ inside $[-\rho(T),\rho(T)]$, so these are roots in a
+genuine internal gap.
+
+The eight ratio identities, the elementary bounds $32/5<\sqrt{41}<13/2$, the strict
+positivity of all six components of $x-Kx$, and a Collatz--Wielandt lemma (a nonnegative
+matrix with a positive strictly subinvariant vector has spectral radius below one) are
+machine-checked in \texttt{RamaLean/HallCounterexample.lean}. The theorem of \cite{AFH} is
+not in Mathlib and enters as an explicit hypothesis, in the shape it is consumed.
+
+We verified the certificate independently, reconstructing every object from the graph
+rather than copying the displayed matrices: the matching numbers
+$(1,60,1585,24260,238105,1564976,6973855,20805500,39784375,44062500,21484375)$; the ratio
+equations on all $120$ directed edges; the strongly connected components of the decay
+digraph; the orbit quotient rebuilt from follower counts; and the decay rate by two
+independent routes, the componentwise certificate and the characteristic polynomial
+$t^6-\tfrac{201+19s}{800}t^2+\tfrac{21s-241}{250}$ with $s=\sqrt{41}$. As a physical check,
+the non-backtracking cavity Green function at $\sqrt5+i\eta$ converges to Hall's real
+ratios as $\eta\downarrow0$, with density of states vanishing linearly in $\eta$.
+
+\subsection{A family, and the role of the leaves}\label{sec:hallfamily}
+
+Hall's graph is the case $p=q=5$ of the family $G(p,q)$ with $p$ branches, each a copy of
+$K_{2,q}$ carrying a pendant leaf. The branch arithmetic is uniform: the last factor of
+$\mu_{G(p,q)}$ is
+\[
+   x^{q}\bigl(x^4-(2q+1+p)x^2+q^2+p(q+1)\bigr).
+\]
+Whether its smaller root lies in a gap of $\operatorname{spec}(T)$ is a separate question
+from whether that root is rational, and the two are independent: over $2\le p,q\le7$ the
+discriminant is a perfect square in six cases, while nine cases give a root inside a gap,
+and the two sets overlap in only three. The counterexamples are
+\[
+   (p,q)\in\{(7,3),(6,4),(7,4),(5,5),(6,5),(7,5),(6,6),(7,6),(7,7)\},
+\]
+with $41,43,43,49,50,55,57,64,71$ vertices; Hall's $(5,5)$ is the smallest. The least $p$
+that works is $7,6,5,6,7$ for $q=3,4,5,6,7$, so the phenomenon is cheapest exactly at
+$p=q=5$.
+
+The pendant leaves are not incidental. Removing them, so that every $w_i$ has degree $q$,
+destroys the effect: over the same $36$ parameter pairs the root always lies inside
+$\operatorname{spec}(T)$, with the diagnostic separated by three orders of magnitude.
+Verified in \texttt{code/hall\_family.py}; the test is the scaling of the density of states
+at the root, which vanishes linearly in $\eta$ outside the spectrum and tends to a positive
+limit inside, and which avoids the cavity mass gate that these flat-band graphs fail.
+
+\subsection{What survives}
+
+The counterexample has $b_1=20$, feedback vertex number $5$, and is neither biregular nor
+of bounded feedback vertex number, so it violates the hypotheses of every positive result
+in this note. Theorem~\ref{thm:main} and the closed form at $b_1(G)=1$, the subdivision and
+complete bipartite cases, the reductions of \S\ref{sec:further}, the localization
+$\operatorname{Zeros}(\mu_G)\subseteq\operatorname{spec}(G^{\mathrm{ab}})$ and the
+sufficient conditions of \S\ref{sec:split} are all unaffected. What changes is the
+question. The counterexample lives exactly in the residue
+$\operatorname{spec}(G^{\mathrm{ab}})\setminus\operatorname{spec}(T)$ that
+\S\ref{sec:further} identifies as the only place a counterexample could live, so the
+framework was pointed at the right region; what it lacked was any reason for that region to
+be empty. The open problem is now to characterise the graphs for which
+$\operatorname{Zeros}(\mu_{d,G})\subseteq\operatorname{spec}(T)$ holds. Minimum degree at
+least two is the first candidate hypothesis, on the evidence of \S\ref{sec:hallfamily}, and
+the biregular Problem~1 of Song, Fan and Miao is untouched.
+
 \section{A counting refinement}\label{sec:gapcount}
 
 Conjecture~\ref{conj:gap} asserts a non-vanishing, which offers no handle. This section
@@ -745,7 +872,13 @@ $x$, with multiplicity, equals $\kappa(x)$.
 \end{conjecture}
 
 Conjecture~\ref{conj:gapcount} implies Conjecture~\ref{conj:gap} at $d=1$: $\kappa$ is
-constant across a gap while the root count jumps at any root, so a gap contains none. That
+constant across a gap while the root count jumps at any root, so a gap contains none.
+By Theorem~\ref{thm:hallce} the implication now runs the other way and
+Conjecture~\ref{conj:gapcount} is false as well, on the same graph: the root $\sqrt5$
+crosses inside a gap on which $\kappa$ is constant. We state it as it was, because the
+implication and the boundary conditions are what the sweeps below actually test, and
+because the counting refinement remains the right object for whichever class of graphs
+turns out to satisfy the localization. That
 implication, the fact that an integer-valued locally constant function is determined on a
 connected gap, and the boundary conditions $\kappa=0$ above $\rho(T)$ and $\kappa=n$ below
 $-\rho(T)$, are machine-checked in \texttt{RamaLean/GapLabel.lean}. All the content is in
@@ -2256,7 +2389,7 @@ subgraph with fewer than $\operatorname{girth}(G)$ edges is a forest, and since 
 $a$-regular graph the number of copies of a fixed tree is $|V(G)|$ times a function of $a$
 alone, one gets an identity rather than a limit.
 
-\begin{proposition}\label{prop:moments}
+\begin{proposition}\label{prop:km-moments}
 Let $G$ be $a$-regular of girth $g$. Then $p_j(G)/|V(G)|$ equals the $j$-th moment of the
 Kesten--McKay measure of parameter $a$ for every $j<2g$. The threshold is sharp: for
 $K_4$, $K_5$, $K_{3,3}$, $K_{4,4}$, the cube, Petersen and Heawood, the first differing
@@ -2319,7 +2452,7 @@ positivity and integrality Csikv\'ari notes in passing are separately machine-ch
 needed: for $|V(G)|$ odd the value is $2\sqrt{d-1}$ times an integer.
 \end{remark}
 
-Propositions~\ref{prop:moments} and~\ref{prop:transfer} together bound the distance from
+Propositions~\ref{prop:km-moments} and~\ref{prop:transfer} together bound the distance from
 the finite-graph ratio to the value of Proposition~\ref{prop:km} by a quantity decaying
 like $(1-1/a)^{g}$, with no convergence theorem invoked. The bound is not tight, since
 $|m_j|\le\rho^j$ discards the $j^{-3/2}$ decay of the Kesten--McKay moments at the edge: at
@@ -3302,6 +3435,12 @@ Theory \textbf{5} (1981), 285--297.
 \bibitem{ACFK} M.~Ab\'ert, P.~Csikv\'ari, P.~E.~Frenkel, G.~Kun, \emph{Matchings
 in Benjamini--Schramm convergent graph sequences}, Trans.\ Amer.\ Math.\ Soc.\
 \textbf{368} (2016), 4197--4218.
+\bibitem{HallCE} C.~Hall, \emph{A simple bipartite counterexample to Conjecture 10:
+  spectral localization of the ordinary matching polynomial}, verification note, personal
+  communication, August 2026.
+\bibitem{AFH} O.~Angel, J.~Friedman, S.~Hoory, \emph{The non-backtracking spectrum of the
+  universal cover of a graph}, Trans.\ Amer.\ Math.\ Soc.\ \textbf{367} (2015), 4287--4318;
+  arXiv:0712.0192.
 \bibitem{LMST} W.~Li, M.~Magee, M.~Sabri, D.~Thomas, \emph{Eigenvalues of maximal
   abelian covers}, arXiv:2508.17332 (2025).
 \bibitem{Sp} T.~J.~Spier, \emph{Eigenvalues of universal covers and the matching
