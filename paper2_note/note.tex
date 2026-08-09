@@ -1046,7 +1046,10 @@ first-order perturbation theory is not in Mathlib and enters \texttt{grad\_l1\_b
 hypothesis in the shape the argument consumes.
 
 Let $\kappa$ be the number of bands whose range contains $x$. If $\kappa=0$ the localization
-settles $x$, and how often that happens depends sharply on $b$: $80.2\%$ of $486$ midpoints
+settles $x$. Over $149\,764$ residue points from $40\,146$ graphs on up to eight vertices,
+$|K|=1$ at $140\,661$ and $|K|=2$ at $9103$, and no point has $|K|\ge3$
+(\texttt{code/jsweep}). How often $|K|=0$ happens depends sharply on $b$: $80.2\%$ of $486$
+midpoints
 with $b=2$ lie outside $\operatorname{spec}(G^{\mathrm{ab}})$, against $3.4\%$ of $493$
 midpoints with $b=3$, where a further $69.8\%$ are certified inside and $26.8\%$ undecided,
 so at most $30\%$ of the $b=3$ points can be settled this way
@@ -1130,13 +1133,25 @@ bounding the whole integrand by $\sup w$ loses the four orders of magnitude that
 $\sup w/\inf w$ can reach, whereas here $\inf w$ is applied to the majority term and $\sup w$
 only to the minority term.
 
-Over $208$ residue points the criterion fires every time, with worst margin $2.149$ and
-median $173$ (\texttt{code/jsplit.py}). It is therefore tight rather than comfortable at the
-hardest points, and the sample contains only two points with $|K|\ge2$, so it says almost
-nothing about those. What the criterion buys is a target with structure: $J_+/J_-$ is large
-because $x$ sits near an edge of the crossing band, the minority measure never exceeding
-$0.0674$, and $\Lambda$ is a product of band-distance ratios over the non-crossing bands.
-Bounding either one is a self-contained problem.
+The criterion is not always satisfied. Over $149\,764$ residue points drawn from $40\,146$
+graphs on up to eight vertices it holds $149\,511$ times and fails $253$ times, with worst
+margin $0.0616$ (\texttt{code/jsweep}). A sample of $208$ points had shown it holding every
+time, which was too small to see the failures.
+
+Two facts sharpen what is left. Every failure has exactly one crossing band: at $|K|=2$ the
+criterion holds at all $9103$ points, and no point with $|K|\ge3$ occurs in the corpus at all.
+And Conjecture~\ref{conj:gap} is untouched at the failing points, the true ratio
+$\min(I_+,I_-)/\max(I_+,I_-)$ never exceeding $0.0233$ over the whole corpus, so the
+conclusion holds comfortably where this sufficient condition does not see it. The worst case
+is $n=8$, $b=3$, $|K|=1$, $x=2.0607$ on the graph with edges
+$01,02,03,04,14,25,36,37,56,57$.
+
+What the criterion buys is therefore a reduction covering $99.83\%$ of the residue, together
+with a target that has structure: $J_+/J_-$ is large because $x$ sits near an edge of the
+crossing band, the minority measure never exceeding $0.0674$, and $\Lambda$ is a product of
+band-distance ratios over the non-crossing bands. Bounding either one is a self-contained
+problem, and the $253$ exceptions are a small explicit list to be understood rather than a
+diffuse obstruction.
 
 The weight can be removed from the criterion entirely. A product is bounded above by the
 product of the upper bounds of its factors and below by the product of the lower bounds, and

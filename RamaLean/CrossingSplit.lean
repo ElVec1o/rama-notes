@@ -41,10 +41,20 @@ majority term and `sup w` only to the minority term.
 
 ## Status
 
-`ne_zero_of_split` is proved.  Whether the criterion always holds is
-open and is the remaining content of Conjecture 10 in this formulation: measured over `206`
-points with one crossing band it fires every time, with worst margin `2.149` and median `172`,
-so it is tight rather than comfortable at the hardest points (`code/jsplit.py`).
+`ne_zero_of_split` is proved.  **The criterion is not always satisfied**, and that is settled
+rather than open: over `149764` residue points from `40146` graphs on up to eight vertices it
+fires `149511` times and fails `253` times, with worst margin `0.0616`
+(`code/jsweep`, in Rust).  A sample of `208` points had shown it firing every time, which was
+simply too small.
+
+So the criterion is a sufficient condition covering `99.83%` of the residue, not a proof
+strategy for all of it.  Two facts sharpen what is left.  Every failure has exactly one
+crossing band: at `κ = 2` the criterion fires at all `9103` points, and no point with `κ ≥ 3`
+occurs anywhere in the corpus.  And Conjecture 10 itself is untouched, the true ratio
+`min(I₊,I₋)/max(I₊,I₋)` never exceeding `0.0233`, so at the failing points the conclusion
+holds comfortably while this particular sufficient condition does not see it.  The worst case
+is `n = 8`, `b = 3`, `κ = 1`, `x = 2.0607` on
+`[(0,1),(0,2),(0,3),(0,4),(1,4),(2,5),(3,6),(3,7),(5,6),(5,7)]`.
 -/
 
 namespace CrossingSplit
