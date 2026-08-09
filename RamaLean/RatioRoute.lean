@@ -93,8 +93,10 @@ is the point of taking this route.
 `left_step`, `right_step`, `right_step_sharp`, `right_step_leaves`, `certificate_closes`,
 `discriminant_vanishes_at_edge` and `no_vanishing` are `VERIFIED`.  That the *uniform*
 certificate closes on every path tree is `FALSE`, failing on `0.21%` of vertices in one measured
-case; the sharp form repairs it.  A10′ and the sign separation are `HEURISTIC`, on the
-measurements cited.  The biregular case of Conjecture 10 remains a `CONJECTURE`.
+case; the sharp form repairs it.  `min_children`, `child_count_drop`, `children_are_leaves` and `binding_case` are `VERIFIED` as
+arithmetic; the three graph-theoretic hypotheses feeding them are `PROVED` by the alternation
+count above, formalizing which would need bipartite path infrastructure not available here.
+Full A10' at every `k`, and the sign separation, remain `HEURISTIC` on the measurements cited.  The biregular case of Conjecture 10 remains a `CONJECTURE`.
 -/
 
 namespace RatioRoute
@@ -175,6 +177,47 @@ theorem right_step_leaves {k : ℕ} (lam : ℝ) (hlam : 0 < lam) (hk : lam ^ 2 <
     lam - (k : ℝ) / lam < 0 := by
   rw [sub_neg, lt_div_iff₀ hlam]
   nlinarith
+
+/-! ## Blocking propagates: the combinatorial core of A10' -/
+
+/-- **Every right-type path-tree vertex has at least `q - r` children.**
+
+The three hypotheses are the graph-theoretic inputs, each elementary.  Let `π` be a
+self-avoiding path in a `(d,q)`-biregular bipartite graph with sides `L` (degree `d`) and `R`
+(degree `q`, size `r`), ending at `w ∈ R`, with `k = |N(w) ∖ π|`, and write `pL = |π ∩ L|`,
+`pR = |π ∩ R|`.  Then `q - k ≤ pL` because the `q - k` blocked neighbours of `w` all lie in `L`;
+`pL ≤ pR` because `π` alternates and ends in `R`; and `pR ≤ r` trivially.
+
+Measured: `min k = q - r` exactly, in every family with `q > r`, so the bound is attained. -/
+theorem min_children {q r k pL pR : ℤ} (h1 : q - k ≤ pL) (h2 : pL ≤ pR) (h3 : pR ≤ r) :
+    q - r ≤ k := by linarith
+
+/-- **The child count drops by at least `q - r` each level.**
+
+Same setup, with `u ∈ N(w) ∖ π` a child of `w` and `ku` its own child count.  The third
+hypothesis `ku ≤ r - pR` holds because `N(u) ⊆ R` and an unblocked neighbour of `u` must avoid
+`π ∩ R`.  Combined with `pR ≥ pL ≥ q - k` this gives `ku ≤ r - q + k`.
+
+Measured over roughly fourteen thousand right-type path-tree vertices in five families: zero
+violations, and worst slack `0` in four of them, so this bound is attained too
+(`code/blocking.py`). -/
+theorem child_count_drop {q r k pL pR ku : ℤ}
+    (h1 : q - k ≤ pL) (h2 : pL ≤ pR) (h3 : ku ≤ r - pR) :
+    ku ≤ k - (q - r) := by linarith
+
+/-- **At the minimum child count the children are leaves.**  Combining the two bounds: when `k`
+attains `q - r`, every child has `ku ≤ 0`, hence `ku = 0`.  A childless left-type vertex has
+ratio exactly `λ`, which is what `code/childbound.py` measured to the last digit, and it is the
+binding case of `right_step_sharp`. -/
+theorem children_are_leaves {q r k ku : ℤ} (hk : k ≤ q - r) (h : ku ≤ k - (q - r))
+    (hku : 0 ≤ ku) : ku = 0 := by omega
+
+/-- **The binding case closes.**  At the minimum child count every child is a leaf of ratio
+exactly `λ`, so the parent is `λ - k/λ`, strictly negative as soon as `k > λ²`.  This is
+`right_step_leaves` applied to the configuration `children_are_leaves` forces. -/
+theorem binding_case {k : ℕ} (lam : ℝ) (hlam : 0 < lam) (hk : lam ^ 2 < k) :
+    lam - (k : ℝ) / lam < 0 :=
+  right_step_leaves lam hlam hk
 
 /-- **The constants are forced.**  With `c` defined by `cB = k₀ - λB`, the requirement
 `B = λ + (d-1)/c` of `left_step` holds exactly when `B` satisfies the quadratic

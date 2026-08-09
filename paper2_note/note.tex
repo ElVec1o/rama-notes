@@ -1454,12 +1454,35 @@ and the failing case is covered, needing $F<1/\lambda=1.229$ against an observed
 hypothesis of Proposition~\ref{prop:sharp} holds with slack $0.42$ to $4.47$ and no violations
 over every path-tree vertex measured (\texttt{code/childbound.py}).
 
-What remains is exactly that hypothesis:
-\begin{conjecture}[A10$'$]\label{conj:childbound}
-Every child ratio at a right-type path-tree vertex with $k$ children is below $k/\lambda$.
-\end{conjecture}
-It concerns how blocking propagates from a vertex to its children along a self-avoiding walk, so
-it is combinatorial rather than spectral, which is the point of the route; it is open.
+What remains is that hypothesis, and its combinatorial core can be proved. Let $\pi$ end at
+$w\in R$, put $k=|N(w)\setminus\pi|$, $p_L=|\pi\cap L|$, $p_R=|\pi\cap R|$, and let $u$ be a
+child of $w$ with child count $k_u$.
+
+\begin{lemma}\label{lem:blocking}
+$q-r\le k$ and $k_u\le k-(q-r)$.
+\end{lemma}
+
+\begin{proof}
+The $q-k$ blocked neighbours of $w$ lie in $L$, so $q-k\le p_L$; the path alternates and ends in
+$R$, so $p_L\le p_R$, and $p_R\le r$, giving $q-r\le k$. For the child, $N(u)\subseteq R$ and an
+unblocked neighbour of $u$ must avoid $\pi\cap R$, so $k_u\le r-p_R\le r-q+k$.
+\end{proof}
+
+So every right-type vertex has at least $q-r$ children, and the child count drops by at least
+that much each level. At the minimum $k=q-r$ the lemma forces $k_u=0$: the children are leaves,
+of ratio exactly $\lambda$, and the parent is $\lambda-k/\lambda<0$ once $k>\lambda^2$. That is
+the binding case of Proposition~\ref{prop:sharp}, and it is what the measurement showed. Tested
+over roughly fourteen thousand right-type path-tree vertices in five families, both inequalities
+hold with no violations, and with zero slack in four of them, so both are attained
+(\texttt{code/blocking.py}). The arithmetic is
+\texttt{RatioRoute.min\_children}, \texttt{child\_count\_drop},
+\texttt{children\_are\_leaves} and \texttt{binding\_case}; the three inputs to it are the
+elementary counting steps in the proof above, whose formalization would need bipartite path
+infrastructure we do not have.
+
+What is still missing is A10$'$ at intermediate $k$, where the children are not leaves and their
+ratios must be controlled by a coupled induction across the bipartition. Lemma~\ref{lem:blocking}
+supplies that induction's combinatorial input; assembling it is open.
 
 Combined with \S\ref{sec:softedge}, the constraints on a proof of Problem~1 are now sharp on
 four sides: it must produce a size-dependent bound (\texttt{no\_uniform\_lower\_bound}), reach
