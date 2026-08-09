@@ -1134,6 +1134,59 @@ Conjecture~\ref{conj:mindeg3} is entirely in the irregular case.
 Conjecture~\ref{conj:mindeg3} has not been attacked as hard as C1 was, and C1 survived three
 hours.
 
+\subsection{Where D3 is most exposed, and a positive margin there}\label{sec:margin}
+
+Conjecture~\ref{conj:mindeg3} is most exposed at large degree contrast, because that is where
+the gaps are widest at minimum degree three. The universal cover of a $(\delta,q)$-biregular
+graph is the $(\delta,q)$-biregular tree, whose spectrum is $\{0\}$ together with
+$\pm[\sqrt{q-1}-\sqrt{\delta-1},\;\sqrt{q-1}+\sqrt{\delta-1}]$, so there is a gap $(0,g)$ with
+$g=\sqrt{q-1}-\sqrt{\delta-1}$, and $g\to\infty$ with $q$. A root of $\mu_G$ in $(0,g)$ would
+refute Conjecture~\ref{conj:mindeg3}, and would also settle Song, Fan and Miao's Problem~1, to
+which the biregular case is equivalent by \S\ref{sec:biregblock}.
+
+For $K_{\delta,q}$ the question is decidable in closed form. A $k$-matching picks $k$ vertices
+on each side and matches them, so
+\begin{equation}\label{eq:kdq}
+   \mu_{K_{\delta,q}}=x^{\,q-\delta}P(x^2),\qquad
+   P(y)=\sum_{k\le\delta}(-1)^k\binom{\delta}{k}(q)_k\,y^{\delta-k},
+\end{equation}
+with $(q)_k$ the falling factorial. Here $P$ is a Laguerre polynomial, and as $q\to\infty$ its
+zeros satisfy $(y-q)/\sqrt q\to$ the zeros of the probabilists' Hermite polynomial
+$\mathrm{He}_\delta$. Writing $h_\delta$ for the largest of those,
+\[
+   x_{\min}=\sqrt q-\tfrac{h_\delta}{2}+o(1),\qquad g=\sqrt q-\sqrt{\delta-1}+o(1),
+\]
+so the margin $x_{\min}-g$ tends to $\sqrt{\delta-1}-h_\delta/2$. At $q=10^6$ this agrees to
+four decimals for every $\delta$ from $3$ to $20$ (\texttt{code/d3attack.py}).
+
+\begin{theorem}\label{thm:margin}
+For every $\delta\ge3$ the limiting margin is positive:
+$\sqrt{\delta-1}-h_\delta/2\ \ge\ \tfrac12\bigl(\sqrt{\delta-1}-\sqrt{\delta-2}\bigr)>0$.
+\end{theorem}
+
+\begin{proof}
+By the recurrence $\mathrm{He}_{n+1}=y\,\mathrm{He}_n-n\,\mathrm{He}_{n-1}$, the zeros of
+$\mathrm{He}_\delta$ are the eigenvalues of the Jacobi matrix with zero diagonal and
+off-diagonal entries $\sqrt1,\dots,\sqrt{\delta-1}$. Its absolute row sums are
+$\sqrt{i-1}+\sqrt i$, largest in the last row, so Gershgorin gives
+$h_\delta\le\sqrt{\delta-2}+\sqrt{\delta-1}$, whence
+$\sqrt{\delta-1}-h_\delta/2\ge\frac12(\sqrt{\delta-1}-\sqrt{\delta-2})>0$.
+\end{proof}
+
+The Gershgorin step is \texttt{CompleteBipartiteMargin.abs\_eigenvalue\_le\_max\_rowsum},
+proved from the eigenvalue equation at an index where the eigenvector is largest; the
+consequence is \texttt{margin\_pos\_of\_rowsum}, and \texttt{no\_root\_below\_gap\_edge} closes
+the chain. The bound is far from tight, of order $1/(4\sqrt\delta)$ against a true margin near
+$0.55$, but it holds for every $\delta$. \emph{No complete bipartite graph refutes
+Conjecture~\ref{conj:mindeg3}, however wide the gap is made.}
+
+Two further attacks find nothing. Genuine $(3,q)$-biregular graphs built from balanced
+$3$-uniform designs, of vertex connectivity three, keep margins between $0.36$ and $0.53$. And
+the two-hub engine of \S\ref{sec:twocut} run with \emph{two} branch types at once, which
+replaces the single knob $p$ by a pair $(p_1,p_2)$, produces graphs of minimum degree three
+with gaps up to $1.48$ and no root in any of them; the mixed-branch expansion is checked
+against a brute-force matching polynomial before use.
+
 \subsection{What survives}
 
 The counterexample has $b_1=20$, feedback vertex number $5$, and is neither biregular nor
