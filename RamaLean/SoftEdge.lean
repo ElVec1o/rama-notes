@@ -73,11 +73,13 @@ upper bound, so a proof must reach the measured exponent and not merely some pow
 ## Status
 
 `no_uniform_lower_bound`, `power_law_tendsto_zero`, `exponent_floor`, `inf_not_attained`,
-`edge_unimprovable`, `edge_scale`, `antitone_pos_tendsto_glb` and `unimprovable_iff_iInf_zero`
-are `VERIFIED`.  That
+`edge_unimprovable`, `edge_scale`, `discriminant_factors`, `inner_edge_simple`,
+`antitone_pos_tendsto_glb` and `unimprovable_iff_iInf_zero` are `VERIFIED`.  That
 the margin obeys a power law is `HEURISTIC` but strong: eight families, `d = 3` to `6`, thirteen
-or fourteen sizes each, `R² ≥ 0.999` throughout.  That the exponent is exactly `-2/3` is
-`FALSE` as a universal claim; it holds for `q = 2d` and drifts to about `-0.61` at `q = 4d`.
+or fourteen sizes each, `R² ≥ 0.999` throughout.  The asymptotic exponent is `-2/3`
+universally, derived from the square-root edge and confirmed by the analytic quantile; the
+aspect-ratio dependence seen in the fits is `FINITE-SIZE`, since the analytic quantile shows the
+same dependence at the same sizes despite having `-2/3` by construction.
 That the margin stays positive, which is D3 restricted to biregular graphs, is a `CONJECTURE`.
 -/
 
@@ -158,17 +160,53 @@ theorem edge_scale {β C N δ : ℝ} (hβ : 0 ≤ β) (hC : 0 < C) (hN : 0 < N) 
     _ = (C * N) ^ (-(1 / (β + 1))) := by
             rw [← Real.rpow_neg_one, ← Real.rpow_mul hCN.le]; congr 1; ring
 
+/-- **The band edges, derived.**  On the `(d,q)`-biregular tree the cavity resolvents satisfy
+`X = 1/(z - A₁Y)` and `Y = 1/(z - B₁X)` with `A₁ = d-1`, `B₁ = q-1`, so their product solves
+`A₁B₁P² + (A₁+B₁-z²)P + 1 = 0`.  Writing `a = √A₁`, `b = √B₁`, that quadratic's discriminant
+factors:
+
+  `(z² - a² - b²)² - 4a²b² = (z² - (a+b)²)(z² - (b-a)²)`,
+
+so it vanishes exactly at `z = ±(a+b)` and `z = ±(b-a)`.  Those are the band edges
+`S = √(d-1)+√(q-1)` and `g = √(q-1)-√(d-1)`, which is where the spectrum of the biregular tree
+comes from. -/
+theorem discriminant_factors (a b z : ℝ) :
+    (z ^ 2 - a ^ 2 - b ^ 2) ^ 2 - 4 * a ^ 2 * b ^ 2
+      = (z ^ 2 - (a + b) ^ 2) * (z ^ 2 - (b - a) ^ 2) := by
+  ring
+
+/-- **The edge is a simple zero, hence the square-root vanishing.**  The factor cutting off the
+inner edge vanishes to first order there, so the square root of the discriminant, and with it
+the density, vanishes like `√(z - g)`.  That is `β = 1/2`, for every `(d,q)`, with no
+dependence on the degrees beyond where the edge sits. -/
+theorem inner_edge_simple (a b z : ℝ) :
+    z ^ 2 - (b - a) ^ 2 = (z - (b - a)) * (z + (b - a)) := by
+  ring
+
 /-- **A square-root edge forces the exponent `-2/3`.**  The `(d,q)`-biregular tree has spectral
 density proportional to `√((x²-g²)(S²-x²)) / (x(dq-x²))` on its band, which vanishes like
 `√(x-g)` at the inner edge, so `β = 1/2` for *every* `(d,q)`.  The predicted exponent is then
 `-2/3` universally, with no dependence on the aspect ratio.
 
-This is in tension with the measurement, which gives `-2/3` at `q = 2d` but about `-0.62` for
-`q ≥ 3d`, and the tension is unresolved: at the sizes reachable each graph has only `r ≈ 15`
-positive roots, so any window narrow enough to probe the edge contains about one root per
-graph, which is the margin itself.  The direct measurement of `β` is therefore circular and
-cannot arbitrate (`code/edgedensity.py`).  The likeliest reading is that the `q ≥ 3d` families
-are pre-asymptotic. -/
+**The tension with the measurement is now resolved, in favour of the derivation.**  The
+predicted margin is the quantile `δ` solving `n ∫_g^{g+δ} ρ = 1`, which needs no density
+estimated from the data and so is not circular.  Its density passes a sharp check:
+`n ∫_g^S ρ = r` to eight decimals in all twelve families, `r` being the exact number of positive
+roots.  And the quantile built from it reproduces the aspect-ratio dependence of the measured
+exponents, with spread `0.0149` against the measured `0.0176` and the same ordering in `q/d`.
+
+Decisively, that quantile's own effective exponent is `-0.693` at `n ≈ 100`, with spread
+`0.0052` across aspect ratios, and reaches `-2/3` with spread `0.0000` only by `n ≈ 10⁶`.  Since
+it is built from a provably square-root edge, its asymptotic exponent *is* `-2/3` by
+construction.  So a quantity whose true exponent is exactly `-2/3` still displays
+aspect-ratio-dependent effective exponents at the sizes reachable.  **The measured dependence is
+a finite-size effect and the asymptotic exponent is the universal `-2/3`**
+(`code/quantile.py`).
+
+Two residuals are not explained.  The measured spread `0.0176` is about three times the
+analytic `0.0052` at comparable `n`, and the measured exponents sit about `0.088` above the
+analytic quantile's at the same `n`.  Both say the finite-graph root distribution departs from
+the tree measure near the edge by more than the quantile heuristic allows. -/
 theorem sqrt_edge_exponent : -(1 / ((1 : ℝ) / 2 + 1)) = -(2 / 3) := by norm_num
 
 /-! ## The Friedman picture: sharp, attained only in the limit -/

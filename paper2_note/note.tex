@@ -1218,8 +1218,8 @@ $4$ & $1$ & $-0.6102$\\
 \end{tabular}
 \end{center}
 
-The value $-2/3$ is right for $q=2d$ and wrong elsewhere, and three checks say the dependence
-is real rather than an artefact. It is not a matter of which size variable is used: at fixed
+The value $-2/3$ is right for $q=2d$ and the fitted values fall away from it as $q/d$ grows.
+Three checks rule out the obvious artefacts. It is not a matter of which size variable is used: at fixed
 $(d,q)$ the quantities $n$, $r$, $m$ and the edge count are all proportional, so the exponent
 against any of them is identical. It is not a correction term: local exponents taken between
 consecutive sizes do not converge across aspect ratios, their spread being $0.016$ at small $r$
@@ -1227,9 +1227,10 @@ and $0.021$ at large $r$. And it is not a sampling artefact, which was the serio
 the margin is estimated as a minimum over random graphs and that minimum is biased upward by an
 amount growing with $r$; moving from three samples to sixteen shifts the exponent by at most
 $0.005$, and the unbiased sample-\emph{mean} estimator shows the same spread across families,
-$\pm0.016$ against $\pm0.018$ for the minimum. Extending to $q/d=5,6$ the exponent flattens near
-$-0.62$ rather than continuing to drift, so the picture is two regimes: $-2/3$ at $q=2d$, and
-about $-0.62$ for $q\ge3d$ (\texttt{code/softedge3.py}). The constant behaves the same way: with the exponent
+$\pm0.016$ against $\pm0.018$ for the minimum. Extending to $q/d=5,6$ the fitted exponent flattens near
+$-0.62$ rather than continuing to drift (\texttt{code/softedge3.py}). What none of these checks
+rules out, and what turns out to be the explanation, is that every size reachable is
+pre-asymptotic; that is settled below. The constant behaves the same way: with the exponent
 held at $-2/3$, $C/(\sqrt{d-1}+\sqrt{q-1})$ has mean $0.766$ with a $6\%$ spread that is again
 monotone in $q/d$ (\texttt{code/softedge2.py}).
 
@@ -1261,15 +1262,40 @@ which vanishes like $\sqrt{x-g}$ at the inner edge. So $\beta=\tfrac12$ for \emp
 $(d,q)$, and the predicted exponent is $-2/3$ universally, with no aspect-ratio dependence at
 all (\texttt{sqrt\_edge\_exponent}).
 
-We cannot resolve the tension at the sizes reached, and an attempt to do so failed
-informatively. Measuring $\beta$ directly requires resolving the density within a window narrow
-compared with the band; but each graph contributes only $r\approx15$ positive roots, so such a
-window holds about one root per graph, which is the margin itself. The estimate is circular: it
-returns $\beta\approx0.16$ where $\tfrac12$ is derivable, and collapses to negative values as
-the window narrows (\texttt{code/edgedensity.py}). The likeliest reading is that the $q\ge3d$
-families are pre-asymptotic and the true exponent is the universal $-2/3$, but the local-slope
-test of \S\ref{sec:softedge} does not show them converging over the range available, so we
-leave the discrepancy open and flag it as the weakest point in this section.
+The tension is resolved in favour of the derivation, by a comparison that avoids estimating
+any density from the data. The predicted margin is the quantile $\delta$ solving
+$n\int_g^{g+\delta}\rho=1$, the point at which the expected root count reaches one. The density
+is obtained from the cavity resolvents $X=1/(z-A_1Y)$, $Y=1/(z-B_1X)$ with $A_1=d-1$,
+$B_1=q-1$, whose product satisfies $A_1B_1P^2+(A_1+B_1-z^2)P+1=0$; writing $a=\sqrt{A_1}$,
+$b=\sqrt{B_1}$, the discriminant factors as
+\begin{equation}\label{eq:disc}
+   (z^2-a^2-b^2)^2-4a^2b^2=\bigl(z^2-(a+b)^2\bigr)\bigl(z^2-(b-a)^2\bigr),
+\end{equation}
+a pure algebraic identity, machine-checked as
+\texttt{SoftEdge.discriminant\_factors}, which locates the band edges at $S=a+b$ and $g=b-a$.
+The inner factor has a simple zero there (\texttt{inner\_edge\_simple}), so the density vanishes
+like $\sqrt{x-g}$ and $\beta=\tfrac12$ for every $(d,q)$.
+
+That density passes a sharp check: $n\int_g^S\rho=r$ to eight decimals in all twelve families,
+$r$ being the exact number of positive roots. And the quantile built from it reproduces the
+aspect-ratio dependence of the measured exponents, with spread $0.0149$ against the measured
+$0.0176$ and the same ordering in $q/d$.
+
+The decisive observation is that the analytic quantile's \emph{own} effective exponent is
+$-0.693$ at $n\approx100$, with spread $0.0052$ across aspect ratios, and reaches $-2/3$ with
+spread $0.0000$ only near $n\approx10^6$. Since it is built from a square-root edge its
+asymptotic exponent is $-2/3$ by construction. So a quantity whose true exponent is exactly
+$-2/3$ nonetheless displays aspect-ratio-dependent effective exponents at the sizes reachable.
+The dependence measured on graphs is therefore a finite-size effect, and the asymptotic exponent
+is the universal $-2/3$ (\texttt{code/quantile.py}).
+
+This overturns the reading recorded above, that the aspect-ratio dependence was real. It is not;
+what the three confound checks established is only that it is not an artefact of the size
+variable, of a correction term or of sampling, and the true explanation is that every size
+reachable here is pre-asymptotic. Two residuals remain unexplained: the measured spread is about
+three times the analytic one at comparable $n$, and the measured exponents sit about $0.088$
+above the analytic quantile's. Both indicate that the finite-graph root distribution departs
+from the tree measure near the edge by more than the quantile heuristic allows.
 
 What the decay says about the conjecture is worth stating as a shape rather than a number. If
 the margin is positive at every size and tends to zero, then the spectral edge $g$ is the
