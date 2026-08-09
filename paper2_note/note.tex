@@ -1303,9 +1303,19 @@ the margin ratio. Two explanations for the drift are ruled out. It is not the gi
 which is exactly $4$ for every graph over the whole range and so cannot drive a smooth trend;
 and it is not the minimum-over-samples estimator, since recomputing $N_{\mathrm{obs}}$ from the
 unbiased sample \emph{mean} gives a drift of $+0.110$, if anything larger than the minimum's
-$+0.093$, at $R^2>0.98$ in every family (\texttt{code/nobs.py}). Whether the departure survives
-to infinity is still unknown, since everything at these sizes is pre-asymptotic, the analytic
-quantile included.
+$+0.093$, at $R^2>0.98$ in every family (\texttt{code/nobs.py}). What drives it is the number of roots, not the number of
+vertices. The complete bipartite graphs separate the two exactly, since $K_{d,q}$ has precisely
+$d$ positive roots however large $q$ is: taking $q$ to $10^4$ at fixed $d$, $N_{\mathrm{obs}}$
+converges, from $0.5633$ to $0.4714$ at $d=8$ for instance, so it is not an $n$-effect. Varying
+$d$ at $q=2\cdot10^4$ it grows like $r^{+0.14}$ (\texttt{code/nobs\_exact.py}). That is the same
+sign and roughly the same size as the $+0.11$ seen in the random families, but in a different
+regime, the one where the margin tends to the constant of Theorem~\ref{thm:margin} rather than
+to zero, so the two should not be identified on this evidence.
+
+Whether the departure survives to infinity remains unknown. Consistency suggests not: if the
+margin exponent tends to $-2/3$ and the local power of the cumulative tends to $3/2$, the drift
+in $N_{\mathrm{obs}}$ must tend to $0$, and at the measured exponent $-0.658$ the implied local
+power is $1.35$, short of $3/2$ in exactly the way a pre-asymptotic regime is.
 
 The asymptotic margin is nevertheless pinned exactly, not merely up to an exponent. Near the
 inner edge $\rho(x)=\kappa\sqrt{x-g}+O(x-g)$, so the mass within $\delta$ is
@@ -1360,6 +1370,17 @@ compressions can rule them out however it is refined. This is the $P_8$-inside-t
 $(3,2)$-biregular-tree phenomenon of \S\ref{sec:further} at its smallest, and it explains why
 Heilmann--Lieb, Godsil's path tree and the Marcus--Spielman--Srivastava interlacing machinery
 all deliver one end of the interval and are silent about the other.
+
+What is not barred is the ratio recursion. The deletion recurrence writes
+$F_v=\mu_G/\mu_{G-v}$ as $x-\sum_{u\sim v}1/F_u$, so a positive lower bound on every child ratio
+propagates upward (\texttt{SoftEdge.cavity\_lower\_bound}), and a bound that stays positive
+certifies that $\mu_G$ has no root there (\texttt{no\_root\_of\_ratio}). The hypothesis is a
+bound on \emph{ratios of matching polynomials}, not on Rayleigh quotients of the adjacency
+operator, so \texttt{rayleigh\_in\_gap} does not apply: the quantity being bounded does
+distinguish points inside a gap from points of the spectrum, which no quadratic form can. It is
+also exactly the object the Angel--Friedman--Hoory decay rate controls on the universal cover,
+which is how membership of $\operatorname{spec}(T)$ is certified numerically throughout this
+note. That is where we would look for a proof.
 
 Combined with \S\ref{sec:softedge}, the constraints on a proof of Problem~1 are now sharp on
 four sides: it must produce a size-dependent bound (\texttt{no\_uniform\_lower\_bound}), reach

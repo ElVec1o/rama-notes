@@ -74,7 +74,8 @@ upper bound, so a proof must reach the measured exponent and not merely some pow
 
 `no_uniform_lower_bound`, `power_law_tendsto_zero`, `exponent_floor`, `inf_not_attained`,
 `edge_unimprovable`, `edge_scale`, `sqrt_edge_quantile`, `discriminant_factors`,
-`inner_edge_simple`, `rayleigh_between`, `rayleigh_in_gap`,
+`inner_edge_simple`, `rayleigh_between`, `rayleigh_in_gap`, `no_root_of_ratio`,
+`cavity_lower_bound`,
 `antitone_pos_tendsto_glb` and `unimprovable_iff_iInf_zero` are `VERIFIED`.  That
 the margin obeys a power law is `HEURISTIC` but strong: eight families, `d = 3` to `6`, thirteen
 or fourteen sizes each, `R² ≥ 0.999` throughout.  The asymptotic exponent is `-2/3`
@@ -284,6 +285,38 @@ theorem rayleigh_in_gap :
   · intro i; fin_cases i <;> simp
   · norm_num [Fin.sum_univ_two]
   · norm_num [Fin.sum_univ_two]
+
+/-! ## What does see gaps: the ratio recursion -/
+
+/-- **A ratio bounded away from zero certifies a root-free point.**  Writing
+`μ_G = F · μ_{G-v}` with `F = μ_G/μ_{G-v}`, if the ratio and the deleted polynomial are both
+nonzero at `x` then so is `μ_G`.  This is the link the cavity recursion exploits: it controls
+`F`, not the quadratic form of the adjacency operator. -/
+theorem no_root_of_ratio {muG muGv F : ℝ} (hfac : muG = F * muGv)
+    (hF : F ≠ 0) (hGv : muGv ≠ 0) : muG ≠ 0 := by
+  rw [hfac]; exact mul_ne_zero hF hGv
+
+/-- **Bounds propagate through the cavity recursion.**  The deletion recurrence gives
+`F_v = x - ∑_{u ∼ v} 1/F_u`, so a positive lower bound `c` on every child ratio yields
+`F_v ≥ x - k/c` with `k` the number of children.  Interval bounds therefore propagate up the
+recursion, and a bound that stays positive certifies a root-free interval.
+
+This is a genuine escape from the barrier.  The hypothesis is a bound on *ratios of matching
+polynomials*, not on Rayleigh quotients of the adjacency operator, so `rayleigh_in_gap` does not
+apply: the quantity being bounded distinguishes points inside a gap from points in the spectrum,
+which no quadratic form can.  It is also exactly the object the Angel-Friedman-Hoory decay rate
+controls on the universal cover, which is how membership of `spec(T)` is certified numerically
+throughout this work. -/
+theorem cavity_lower_bound {ι : Type*} [Fintype ι] (F : ι → ℝ) (x c : ℝ) (hc : 0 < c)
+    (hF : ∀ i, c ≤ F i) :
+    x - (Fintype.card ι : ℝ) / c ≤ x - ∑ i, 1 / F i := by
+  have hsum : ∑ i, 1 / F i ≤ (Fintype.card ι : ℝ) / c := by
+    have : ∀ i ∈ Finset.univ, 1 / F i ≤ 1 / c := fun i _ =>
+      one_div_le_one_div_of_le hc (hF i)
+    calc ∑ i, 1 / F i ≤ ∑ _i : ι, 1 / c := Finset.sum_le_sum this
+      _ = (Fintype.card ι : ℝ) / c := by
+          rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul, mul_one_div]
+  linarith
 
 /-! ## The Friedman picture: sharp, attained only in the limit -/
 
