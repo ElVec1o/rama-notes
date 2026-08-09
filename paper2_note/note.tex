@@ -984,7 +984,7 @@ root descending to a spectral edge but never passing it is the Alon--Boppana pic
 Conjecture~\ref{conj:gap} was the assertion that matching roots are Ramanujan in that sense
 without exception. D1 says the exceptions exist but are uniformly small.
 
-\subsection{The cut vertex is the mechanism}\label{sec:cutvertex}
+\subsection{The cut vertex is one mechanism, not the mechanism}\label{sec:cutvertex}
 
 Minimum degree two and bounded maximum degree both fail, and fail to one graph. Both are local
 conditions, and the mechanism is not local. Every counterexample above is built on a cut
@@ -993,42 +993,101 @@ gives
 \begin{equation}\label{eq:branch}
    \mu_G=\mu_H^{\,p-1}\bigl(x\mu_H-p\,\mu_{H-v}\bigr),
 \end{equation}
-and the root is taken from the last factor by tuning $p$ and $H$. The step that produces
-\eqref{eq:branch} is exactly the statement that $v$ separates $G$. Without a separating vertex
-the matching polynomial does not factor this way and the construction has nothing to tune.
-Identity \eqref{eq:branch} and the fact that a root of the last factor is a root of $\mu_G$
-are machine-checked as \texttt{CutVertexMechanism.branch\_factor} and
-\texttt{root\_of\_branch\_factor}; the separation hypothesis is
-\texttt{Separating}, with \texttt{not\_separating\_iff} recording that its negation is
-connectedness of every vertex-deleted subgraph.
+and the root is taken from the last factor by tuning $p$ and $H$. Identity \eqref{eq:branch},
+and the fact that a root of the last factor is a root of $\mu_G$, are machine-checked as
+\texttt{CutVertexMechanism.branch\_factor} and \texttt{root\_of\_branch\_factor}.
 
-\begin{conjecture}[C1]\label{conj:twoconn}
+The step producing \eqref{eq:branch} is exactly the statement that $v$ separates $G$, which
+suggested that forbidding separations would close the construction down. We recorded that
+guess as
+\begin{conjecture}[C1, false]\label{conj:twoconn}
 Every $2$-connected finite graph satisfies
 $\operatorname{Zeros}(\mu_G)\subseteq\operatorname{spec}(T_G)$.
 \end{conjecture}
+and it had three kinds of support. Twenty-six $2$-connected graphs with a cycle skeleton,
+degrees between two and five, produce no root in any gap (\texttt{code/cycle\_family.py}).
+Every counterexample then in hand had cut vertices, fifteen in the $31$-vertex graph and eleven
+in Hall's. And closing those graphs up, by adding a ring of edges until no cut vertex remained,
+returned the root to $\operatorname{spec}(T)$ in all five closures tested, with the violation
+surviving exactly as long as some cut vertex did (\texttt{code/twoconnected.py}).
 
-The statement was fixed before the confirming evidence was produced, and the evidence is of
-three kinds. Twenty-six $2$-connected graphs with a cycle skeleton, degrees between two and
-five, produce no root in any gap (\texttt{code/cycle\_family.py}). Every counterexample in hand
-has cut vertices, fifteen in the $31$-vertex graph and eleven in Hall's. And closing those
-graphs up destroys the effect: adding a ring of edges until no cut vertex remains returns the
-root to $\operatorname{spec}(T)$ in every case tested, five closures of two different graphs,
-with the violation surviving exactly as long as some cut vertex does
-(\texttt{code/twoconnected.py}).
+\subsection{C1 is false: the two-cut engine}\label{sec:twocut}
+
+A $2$-connected graph has no cut vertex, but it can have a separating \emph{pair}, and a $2$-cut
+carries its own recurrence. Take two hubs $u,v$ and $p$ identical branches, each attached to
+both; removing either hub leaves the graph joined through the other, so there is no cut vertex,
+while $\{u,v\}$ separates it into $p$ pieces. Writing $A=\mu_B$ for the branch, $A_1,A_2$ for
+the branch with one anchor deleted and $A_{12}$ for both, deletion at $u$ and then at $v$ gives
+\begin{equation}\label{eq:twocut}
+   \mu_G=A^{\,p-2}\bigl(x^2A^2-px(A_1+A_2)A+pA_{12}A+p(p-1)A_1A_2\bigr).
+\end{equation}
+This is \texttt{SeparationOrder.two\_cut\_factor}, with
+\texttt{root\_of\_two\_cut} for the transfer of roots.
+
+The bracket in \eqref{eq:twocut} is \emph{quadratic} in $p$ where the bracket in
+\eqref{eq:branch} is linear. Forbidding the cut vertex does not remove the engine; it upgrades
+it. Read as polynomials in the branch count, the two brackets have degrees one and two, with
+leading coefficient $A_1A_2$ in the second case: \texttt{cutBracket\_natDegree},
+\texttt{twoCutBracket\_natDegree}, and the comparison \texttt{freedom\_grows}.
+
+Conjecture~\ref{conj:twoconn} is false. Let $B_{q,T}$ be $K_{2,q}$ with a path of $T$ further
+vertices appended to one of its two degree-$q$ vertices; attach the other degree-$q$ vertex to
+$u$ and the end of the path to $v$, and take $p$ copies.
 
 \begin{center}
-\begin{tabular}{lrrl}
-graph & $n$ & cut vertices & verdict\\\hline
-triangles, depth $3$ & $31$ & $15$ & root in a gap\\
-\quad $+$ ring on the far vertices & $31$ & $0$ & no root in any gap\\
-Hall $(5,5)$ & $41$ & $11$ & root in a gap\\
-\quad $+$ ring on the leaves & $41$ & $0$ & no root in any gap\\
+\begin{tabular}{lrrrrrr}
+branch & $p$ & $n$ & $\kappa(G)$ & $\theta$ & defect & gap width\\\hline
+$B_{4,2}$ & $7$ & $58$ & $2$ & $2.137920$ & $0.003574$ & $0.14758$\\
+$B_{5,2}$ & $6$ & $56$ & $2$ & $2.287307$ & $0.005624$ & $0.06636$\\
+$B_{5,3}$ & $6$ & $62$ & $2$ & $2.317609$ & $0.008332$ & $0.09876$\\
 \end{tabular}
 \end{center}
 
-Conjecture~\ref{conj:twoconn} is not implied by anything proved here and is not proved here.
-What it has in its favour, beyond the data, is that it names the feature the mechanism
-actually uses, which the degree conditions did not.
+All three are simple, bipartite, of minimum degree two and maximum degree at most seven, and of
+vertex connectivity exactly two, computed by Menger as a unit-capacity maximum flow over every
+non-adjacent pair. Each $\theta$ is an algebraic number of degree $12$ or $14$ isolated from
+the exact integer bracket, and \eqref{eq:twocut} is checked against a brute-force matching
+polynomial before use. That $\theta\notin\operatorname{spec}(T)$ is confirmed twice over: the
+Angel--Friedman--Hoory decay rate at $40$ digits is $0.943$ to $0.959$, comfortably below one
+and not marginal; and the density of states of the universal cover, computed from the complex
+cavity equations, falls by a factor of ten per decade of $\eta$ at $\theta$, the signature of a
+point outside the spectrum, while an in-band control point holds constant to four figures
+(\texttt{code/twocut.py}).
+
+\subsection{Higher connectivity, and what is actually open}\label{sec:kcut}
+
+Equation \eqref{eq:twocut} is the case $k=2$ of a general expansion. With $k$ hubs and $p$
+branches attached to all of them, summing over which hubs are matched into which branch gives
+\begin{equation}\label{eq:kcut}
+   \mu_G=\sum_{S\subseteq[k]}(-1)^{|S|}x^{\,k-|S|}
+        \sum_{P\vdash S}(p)_{|P|}\Bigl(\prod_{J\in P}A_J\Bigr)A^{\,p-|P|},
+\end{equation}
+where $A_J$ is $\mu_B$ with the anchors indexed by $J$ deleted and $(p)_m$ is the falling
+factorial; this is $A^{p-k}$ times a bracket of degree $k$ in $p$. At $k=1$ it is
+\eqref{eq:branch} and at $k=2$ it is \eqref{eq:twocut}. Since a $k$-cut requires only
+$k$-connectedness while supplying a degree-$k$ polynomial in $p$, one expects each step up the
+connectivity ladder to trade a separation for a degree of freedom, and the ladder to fail at
+every rung.
+
+That expectation is not borne out. A search over thirty-eight branch families at $k=3,4,5$,
+with up to $62$ vertices and the expansion \eqref{eq:kcut} checked against brute force at
+$k=3$, produced no root in any gap (\texttt{code/kcut.py}). The search is not vacuous: those
+graphs have between two and five gaps, of total width $0.40$ to $0.75$.
+
+A second effect runs against the first. Raising the connectivity forces more edges, which
+widens the bands of $\operatorname{spec}(T)$ and narrows the gaps a root could occupy. At $k=2$
+the extra freedom wins; at $k=3$, in the range searched, the narrowing wins. We therefore
+record
+\begin{conjecture}[C2]\label{conj:threeconn}
+Every $3$-connected finite graph satisfies
+$\operatorname{Zeros}(\mu_G)\subseteq\operatorname{spec}(T_G)$.
+\end{conjecture}
+and note that it is incompatible with the expectation of the previous paragraph, so the two are
+a genuine test of each other rather than a matter of taste
+(\texttt{SeparationOrder.no\_threshold\_works}). The search range behind
+Conjecture~\ref{conj:threeconn} is narrow enough that it should be treated as provisional; the
+honest summary is that which of the two effects dominates is open, and that it is the question
+the collapse of C1 leaves behind.
 
 \subsection{What survives}
 

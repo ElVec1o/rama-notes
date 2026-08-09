@@ -1,9 +1,9 @@
 import Mathlib
 
 /-!
-# The cut vertex is the mechanism
+# The cut vertex is one mechanism, not the mechanism
 
-Every known counterexample to Conjecture 10 is built the same way: a cut vertex `v` whose
+Every counterexample to Conjecture 10 known before this file was built the same way: a cut vertex `v` whose
 removal leaves `p` isomorphic branches `H`, so that the vertex-deletion recurrence factors the
 matching polynomial and a root can be placed by tuning `p` and `H`.  This file isolates that
 factorisation, which is the engine, and records what it needs.
@@ -18,30 +18,41 @@ leaves one copy of `H - v` and `p - 1` copies of `H`.  The recurrence
 
 and every counterexample takes its root from the last factor.  That is `branch_factor`.
 
-**This requires a cut vertex.**  The step "deleting `v` leaves `p` disjoint copies" is exactly
+**This requires a separation.**  The step "deleting `v` leaves `p` disjoint copies" is exactly
 the statement that `v` separates `G`, and for `p ≥ 2` that is what a cut vertex is.  In a
-2-connected graph no vertex has this property, the matching polynomial does not factor this
-way, and the construction has nothing to tune.
+2-connected graph no *vertex* has this property, so this particular factorisation is
+unavailable.  The inference originally drawn from that, recorded and refuted below, was that
+the construction then has nothing to tune.  It has: deleting a separating *pair* does the same
+job.
 
-## The frozen hypothesis
+## The hypothesis this suggested, and its refutation
 
   **C1.**  Every 2-connected finite graph satisfies `Zeros(μ_G) ⊆ spec(T_G)`.
 
-Evidence, all obtained after C1 was written down.  Twenty-six 2-connected graphs with a cycle
-skeleton produce no root in any gap (`code/cycle_family.py`).  Every counterexample in hand has
-cut vertices, fifteen in the `31`-vertex graph and eleven in Hall's.  And closing those graphs
-up, by adding a ring of edges until no cut vertex remains, destroys the violation every time:
-five closures tested, and in each the root returns to `spec(T)` exactly when the cut vertices
-are gone (`code/twoconnected.py`).
+C1 was frozen on the strength of the factorisation below, and on evidence gathered afterwards:
+twenty-six 2-connected graphs with a cycle skeleton produced no root in any gap
+(`code/cycle_family.py`); every counterexample in hand had cut vertices, fifteen in the
+`31`-vertex graph and eleven in Hall's; and closing those graphs up with a ring of edges
+returned the root to `spec(T)` in all five closures tested, exactly when the last cut vertex
+went (`code/twoconnected.py`).
 
-C1 is a `CONJECTURE`.  What is proved below is the factorisation it would have to defeat, and
-the elementary observation that the factorisation is unavailable without a cut vertex.
+**C1 is `FALSE`.**  The argument below was too narrow.  A 2-connected graph has no cut vertex
+but can still have a 2-vertex separator, and a 2-cut carries its own factorisation with *more*
+freedom than this one, not less.  Three 2-connected bipartite graphs on `56`, `58` and `62`
+vertices, of vertex connectivity exactly two, carry a root of `μ_G` strictly inside a gap of
+`spec(T)`.  See `SeparationOrder`, where the 2-cut factorisation is `two_cut_factor` and the
+freedom count is `freedom_grows`.
 
-## Why this is the right hypothesis to have reached
+## What survives
 
-Minimum degree two and bounded maximum degree both failed, and failed to one graph.  Those are
-local conditions, and the mechanism is not local: it needs a global separation.  Connectivity
-is the invariant that sees separations, which is why it is the one that survives.
+The factorisation itself, and the reading of it.  `branch_factor` is correct and is still the
+engine of the `κ = 1` counterexamples; what was wrong was the inference that removing cut
+vertices removes the engine.  The lesson is that the relevant feature is a *separation*, of
+which a cut vertex is only the smallest case.
+
+Minimum degree two and bounded maximum degree failed before this because they are local
+conditions and the mechanism is global.  That reading was right.  What C1 got wrong was the
+order of the separation, not its relevance.
 -/
 
 namespace CutVertexMechanism
@@ -90,10 +101,25 @@ theorem not_separating_iff {V : Type*} (G : SimpleGraph V) (v : V) :
       ∀ a b : ({u : V | u ≠ v} : Set V), (G.induce {u : V | u ≠ v}).Reachable a b := by
   simp [Separating]
 
-/-- **C1, stated.**  The conjecture is that having no separating vertex suffices for the
-localization.  Recorded so that the target is unambiguous; it is not proved here. -/
+/-- **C1, stated.**  That having no separating vertex suffices for the localization.  Recorded
+so that the refuted target is unambiguous: this is `FALSE`, by the 2-cut counterexamples of
+`SeparationOrder`.  A graph with no separating vertex can still have a separating *pair*. -/
 def C1 : Prop :=
   ∀ (V : Type) (_ : Fintype V) (G : SimpleGraph V) (Zeros Spec : Set ℝ),
     (∀ v, ¬ Separating G v) → Zeros ⊆ Spec
+
+/-- A *separating pair*: the feature C1 failed to exclude.  Removing two vertices can
+disconnect a graph that no single vertex disconnects, and that is enough for the mechanism. -/
+def SeparatingPair {V : Type*} (G : SimpleGraph V) (u v : V) : Prop :=
+  ∃ a b : ({w : V | w ≠ u ∧ w ≠ v} : Set V),
+    ¬ (G.induce {w : V | w ≠ u ∧ w ≠ v}).Reachable a b
+
+/-- **The gap in the C1 argument, exactly.**  Having no separating vertex says nothing about
+separating pairs, so `∀ v, ¬ Separating G v` does not rule out the 2-cut engine.  This is the
+implication C1 tacitly assumed and which does not hold. -/
+theorem separatingPair_of_unreachable {V : Type*} (G : SimpleGraph V) (u v : V)
+    (a b : ({w : V | w ≠ u ∧ w ≠ v} : Set V))
+    (h : ¬ (G.induce {w : V | w ≠ u ∧ w ≠ v}).Reachable a b) : SeparatingPair G u v :=
+  ⟨a, b, h⟩
 
 end CutVertexMechanism
