@@ -79,28 +79,50 @@ trees satisfy with slack `0.42` to `4.47` and **zero violations** over every ver
 weaker since `B > λ`, and the failing case is covered: at `k = 1` it needs `F < 1/λ = 1.229`
 against an observed `0.8136`.
 
-## What remains
+## The coupled induction, corrected
 
-  **A10′.**  Every child ratio at a right-type path-tree vertex with `k` children is below
-  `k/λ`.
+Assembling both sides gives a system in one constant `m > 0`, the lower bound on `|F|` at
+right-type vertices.  With `κ(t) = λ + t/m` bounding left-type ratios at child count `t`, and
+`min_children`/`child_count_drop` capping a right-type vertex's children at `k - D` each, the
+parent is at most `λ - k/κ(k-D)`.  The invariant propagates when that is at most `-m`, which by
+`closure_iff` is
 
-That is the whole remaining gap.  It is a statement about how blocking propagates from a vertex
-to its children along a self-avoiding walk, so it is combinatorial rather than spectral, which
-is the point of taking this route.
+  `λ + m ≤ k / κ(k-D)`   for every attainable `k`, that is `D ≤ k ≤ q-1`.
+
+**This is a fixed-point condition on `m`, not a closed form**, and an earlier version of this
+file asserted otherwise.  It took `m = D/λ - 2λ`, on the reasoning that `μ(j) = j/κ(j-D) - λ`
+decreases to that limit.  The limit is `D/λ - 3λ`, so `μ(j)` drops *below* the value fed into
+`κ`, and `κ` was not a valid bound.  For `(3,6,4)` at `λ = 0.99g` the values are `μ(2) = 1.64`,
+`μ(3) = 0.67`, `μ(4) = 0.43`, `μ(5) = 0.32`, all under the `0.83` assumed.  The error surfaced
+while formalizing, which is what formalizing is for.
+
+Solving the fixed point properly, by iterating `m ↦ min_{D ≤ j ≤ q-1} (j/(λ + (j-D)/m) - λ)`
+from above, the induction closes on the **whole** gap for `(4,8,4)`, `(4,12,4)` and `(5,10,4)`,
+and on part of it elsewhere: `61%` of `g` for `(3,6,4)`, `78%` for `(3,9,4)`, `83%` for
+`(3,12,4)` and `29%` for `(3,6,5)` (`code/coupled.py`).  The earlier claim of the whole gap for
+`(3,6,4)` and `(3,9,4)` is withdrawn.
+
+So the biregular case of Conjecture 10 is proved for every `(d,q)`-biregular graph and every `λ`
+in the gap at which the fixed point is positive, which is the entire gap for three of the
+families tested.  It remains the first proof of the inner half of the two-sided statement for a
+nontrivial class, on a smaller class than was claimed.
 
 ## Status
 
 `left_step`, `right_step`, `right_step_sharp`, `right_step_leaves`, `certificate_closes`,
-`discriminant_vanishes_at_edge` and `no_vanishing` are `VERIFIED`.  That the *uniform*
-certificate closes on every path tree is `FALSE`, failing on `0.21%` of vertices in one measured
-case; the sharp form repairs it.  `min_children`, `child_count_drop`, `children_are_leaves` and `binding_case` are `VERIFIED` as
-arithmetic; the three graph-theoretic hypotheses feeding them are `PROVED` by the alternation
-count above, formalizing which would need bipartite path infrastructure not available here.
-`mu_pos_iff` and `coupled_closes` are `VERIFIED`.  The biregular case of Conjecture 10 under
-those two inequalities is `PROVED`: its arithmetic is verified, its combinatorial inputs are
-proved above, and the induction over the path tree is standard, though formalizing the path tree
-itself needs infrastructure not available here.  Outside that range, and the sign separation,
-remain `HEURISTIC` on the measurements cited.  The biregular case of Conjecture 10 remains a `CONJECTURE`.
+`discriminant_vanishes_at_edge`, `no_vanishing`, `right_step_bound`, `closure_iff` and
+`induction_step` are `VERIFIED`.  The counting lemmas `min_children`, `child_count_drop`,
+`children_are_leaves` and `binding_case` are `VERIFIED`, and their three graph-theoretic inputs
+are now formalized too, in `PathCount`.
+
+That the *uniform* certificate closes on every path tree is `FALSE`, failing on `0.21%` of
+vertices in one measured case; `right_step_sharp` repairs it.  The earlier closed-form closure
+condition is `FALSE` and withdrawn.
+
+The biregular case of Conjecture 10 wherever the fixed point is positive is `PROVED`: every step
+is verified, and the recursion over the path tree is the standard well-founded one on a finite
+tree, not itself formalized here.  Outside that range, and the sign separation, remain
+`HEURISTIC` on the measurements cited.  The general biregular case remains a `CONJECTURE`.
 -/
 
 namespace RatioRoute
@@ -225,30 +247,34 @@ theorem binding_case {k : ℕ} (lam : ℝ) (hlam : 0 < lam) (hk : lam ^ 2 < k) :
 
 /-! ## The coupled induction, and when it closes -/
 
-/-- **The closure condition, in closed form.**  Write `Δ = q - r`.  Bounding left-type ratios by
-`κ(j) = λ + j/μ_min` and right-type ones by `μ(j) = j/κ(j-Δ) - λ`, and feeding each into the
-other, `μ` is decreasing so its binding value is `μ_min = Δ/λ - 2λ`, positive exactly when
-`2λ² < Δ`.  Then `κ(j-Δ) = λ(j-2λ²)/(Δ-2λ²)`, and the requirement `λ·κ(j-Δ) < j` at child count
-`j` collapses to a polynomial inequality. -/
-theorem mu_pos_iff {lam D j : ℝ} (hD : 2 * lam ^ 2 < D) :
-    lam * (lam * (j - 2 * lam ^ 2) / (D - 2 * lam ^ 2)) < j ↔
-      0 < j * (D - 3 * lam ^ 2) + 2 * lam ^ 4 := by
-  have hpos : 0 < D - 2 * lam ^ 2 := by linarith
-  rw [show lam * (lam * (j - 2 * lam ^ 2) / (D - 2 * lam ^ 2))
-        = lam ^ 2 * (j - 2 * lam ^ 2) / (D - 2 * lam ^ 2) by ring,
-    div_lt_iff₀ hpos]
-  constructor <;> intro h <;> nlinarith [h]
+/-- **The right step with an explicit bound on the children.**  If every child ratio is positive
+and at most `κ`, the parent is at most `λ - k/κ`. -/
+theorem right_step_bound {k : ℕ} (F : Fin k → ℝ) (lam kap : ℝ)
+    (hF : ∀ j, 0 < F j ∧ F j ≤ kap) :
+    lam - ∑ j, 1 / F j ≤ lam - (k : ℝ) / kap := by
+  have hge : ∀ j ∈ (univ : Finset (Fin k)), 1 / kap ≤ 1 / F j := fun j _ =>
+    one_div_le_one_div_of_le (hF j).1 (hF j).2
+  have hs : (k : ℝ) / kap ≤ ∑ j, 1 / F j := by
+    calc (k : ℝ) / kap = ∑ _j : Fin k, 1 / kap := by
+          rw [sum_const, card_univ, Fintype.card_fin, nsmul_eq_mul]; ring
+      _ ≤ ∑ j, 1 / F j := sum_le_sum hge
+  linarith
 
-/-- **The condition need only be checked at the largest child count.**  If `Δ ≥ 3λ²` the
-inequality is immediate; otherwise the left side decreases in `j`, so checking it at the maximum
-`K = q - 1` suffices for every attainable `j`. -/
-theorem coupled_closes {lam D K j : ℝ} (hlam : 0 < lam) (hj : 0 ≤ j) (hjK : j ≤ K)
-    (hK : 0 < K * (D - 3 * lam ^ 2) + 2 * lam ^ 4) :
-    0 < j * (D - 3 * lam ^ 2) + 2 * lam ^ 4 := by
-  rcases le_or_gt 0 (D - 3 * lam ^ 2) with h | h
-  · have : 0 ≤ j * (D - 3 * lam ^ 2) := mul_nonneg hj h
-    nlinarith [pow_pos hlam 4]
-  · nlinarith [hK]
+/-- **The closure inequality.**  The right-type bound reaches `-m` exactly when `λ + m ≤ k/κ`.
+This is what the coupled system must satisfy at every attainable child count. -/
+theorem closure_iff {lam kap m : ℝ} {k : ℕ} :
+    lam - (k : ℝ) / kap ≤ -m ↔ lam + m ≤ (k : ℝ) / kap := by
+  constructor <;> intro h <;> linarith
+
+/-- **The induction step, assembled.**  At a right-type vertex with `k` children whose ratios lie
+in `(0, κ]`, if the closure inequality holds at `k` then the parent ratio is at most `-m`, so the
+invariant propagates.  With `left_step`, which sends children at most `-m` to a parent in
+`[λ, λ + j/m]`, this is the whole step; the recursion over the path tree is the standard
+well-founded one on a finite tree. -/
+theorem induction_step {k : ℕ} (F : Fin k → ℝ) (lam kap m : ℝ)
+    (hF : ∀ j, 0 < F j ∧ F j ≤ kap) (hclose : lam + m ≤ (k : ℝ) / kap) :
+    lam - ∑ j, 1 / F j ≤ -m :=
+  le_trans (right_step_bound F lam kap hF) (closure_iff.mpr hclose)
 
 /-- **The constants are forced.**  With `c` defined by `cB = k₀ - λB`, the requirement
 `B = λ + (d-1)/c` of `left_step` holds exactly when `B` satisfies the quadratic
