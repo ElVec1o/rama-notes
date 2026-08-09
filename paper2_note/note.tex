@@ -984,55 +984,41 @@ root descending to a spectral edge but never passing it is the Alon--Boppana pic
 Conjecture~\ref{conj:gap} was the assertion that matching roots are Ramanujan in that sense
 without exception. D1 says the exceptions exist but are uniformly small.
 
-\subsection{The cut vertex is one mechanism, not the mechanism}\label{sec:cutvertex}
+\subsection{The mechanism is a separation}\label{sec:mechanism}
 
-Minimum degree two and bounded maximum degree both fail, and fail to one graph. Both are local
-conditions, and the mechanism is not local. Every counterexample above is built on a cut
-vertex $v$ whose removal leaves $p$ isomorphic branches $H$, so that the deletion recurrence
-gives
+Every counterexample is built on a separation. If a vertex $v$ separates $G$ into $p$ isomorphic
+branches $H$, the deletion recurrence gives
 \begin{equation}\label{eq:branch}
    \mu_G=\mu_H^{\,p-1}\bigl(x\mu_H-p\,\mu_{H-v}\bigr),
 \end{equation}
-and the root is taken from the last factor by tuning $p$ and $H$. Identity \eqref{eq:branch},
-and the fact that a root of the last factor is a root of $\mu_G$, are machine-checked as
-\texttt{CutVertexMechanism.branch\_factor} and \texttt{root\_of\_branch\_factor}.
+and the root is placed by tuning $p$ and $H$; this is
+\texttt{CutVertexMechanism.branch\_factor}, with \texttt{root\_of\_branch\_factor} transferring
+a root of the last factor to $\mu_G$. Hall's graph and the graphs of
+\S\ref{sec:hallfamily} are of this shape.
 
-The step producing \eqref{eq:branch} is exactly the statement that $v$ separates $G$, which
-suggested that forbidding separations would close the construction down. We recorded that
-guess as
-\begin{conjecture}[C1, false]\label{conj:twoconn}
-Every $2$-connected finite graph satisfies
-$\operatorname{Zeros}(\mu_G)\subseteq\operatorname{spec}(T_G)$.
-\end{conjecture}
-and it had three kinds of support. Twenty-six $2$-connected graphs with a cycle skeleton,
-degrees between two and five, produce no root in any gap (\texttt{code/cycle\_family.py}).
-Every counterexample then in hand had cut vertices, fifteen in the $31$-vertex graph and eleven
-in Hall's. And closing those graphs up, by adding a ring of edges until no cut vertex remained,
-returned the root to $\operatorname{spec}(T)$ in all five closures tested, with the violation
-surviving exactly as long as some cut vertex did (\texttt{code/twoconnected.py}).
-
-\subsection{C1 is false: the two-cut engine}\label{sec:twocut}
-
-A $2$-connected graph has no cut vertex, but it can have a separating \emph{pair}, and a $2$-cut
-carries its own recurrence. Take two hubs $u,v$ and $p$ identical branches, each attached to
-both; removing either hub leaves the graph joined through the other, so there is no cut vertex,
-while $\{u,v\}$ separates it into $p$ pieces. Writing $A=\mu_B$ for the branch, $A_1,A_2$ for
-the branch with one anchor deleted and $A_{12}$ for both, deletion at $u$ and then at $v$ gives
+A cut vertex is only the smallest separation. Two hubs $u,v$ with $p$ identical branches
+attached to both leave no cut vertex, since removing either hub leaves the graph joined through
+the other, while $\{u,v\}$ separates it into $p$ pieces. Writing $A=\mu_B$ for the branch,
+$A_1,A_2$ for the branch with one anchor deleted and $A_{12}$ for both, deletion at $u$ and then
+at $v$ gives
 \begin{equation}\label{eq:twocut}
-   \mu_G=A^{\,p-2}\bigl(x^2A^2-px(A_1+A_2)A+pA_{12}A+p(p-1)A_1A_2\bigr).
+   \mu_G=A^{\,p-2}\bigl(x^2A^2-px(A_1+A_2)A+pA_{12}A+p(p-1)A_1A_2\bigr),
 \end{equation}
-This is \texttt{SeparationOrder.two\_cut\_factor}, with
-\texttt{root\_of\_two\_cut} for the transfer of roots.
+which is \texttt{SeparationOrder.two\_cut\_factor}, with \texttt{root\_of\_two\_cut}.
 
 The bracket in \eqref{eq:twocut} is \emph{quadratic} in $p$ where the bracket in
-\eqref{eq:branch} is linear. Forbidding the cut vertex does not remove the engine; it upgrades
-it. Read as polynomials in the branch count, the two brackets have degrees one and two, with
-leading coefficient $A_1A_2$ in the second case: \texttt{cutBracket\_natDegree},
-\texttt{twoCutBracket\_natDegree}, and the comparison \texttt{freedom\_grows}.
+\eqref{eq:branch} is linear. Read as polynomials in the branch count the two have degrees one and
+two, with leading coefficient $A_1A_2$ in the second case
+(\texttt{cutBracket\_natDegree}, \texttt{twoCutBracket\_natDegree}, \texttt{freedom\_grows}).
+Excluding cut vertices does not remove the engine; it upgrades it.
 
-Conjecture~\ref{conj:twoconn} is false. Let $B_{q,T}$ be $K_{2,q}$ with a path of $T$ further
-vertices appended to one of its two degree-$q$ vertices; attach the other degree-$q$ vertex to
-$u$ and the end of the path to $v$, and take $p$ copies.
+\begin{proposition}\label{prop:twoconn}
+There are $2$-connected counterexamples to Conjecture~\ref{conj:gap}.
+\end{proposition}
+
+Let $B_{q,T}$ be $K_{2,q}$ with a path of $T$ further vertices appended to one of its two
+degree-$q$ vertices; attach the other degree-$q$ vertex to $u$ and the end of the path to $v$,
+and take $p$ copies.
 
 \begin{center}
 \begin{tabular}{lrrrrrr}
@@ -1045,529 +1031,71 @@ $B_{5,3}$ & $6$ & $62$ & $2$ & $2.317609$ & $0.008332$ & $0.09876$\\
 
 All three are simple, bipartite, of minimum degree two and maximum degree at most seven, and of
 vertex connectivity exactly two, computed by Menger as a unit-capacity maximum flow over every
-non-adjacent pair. Each $\theta$ is an algebraic number of degree $12$ or $14$ isolated from
-the exact integer bracket, and \eqref{eq:twocut} is checked against a brute-force matching
-polynomial before use. That $\theta\notin\operatorname{spec}(T)$ is confirmed twice over: the
-Angel--Friedman--Hoory decay rate at $40$ digits is $0.943$ to $0.959$, comfortably below one
-and not marginal; and the density of states of the universal cover, computed from the complex
-cavity equations, falls by a factor of ten per decade of $\eta$ at $\theta$, the signature of a
-point outside the spectrum, while an in-band control point holds constant to four figures
+non-adjacent pair. Each $\theta$ is an algebraic number of degree $12$ or $14$ isolated from the
+exact integer bracket, and \eqref{eq:twocut} is checked against a brute-force matching
+polynomial. That $\theta\notin\operatorname{spec}(T)$ is confirmed twice: the
+Angel--Friedman--Hoory decay rate at $40$ digits is $0.943$ to $0.959$, and the density of states
+of the universal cover, from the complex cavity equations, falls by a factor of ten per decade of
+$\eta$ at $\theta$ while an in-band control holds constant to four figures
 (\texttt{code/twocut.py}).
 
-\subsection{Higher connectivity, and what is actually open}\label{sec:kcut}
-
 Equation \eqref{eq:twocut} is the case $k=2$ of a general expansion. With $k$ hubs and $p$
-branches attached to all of them, summing over which hubs are matched into which branch gives
+branches attached to all of them,
 \begin{equation}\label{eq:kcut}
    \mu_G=\sum_{S\subseteq[k]}(-1)^{|S|}x^{\,k-|S|}
         \sum_{P\vdash S}(p)_{|P|}\Bigl(\prod_{J\in P}A_J\Bigr)A^{\,p-|P|},
 \end{equation}
-where $A_J$ is $\mu_B$ with the anchors indexed by $J$ deleted and $(p)_m$ is the falling
-factorial; this is $A^{p-k}$ times a bracket of degree $k$ in $p$. At $k=1$ it is
-\eqref{eq:branch} and at $k=2$ it is \eqref{eq:twocut}. Since a $k$-cut requires only
-$k$-connectedness while supplying a degree-$k$ polynomial in $p$, one expects each step up the
-connectivity ladder to trade a separation for a degree of freedom, and the ladder to fail at
-every rung.
+with $A_J$ equal to $\mu_B$ with the anchors indexed by $J$ deleted and $(p)_m$ the falling
+factorial: $A^{p-k}$ times a bracket of degree $k$ in $p$. A $k$-cut thus needs only
+$k$-connectedness while supplying a degree-$k$ polynomial to tune. No counterexample above
+connectivity two is known: a search over thirty-eight branch families at $k=3,4,5$ with up to
+$62$ vertices, with \eqref{eq:kcut} checked against brute force at $k=3$, produced none, and it
+is not vacuous, those graphs carrying two to five gaps of total width $0.40$ to $0.75$
+(\texttt{code/kcut.py}).
 
-That expectation is not borne out. A search over thirty-eight branch families at $k=3,4,5$,
-with up to $62$ vertices and the expansion \eqref{eq:kcut} checked against brute force at
-$k=3$, produced no root in any gap (\texttt{code/kcut.py}). The search is not vacuous: those
-graphs have between two and five gaps, of total width $0.40$ to $0.75$.
+\subsection{The threshold is the minimum degree}\label{sec:mindeg3}
 
-A second effect runs against the first. Raising the connectivity forces more edges, which
-widens the bands of $\operatorname{spec}(T)$ and narrows the gaps a root could occupy. At $k=2$
-the extra freedom wins; at $k=3$, in the range searched, the narrowing wins. We therefore
-record
-\begin{conjecture}[C2]\label{conj:threeconn}
-Every $3$-connected finite graph satisfies
-$\operatorname{Zeros}(\mu_G)\subseteq\operatorname{spec}(T_G)$.
-\end{conjecture}
-and note that it is incompatible with the expectation of the previous paragraph, so the two are
-a genuine test of each other rather than a matter of taste
-(\texttt{SeparationOrder.no\_threshold\_works}). The search range behind
-Conjecture~\ref{conj:threeconn} is narrow enough that it should be treated as provisional; the
-honest summary is that which of the two effects dominates is open, and that it is the question
-the collapse of C1 leaves behind.
+Connectivity is not the right invariant, because a graph of vertex connectivity $\kappa$ has
+minimum degree at least $\kappa$, and it is the minimum degree that the counterexamples respond
+to. Every counterexample above has minimum degree at most two: Hall's has leaves, the
+$31$-vertex graph of Proposition~\ref{prop:mindeg2} has degree-2 vertices, and so do all three
+graphs of Proposition~\ref{prop:twoconn}.
 
-\subsection{The threshold is the minimum degree, and it sits at three}\label{sec:mindeg3}
-
-Conjecture~\ref{conj:threeconn} is the wrong statement of the right idea, because it is
-confounded. A graph of vertex connectivity $\kappa$ has minimum degree at least $\kappa$, so
-demanding $3$-connectedness silently demands minimum degree three; and every counterexample in
-this note has minimum degree at most two. Hall's has leaves, the $31$-vertex graph has
-degree-2 vertices, and so do all three graphs of \S\ref{sec:twocut}. The evidence for
-Conjecture~\ref{conj:threeconn} is therefore equally evidence for a quite different statement.
-
-The two readings separate cleanly, because the same engine can be run with the only change
-being the minimum degree. Take the two-hub construction of \S\ref{sec:twocut}, which refuted
-C1, and give it branches in which every vertex has degree at least three: ladders anchored at
-both ends of both rails, prisms, and $K_{3,q}$ blocks with two of the three degree-$q$ vertices
-anchored. This yields $102$ graphs of minimum degree three whose vertex connectivity is
-\emph{two}, so each has the separating pair the engine needs, and $77$ of them have a gap of
-width at least $0.05$, several wider than $2.9$. The three counterexamples of
-\S\ref{sec:twocut} sit in gaps of width $0.066$ to $0.148$, so the targets here are up to
-twenty times wider. No root lands in any of them (\texttt{code/mindeg3.py}).
+The two-hub construction separates the two conditions exactly, since it can be run with branches
+whose every vertex has degree at least three: ladders anchored at both ends of both rails,
+prisms, and $K_{3,q}$ blocks with two of the three degree-$q$ vertices anchored. That yields
+$102$ graphs of minimum degree three whose vertex connectivity is \emph{two}, so each retains the
+separating pair the engine needs, and $77$ of them have a gap of width at least $0.05$, several
+wider than $2.9$, against the $0.066$ to $0.148$ that the counterexamples of
+Proposition~\ref{prop:twoconn} occupy. None has a root in a gap (\texttt{code/mindeg3.py}).
 
 \begin{conjecture}[D3]\label{conj:mindeg3}
 Every finite graph of minimum degree at least three satisfies
 $\operatorname{Zeros}(\mu_G)\subseteq\operatorname{spec}(T_G)$.
 \end{conjecture}
 
-Conjecture~\ref{conj:mindeg3} implies Conjecture~\ref{conj:threeconn}, since $\kappa\ge3$ forces
-$\delta\ge3$ (\texttt{MinimumDegreeThreshold.C2\_of\_D3}), and it is the better statement on
-two counts. It is local where connectivity is global, and it is sharp: minimum degree two is
-refuted by the $31$-vertex graph, so under Conjecture~\ref{conj:mindeg3} three is the
-\emph{least} sufficient bound, which is \texttt{threshold\_is\_three}.
+Conjecture~\ref{conj:mindeg3} implies the corresponding statement for $3$-connected graphs
+(\texttt{MinimumDegreeThreshold.C2\_of\_D3}), and it is sharp: minimum degree two is refuted by
+Proposition~\ref{prop:mindeg2}, so three is the \emph{least} sufficient bound
+(\texttt{threshold\_is\_three}).
 
-Two remarks fix how much this claims. First, the narrowing of gaps that motivated
-Conjecture~\ref{conj:threeconn} is real but is not annihilation: over $38$ graphs the mean total
-gap width falls from $0.99$ at $\delta\le2$ to $0.09$ at $\delta\ge3$, yet individual gaps at
-$\delta=3$ reach $2.9$ (\texttt{code/gapscale.py}). So Conjecture~\ref{conj:mindeg3} is not
-true for the trivial reason that there is nowhere to hide. Second, the regular case \emph{is}
-trivial, and it is worth saying so. For a $d$-regular graph the universal cover is the
-$d$-regular tree, whose spectrum is exactly $[-2\sqrt{d-1},2\sqrt{d-1}]$ by Kesten, and every
-root of $\mu_G$ lies in that same interval by Heilmann and Lieb. The two coincide and there is
-nothing to violate; this is \texttt{conj10\_of\_regular}, with both classical facts entering as
-hypotheses. Consistently, no regular graph we tested has any gap at all. The content of
-Conjecture~\ref{conj:mindeg3} is entirely in the irregular case.
+Three remarks fix how much this claims. First, the regular case is trivial and worth separating
+off: for $d$-regular $G$ the universal cover is the $d$-regular tree, whose spectrum is exactly
+the interval $[-2\sqrt{d-1},2\sqrt{d-1}]$ in which Heilmann and Lieb confine every root, so there
+is nothing to violate (\texttt{conj10\_of\_regular}). The content lies in irregular graphs.
 
-One further family is worth recording because it is unlike the others. Wheels, a hub joined to a
-cycle, have minimum degree three, are non-bipartite by construction, and their universal covers
-carry wide gaps, from $(2.02,2.08)$ at $W_5$ out to $(2.02,3.20)$ at $W_{11}$. Every family
-previously tested against Conjecture~\ref{conj:mindeg3} came from the two-hub engine or from
-$3$-connected constructions, all bipartite or nearly so, so this is a genuine new test. No wheel
-up to $W_{14}$ has a root in any gap, and at the closest approach the verdict is confirmed by
-the density-of-states ladder rather than inferred from a gap edge: for $W_{10}$ through
-$W_{20}$ the largest root below $2$ has density of states constant to four significant figures
-across four decades of $\eta$, so it lies in the spectrum (\texttt{code/wheels.py}).
+Second, minimum degree three narrows the gaps but does not remove them, so
+Conjecture~\ref{conj:mindeg3} is not true for want of anywhere to hide: over $38$ graphs the mean
+total gap width falls from $0.99$ at $\delta\le2$ to $0.09$ at $\delta\ge3$, while individual
+gaps at $\delta=3$ reach $2.9$ (\texttt{code/gapscale.py}).
 
-The wheels also show what does \emph{not} transfer. The certificate of \S\ref{sec:barrier} is
-sign-alternating, and that alternation came from the bipartition. On wheels no natural class
-determines the sign of a path-tree ratio: endpoint degree, depth parity and child count are each
-mixed (\texttt{code/d3ratio.py}). So the ratio route proves the biregular case for a reason that
-does not survive the loss of bipartiteness, which is worth knowing before it is aimed at
-Conjecture~\ref{conj:mindeg3} in general.
-
-Conjecture~\ref{conj:mindeg3} has not been attacked as hard as C1 was, and C1 survived three
-hours.
-
-\subsection{Where D3 is most exposed, and a positive margin there}\label{sec:margin}
-
-Conjecture~\ref{conj:mindeg3} is most exposed at large degree contrast, because that is where
-the gaps are widest at minimum degree three. The universal cover of a $(\delta,q)$-biregular
-graph is the $(\delta,q)$-biregular tree, whose spectrum is $\{0\}$ together with
-$\pm[\sqrt{q-1}-\sqrt{\delta-1},\;\sqrt{q-1}+\sqrt{\delta-1}]$, so there is a gap $(0,g)$ with
-$g=\sqrt{q-1}-\sqrt{\delta-1}$, and $g\to\infty$ with $q$. A root of $\mu_G$ in $(0,g)$ would
-refute Conjecture~\ref{conj:mindeg3}, and would also settle Song, Fan and Miao's Problem~1, to
-which the biregular case is equivalent by \S\ref{sec:biregblock}.
-
-For $K_{\delta,q}$ the question is decidable in closed form. A $k$-matching picks $k$ vertices
-on each side and matches them, so
-\begin{equation}\label{eq:kdq}
-   \mu_{K_{\delta,q}}=x^{\,q-\delta}P(x^2),\qquad
-   P(y)=\sum_{k\le\delta}(-1)^k\binom{\delta}{k}(q)_k\,y^{\delta-k},
-\end{equation}
-with $(q)_k$ the falling factorial. Here $P$ is a Laguerre polynomial, and as $q\to\infty$ its
-zeros satisfy $(y-q)/\sqrt q\to$ the zeros of the probabilists' Hermite polynomial
-$\mathrm{He}_\delta$. Writing $h_\delta$ for the largest of those,
-\[
-   x_{\min}=\sqrt q-\tfrac{h_\delta}{2}+o(1),\qquad g=\sqrt q-\sqrt{\delta-1}+o(1),
-\]
-so the margin $x_{\min}-g$ tends to $\sqrt{\delta-1}-h_\delta/2$. At $q=10^6$ this agrees to
-four decimals for every $\delta$ from $3$ to $20$ (\texttt{code/d3attack.py}).
-
-\begin{theorem}\label{thm:margin}
-For every $\delta\ge3$ the limiting margin is positive:
-$\sqrt{\delta-1}-h_\delta/2\ \ge\ \tfrac12\bigl(\sqrt{\delta-1}-\sqrt{\delta-2}\bigr)>0$.
-\end{theorem}
-
-\begin{proof}
-By the recurrence $\mathrm{He}_{n+1}=y\,\mathrm{He}_n-n\,\mathrm{He}_{n-1}$, the zeros of
-$\mathrm{He}_\delta$ are the eigenvalues of the Jacobi matrix with zero diagonal and
-off-diagonal entries $\sqrt1,\dots,\sqrt{\delta-1}$. Its absolute row sums are
-$\sqrt{i-1}+\sqrt i$, largest in the last row, so Gershgorin gives
-$h_\delta\le\sqrt{\delta-2}+\sqrt{\delta-1}$, whence
-$\sqrt{\delta-1}-h_\delta/2\ge\frac12(\sqrt{\delta-1}-\sqrt{\delta-2})>0$.
-\end{proof}
-
-The Gershgorin step is \texttt{CompleteBipartiteMargin.abs\_eigenvalue\_le\_max\_rowsum},
-proved from the eigenvalue equation at an index where the eigenvector is largest; the
-consequence is \texttt{margin\_pos\_of\_rowsum}, and \texttt{no\_root\_below\_gap\_edge} closes
-the chain. The bound is far from tight, of order $1/(4\sqrt\delta)$ against a true margin near
-$0.55$, but it holds for every $\delta$. \emph{No complete bipartite graph refutes
-Conjecture~\ref{conj:mindeg3}, however wide the gap is made.}
-
-Two further attacks find nothing. Genuine $(3,q)$-biregular graphs built from balanced
-$3$-uniform designs, of vertex connectivity three, keep margins between $0.36$ and $0.53$. And
-the two-hub engine of \S\ref{sec:twocut} run with \emph{two} branch types at once, which
-replaces the single knob $p$ by a pair $(p_1,p_2)$, produces graphs of minimum degree three
-with gaps up to $1.48$ and no root in any of them; the mixed-branch expansion is checked
-against a brute-force matching polynomial before use.
-
-\subsection{The biregular margin, and the soft edge}\label{sec:softedge}
-
-Theorem~\ref{thm:margin} covers only $K_{\delta,q}$, and the complete bipartite graph turns out
-not to be extremal. Random $(\delta,q)$-biregular graphs have smaller margins, and the margin
-falls as they grow. Writing $g=\sqrt{q-1}-\sqrt{\delta-1}$ for the inner edge of the
-$(\delta,q)$-biregular tree spectrum and $x_{\min}$ for the smallest positive root, so that the
-biregular case of Conjecture 10 is exactly $x_{\min}\ge g$, the minimum margin over twelve
-samples at each size falls monotonically across fourteen sizes for $(3,6)$, from $0.5301$ at
-$n=12$ to $0.2009$ at $n=51$. A log-log fit gives
-\begin{equation}\label{eq:softedge}
-   x_{\min}-g\;\approx\;2.78\,n^{-0.6675},\qquad R^2=0.9999,
-\end{equation}
-with $(3,9)$ giving exponent $-0.6331$ at $R^2=0.9995$ (\texttt{code/softedge.py}). Matchings
-are counted exactly, by a bitmask permanent over the smaller side rather than by vertex
-deletion, which is what makes the range reachable.
-
-On that evidence we read the exponent as $-2/3$, the soft-edge scale of random matrix theory.
-Eight families correct that reading. With a generator that never rejects, a deterministic
-biregular base followed by degree-preserving double-edge swaps, and a vectorised bitmask
-permanent, the fit runs over $d=3,4,5,6$ at $R^2\ge0.999$ throughout, and the exponent is not
-universal. It tracks the aspect ratio $q/d$:
-
-\begin{center}
-\begin{tabular}{lrl}
-$q/d$ & families & exponent\\\hline
-$2$ & $4$ & $-0.6703\pm0.015$\\
-$3$ & $3$ & $-0.6267\pm0.007$\\
-$4$ & $1$ & $-0.6102$\\
-\end{tabular}
-\end{center}
-
-The value $-2/3$ is right for $q=2d$ and the fitted values fall away from it as $q/d$ grows.
-Three checks rule out the obvious artefacts. It is not a matter of which size variable is used: at fixed
-$(d,q)$ the quantities $n$, $r$, $m$ and the edge count are all proportional, so the exponent
-against any of them is identical. It is not a correction term: local exponents taken between
-consecutive sizes do not converge across aspect ratios, their spread being $0.016$ at small $r$
-and $0.021$ at large $r$. And it is not a sampling artefact, which was the serious worry, since
-the margin is estimated as a minimum over random graphs and that minimum is biased upward by an
-amount growing with $r$; moving from three samples to sixteen shifts the exponent by at most
-$0.005$, and the unbiased sample-\emph{mean} estimator shows the same spread across families,
-$\pm0.016$ against $\pm0.018$ for the minimum. Extending to $q/d=5,6$ the fitted exponent flattens near
-$-0.62$ rather than continuing to drift (\texttt{code/softedge3.py}). What none of these checks
-rules out, and what turns out to be the explanation, is that every size reachable is
-pre-asymptotic; that is settled below. The constant behaves the same way: with the exponent
-held at $-2/3$, $C/(\sqrt{d-1}+\sqrt{q-1})$ has mean $0.766$ with a $6\%$ spread that is again
-monotone in $q/d$ (\texttt{code/softedge2.py}).
-
-What survives, and it is what matters, is that the exponent is positive. The margin tends to
-zero, so no size-free bound can prove the biregular case; it tends to zero from above, so the
-statement is true and merely tight; and the right target is a Friedman-type edge theorem, in
-which the roots of $\mu_G$ fill out $\operatorname{spec}(T)$ without escaping it, exactly as the
-eigenvalues of a random $d$-regular graph fill out $[-2\sqrt{d-1},2\sqrt{d-1}]$ without
-escaping. This is the Alon--Boppana analogy of \S\ref{sec:biregblock} with a measured rate.
-
-Two structural consequences are worth stating precisely, because between them they disqualify a
-class of proofs including our own. First, a quantity strictly positive at every size may admit
-no uniform positive lower bound, so every argument producing a constant independent of $n$ is
-insufficient in general; that is \texttt{SoftEdge.no\_uniform\_lower\_bound}, and the Gershgorin
-constant of Theorem~\ref{thm:margin} is exactly such a constant, so it cannot generalise beyond
-the complete bipartite family however it is sharpened. Second, and sharper, a lower bound may
-not decay more slowly than the measured upper bound: if the margin is at most $Cn^{-\alpha}$
-then no bound $cn^{-\beta}$ with $\beta<\alpha$ can hold, so a proof must reach the measured
-exponent and not merely some power of $n$. That is \texttt{exponent\_floor}.
-
-There is however a derivation that cuts against the measurement, and it should be recorded
-because it is the stronger evidence. The soft-edge mechanism is explicit: if the roots
-accumulate at the inner edge with density vanishing like $(x-g)^\beta$, the expected number
-within $\delta$ is $CN\delta^{\beta+1}$, and the extreme root sits where that count is one, so
-$\delta=(CN)^{-1/(\beta+1)}$ (\texttt{SoftEdge.edge\_scale}). The $(d,q)$-biregular tree has
-spectral density proportional to
-$\sqrt{(x^2-g^2)\bigl((\sqrt{d-1}+\sqrt{q-1})^2-x^2\bigr)}/\bigl(x(dq-x^2)\bigr)$ on its band,
-which vanishes like $\sqrt{x-g}$ at the inner edge. So $\beta=\tfrac12$ for \emph{every}
-$(d,q)$, and the predicted exponent is $-2/3$ universally, with no aspect-ratio dependence at
-all (\texttt{sqrt\_edge\_exponent}).
-
-The tension is resolved in favour of the derivation, by a comparison that avoids estimating
-any density from the data. The predicted margin is the quantile $\delta$ solving
-$n\int_g^{g+\delta}\rho=1$, the point at which the expected root count reaches one. The density
-is obtained from the cavity resolvents $X=1/(z-A_1Y)$, $Y=1/(z-B_1X)$ with $A_1=d-1$,
-$B_1=q-1$, whose product satisfies $A_1B_1P^2+(A_1+B_1-z^2)P+1=0$; writing $a=\sqrt{A_1}$,
-$b=\sqrt{B_1}$, the discriminant factors as
-\begin{equation}\label{eq:disc}
-   (z^2-a^2-b^2)^2-4a^2b^2=\bigl(z^2-(a+b)^2\bigr)\bigl(z^2-(b-a)^2\bigr),
-\end{equation}
-a pure algebraic identity, machine-checked as
-\texttt{SoftEdge.discriminant\_factors}, which locates the band edges at $S=a+b$ and $g=b-a$.
-The inner factor has a simple zero there (\texttt{inner\_edge\_simple}), so the density vanishes
-like $\sqrt{x-g}$ and $\beta=\tfrac12$ for every $(d,q)$.
-
-That density passes a sharp check: $n\int_g^S\rho=r$ to eight decimals in all twelve families,
-$r$ being the exact number of positive roots. And the quantile built from it reproduces the
-aspect-ratio dependence of the measured exponents, with spread $0.0149$ against the measured
-$0.0176$ and the same ordering in $q/d$.
-
-The decisive observation is that the analytic quantile's \emph{own} effective exponent is
-$-0.693$ at $n\approx100$, with spread $0.0052$ across aspect ratios, and reaches $-2/3$ with
-spread $0.0000$ only near $n\approx10^6$. Since it is built from a square-root edge its
-asymptotic exponent is $-2/3$ by construction. So a quantity whose true exponent is exactly
-$-2/3$ nonetheless displays aspect-ratio-dependent effective exponents at the sizes reachable.
-The dependence measured on graphs is therefore a finite-size effect, and the asymptotic exponent
-is the universal $-2/3$ (\texttt{code/quantile.py}).
-
-This overturns the reading recorded above, that the aspect-ratio dependence was real. It is not;
-what the three confound checks established is only that it is not an artefact of the size
-variable, of a correction term or of sampling, and the true explanation is that every size
-reachable here is pre-asymptotic. One residual is real and can now be quantified. Writing
-$N_{\mathrm{obs}}=n\int_g^{x_{\min}}\rho$ for the root count the analytic density places below
-each \emph{observed} smallest root, the quantile convention would make it constant. It is not:
-it sits near $0.5$ but drifts like $n^{+0.101}$, consistently across all twelve families,
-between $0.085$ and $0.117$ (\texttt{code/offset.py}). So the finite-graph root distribution
-does depart from the tree measure at the edge, and that departure is what the $0.088$ exponent
-offset measures; the two are consistent, since $N_{\mathrm{obs}}$ scales as the $3/2$ power of
-the margin ratio. Two explanations for the drift are ruled out. It is not the girth,
-which is exactly $4$ for every graph over the whole range and so cannot drive a smooth trend;
-and it is not the minimum-over-samples estimator, since recomputing $N_{\mathrm{obs}}$ from the
-unbiased sample \emph{mean} gives a drift of $+0.110$, if anything larger than the minimum's
-$+0.093$, at $R^2>0.98$ in every family (\texttt{code/nobs.py}). What drives it is the number of roots, not the number of
-vertices. The complete bipartite graphs separate the two exactly, since $K_{d,q}$ has precisely
-$d$ positive roots however large $q$ is: taking $q$ to $10^4$ at fixed $d$, $N_{\mathrm{obs}}$
-converges, from $0.5633$ to $0.4714$ at $d=8$ for instance, so it is not an $n$-effect. Varying
-$d$ at $q=2\cdot10^4$ it grows like $r^{+0.14}$ (\texttt{code/nobs\_exact.py}). That is the same
-sign and roughly the same size as the $+0.11$ seen in the random families, but in a different
-regime, the one where the margin tends to the constant of Theorem~\ref{thm:margin} rather than
-to zero, so the two should not be identified on this evidence.
-
-Whether the departure survives to infinity remains unknown. Consistency suggests not: if the
-margin exponent tends to $-2/3$ and the local power of the cumulative tends to $3/2$, the drift
-in $N_{\mathrm{obs}}$ must tend to $0$, and at the measured exponent $-0.658$ the implied local
-power is $1.35$, short of $3/2$ in exactly the way a pre-asymptotic regime is.
-
-The asymptotic margin is nevertheless pinned exactly, not merely up to an exponent. Near the
-inner edge $\rho(x)=\kappa\sqrt{x-g}+O(x-g)$, so the mass within $\delta$ is
-$\tfrac{2\kappa}{3}\delta^{3/2}$ and the quantile at which the expected count reaches one is
-\begin{equation}\label{eq:constant}
-   \delta=\Bigl(\frac{3}{2\kappa n}\Bigr)^{2/3},
-\end{equation}
-which is \texttt{SoftEdge.sqrt\_edge\_quantile}. With $\kappa$ read off the density this is
-explicit for every $(d,q)$, and it checks out: $(3/2\kappa)^{2/3}n^{-2/3}$ agrees with the
-analytic quantile to four significant figures at $n=10^6$ in all twelve families. So
-Problem~1 is no longer ``prove the margin is positive'' but ``prove a bound of exactly the size
-\eqref{eq:constant}'', anything weaker being excluded by \texttt{exponent\_floor} and anything
-size-free by \texttt{no\_uniform\_lower\_bound}.
-
-What the decay says about the conjecture is worth stating as a shape rather than a number. If
-the margin is positive at every size and tends to zero, then the spectral edge $g$ is the
-greatest lower bound of the smallest positive roots and is never attained
-(\texttt{SoftEdge.inf\_not\_attained}), and no constant above $g$ bounds them below
-(\texttt{edge\_unimprovable}). That is exactly a Friedman-type statement: the roots fill out
-$\operatorname{spec}(T)$ right up to its edge without ever escaping, so $g$ always works and
-nothing larger ever does. It is also why the conjecture cannot be softened: there is no
-$\varepsilon$ to spare.
-
-The monotone decline buys one further reduction. A margin that is positive and antitone
-converges to its infimum (\texttt{antitone\_pos\_tendsto\_glb}), and given positivity, which is
-the conjecture itself, the bound $g$ is unimprovable exactly when that infimum is zero
-(\texttt{unimprovable\_iff\_iInf\_zero}). So the Friedman picture is not an additional
-hypothesis stacked on the conjecture; it is the single remaining question of whether one number
-vanishes.
-
-The limits are the obvious ones. The fits reach $n=98$; the identification of any particular
-rational number as the exponent is an inference from the random matrix analogy rather than a
-derivation; and the aspect-ratio dependence is measured, not explained.
-
-\subsection{Why the available machinery cannot close it}\label{sec:barrier}
-
-There is a structural reason the outer half of \eqref{eq:twosided} is a theorem and the inner
-half is not, and it disqualifies the tools that proved the outer half.
-
-The outer bound is a statement about quadratic forms. For a diagonal form with entries $\mu_i$,
-every Rayleigh quotient lies between the least and the greatest entry
-(\texttt{SoftEdge.rayleigh\_between}), and being a statement about forms it passes to every
-subspace. That is exactly the path-tree argument: the path tree is an induced subtree of $T$, so
-its adjacency form is a compression of $T$'s, and it inherits
-$\operatorname{Zeros}(\mu_G)\subseteq[-\rho(T),\rho(T)]$.
-
-A gap is not a statement about quadratic forms, and compressions do not inherit it. With
-entries $-1$ and $1$ the spectrum is $\{-1,1\}$ and $(-1,1)$ is a gap, but the vector $(1,1)$
-has Rayleigh quotient $0$, strictly inside it (\texttt{rayleigh\_in\_gap}). So a compression can
-take values the original excludes, and no argument phrased in Rayleigh quotients or
-compressions can rule them out however it is refined. This is the $P_8$-inside-the
-$(3,2)$-biregular-tree phenomenon of \S\ref{sec:further} at its smallest, and it explains why
-Heilmann--Lieb, Godsil's path tree and the Marcus--Spielman--Srivastava interlacing machinery
-all deliver one end of the interval and are silent about the other.
-
-What is not barred is the ratio recursion. The deletion recurrence writes
-$F_v=\mu_G/\mu_{G-v}$ as $x-\sum_{u\sim v}1/F_u$, so a positive lower bound on every child ratio
-propagates upward (\texttt{SoftEdge.cavity\_lower\_bound}), and a bound that stays positive
-certifies that $\mu_G$ has no root there (\texttt{no\_root\_of\_ratio}). The hypothesis is a
-bound on \emph{ratios of matching polynomials}, not on Rayleigh quotients of the adjacency
-operator, so \texttt{rayleigh\_in\_gap} does not apply: the quantity being bounded does
-distinguish points inside a gap from points of the spectrum, which no quadratic form can. It is
-also exactly the object the Angel--Friedman--Hoory decay rate controls on the universal cover,
-which is how membership of $\operatorname{spec}(T)$ is certified numerically throughout this
-note. That is where we would look for a proof.
-
-\subsubsection*{A sign-alternating certificate}
-
-The route can be made concrete. By Godsil $\mu_G$ divides $\mu_P$ for the path tree $P$, and on
-a tree the deletion recurrence is exact and local: $F_v=\lambda-\sum_{u}1/F_u$ over the children
-$u$ of $v$, with $F=\lambda$ at leaves. So $\mu_G(\lambda)\ne0$ follows once no $F$ vanishes.
-
-A positive invariant interval cannot do it. If every child ratio lay in $[a,b]$ with $a>0$,
-invariance would need $a\le\lambda-k/a$, that is $a^2-\lambda a+k\le0$, which has a positive
-solution only for $\lambda\ge2\sqrt k$: the Heilmann--Lieb bound again, so such an interval
-exists above the band and never inside a gap.
-
-What replaces it is visible in the ratios themselves. Computing every cavity ratio on path
-trees of $(d,q)$-biregular graphs at gap points, over twenty-two thousand path-tree vertices,
-the signs separate by vertex type with no exceptions: every degree-$d$ vertex has $F>0$ and
-every degree-$q$ vertex has $F<0$. For $(3,9)$ at $\lambda=0.354$ the left ratios fill
-$[0.3536,0.5353]$, the left endpoint being the leaf value $\lambda$, and the right ratios fill
-$[-22.27,-13.79]$ (\texttt{code/pathratio.py}). The certificate is therefore sign-alternating,
-a positive interval on one side of the bipartition and a negative interval on the other, and
-its two steps are elementary:
-
-\begin{proposition}\label{prop:ratiosteps}
-Let $\lambda>0$.
-\begin{enumerate}
-\item[(i)] If $F_1,\dots,F_k\in[-C,-c]$ with $c>0$, then
-$\lambda\le\lambda-\sum_j 1/F_j\le\lambda+k/c$.
-\item[(ii)] If $F_1,\dots,F_k\in[a,B]$ with $0<a\le B$ and $k>\lambda B$, then
-$\lambda-\sum_j 1/F_j<0$.
-\end{enumerate}
-\end{proposition}
-
-These are \texttt{RatioRoute.left\_step} and \texttt{right\_step}, and
-\texttt{no\_vanishing} closes the induction: a ratio that is either at least $\lambda$ or at
-most $-c$ is nonzero. Part (i) holds for every $k$, so a path-tree vertex missing some of its
-children is still covered, which is what makes truncation harmless on that side.
-
-The two steps determine the constants rather than leaving them free. Taking $a=\lambda$,
-$B=\lambda+(d-1)/c$ from (i) and $c=k_0/B-\lambda$ from (ii), with $k_0$ the least number of
-children at a right-type vertex, eliminates $c$: the system closes exactly when
-\begin{equation}\label{eq:certquad}
-   \lambda B^2-B(k_0+\lambda^2-d+1)+\lambda k_0=0,
-\end{equation}
-which is \texttt{RatioRoute.certificate\_closes}. Two features of \eqref{eq:certquad} decide the
-route. Its discriminant vanishes exactly at the gap edge: writing $s=\sqrt{d-1}$, $t=\sqrt{q-1}$
-with $g=t-s$ and $k_0=q-1=t^2$, one has $k_0+\lambda^2-d+1=2t(t-s)$ at $\lambda=g$, so the
-discriminant is $4t^2(t-s)^2-4(t-s)^2t^2=0$ (\texttt{discriminant\_vanishes\_at\_edge}); it is
-positive throughout the open gap in every family tested. And the smaller root of
-\eqref{eq:certquad} equals the universal cover's cavity fixed point $F_d$, agreeing to fifteen
-digits in every case checked (\texttt{code/certificate.py}). The certificate constants are not
-chosen; they are the fixed point the path tree already tracks, and the certificate degenerates
-precisely where the gap closes.
-
-The uniform form of (ii) requires $k>\lambda B$ at each right-type vertex, and that fails: for a
-$(3,6)$-biregular graph on $15$ vertices at $\lambda=0.99g$ it is violated at $0.21\%$ of
-right-type vertices.
-
-Dropping the uniform interval repairs it. Measuring child ratios directly, a right-type vertex
-at the minimum child count carries children that are \emph{leaves}, of ratio exactly $\lambda$:
-$0.8136$ against $\lambda=0.8136$ at $k=1$, and likewise at the minimum $k$ of every family
-tested. The correct hypothesis is therefore a bound on the ratios, not on the counts.
-
-\begin{proposition}\label{prop:sharp}
-Let $\lambda>0$ and $k\ge1$. If $0<F_j<k/\lambda$ for $j=1,\dots,k$ then
-$\lambda-\sum_j 1/F_j<0$.
-\end{proposition}
-
-This is \texttt{RatioRoute.right\_step\_sharp}, and \texttt{right\_step\_leaves} records the
-extreme case: all children leaves gives $\lambda-k/\lambda$, negative exactly when $k>\lambda^2$.
-The requirement thus drops from $k>\lambda B$ to $k>\lambda^2$, strictly weaker since $B>\lambda$,
-and the failing case is covered, needing $F<1/\lambda=1.229$ against an observed $0.8136$. The
-hypothesis of Proposition~\ref{prop:sharp} holds with slack $0.42$ to $4.47$ and no violations
-over every path-tree vertex measured (\texttt{code/childbound.py}).
-
-What remains is that hypothesis, and its combinatorial core can be proved. Let $\pi$ end at
-$w\in R$, put $k=|N(w)\setminus\pi|$, $p_L=|\pi\cap L|$, $p_R=|\pi\cap R|$, and let $u$ be a
-child of $w$ with child count $k_u$.
-
-\begin{lemma}\label{lem:blocking}
-$q-r\le k$ and $k_u\le k-(q-r)$.
-\end{lemma}
-
-\begin{proof}
-The $q-k$ blocked neighbours of $w$ lie in $L$, so $q-k\le p_L$; the path alternates and ends in
-$R$, so $p_L\le p_R$, and $p_R\le r$, giving $q-r\le k$. For the child, $N(u)\subseteq R$ and an
-unblocked neighbour of $u$ must avoid $\pi\cap R$, so $k_u\le r-p_R\le r-q+k$.
-\end{proof}
-
-So every right-type vertex has at least $q-r$ children, and the child count drops by at least
-that much each level. At the minimum $k=q-r$ the lemma forces $k_u=0$: the children are leaves,
-of ratio exactly $\lambda$, and the parent is $\lambda-k/\lambda<0$ once $k>\lambda^2$. That is
-the binding case of Proposition~\ref{prop:sharp}, and it is what the measurement showed. Tested
-over roughly fourteen thousand right-type path-tree vertices in five families, both inequalities
-hold with no violations, and with zero slack in four of them, so both are attained
-(\texttt{code/blocking.py}). The arithmetic is
-\texttt{RatioRoute.min\_children}, \texttt{child\_count\_drop},
-\texttt{children\_are\_leaves} and \texttt{binding\_case}, and the three counting steps of the
-proof are formalized in \texttt{PathCount}: \texttt{blocked\_le\_left} and
-\texttt{unblocked\_le} are the set-counting steps, and \texttt{alt\_count} is the alternation
-count, proved on lists recording which side each path vertex lies on, with
-\texttt{alt\_count\_last} transferring it from the first vertex to the last. The recursion over the path tree is carried out in
-\texttt{PathTreeInduction}: \texttt{invariant} propagates both halves of the bound by strong
-induction on a height function, and \texttt{no\_vanishing} concludes that no ratio vanishes. The
-path tree enters only through an abstraction carrying a side map, a children map and a height
-that strictly decreases along edges, so nothing in the chain from hypotheses to conclusion is
-left unformalized.
-
-Assembling both sides gives a system in a single constant $m>0$, the lower bound on $|F|$ at
-right-type vertices. With $\kappa(t)=\lambda+t/m$ bounding left-type ratios at child count $t$,
-and Lemma~\ref{lem:blocking} capping a right-type vertex's children at $k-\Delta$ each where
-$\Delta=q-r$, the parent is at most $\lambda-k/\kappa(k-\Delta)$
-(\texttt{RatioRoute.right\_step\_bound}). The invariant propagates when that is at most $-m$,
-which is
-\begin{equation}\label{eq:closure}
-   \lambda+m\;\le\;\frac{k}{\kappa(k-\Delta)}\qquad\text{for all }\Delta\le k\le q-1
-\end{equation}
-(\texttt{closure\_iff}, with \texttt{induction\_step} for the two combined).
-
-Equation \eqref{eq:closure} is a fixed-point condition on $m$, with no closed form. Iterating
-$m\mapsto\min_{\Delta\le k\le q-1}\bigl(k/(\lambda+(k-\Delta)/m)-\lambda\bigr)$ from above gives
-the largest admissible $m$, and the induction closes exactly when the limit is positive.
-
-\begin{theorem}\label{thm:biregclass}
-Let $G$ be $(d,q)$-biregular with $r$ vertices of degree $q$, and $\lambda\in(0,g)$. If
-\eqref{eq:closure} admits some $m>0$, then $\mu_G(\lambda)\neq0$.
-\end{theorem}
-
-Solving numerically, \eqref{eq:closure} holds throughout the gap for $(d,q,r)=(4,8,4)$,
-$(4,12,4)$ and $(5,10,4)$, and on part of it elsewhere: to $61\%$ of $g$ for $(3,6,4)$, $78\%$
-for $(3,9,4)$, $83\%$ for $(3,12,4)$ and $29\%$ for $(3,6,5)$ (\texttt{code/coupled.py}).
-
-A single constant $m$ is more than the argument needs, and measuring the slack says where. The
-left bound $\kappa$ is tight, attained with ratio $1.0000$ at every vertex measured, while the
-right bound is slack by factors of $1.19$ to $1.94$ (\texttt{code/slack.py}). Sharpening it costs
-nothing new: Lemma~\ref{lem:blocking} came from an alternation count that applies at every depth,
-not only between a parent and a child. A path of $\ell$ vertices ending in $L$ has
-$\lfloor\ell/2\rfloor$ vertices in $R$, so a left-type vertex has at most
-$\min(d-1,\,r-\lfloor\ell/2\rfloor)$ children, and a right-type one at least
-$q-\lfloor\ell/2\rfloor$. Both tighten with depth and the first reaches zero, which is what
-forces leaves. Indexing $\kappa$ and $m$ by depth turns \eqref{eq:closure} from a fixed point
-into a finite backward recursion from the deepest level, and Theorem~\ref{thm:biregclass} holds
-verbatim with the height-indexed bounds, by
-\texttt{PathTreeInduction.invariant\_depth}. That closes the whole gap for six of the seven
-families rather than three: $(3,6,4)$, $(3,9,4)$ and $(3,12,4)$ join the first three, and
-$(3,6,5)$ improves from $29\%$ to $69\%$ (\texttt{code/depthind.py}).
-
-This is the first proof of the inner end of \eqref{eq:twosided} for a nontrivial class.
-
-For $(3,6,5)$, the one family not closing, the certificate is at its limit rather than merely
-unrefined. At the largest $\lambda$ the recursion reaches, both bounds are \emph{saturated}: the
-ratio of actual value to bound is $1.0000$ on each side, attained at path lengths $11$ and $10$
-(\texttt{code/slack2.py}). Where both bounds are attained no other choice of constants is
-better at those heights (\texttt{PathTreeInduction.saturation\_blocks\_improvement}), so the
-remaining range is out of reach of this certificate and not merely unproved by it. The invariant
-is measured to hold there, so what is missing is an ingredient that distinguishes the
-worst-case configuration the counting permits from the configurations that actually occur;
-better bookkeeping will not supply it.
-
-Two further checks confirm this. The depth-indexed recursion fails at \emph{shallow} path
-lengths, the largest failing one moving from $2$ at $\lambda=0.70g$ to $8$ at $0.99g$: near the
-root the path blocks little, so a right-type vertex has nearly all its children, and what fails
-is the left-type bound one level below, whose weakness compounds toward the root. And combining
-the depth bound with the parent-to-child drop of Lemma~\ref{lem:blocking}, which is the only
-other counting fact available, extends the range by nothing at all, since $q-r=1$ here makes the
-drop strictly weaker than the depth bound (\texttt{code/combined.py}).
-
-Combined with \S\ref{sec:softedge}, the constraints on a proof of Problem~1 are now sharp on
-four sides: it must produce a size-dependent bound (\texttt{no\_uniform\_lower\_bound}), reach
-the exponent $-2/3$ (\texttt{exponent\_floor}), match the constant \eqref{eq:constant}
-(\texttt{sqrt\_edge\_quantile}), and use something other than a compression argument
-(\texttt{rayleigh\_in\_gap}).
+Third, the evidence covers a family unlike the rest. Wheels, a hub joined to a cycle, have
+minimum degree three, are non-bipartite by construction, and carry gaps from $(2.02,2.08)$ at
+$W_5$ out to $(2.02,3.20)$ at $W_{11}$. None up to $W_{14}$ has a root in any gap, and at the
+closest approach the verdict rests on the density-of-states ladder rather than on locating a gap
+edge: for $W_{10}$ through $W_{20}$ the largest root below $2$ has density of states constant to
+four significant figures across four decades of $\eta$, so it lies in the spectrum
+(\texttt{code/wheels.py}).
 
 \subsection{What survives}
 
@@ -1581,17 +1109,11 @@ question. The counterexample lives exactly in the residue
 $\operatorname{spec}(G^{\mathrm{ab}})\setminus\operatorname{spec}(T)$ that
 \S\ref{sec:further} identifies as the only place a counterexample could live, so the
 framework was pointed at the right region; what it lacked was any reason for that region to
-be empty. The open problem is now to characterise the graphs for which
-$\operatorname{Zeros}(\mu_{d,G})\subseteq\operatorname{spec}(T)$ holds. Two natural
-hypotheses are already excluded: minimum degree at least two by
-Proposition~\ref{prop:mindeg2}, and bounded maximum degree by
-Proposition~\ref{prop:subcubic}, which excludes both simultaneously on a graph with degrees
-in $\{2,3\}$. Degree conditions are therefore the wrong currency. What does survive is
-regularity in the strict sense, but vacuously: for $d$-regular $G$ the universal cover is the
-$d$-regular tree, $\operatorname{spec}(T)=[-2\sqrt{d-1},2\sqrt{d-1}]$ has no internal gaps at
-all, and Conjecture~\ref{conj:gap} is exactly Heilmann--Lieb. The content lies entirely in
-graphs whose universal cover has gaps, and the canonical such family is the
-$(a,b)$-biregular one, which is Problem~1 of Song, Fan and Miao.
+be empty. The open problem is to characterise the graphs for which
+$\operatorname{Zeros}(\mu_{d,G})\subseteq\operatorname{spec}(T)$ holds;
+Conjecture~\ref{conj:mindeg3} is our proposal, and \S\ref{sec:mindeg3} records its evidence and
+its sharpness. The content lies entirely in graphs whose universal cover has gaps, and the
+canonical such family is the $(a,b)$-biregular one, which is Problem~1 of Song, Fan and Miao.
 
 \subsection{Why the biregular case survives}\label{sec:biregblock}
 
@@ -1719,6 +1241,194 @@ smallest nonzero root appears to be rigid inside the biregular class.
 
 That, together with the first Betti number one case where the conjecture is a theorem, is
 where the remaining interest lies.
+
+\subsection{A positive margin for the complete bipartite family}\label{sec:margin}
+
+The biregular case is most exposed at large degree contrast, since the gap $(0,\tau)$ widens
+without bound with $q$. For $K_{d,q}$ the question is decidable in closed form. A $k$-matching
+picks $k$ vertices on each side and matches them, so
+\begin{equation}\label{eq:kdq}
+   \mu_{K_{d,q}}=x^{\,q-d}P(x^2),\qquad
+   P(y)=\sum_{k\le d}(-1)^k\binom{d}{k}(q)_k\,y^{d-k},
+\end{equation}
+with $(q)_k$ the falling factorial. Here $P$ is a Laguerre polynomial, and as $q\to\infty$ its
+zeros satisfy $(y-q)/\sqrt q\to$ the zeros of the probabilists' Hermite polynomial
+$\mathrm{He}_d$. Writing $h_d$ for the largest of those,
+$x_{\min}=\sqrt q-\tfrac{h_d}{2}+o(1)$ against $\tau=\sqrt q-\sqrt{d-1}+o(1)$, so the margin
+tends to $\sqrt{d-1}-h_d/2$; at $q=10^6$ this agrees to four decimals for every $d$ from $3$ to
+$20$ (\texttt{code/d3attack.py}).
+
+\begin{theorem}\label{thm:margin}
+For every $d\ge3$ the limiting margin is positive:
+$\sqrt{d-1}-h_d/2\ \ge\ \tfrac12\bigl(\sqrt{d-1}-\sqrt{d-2}\bigr)>0$.
+\end{theorem}
+
+\begin{proof}
+By the recurrence $\mathrm{He}_{n+1}=y\,\mathrm{He}_n-n\,\mathrm{He}_{n-1}$, the zeros of
+$\mathrm{He}_d$ are the eigenvalues of the Jacobi matrix with zero diagonal and off-diagonal
+entries $\sqrt1,\dots,\sqrt{d-1}$. Its absolute row sums are $\sqrt{i-1}+\sqrt i$, largest in the
+last row, so Gershgorin gives $h_d\le\sqrt{d-2}+\sqrt{d-1}$.
+\end{proof}
+
+The Gershgorin step is \texttt{CompleteBipartiteMargin.abs\_eigenvalue\_le\_max\_rowsum}, proved
+from the eigenvalue equation at an index where the eigenvector is largest; the consequence is
+\texttt{margin\_pos\_of\_rowsum}, and \texttt{no\_root\_below\_gap\_edge} closes the chain. No
+complete bipartite graph violates Conjecture~\ref{conj:gap}, however wide the gap is made.
+
+\subsection{The margin vanishes, so the statement is tight}\label{sec:softedge}
+
+$K_{d,q}$ is not extremal. Random $(d,q)$-biregular graphs have smaller margins, and the margin
+falls as they grow: for $(3,6)$ the minimum over twelve samples falls monotonically across
+fourteen sizes, from $0.5301$ at $n=12$ to $0.2009$ at $n=51$, fitting a power law at
+$R^2\ge0.999$ in each of twelve families spanning $d=3$ to $6$ (\texttt{code/softedge2.py}).
+Matchings are counted exactly, by a bitmask permanent over the smaller side, which is what makes
+the range reachable.
+
+The rate is the soft-edge one. The cavity resolvents on the biregular tree satisfy
+$X=1/(z-A_1Y)$, $Y=1/(z-B_1X)$ with $A_1=d-1$, $B_1=q-1$, so $P=XY$ solves
+$A_1B_1P^2+(A_1+B_1-z^2)P+1=0$; writing $a=\sqrt{A_1}$, $b=\sqrt{B_1}$, its discriminant factors,
+\begin{equation}\label{eq:disc}
+   (z^2-a^2-b^2)^2-4a^2b^2=\bigl(z^2-(a+b)^2\bigr)\bigl(z^2-(b-a)^2\bigr),
+\end{equation}
+locating the band edges at $b\pm a$ (\texttt{SoftEdge.discriminant\_factors}). The inner factor
+has a simple zero there (\texttt{inner\_edge\_simple}), so the density vanishes like
+$\sqrt{x-\tau}$ and the density exponent is $\tfrac12$ for every $(d,q)$. The expected root count
+within $\delta$ of the edge is then $CN\delta^{3/2}$, and the extreme root sits where that count
+is one, giving $\delta=(CN)^{-2/3}$ (\texttt{edge\_scale}, \texttt{sqrt\_edge\_exponent}).
+Writing $\rho(x)=\kappa\sqrt{x-\tau}+O(x-\tau)$, the asymptotic margin is explicit,
+\begin{equation}\label{eq:constant}
+   \delta=\Bigl(\frac{3}{2\kappa n}\Bigr)^{2/3}
+\end{equation}
+(\texttt{sqrt\_edge\_quantile}), and agrees with the analytic quantile to four significant
+figures at $n=10^6$ in all twelve families. The density itself passes a sharp check:
+$n\int_\tau^\rho\rho=r$ to eight decimals, $r$ being the exact number of positive roots.
+
+The consequences are structural, and they disqualify a class of proofs including
+Theorem~\ref{thm:margin}. A quantity positive at every size may admit no uniform positive lower
+bound, so any argument producing a constant independent of $n$ is insufficient in general
+(\texttt{no\_uniform\_lower\_bound}); the Gershgorin constant is such a constant. A lower bound
+may not decay more slowly than the true one, so a proof must reach the exponent
+(\texttt{exponent\_floor}). And the picture is a Friedman-type one: the edge is the greatest lower
+bound of the smallest positive roots and is never attained (\texttt{inf\_not\_attained}), with no
+constant above it bounding them below (\texttt{edge\_unimprovable}). There is no $\varepsilon$ to
+spare, and the statement cannot be softened.
+
+Two limits on this. The fitted exponents vary with the aspect ratio $q/d$ at the sizes reachable,
+from $-0.67$ at $q=2d$ to $-0.61$ at $q=4d$, but so does the exponent of the analytic quantile,
+which is $-2/3$ by construction and reaches it only near $n=10^6$; the variation is a finite-size
+effect (\texttt{code/quantile.py}). And the observed smallest roots sit where the tree measure
+places about $0.5$ roots, a count that drifts as $n^{+0.10}$; that departure is neither the girth,
+which is constant at $4$ throughout, nor the estimator, since the unbiased sample mean drifts
+equally, and it is unexplained (\texttt{code/nobs.py}).
+
+\subsection{Compression cannot reach the inner end}\label{sec:barrier}
+
+There is a structural reason the outer end of \eqref{eq:twosided} is a theorem and the inner end
+is not. The outer bound is a statement about quadratic forms: every Rayleigh quotient of a
+diagonal form lies between its least and greatest entry (\texttt{SoftEdge.rayleigh\_between}), and
+being a statement about forms it passes to every subspace. That is exactly the path-tree
+argument, the path tree being an induced subtree of $T$ and its adjacency form a compression.
+
+A gap is not a statement about quadratic forms and is not inherited. With entries $-1$ and $1$
+the spectrum is $\{-1,1\}$ and $(-1,1)$ is a gap, yet the vector $(1,1)$ has Rayleigh quotient
+$0$, strictly inside it (\texttt{rayleigh\_in\_gap}). So a compression can take values the
+original excludes, and no argument phrased in Rayleigh quotients or compressions can rule them
+out however refined. This is the $P_8$-inside-the-$(3,2)$-biregular-tree phenomenon of
+\S\ref{sec:further} at its smallest, and it is why Heilmann--Lieb, Godsil's path tree and the
+Marcus--Spielman--Srivastava interlacing machinery all deliver one end of the interval and are
+silent about the other.
+
+\subsection{The ratio route}\label{sec:ratio}
+
+What is not barred is the ratio recursion, which bounds ratios of matching polynomials rather
+than Rayleigh quotients. By Godsil $\mu_G$ divides $\mu_P$ for the path tree $P$, and on a tree
+the deletion recurrence is exact and local, $F_v=\lambda-\sum_u 1/F_u$ over the children $u$ of
+$v$ with $F=\lambda$ at leaves, so $\mu_G(\lambda)\ne0$ follows once no $F$ vanishes.
+
+A positive invariant interval cannot do it: invariance would need $a\le\lambda-k/a$, which has a
+positive solution only for $\lambda\ge2\sqrt k$, the Heilmann--Lieb bound. The certificate is
+instead sign-alternating. On path trees of $(d,q)$-biregular graphs at gap points, over
+twenty-two thousand path-tree vertices, the signs separate by vertex type with no exceptions:
+every degree-$d$ vertex has $F>0$ and every degree-$q$ vertex has $F<0$ (\texttt{code/pathratio.py}).
+
+\begin{proposition}\label{prop:ratiosteps}
+Let $\lambda>0$.
+\begin{enumerate}
+\item[(i)] If $F_1,\dots,F_k\in[-C,-c]$ with $c>0$ then $\lambda\le\lambda-\sum_j1/F_j\le\lambda+k/c$.
+\item[(ii)] If $F_1,\dots,F_k\in[a,B]$ with $0<a\le B$ and $k>\lambda B$, or if
+$0<F_j<k/\lambda$ for all $j$, then $\lambda-\sum_j1/F_j<0$.
+\end{enumerate}
+\end{proposition}
+
+These are \texttt{RatioRoute.left\_step}, \texttt{right\_step} and \texttt{right\_step\_sharp};
+(i) holds for every $k$, so a path-tree vertex missing some of its children is still covered, and
+the sharp form of (ii) is what the path trees satisfy, with slack $0.42$ to $4.47$ and no
+violations over every vertex measured (\texttt{code/childbound.py}).
+
+The combinatorial input is an alternation count. Let $\pi$ end at $w\in R$, put
+$k=|N(w)\setminus\pi|$, $p_L=|\pi\cap L|$, $p_R=|\pi\cap R|$, and let $u$ be a child of $w$ with
+child count $k_u$.
+
+\begin{lemma}\label{lem:blocking}
+$q-r\le k$ and $k_u\le k-(q-r)$.
+\end{lemma}
+
+\begin{proof}
+The $q-k$ blocked neighbours of $w$ lie in $L$, so $q-k\le p_L$; the path alternates and ends in
+$R$, so $p_L\le p_R\le r$, giving $q-r\le k$. For the child, $N(u)\subseteq R$ and an unblocked
+neighbour must avoid $\pi\cap R$, so $k_u\le r-p_R\le r-q+k$.
+\end{proof}
+
+The three counting steps are formalized in \texttt{PathCount}: \texttt{blocked\_le\_left} and
+\texttt{unblocked\_le} are the set-counting steps, and \texttt{alt\_count} is the alternation
+count, proved on lists recording which side each path vertex lies on, with
+\texttt{alt\_count\_last} transferring it from the first vertex to the last. At the minimum
+$k=q-r$ the lemma forces $k_u=0$, so the children are leaves of ratio exactly $\lambda$ and the
+parent is $\lambda-k/\lambda<0$ once $k>\lambda^2$.
+
+Assembling both sides gives a system in one constant $m>0$, the lower bound on $|F|$ at
+right-type vertices. With $\kappa(t)=\lambda+t/m$ bounding left-type ratios at child count $t$,
+and Lemma~\ref{lem:blocking} capping a right-type vertex's children at $k-\Delta$ each where
+$\Delta=q-r$, the parent is at most $\lambda-k/\kappa(k-\Delta)$
+(\texttt{RatioRoute.right\_step\_bound}); the invariant propagates when that is at most $-m$,
+which is
+\begin{equation}\label{eq:closure}
+   \lambda+m\;\le\;\frac{k}{\kappa(k-\Delta)}\qquad\text{for all }\Delta\le k\le q-1
+\end{equation}
+(\texttt{closure\_iff}, \texttt{induction\_step}). Equation \eqref{eq:closure} is a fixed-point
+condition on $m$ with no closed form; iterating
+$m\mapsto\min_k\bigl(k/(\lambda+(k-\Delta)/m)-\lambda\bigr)$ from above gives the largest
+admissible $m$.
+
+\begin{theorem}\label{thm:biregclass}
+Let $G$ be $(d,q)$-biregular with $r$ vertices of degree $q$, and $\lambda\in(0,\tau)$. If
+\eqref{eq:closure} admits some $m>0$, then $\mu_G(\lambda)\neq0$.
+\end{theorem}
+
+The recursion consuming the two steps is \texttt{PathTreeInduction.invariant}, by strong induction
+on a height function, with \texttt{no\_vanishing} concluding that no ratio vanishes; the path tree
+enters only through an abstraction carrying a side map, a children map and a height that strictly
+decreases along edges. A single constant is more than the argument needs: the alternation count
+applies at every depth, a path of $\ell$ vertices ending in $L$ having $\lfloor\ell/2\rfloor$
+vertices in $R$, which caps a left-type vertex's children by
+$\min(d-1,\,r-\lfloor\ell/2\rfloor)$ and bounds a right-type vertex's below by
+$q-\lfloor\ell/2\rfloor$. Indexing $\kappa$ and $m$ by depth turns \eqref{eq:closure} into a
+finite backward recursion, and Theorem~\ref{thm:biregclass} holds verbatim in that form
+(\texttt{invariant\_depth}).
+
+Solving numerically, the condition holds throughout the gap for $(d,q,r)$ equal to $(3,6,4)$,
+$(3,9,4)$, $(3,12,4)$, $(4,8,4)$, $(4,12,4)$ and $(5,10,4)$, and to $69\%$ of the gap for
+$(3,6,5)$ (\texttt{code/depthind.py}). This is the first proof of the inner end of
+\eqref{eq:twosided} for a nontrivial class.
+
+Two limits are known. For $(3,6,5)$ the certificate is saturated at the point it reaches, both
+bounds being attained with ratio $1.0000$, so no choice of constants does better
+(\texttt{saturation\_blocks\_improvement}); the only other counting fact available, the
+parent-to-child drop, extends the range by nothing, since $q-r=1$ there makes it weaker than the
+depth bound (\texttt{code/combined.py}). And the sign separation is a consequence of
+bipartiteness: on wheels no natural class determines the sign of a path-tree ratio, endpoint
+degree, depth parity and child count each being mixed (\texttt{code/d3ratio.py}), so the
+certificate does not transfer to Conjecture~\ref{conj:mindeg3} in general.
 
 \section{A counting refinement}\label{sec:gapcount}
 
@@ -1977,12 +1687,10 @@ $r$, so $c_br^b\le m$ and $\operatorname{reach}\le(m/c_b)^{1/b}$, giving
 \]
 which at $b=2$ is $m^{3/2}$ (\texttt{reach\_le\_sqrt},
 \texttt{integral\_le\_three\_halves}). The upper half of the estimate is therefore
-unconditional. It is worth recording that we first conjectured
-$\operatorname{reach}\lesssim m$, on the picture of a thin shell, and that this is
-\emph{false}: measurement gives $\operatorname{reach}/m$ running $2.60$, $3.10$, $4.63$,
-$5.94$, $9.80$ as $m$ falls from $0.052$ to $0.0053$, since the region is a blob with $m$ of
-order $\operatorname{reach}^2$ rather than a shell. The exponent $3/2$ is weaker than the
-$m^2$ the numerics suggest and stronger than anything needed. The lower half, a bound $I_{\mathrm{right}}\ge c>0$, is open, and
+unconditional. The region is not a thin shell but a blob, with $m$ of order
+$\operatorname{reach}^2$: measurement gives $\operatorname{reach}/m$ running $2.60$, $3.10$,
+$4.63$, $5.94$, $9.80$ as $m$ falls from $0.052$ to $0.0053$. The exponent $3/2$ is accordingly
+weaker than the $m^2$ the numerics suggest, and stronger than anything needed. The lower half, a bound $I_{\mathrm{right}}\ge c>0$, is open, and
 its natural route is precisely what Proposition~\ref{prop:nohom} rules out.
 
 The obvious substitute is circular, and it is worth saying why. Splitting the average by
