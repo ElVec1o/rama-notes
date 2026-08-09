@@ -793,7 +793,15 @@ genuine internal gap.
 The eight ratio identities, the elementary bounds $32/5<\sqrt{41}<13/2$, the strict
 positivity of all six components of $x-Kx$, and a Collatz--Wielandt lemma (a nonnegative
 matrix with a positive strictly subinvariant vector has spectral radius below one) are
-machine-checked in \texttt{RamaLean/HallCounterexample.lean}. The theorem of \cite{AFH} is
+machine-checked in \texttt{RamaLean/HallCounterexample.lean}. The argument common to all three
+counterexamples of this note is isolated once in
+\texttt{RamaLean/RatioCertificate.lean}: a \texttt{RatioSystem} with its decay matrix
+(\texttt{decay}, \texttt{decay\_nonneg}), the Collatz--Wielandt step in the strict form the
+certificate needs (\texttt{decay\_lt\_one}), and the assembly with Angel--Friedman--Hoory as an
+explicit hypothesis (\texttt{spec\_excluded}). The three instances differ only in the numbers
+supplied. A schema rather than closed-form algebra is the right level here: Hall's ratios lie
+in $\mathbb{Q}(\sqrt5,\sqrt{41})$, but that is a feature of his graph, and for the $31$-vertex
+one the ratios admit no minimal polynomial of small degree and moderate height. The theorem of \cite{AFH} is
 not in Mathlib and enters as an explicit hypothesis, in the shape it is consumed.
 
 We verified the certificate independently, reconstructing every object from the graph
@@ -922,6 +930,59 @@ $\theta\notin\operatorname{spec}(A_T)$. A Collatz--Wielandt vector gives the sam
 independently, at $0.9829$. The statement is thus rigorous modulo Newton--Kantorovich exactly
 as it is rigorous modulo \cite{AFH}, both classical. Verified in \texttt{code/mindeg2.py} and
 \texttt{code/mindeg2\_exact.py}.
+
+\subsection{Approximate localization}\label{sec:defect}
+
+The counterexamples miss by very little. Locating the gap edges sharply, by bisecting the
+Angel--Friedman--Hoory decay rate to $\rho=1$ rather than by scanning a density of states,
+gives for each of them the distance from the root to $\operatorname{spec}(T)$:
+
+\begin{center}
+\begin{tabular}{lrrr}
+family & $n$ & root & defect\\\hline
+pendant leaf $(7,3)$ & $43$ & $1.88040$ & $0.0072$\\
+pendant leaf $(5,5)$, Hall's & $41$ & $2.23607$ & $0.0118$\\
+pendant leaf $(7,6)$ & $64$ & $2.47528$ & $0.0348$\\
+pendant $C_5$ $(7,7)$ & $92$ & $2.85290$ & $0.0014$\\
+pendant $C_3$ $(8,8)$ & $97$ & $3.01489$ & $0.0021$\\
+triangles, depth $3$ & $31$ & $1.19935$ & $0.00024$\\
+\end{tabular}
+\end{center}
+
+Over thirteen counterexamples on $31$ to $97$ vertices, drawn from two unrelated families, the
+defect never exceeds $0.035$ and shows no growth in $n$. Every violated gap has width at most
+$0.22$. This suggests that Conjecture~\ref{conj:gap} is wrong in its constant rather than in
+its shape.
+
+\begin{conjecture}[D1]\label{conj:defect}
+There is an absolute constant $C$ such that for every finite graph $G$ and every root $\theta$
+of $\mu_G$, $\operatorname{dist}(\theta,\operatorname{spec}(T_G))\le C$.
+\end{conjecture}
+
+The statement was fixed before the confirming data was produced and has survived an
+out-of-sample test on ten counterexamples disjoint from the three that suggested it. The
+scaled form with $C/|V(G)|$ is not refuted but is not supported either: $\operatorname{defect}
+\cdot n$ varies by a factor of three hundred with no pattern.
+
+What D1 would buy is machine-checked in \texttt{RamaLean/DefectLocalization.lean}. It says
+exactly that the roots lie in the closed $C$-neighbourhood of $\operatorname{spec}(T)$
+(\texttt{zeros\_subset\_thickening}), so at $C=0$ it is Conjecture~\ref{conj:gap} itself
+(\texttt{thickening\_zero}); and it restores that conjecture away from the edges:
+
+\begin{proposition}\label{prop:core}
+If every root lies within $C$ of $\operatorname{spec}(T)$ and $(a,b)$ is a gap, then no root
+lies in $(a+C,\,b-C)$.
+\end{proposition}
+
+So under D1 every gap wider than $2C$ has a root-free core, and any counterexample is confined
+to a narrow gap, which is what the measured widths show. The open interval is not an artefact:
+a root may sit exactly at distance $C$ from the spectrum, and the gap edges themselves belong
+to $\operatorname{spec}(T)$ (\texttt{root\_free\_core}, \texttt{conj10\_of\_zero\_defect}).
+
+This is the form in which the question seems worth attacking. It is also the natural one: a
+root descending to a spectral edge but never passing it is the Alon--Boppana picture, and
+Conjecture~\ref{conj:gap} was the assertion that matching roots are Ramanujan in that sense
+without exception. D1 says the exceptions exist but are uniformly small.
 
 \subsection{What survives}
 
