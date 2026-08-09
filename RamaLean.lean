@@ -66,3 +66,4 @@ import RamaLean.TorusGodsilGutman
 import RamaLean.ParitySplit
 import RamaLean.BandLipschitz
 import RamaLean.CrossingSplit
+import RamaLean.WeightBound

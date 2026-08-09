@@ -135,6 +135,16 @@ def main():
                 if Jp <= 0 or Jm <= 0:
                     continue
                 Lam = float(aQ.max() / aQ.min())
+                # WeightBound: Lambda <= product over non-crossing bands of the per-band
+                # ratio, each equal to 1 + width / dist(x, band). Purely band geometry.
+                Gb = 1.0
+                for k in range(n):
+                    if k in cross:
+                        continue
+                    if hi[k] < x:
+                        Gb *= (x - lo[k]) / (x - hi[k])
+                    else:
+                        Gb *= (hi[k] - x) / (lo[k] - x)
                 Ip = float(np.mean(np.clip(pi, 0, None) * aQ))
                 Im = float(np.mean(np.clip(-pi, 0, None) * aQ))
                 # orient so the majority side is first
@@ -142,7 +152,8 @@ def main():
                     Jp, Jm = Jm, Jp
                     Ip, Im = Im, Ip
                 m1 = min(float((pi > 0).mean()), float((pi < 0).mean()))
-                out.append((b, m1, Jp / Jm, Lam, Im / Ip, Jp / Jm > Lam, kap))
+                out.append((b, m1, Jp / Jm, Lam, Im / Ip, Jp / Jm > Lam, kap, Gb,
+                            Jp / Jm > Gb))
         return out
 
     t0 = time.time()
@@ -165,15 +176,21 @@ def main():
     print(f"worst J+/J- over Lam  : {min(JL):.4g}   (must exceed 1 for the criterion)")
     print(f"median                : {sorted(JL)[len(JL)//2]:.4g}")
     print(f"true worst I-/I+      : {max(r[4] for r in rows):.6f}   (must stay below 1)")
+    gfires = sum(1 for r in rows if r[8])
+    GL = [r[2] / r[7] for r in rows]
+    print(f"band-geometry form    : {gfires}/{len(rows)}  ({100*gfires/len(rows):.1f}%)")
+    print(f"worst J+/J- over Gb   : {min(GL):.4g}")
+    print(f"Gb/Lambda (slack lost): median {sorted(r[7]/r[3] for r in rows)[len(rows)//2]:.3g}"
+          f", max {max(r[7]/r[3] for r in rows):.3g}")
     for k in sorted(kh):
         t, f_ = kh[k]
         print(f"  kappa={k}: {t:5d} points, criterion fires {f_}/{t} "
               f"({100*f_/t:.1f}%)")
-    print(f"\n{'b':>3}{'kap':>4}{'minor':>8}{'J+/J-':>12}{'Lambda':>12}"
-          f"{'ratio':>10}{'I-/I+':>10}{'fires':>7}")
-    for r in sorted(rows, key=lambda r: r[2] / r[3])[:12]:
-        print(f"{r[0]:>3}{r[6]:>4}{r[1]:>8.4f}{r[2]:>12.4g}{r[3]:>12.4g}"
-              f"{r[2]/r[3]:>10.3g}{r[4]:>10.5f}{('yes' if r[5] else 'NO'):>7}")
+    print(f"\n{'b':>3}{'kap':>4}{'minor':>8}{'J+/J-':>12}{'Lambda':>12}{'Gbound':>12}"
+          f"{'J/Gb':>9}{'I-/I+':>10}{'fires':>7}")
+    for r in sorted(rows, key=lambda r: r[2] / r[7])[:12]:
+        print(f"{r[0]:>3}{r[6]:>4}{r[1]:>8.4f}{r[2]:>12.4g}{r[3]:>12.4g}{r[7]:>12.4g}"
+              f"{r[2]/r[7]:>9.3g}{r[4]:>10.5f}{('yes' if r[8] else 'NO'):>7}")
     print("\nThe twelve worst points are shown. Where the criterion fails, compare I+/I- to")
     print("see how much of the gap is the crude weight bound and how much is real.")
     return 0

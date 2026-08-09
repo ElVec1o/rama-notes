@@ -1131,6 +1131,30 @@ because $x$ sits near an edge of the crossing band, the minority measure never e
 $0.0674$, and $\Lambda$ is a product of band-distance ratios over the non-crossing bands.
 Bounding either one is a self-contained problem.
 
+The weight can be removed from the criterion entirely. A product is bounded above by the
+product of the upper bounds of its factors and below by the product of the lower bounds, and
+for a band that does not cross $x$ the range $B_k=[\ell_k,h_k]$ lies on one side, so the
+corresponding factor is exactly $1+\operatorname{width}(B_k)/\operatorname{dist}(x,B_k)$.
+Hence
+\[
+   \Lambda\;\le\;\prod_{k\notin K}\Bigl(1+\frac{\operatorname{width}(B_k)}
+   {\operatorname{dist}(x,B_k)}\Bigr),
+\]
+machine-checked as \texttt{WeightBound.crit\_of\_band\_geometry} with the per-band identity as
+\texttt{factor\_below} and \texttt{factor\_above}. The criterion then reads entirely in the
+band ranges of the abelian cover, in the same currency as $J_+/J_-$.
+
+That bound is not sufficient on its own, and the failure is measured. The only thing discarded
+is the correlation between bands, since $\sup\prod\le\prod\sup$ is an equality only when the
+extrema align, and that costs a median factor $4.73$ and up to $28.7$. Over $208$ residue
+points the criterion with the true $\Lambda$ holds every time, worst margin $2.149$, while the
+criterion with the product in place of $\Lambda$ holds $207$ times and fails once, at
+$J_+/J_-=1213$ against a product of $2298$. The failing point is the one where $x$ sits
+closest to the edge of the crossing band, minority measure $0.0171$, which is not a
+coincidence: proximity to a band edge makes $J_+/J_-$ large and also tends to bring a second
+band close to $x$, which makes the product large. Decoupling the two halves therefore costs
+most exactly where the margin is thinnest.
+
 Difficulty is conserved and it is worth saying where it went. A weighted mean lies in the
 convex hull of the range of $\lambda_{k_0}$, which is the band containing $x$, and that band
 is not inside $\operatorname{spec}(T)$ precisely because $x$ is in it and outside

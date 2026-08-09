@@ -1,0 +1,11 @@
+[package]
+name = "jsweep"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "jsweep"
+path = "src/main.rs"
+
+[profile.release]
+opt-level = 3
