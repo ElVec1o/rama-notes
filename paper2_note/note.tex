@@ -3259,11 +3259,35 @@ the two rungs below; that count grows like $\bigl(4(a-1)\bigr)^kk^{-3/2}$, the b
 square of the tree's spectral radius, against a target of $(4a)^k$. Since $4(a-1)<4a$, the reach
 \eqref{eq:reach} is unbounded in $k$ (\texttt{reach\_unbounded}): at $a=3$ it is $146$, $509$ and
 $1489$ at $k=5,7,9$, against the $8$ and $18$ of the first two rungs (\texttt{code/moments2.py}).
-The dimension restriction is therefore an artefact of stopping at two moments rather than
-something intrinsic, and what would remove it at a stroke is an a priori bound
-$p_k\le(m/2)W_{2k}$ for the plane class, with $W_{2k}$ the tree walk count; for graphs that is
-Godsil's path-tree argument, the path tree being a subtree of the universal cover, and for
-noncommuting plane families it is open.
+What the reach costs is an a priori bound on $p_k$, and the natural candidate is
+$p_k\le(m/2)W_{2k}$ with $W_{2k}$ the tree walk count; for graphs that is Godsil's path-tree
+argument, the path tree being a subtree of the universal cover. Off the coordinate case it is
+false. Weighted families with $\operatorname{Adj}(A)=aI$ exceed it by $1.008$, $1.134$ and
+$1.315$ at $m=6,8,10$ and $a=3$, the excess growing in both $k$ and $m$, so no constant-factor
+version survives either; coordinate families obey it, with equality at $k=1,2$
+(\texttt{code/momentbound.py}, \texttt{code/p16verify.py}). Weakening it to a rate,
+$p_k\le(m/2)R^kW_{2k}$, leaves the reach unbounded exactly when $R<a/(a-1)$
+(\texttt{rate\_lt\_target}, \texttt{reach\_unbounded\_of\_rate}), and the measured rates sit far
+inside that: $0.97$, $1.02$, $1.05$, $1.07$, $1.09$ at $m=6,\dots,14$ and $a=3$
+(\texttt{code/excessrate.py}). That is still not a route, for a reason that is structural rather
+than numerical.
+
+\begin{proposition}\label{prop:ladder-nogo}
+Let $y_1,\dots,y_n\ge0$, let $c>0$, and suppose $\sum_iy_i^k\le Cc^k$ for every $k\ge1$, with
+$C$ independent of $k$. Then $y_i\le c$ for every $i$.
+\end{proposition}
+
+\begin{proof}
+If $y_i>c$ then $(y_i/c)^k\le\bigl(\sum_jy_j^k\bigr)/c^k\le C$ for every $k$, while the left
+side is unbounded \textup{(}\texttt{MomentLadder.band\_of\_all\_moments}\textup{)}.
+\end{proof}
+
+Applied with $c=4(a-1)R$, a rate bound holding at every rung already forces
+$y_{\max}\le4(a-1)R$. So at $R<a/(a-1)$ the hypothesis is strictly stronger than the band it is
+meant to prove, and at $R\ge a/(a-1)$ every rung collapses to $m\le2$
+(\texttt{reach\_trivial\_of\_rate}). The ladder has content only at a single finite $k$, where it
+buys the finite range \eqref{eq:reach} and nothing more; the dimension restriction is intrinsic
+to it.
 
 Two bounds follow unconditionally from real-rootedness alone. Writing
 $F_A=x^m-M_1x^{m-2}+M_2x^{m-4}-\cdots$, one has $M_1=\tfrac12\operatorname{tr}
