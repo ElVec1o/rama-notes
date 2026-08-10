@@ -1,0 +1,15 @@
+twotriangles  b=2  bands [('-2.387', '-1.850'), ('-1.683', '1.687'), ('1.853', '2.390')]
+        x  delta      m0      m1      m2    I match    I other   margin    ok
+  -3.6933      2   0.000   0.000   1.000     8.6657     0.0000   1.0000   YES
+  -1.7667      1   0.000   0.987   0.013     0.9905     0.0007   0.9987   YES
+   1.7700      1   0.016   0.984   0.000     0.9886     0.0008   0.9984   YES
+K4+pendant  b=3  bands [('-3.143', '-0.317'), ('0.320', '3.147')]
+        x  delta      m0      m1      m2    I match    I other   margin    ok
+  -4.0717      2   0.000   0.000   1.000     9.4921     0.0000   1.0000   YES
+   0.0017      2   0.000   0.000   1.000359993.0000     0.0000   1.0000   YES
+m_j is the fraction of the torus with j negative eigenvalues of S(x,z).
+I match / I other are the integrals of |det S| over the parity class agreeing
+with delta and over the rest; margin = (match - other)/(match + other).
+G33 is the assertion that margin > 0 always. A margin near 1 means the
+wrong-parity class contributes almost nothing despite occupying real measure,
+which is what an estimate would have to exploit.

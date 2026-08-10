@@ -11,15 +11,24 @@ who ran the repository, and it looked from outside exactly like a verified one.
 That is a class of defect, not an instance. A citation to a script asserts two things -- that the
 script produced the number, and that it still does -- and only the first was ever checked.
 
-WHAT THIS CHECKS, AND WHAT IT DELIBERATELY DOES NOT. It runs each cited script and classifies the
-outcome. It does NOT check that the numbers still match the paper, which would need each script
-to declare its own claims in a machine-readable way; that is a larger change and worth doing, but
-a script that raises before printing anything is the failure actually observed, and it is cheap
-to rule out.
+WHAT THIS CHECKS. Two things, because "it runs" is the weaker half of the problem. A script that
+still runs but now prints different numbers is worse than one that crashes, since the paper's
+figures are then silently wrong and nothing announces it.
 
-  OK        exited zero within the budget
-  RUNNING   still going when the budget expired, which is expected for the search scripts and is
-            not a failure: it started, imported and got as far as computing
+  RUNS      the script exits without raising
+  NUMBERS   its output still matches the recorded snapshot, so the figures the paper quotes are
+            the figures the code still produces
+
+Snapshots live in code/snapshots/<name>.txt and are written with --snapshot. Volatile lines --
+elapsed times, budget notices, progress counters -- are stripped before comparison, since they
+depend on the machine and not on the mathematics. Scripts that exceed the budget cannot be
+snapshotted this way and are reported as RUNNING; that is a real gap and is stated rather than
+papered over.
+
+  OK        exited zero and its output matches the snapshot (or none is recorded yet)
+  DRIFT     exited zero but its output CHANGED against the snapshot: the paper may now quote
+            figures the code no longer produces
+  RUNNING   still going when the budget expired, expected for the search scripts, not a failure
   CRASH     non-zero exit, with the last traceback line reported
   MISSING   cited but not present in the repository
 
@@ -34,7 +43,16 @@ import glob
 import subprocess
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+SNAPS = os.path.join(ROOT, 'code', 'snapshots')
 BUDGET = 45          # seconds per script; long searches are expected to exceed it
+
+# Lines whose content depends on the machine rather than on the mathematics.
+VOLATILE = re.compile(r'elapsed|budget|\bs of \b|^\s*\[|seconds|wall clock|ETA', re.I)
+
+
+def normalise(text):
+    return '\n'.join(l.rstrip() for l in text.split('\n')
+                      if l.strip() and not VOLATILE.search(l))
 
 
 def cited_scripts():
@@ -48,7 +66,7 @@ def cited_scripts():
     return {k: sorted(v) for k, v in sorted(out.items())}
 
 
-def run(name):
+def run(name, record=False):
     path = os.path.join(ROOT, 'code', name + '.py')
     if not os.path.exists(path):
         return 'MISSING', ''
@@ -64,36 +82,61 @@ def run(name):
                            capture_output=True, text=True, timeout=BUDGET, env=env)
     except subprocess.TimeoutExpired:
         return 'RUNNING', ''
-    if p.returncode == 0:
+    if p.returncode != 0:
+        tail = [l for l in (p.stderr or '').strip().split('\n') if l.strip()]
+        return 'CRASH', (tail[-1][:110] if tail else f'exit {p.returncode}')
+
+    cur = normalise(p.stdout or '')
+    snap = os.path.join(SNAPS, name + '.txt')
+    if record:
+        os.makedirs(SNAPS, exist_ok=True)
+        open(snap, 'w').write(cur + '\n')
+        return 'OK', 'snapshot written'
+    if not os.path.exists(snap):
+        return 'OK', 'no snapshot yet'
+    want = open(snap).read().strip()
+    if cur.strip() == want:
         return 'OK', ''
-    tail = [l for l in (p.stderr or '').strip().split('\n') if l.strip()]
-    return 'CRASH', (tail[-1][:110] if tail else f'exit {p.returncode}')
+    a, b = want.split('\n'), cur.split('\n')
+    for i in range(max(len(a), len(b))):
+        x = a[i] if i < len(a) else '<absent>'
+        y = b[i] if i < len(b) else '<absent>'
+        if x != y:
+            return 'DRIFT', f'line {i+1}: was "{x.strip()[:44]}" now "{y.strip()[:44]}"'
+    return 'DRIFT', 'lengths differ'
 
 
 def main():
+    record = '--snapshot' in sys.argv
     scripts = cited_scripts()
+    if record:
+        print("RECORDING snapshots; nothing is checked on this pass.\n")
     print(f"Scripts cited by the papers: {len(scripts)}\n")
     print(f"{'script':>26}{'status':>10}   detail / cited by")
     bad = []
     counts = {}
     for name, papers in scripts.items():
-        st, detail = run(name)
+        st, detail = run(name, record)
         counts[st] = counts.get(st, 0) + 1
-        if st in ('CRASH', 'MISSING'):
+        if st in ('CRASH', 'MISSING', 'DRIFT'):
             bad.append((name, st, detail, papers))
         note = detail if detail else ','.join(p.replace('_note', '') for p in papers)
         print(f"{name:>26}{st:>10}   {note}")
 
     print(f"\n  {counts}")
     if bad:
-        print(f"\n  {len(bad)} CITED SCRIPT(S) DO NOT RUN. Each is a claim the papers assert and")
-        print("  no reader can reproduce:")
+        print(f"\n  {len(bad)} CITED SCRIPT(S) FAILED. Each is a claim the papers assert:")
         for (name, st, detail, papers) in bad:
             print(f"    code/{name}.py  [{st}]  cited by {', '.join(papers)}")
             if detail:
                 print(f"      {detail}")
         return 1
-    print("\n  Every cited script runs. That is the property hl_Wspec.py violated silently.")
+    nsnap = len(glob.glob(os.path.join(SNAPS, '*.txt')))
+    print(f"\n  Every cited script runs, and the {nsnap} with recorded snapshots still produce")
+    print("  the same numbers. hl_Wspec.py violated the first property silently; a script that")
+    print("  runs but has drifted would violate the second just as quietly.")
+    if counts.get('RUNNING'):
+        print(f"  {counts['RUNNING']} exceeded the budget and are unsnapshotted: a real gap.")
     return 0
 
 

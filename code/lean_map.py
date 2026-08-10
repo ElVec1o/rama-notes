@@ -21,7 +21,7 @@ import os
 import re
 import sys
 
-PAPERS = ['paper2_note/note.tex', 'paper3_note/note.tex', 'paper4_note/note.tex',
+PAPERS = ['paper2a_note/note.tex', 'paper2b_note/note.tex', 'paper2_note/note.tex', 'paper3_note/note.tex', 'paper4_note/note.tex',
           'methodology_note/note.tex', 'paper1_partition_self_divisibility.md']
 LEANDIR = 'RamaLean'
 ROOT = 'RamaLean.lean'

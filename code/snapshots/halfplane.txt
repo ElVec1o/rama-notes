@@ -1,0 +1,12 @@
+   graph  b        x   arc r=1  best arc            best log r  settled
+  twotri  2  -1.8100    3.1416    3.1416            [0.0, 0.0]       no
+  twotri  2  -1.7700    3.1416    3.1416            [0.0, 0.0]       no
+  twotri  2  -1.7300    3.1416    3.1416            [0.0, 0.0]       no
+  twotri  2   1.7400    3.1416    3.1416            [0.0, 0.0]       no
+  twotri  2   1.7800    3.1416    3.1416            [0.0, 0.0]       no
+  twotri  2   1.8200    3.1416    3.1416            [0.0, 0.0]       no
+  bowtie  2   spec(T) has no internal gap
+      K4  3   b > 2, radius search skipped
+arc is the shortest arc containing the image; below pi = 3.1416 means
+the image lies in an open half-plane and mu_G(x) != 0 follows. arc = 2 pi means
+the image passes through the origin, so no half-plane can exist at that radius.

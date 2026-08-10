@@ -1,0 +1,30 @@
+lambda  = 2.852901286261237427470104380198842791332
+minimal polynomial residual: 2.5909e-77
+1. Newton at 80 digits
+   residual ||F(r)||_inf = 5.5522e-81
+   all ratios nonzero    = True
+     r1  = 0.598393441163533985165744898795
+     r2  = -1.35600692494257644599480799996
+     r3  = 0.168822853551411237947518346394
+     r4  = 0.312893944241762669811533503241
+     r5  = -3.07046737481563676666560643908
+     r6  = 0.393699649389569675794218160521
+     r7  = 0.408193353564461037252682663099
+     r8  = -3.21347486589443657666575666538
+     r9  = 0.403081877719392809111713726624
+     r10 = 0.164843058675920071927962576118
+     r11 = 0.372015750900716156422294888546
+2. Newton-Kantorovich a-posteriori bound
+   ||J^-1||_inf = 204.77711
+   certified radius = ||J^-1|| ||F(r)|| = 1.137e-78
+   an exact solution of the ratio equations lies within that of r
+3. decay rate
+   rho(K) = 0.9666941618858803717156814
+   margin 1 - rho = 0.03330583811
+   entrywise Lipschitz constant of K in r: 44.9886
+   movement of rho over the certified ball <= 5.6266e-76
+   margin exceeds movement by a factor 5.9194e+73
+   CERTIFIED rho < 1 for the exact solution: True
+4. Collatz-Wielandt cross-check
+   max (Ky)_i / y_i = 0.982892646782358302732949
+   all y_i > 0      = True

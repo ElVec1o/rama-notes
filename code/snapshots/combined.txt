@@ -1,0 +1,11 @@
+(3,6,5) n=15 g=0.8219
+1. where the depth-only recursion first fails
+   lam/g    result   first failing l                reason
+    0.69    closes                 -                     -
+    0.70     FAILS                 2       m(2)=-0.1671<=0
+    0.75     FAILS                 4       m(4)=-0.2930<=0
+    0.85     FAILS                 6       m(6)=-0.3274<=0
+    0.99     FAILS                 8       m(8)=-0.1927<=0
+2. depth-only against depth+drop combined
+   depth only : 69% of g
+   depth+drop : 69% of g   (+0%)

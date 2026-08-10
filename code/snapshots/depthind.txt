@@ -1,0 +1,12 @@
+P13: the depth-indexed recursion closes on strictly more of the gap.
+    (d,q,r)    n   uniform closes to   depth-indexed closes to    gain
+    (3,6,4)   12            61% of g                 100% of g    +39%
+    (3,6,5)   15            29% of g                  69% of g    +40%
+    (3,9,4)   16            78% of g                 100% of g    +22%
+   (3,12,4)   20            83% of g                 100% of g    +17%
+    (4,8,4)   12           100% of g                 100% of g     +0%
+   (4,12,4)   16           100% of g                 100% of g     +0%
+   (5,10,4)   12           100% of g                 100% of g     +0%
+  A positive gain column means the depth-indexed bound recovers part of the range the
+  uniform fixed point could not reach, using no new mathematics beyond the alternation
+  count already proved in PathCount.

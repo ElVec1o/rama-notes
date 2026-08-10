@@ -141,6 +141,10 @@ and the two-sided statement
 \text{every root of }g\text{ lies in }\bigl[-2\sqrt m,\,2\sqrt m\bigr],
 \end{equation}
 
+That is everything borrowed. From here the paper is self-contained, and it proceeds in three
+movements: what the biregular case has going for it, what the plane class looks like when the
+question is posed operator-theoretically, and what the obstructions are.
+
 \section{Why the biregular case survives, and how far}\label{sec:bireg}
 
 The refutation leaves the biregular case standing, and this section says why and measures how
@@ -2780,6 +2784,47 @@ $d$, with no exceptional set. What the $b_1=1$ case shows is that the interval
 in \cite{HPS} is not the natural receptacle for the roots, and that the correct
 one is spectral rather than metric.
 
+
+\section{What this leaves}\label{sec:leaves}
+
+The biregular case is not a leftover from the refutation; it is where the phenomenon actually
+lives, and this paper has tried to say how much room it has.
+
+On the positive side the case is genuinely constrained. Complete bipartite graphs never refute
+it, by a margin $\sqrt{d-1}-h_d/2$ that Gershgorin on the Hermite Jacobi matrix makes positive
+for every $d$, and the ratio route closes the inner edge on a nontrivial class. Those are the two
+proved statements here, and they are not vacuous: the first covers a family whose gap can be made
+arbitrarily wide, and the second reaches the edge exactly, its certificate degenerating at the gap
+edge and nowhere earlier.
+
+On the negative side the margin decays like $n^{-2/3}$. The statement is true but tight, and that
+single fact disqualifies most of what one would try next, including the Gershgorin constant that
+proves the complete bipartite case: any argument yielding a bound independent of the size is known
+in advance to be insufficient. What is needed is a Friedman-type edge theorem, in which the roots
+fill out $\operatorname{spec}(T)$ without escaping it, at the soft-edge scale.
+
+The obstructions are the part we would most want a reader to take away, because each one closes a
+route that looks open from outside.
+
+\begin{itemize}
+\item A barrier argument that sees only the rank, the trace and $\sum_kP_k=aI$ is reading the
+  Marchenko--Pastur law, and $A_k=(b/p)I_p$ satisfies all three while exceeding the tree band
+  already at $p=4$. No such argument can reach either edge.
+\item Compressions cannot reach the inner end at all: a compression takes values the original
+  excludes, so no argument phrased in Rayleigh quotients can exclude them.
+\item The coefficient ladder's reach is unbounded in the moment order, but a bound holding at
+  every rung with a constant free of the order already gives the conclusion
+  \textup{(}\texttt{MomentLadder.band\_of\_all\_moments}\textup{)}. The dimension restriction on
+  the two unconditional bounds is therefore intrinsic to the method, not an artefact of stopping
+  early, and the natural a priori input --- the tree walk count --- is false off the coordinate
+  case.
+\end{itemize}
+
+What survives all three is the ratio recursion, which bounds ratios of matching polynomials rather
+than Rayleigh quotients, and that is where we would put further effort. The remaining gap is
+stated plainly: the certificate closes for six of the seven families tested, and the defect in the
+seventh is a right vertex whose child ratio sits well below the interval a uniform certificate can
+express. Closing that is the concrete open problem this paper ends on.
 
 \section{Related work}
 Two ingredients are classical and are used, not claimed. The factorization of

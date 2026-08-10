@@ -1,0 +1,20 @@
+VALIDATE assembled G vs brute lattice count:
+  G(2^3,2^4): assembled=0 brute=0 OK
+  G(2^4,2^5): assembled=1 brute=1 OK
+  G(2^5,2^6): assembled=0 brute=0 OK
+  G(2^4,2^6): assembled=1 brute=1 OK
+  G(2^6,2^7): assembled=1 brute=1 OK
+  G(2^5,2^8): assembled=1 brute=1 OK
+VALIDATE assembled G(2^(k-1),2^k) vs PRIME-side Corr(k):
+  k=4: assembled=0 prime-side Corr=0 OK
+  k=5: assembled=1 prime-side Corr=1 OK
+  k=6: assembled=0 prime-side Corr=0 OK
+  k=7: assembled=1 prime-side Corr=1 OK
+  k=8: assembled=1 prime-side Corr=1 OK
+  k=9: assembled=0 prime-side Corr=0 OK
+  k=10: assembled=0 prime-side Corr=0 OK
+  k=11: assembled=1 prime-side Corr=1 OK
+  k=12: assembled=0 prime-side Corr=0 OK
+  k=13: assembled=0 prime-side Corr=0 OK
+  k=14: assembled=1 prime-side Corr=1 OK
+ALL: True

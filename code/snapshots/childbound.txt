@@ -1,0 +1,29 @@
+A10': child count k at a right-type vertex against the largest child ratio it carries
+=== (3,6)-biregular n=15, lambda=0.8136 (0.99 g), 1/lambda=1.2291
+   k   count   max child F  threshold k/lam     slack   max F_w
+   1       8        0.8136           1.2291    0.4154   -0.4154
+   2     376        1.0574           2.4581    1.4007   -1.1840
+   3    1528        1.4217           3.6872    2.2654   -1.5461
+   4    1590        1.8143           4.9162    3.1019   -1.8810
+   5     339        3.2209           6.1453    2.9244   -2.1997
+    vertices where the child bound is violated: 0
+    max F_w over ALL right vertices: -0.4154 (must be < 0)
+=== (3,6)-biregular n=12, lambda=0.8136 (0.99 g), 1/lambda=1.2291
+   k   count   max child F  threshold k/lam     slack   max F_w
+   2      84        0.8136           2.4581    1.6445   -1.6445
+   3     360        1.1616           3.6872    2.5255   -2.0236
+   4     306        1.5742           4.9162    3.3420   -2.2755
+   5      39        1.6753           6.1453    4.4700   -2.2934
+    vertices where the child bound is violated: 0
+    max F_w over ALL right vertices: -1.6445 (must be < 0)
+=== (3,9)-biregular n=16, lambda=1.4001 (0.99 g), 1/lambda=0.7142
+   k   count   max child F  threshold k/lam     slack   max F_w
+   5     396        1.4001           3.5712    2.1712   -2.1712
+   6    1380        1.7466           4.2855    2.5389   -2.2767
+   7    1110        2.1275           4.9997    2.8722   -2.3249
+   8     165        2.2584           5.7140    3.4556   -2.2262
+    vertices where the child bound is violated: 0
+    max F_w over ALL right vertices: -2.1712 (must be < 0)
+If the slack column is positive for every k, the lemma 'max child ratio < k/lambda'
+holds on these path trees and is the statement to prove.  The k = 1 row is the binding
+one, since that is where the uniform certificate failed.

@@ -16,44 +16,64 @@ are labeled as such.
 
 ## Papers
 
-### Paper 2 — Roots of $d$-matching polynomials and the spectrum of the universal cover
-`paper2_note/` · [note.pdf](paper2_note/note.pdf) · 48pp
+### Paper 2a — Roots of $d$-matching polynomials and the spectrum of the universal cover
+`paper2a_note/` · [note.pdf](paper2a_note/note.pdf) · 20pp
 
-Hall–Puder–Sawin place the roots of $\mu_{d,G}$ in the interval $[-\rho,\rho]$. We conjecture they lie in
-$\operatorname{spec}(T)$ itself — a proper subset whenever the universal cover has a spectral gap — which
-is the matching-polynomial form of their Question 6.3 and contains Problem 1 of Song–Fan–Miao.
+Hall–Puder–Sawin place the roots of $\mu_{d,G}$ in $[-\rho,\rho]$. We conjectured they lie in
+$\operatorname{spec}(T)$ itself — a proper subset whenever the universal cover has a spectral gap.
+
+- **That conjecture is FALSE, and the counterexample is due to Chris Hall.** A simple connected
+  bipartite graph on 41 vertices: five copies of $K_{2,5}$, a pendant leaf on one degree-five
+  vertex of each, and a central vertex joined to the other five. Its matching polynomial is
+  $x^{21}(x^4-11x^2+25)^4(x^2-5)(x^2-11)$, and $\sqrt5$ sits in an internal gap of
+  $\operatorname{spec}(T)$, certified by an Angel–Friedman–Hoory ratio system with decay
+  $0.9636<1$, exact in $\mathbb{Q}(\sqrt5,\sqrt{41})$. We verified his certificate independently
+  and machine-checked its algebra. GAPCOUNT falls with it.
 - **Proved** for every $G$ of first Betti number one and every $d$, by a closed form
   $\mu_{d,G}=V_d$ for $V_d=\mu_G V_{d-1}-\mu_{G-V(C)}^2V_{d-2}$. For the cycle this specializes to
   $\Phi_{n,r}=\chi_{C_n}U_{r-1}(T_n(x/2))$, equivalent to Hall's conjecture (first proved by
   Cochran–Groothuis–Herring–Rohatgi–Stucky, 2018), by an independent elementary route. **Formalized.**
 - **Proved** for every subdivision at $d=1$, settling the case $\min(d,r)=2$ of Song–Fan–Miao.
-- **Proved** for every complete bipartite $K_{p,q}$, $p\ge2$, by Gershgorin on the Laguerre
-  Jacobi matrix; every row bound collapses to $\alpha^2\ge0$. This enters the range
-  $\min(a,b)\ge3$ left open elsewhere, $K_{3,4}$ included. **Formalized** (`LaguerreBand`),
-  apart from the classical passage $\mu_{K_{p,q}}\to L_p^{(q-p)}\to$ Jacobi matrix.
-- Three further reductions, at the status stated in the note: every matching root lies in
-  $\operatorname{spec}(G^{\mathrm{ab}})$ (`AbelianCover`); feedback vertex number one, modulo
-  Pimsner–Voiculescu, which is not in Mathlib (`FeedbackVertex`); and two closure operations
-  that carry the conjecture to all $d$ (`TreeSubstitution`).
-- **A counting refinement (GAPCOUNT).** The conjecture is implied by an equality of two
-  integers: the number of matching roots above a gap equals the trace of the negative
-  spectral projection of the universal cover there. **Proved** for $b_1=1$ and for feedback
-  vertex number one; **reduced** at feedback vertex number two to a single quantitative
-  statement, with the tie-break settled. Two barriers close the obvious routes: there is no
-  unital $*$-homomorphism $C^*_r(F_b)\to C(\mathbb T^b)$, and the abelian spectrum fills in
-  precisely the region where the universal cover still has gaps. No counterexample in
-  55,131 graphs and 99,487 gap points. **Formalized** across `GapLabel`, `BandTheorem`,
-  `BandCount`, `Interlacing`, `FeedbackGapCount`, `FeedbackTwo`, `TieBreak`, `Congruence`,
-  `NoQuotient`, `InertiaSplit`, `Cavity`.
+- **The repair, and its threshold.** Minimum degree two fails (pendant cycles for Hall's leaves,
+  92 vertices), bounded maximum degree fails, and 2-connectivity fails — so connectivity is a
+  confound and the mechanism is a *separation*. **D3** (minimum degree $\ge3$) is the surviving
+  hypothesis and three is the exact threshold. **Formalized** (`CutVertexMechanism`,
+  `SeparationOrder`, `MinimumDegreeThreshold`, `GluedSearch`).
+- D3 is a **conjecture**. It survives 806 cut-based configurations built to Hall's own mechanism,
+  419 graphs with no separator at all, and 39 with a separating pair — all on an instrument whose
+  correctness is itself formalized (`SpectralAtom`).
+
+### Paper 2b — The biregular case: the weighted plane class and its obstructions
+`paper2b_note/` · [note.pdf](paper2b_note/note.pdf) · 52pp
+
+The biregular case survives the refutation and contains Problem 1 of Song–Fan–Miao. At $b=2$ the
+object is the *weighted plane class*: families $\{(c_k,V_k)\}$ with $\sum_k c_kP_{V_k}\preceq aI$,
+whose matching polynomial is the Marcus–Spielman–Srivastava mixed characteristic polynomial.
+
+- **Proved** for every complete bipartite $K_{d,q}$: the margin is $\sqrt{d-1}-h_d/2>0$ by
+  Gershgorin on the Hermite Jacobi matrix, so no $K_{d,q}$ refutes the statement however wide its
+  gap. **Formalized** (`CompleteBipartiteMargin`).
+- **But the margin decays like $n^{-2/3}$**, the soft-edge exponent, over eight families with
+  $R^2\ge0.999$. The statement is true but tight, and **no size-free bound can prove it** —
+  which disqualifies the Gershgorin constant above as a route to the general case.
+  **Formalized** (`SoftEdge`, `no_uniform_lower_bound`).
+- An exact vertex recursion for the plane class, its cross-term decomposed into pieces $C_r$
+  whose nonnegativity would give the band, and two unconditional bounds from real-rootedness.
+- **The obstructions are the substance.** A rank-blind barrier reads Marchenko–Pastur and cannot
+  reach the tree band at either edge; compressions cannot reach the inner end at all; the
+  coefficient ladder's reach is unbounded in the moment order but an input at a uniform rate *is*
+  the conclusion it would prove, so the dimension restriction is intrinsic
+  (`MomentLadder.band_of_all_moments`); and the tree moment bound, the natural a priori input, is
+  false off the coordinate case.
+- A **ratio route** escapes these and settles the inner edge on a nontrivial class, closing for
+  six of seven families tested; the $(3,6,5)$ defect is stated, not hidden.
 - $\mu_G(2\sqrt{d-1})$ counts pseudo-forests, answering a question of Csikvári using his own
   machinery with Bencs. **Formalized** (`PseudoForest`, `EvenEval`).
-- A vertex recursion for weighted 2-plane families valid in *every* direction, whose cavity term is a
-  sum of squares; in Gram coordinates it is the matching determinant lemma. **Formalized.**
-- The leading cross term is a perfect square, hence $\ge 0$ — **formalized with no hypotheses.**
-- The band is the support of a free convolution *power*; the cavity ratio at the threshold is exactly
-  $1+1/(1+\sqrt a)$ (Kesten–McKay). **Formalized.**
-- **Open:** the band itself, reduced to one sign $X_e\le0$, and the sharper Conjecture on the ratio.
+- **Open:** the band itself, reduced to one sign $X_e\le0$.
 
+> **Superseded.** `paper2_note/` is the single 68pp document these two were split from. It is kept
+> for reference and for the DOI record; the split above is current. Nothing in it is retracted by
+> the split, which is editorial.
 ### Paper 3 — The permanent of the GCD matrix
 `paper3_note/` · [note.pdf](paper3_note/note.pdf)
 
