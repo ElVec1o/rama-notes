@@ -2661,15 +2661,33 @@ whenever $m\le8$ and whenever $m\le16+\bigl(\sum_kc_k^2\bigr)/a^2$, the latter r
 known two-moment bound for projections and extending it to all weighted plane families. The
 general case is not closed. A reader who wants only that summary may skip to \S\ref{sec:rank}.
 
-What the problem is, at $b=2$, can be said exactly. Both $\mu(x+a)$ and the operator
-$\operatorname{Adj}(A):=\sum_k e_2(A_k)P_{\operatorname{range}A_k}$ depend on the
-family only through the pairs $\bigl(e_2(A_k),\operatorname{range}A_k\bigr)$. So the
-class is the class of weighted $2$-plane families
-$\{(c_k,V_k):c_k\ge0,\ \sum_kc_kP_{V_k}\preceq aI\}$, and $\mu(x+a)$ is the matching
+What the problem is, at $b=2$, can be said exactly. The operator
+$\operatorname{Adj}(A):=\sum_k e_2(A_k)P_{\operatorname{range}A_k}$ and the coefficients
+$M_r=\sum_{|T|=r}\|\omega_T\|^2$ depend on the family only through the pairs
+$\bigl(e_2(A_k),\operatorname{range}A_k\bigr)$. So the class they define is the class of
+weighted $2$-plane families
+$\{(c_k,V_k):c_k\ge0,\ \sum_kc_kP_{V_k}\preceq aI\}$, and $F_A$ is the matching
 polynomial of such a family; for coordinate planes it is the ordinary weighted
-matching polynomial. The band being sought is therefore the sharp weighted
-Heilmann--Lieb constant for plane families, which is what fixes $2\sqrt a$ as the
-natural ceiling of any argument of this kind.
+matching polynomial.
+
+That invariance belongs to the wedge form and not to $\mu[\,\cdot\,]$: two families sharing the
+pairs $\bigl(e_2(A_k),\operatorname{range}A_k\bigr)$ but with anisotropic $A_k$ have different
+mixed characteristic polynomials, the roots differing by order unity rather than by order the
+tolerance (\texttt{code/rl\_conj.py}). On projections the two agree, $e_2\equiv1$ leaving no
+freedom, which is the identity $\nu_G=\mu[P_1,\dots,P_q]$ above and is verified there to $10^{-13}$;
+the plane class is therefore the wedge-form generalisation of the matching polynomial, not the
+$\mu[\,\cdot\,]$ one, and results about mixed characteristic polynomials do not transfer to it
+automatically.
+
+The band being sought is the sharp weighted Heilmann--Lieb constant for plane families, and that
+constant is not $2\sqrt a$. On projections the conjectural sharp value is $2\sqrt{a-1}$, the
+spectral radius of the $a$-regular tree, and $2\sqrt{a-1}<2\sqrt a$ strictly
+(\texttt{XuBound.xu\_lt\_note\_target}); it is the case $b=2$ of the bound
+$\bigl(\sqrt{a-1}+\sqrt{b-1}\bigr)^2$ on $\operatorname{maxroot}\mu$ conjectured by
+Xu\footnote{Personal communication, August 2026, deriving it from a generalisation of
+\cite[Conjecture 1]{RL}.}, which is exactly the upper edge of the $(a,b)$-biregular tree band.
+So $2\sqrt a$ is the ceiling of the cavity argument used here, not the truth, and an argument of
+this kind cannot be sharp.
 
 In that language the vertex step has an exact form. Setting
 $\Theta^{(r)}:=\sum_{|T|=r}M_{\omega_T}\succeq0$ and
@@ -4105,6 +4123,8 @@ in Benjamini--Schramm convergent graph sequences}, Trans.\ Amer.\ Math.\ Soc.\
 \bibitem{HallCE} C.~Hall, \emph{A simple bipartite counterexample to Conjecture 10:
   spectral localization of the ordinary matching polynomial}, verification note, personal
   communication, August 2026.
+\bibitem{RL} M.~Ravichandran, J.~Leake, \emph{Mixed determinants and the Kadison--Singer
+  problem}, Math. Ann. \textbf{377} (2020), 511--541.
 \bibitem{AFH} O.~Angel, J.~Friedman, S.~Hoory, \emph{The non-backtracking spectrum of the
   universal cover of a graph}, Trans.\ Amer.\ Math.\ Soc.\ \textbf{367} (2015), 4287--4318;
   arXiv:0712.0192.
