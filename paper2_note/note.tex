@@ -3719,13 +3719,21 @@ The main entry points:
 \item \texttt{Paper2.cG\_factored}, \texttt{Paper2.quotient\_parity}, the factorization and Corollary~\ref{cor:parity}.
 \end{itemize}
 
-The three remaining corollaries are formalized only in part:
-Corollary~\ref{cor:gf}'s generating function appears as the finite recurrence
-\eqref{eq:newton} rather than a literal power-series identity; of
-Corollary~\ref{cor:roots} only the underlying trigonometric factorization
-(\texttt{cor1\_factored}) is checked, not the ``all roots in $[-2,2]$''
-statement end-to-end; and Corollary~\ref{cor:fib} (\texttt{cor2\_phi3}) is a
-bounded \texttt{native\_decide} over $n,r\le6$.
+The three remaining corollaries are now formalized in full.
+Corollary~\ref{cor:gf} is proved as a literal identity of formal power series,
+\texttt{Paper2GenFun.genU\_mul} giving
+$(1-2YX+X^2)\sum_dU_d(Y)X^d=1$ and \texttt{genPhi\_mul} the companion form with numerator
+$(1-X)^2$, by coefficient comparison against the Chebyshev recurrence.
+Corollary~\ref{cor:roots} is proved as the statement about roots,
+\texttt{Paper2Roots.Phi\_ne\_zero\_of\_two\_lt\_abs}: if $|x|>2$ then
+$\Phi_{n,r}(x)\neq0$, via $|T_n(x/2)|>1$ (\texttt{one\_lt\_abs\_cT}) and the vanishing of
+neither factor of the factorization.
+Corollary~\ref{cor:fib} is proved for all $n$ and $r$,
+\texttt{Paper2FibLucas.cor2\_phi3\_general}, replacing the bounded
+\texttt{native\_decide}; the route is the identity $F_{j+2m}+F_j=L_mF_{j+m}$ for even $m$
+(\texttt{fib\_shift}), whose base cases are $F_{2m}=L_mF_m$ and, using Cassini,
+$F_{2m+1}+1=L_mF_{m+1}$, and which is stated without truncated subtraction by writing
+$L_m=2F_{m+1}-F_m$.
 
 Trust base for the general theorems: \texttt{propext}, \texttt{Classical.choice},
 \texttt{Quot.sound} only (checked with \texttt{\#print axioms}); the bounded

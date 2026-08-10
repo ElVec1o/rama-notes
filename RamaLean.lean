@@ -83,3 +83,6 @@ import RamaLean.SoftEdge
 import RamaLean.RatioRoute
 import RamaLean.PathCount
 import RamaLean.PathTreeInduction
+import RamaLean.Paper2FibLucas
+import RamaLean.Paper2Roots
+import RamaLean.Paper2GenFun
