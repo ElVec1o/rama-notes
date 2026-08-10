@@ -301,6 +301,54 @@ theorem binding_case {k : ℕ} (lam : ℝ) (hlam : 0 < lam) (hk : lam ^ 2 < k) :
     lam - (k : ℝ) / lam < 0 :=
   right_step_leaves lam hlam hk
 
+
+/-- **Structural closure: two inequalities replace the path tree.**
+
+Substituting the two combinatorial bounds — `min_children` (`Δ ≤ k`) and `child_count_drop`
+(`j ≤ k - Δ`) — into the refined requirement `λ·leftBound λ c j < k` and asking it for every
+admissible `k` reduces it to
+
+  `λ < c`   and   `λ² < Δ`,
+
+because `Δ(c-λ) > λ(λc-Δ)` is equivalent to `Δ > λ²` after cancelling `c`. Neither mentions a
+path tree, a family, or a graph: given those two numbers the certificate closes at every
+right-type vertex at once.
+
+The second condition is the one already known — it is `binding_case`, the requirement that the
+minimum-child-count configuration closes, where `children_are_leaves` forces every child to be a
+leaf of ratio exactly `λ`. The first is new and is what the per-vertex bound buys.
+
+Measured (`code/universal_close.py`), the pair holds at 11 of 14 parameter points tested,
+including `(3,9,4)`, `(3,12,6)` and `(3,20,10)`; there the ratio route closes *provably* rather
+than family by family. It fails at `Δ` small with `λ` near the gap edge — `(3,20,19)` and
+`(3,20,18)` at `frac = 0.99`, where `c ≤ 0` — and there the refinement still closes on the actual
+path trees (`code/twolevel.py`) because the measured child counts sit far below the worst case
+`k - Δ` that `child_count_drop` allows. So what a proof needs at those parameters is a sharper
+structural bound on the child's child count, and that is now the single identified gap. -/
+theorem structural_closure {lam c : ℝ} (hlam : 0 < lam) (hlc : lam < c)
+    {Delta k j : ℕ} (hD : lam ^ 2 < (Delta : ℝ)) (hk : Delta ≤ k)
+    (hj : (j : ℝ) ≤ (k : ℝ) - (Delta : ℝ)) :
+    lam * leftBound lam c j < (k : ℝ) := by
+  have hc : 0 < c := lt_trans hlam hlc
+  have hkD : ((Delta : ℝ)) ≤ (k : ℝ) := by exact_mod_cast hk
+  have hstep : lam * leftBound lam c j ≤ lam * (lam + ((k : ℝ) - Delta) / c) := by
+    have : leftBound lam c j ≤ lam + ((k : ℝ) - Delta) / c := by
+      unfold leftBound; gcongr
+    exact mul_le_mul_of_nonneg_left this hlam.le
+  refine lt_of_le_of_lt hstep ?_
+  rw [← sub_pos]
+  have hprod : (0 : ℝ) ≤ ((k : ℝ) - Delta) * (c - lam) := by
+    have h1 : (0 : ℝ) ≤ (k : ℝ) - Delta := by linarith
+    have h2 : (0 : ℝ) ≤ c - lam := by linarith
+    positivity
+  have key : (0 : ℝ) < ((k : ℝ) - lam * lam) * c - lam * ((k : ℝ) - Delta) := by
+    nlinarith [hprod, hD, hlam, hc, hkD]
+  have hexp : (k : ℝ) - lam * (lam + ((k : ℝ) - Delta) / c)
+      = (((k : ℝ) - lam * lam) * c - lam * ((k : ℝ) - Delta)) / c := by
+    field_simp; ring
+  rw [hexp]
+  exact div_pos key hc
+
 /-! ## The coupled induction, and when it closes -/
 
 /-- **The right step with an explicit bound on the children.**  If every child ratio is positive
