@@ -31,9 +31,20 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from certificate import small_biregular
 
 
-def path_tree(adj, root, cap=40000):
+# SUPERSEDED by code/pathtree_inertia.py, which answers the same question by Sylvester's law in
+# O(|P|) time and O(depth) memory and reaches path trees of 291429 vertices. This file
+# diagonalises the path tree whole and is kept only for the small cross-check.
+#
+# The cap below is on MEMORY, not on node count, and that distinction is why. A dense n x n
+# float64 matrix is 8n^2 bytes, so a node cap of 40000 silently authorises 12.8 GB; an earlier
+# run of this file reached several gigabytes and had to be killed by hand. Cap the allocation,
+# not the graph.
+MAX_BYTES = 512 * 1024 * 1024          # 512 MB, i.e. about 8000 path-tree vertices
+
+
+def path_tree(adj, root, cap=8000):
     """Vertices are self-avoiding paths from `root`; edges join a path to its one-step
-    extensions. Returns the adjacency matrix of the path tree."""
+    extensions. Returns the adjacency matrix, or None if it would exceed MAX_BYTES."""
     nodes = [(root,)]
     index = {(root,): 0}
     edges = []
@@ -52,6 +63,8 @@ def path_tree(adj, root, cap=40000):
             edges.append((i, index[np_]))
         i += 1
     n = len(nodes)
+    if 8 * n * n > MAX_BYTES:
+        return None
     A = np.zeros((n, n))
     for (a, b) in edges:
         A[a, b] = 1.0
