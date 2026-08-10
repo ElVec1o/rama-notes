@@ -84,20 +84,67 @@ def K2q_repaired(q, s):
     return 2 + q, e, 1
 
 
-def blocks():
+def K2q_side(q, side_edges, tag):
+    """K_{2,q} with an ARBITRARY graph on the q-side, needing only min degree 1 there.
+
+    Regularity was never required: a q-side vertex has degree 2 from the hubs, so one further
+    edge already gives 3. Dropping regularity is the point -- the near-miss root sat exactly on a
+    spectral atom created by the symmetry of a perfect matching, and asymmetric side graphs move
+    the root off the atom while leaving the hub contrast that opens the gap.
+    """
+    e = [(0, 2 + j) for j in range(q)] + [(1, 2 + j) for j in range(q)]
+    for (a, b) in side_edges:
+        if a != b and (2 + a, 2 + b) not in e and (2 + b, 2 + a) not in e:
+            e.append((2 + a, 2 + b))
+    return 2 + q, e, 1, tag
+
+
+def side_graphs(q, rng):
+    """Assorted graphs on q labelled vertices with minimum degree at least one."""
     out = []
-    for q in (4, 5, 6, 7, 8, 9, 10, 12):
-        for s in (1, 2, 3, 4):
-            r = K2q_repaired(q, s)
-            if r is None:
-                continue
-            n, e, v = r
+    if q % 2 == 0:
+        out.append(([(2 * i, 2 * i + 1) for i in range(q // 2)], "match"))
+    out.append(([(i, (i + 1) % q) for i in range(q)], "cycle"))
+    out.append(([(i, (i + 1)) for i in range(q - 1)], "path"))
+    if q >= 5:
+        tri = [(0, 1), (1, 2), (2, 0)]
+        rest = [(i, i + 1) for i in range(3, q - 1, 2)]
+        if q % 2 == 0:
+            out.append((tri + rest, "tri+match"))
+    if q >= 4:
+        out.append(([(0, j) for j in range(1, q)], "star"))
+    if q >= 6:
+        out.append(([(i, (i + 1) % q) for i in range(q)] + [(0, q // 2)], "cycle+chord"))
+    for t in range(6):                                   # random, min degree forced to 1
+        es = set()
+        perm = list(range(q)); rng.shuffle(perm)
+        for i in range(0, q - 1, 2):
+            es.add((min(perm[i], perm[i + 1]), max(perm[i], perm[i + 1])))
+        for _ in range(rng.integers(1, max(2, q // 2))):
+            a, b = int(rng.integers(q)), int(rng.integers(q))
+            if a != b:
+                es.add((min(a, b), max(a, b)))
+        deg = {i: 0 for i in range(q)}
+        for (a, b) in es:
+            deg[a] += 1; deg[b] += 1
+        if all(deg[i] >= 1 for i in range(q)):
+            out.append((sorted(es), f"rand{t}"))
+    return out
+
+
+def blocks():
+    import numpy as _np
+    rng = _np.random.default_rng(20260824)
+    out = []
+    for q in (6, 8, 9, 10, 11, 12, 13, 14):
+        for (se, tag) in side_graphs(q, rng):
+            n, e, v, t = K2q_side(q, se, tag)
             d = [0] * n
             for a, b in e:
                 d[a] += 1; d[b] += 1
             if d[v] < 2 or any(d[u] < 3 for u in range(n) if u != v):
                 continue
-            out.append((f"K2,{q}+{s}reg", n, e, v))
+            out.append((f"K2,{q}+{t}", n, e, v))
     return out
 
 
@@ -151,7 +198,7 @@ def dos_at(N, E, lam, eta, iters=60000, tol=1e-13):
         idx[(a, b)] = len(de); de.append((a, b))
         idx[(b, a)] = len(de); de.append((b, a))
     z = complex(lam, eta)
-    g = np.full(len(de), 0.5j, dtype=complex)
+    g = np.full(len(de), -0.5j, dtype=complex)   # PHYSICAL branch: Im g < 0
     for _ in range(iters):
         new = np.empty_like(g)
         for k, (u, vv) in enumerate(de):
