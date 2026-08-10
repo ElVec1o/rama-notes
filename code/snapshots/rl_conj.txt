@@ -31,6 +31,17 @@ Weighted families: the bound relative to the unweighted one at the same a.
    8   3      36   1.0204  0.3854    9.3763        5.8284     True
    6   4      21   1.7303  0.4969    9.8698        7.4641     True
    8   4      36   1.3753  0.3795   11.0273        7.4641     True
+SECTION 3. Anisotropy is harmless; the tightness is what carries the identity.
+   m   q   a   tightness  anisotropy   max|mu-a - F_A|
+   4   6   3     5.3e-15        6.12         5.707e-14
+   4   8   4     9.0e-15      128.63         4.097e-14
+   6   9   3     6.5e-15       12.08         7.796e-13
+  worst anisotropy tested: 128.6
+SECTION 4. The recentring constant is the TIGHT one, and it is not the Adj one.
+   m   a (Adj)    q   |sum A - a'I|^2   a-prime     a'-a
+   4         3   10          2.46e-16    3.8597   0.8597
+   6         3   21          6.85e-16    4.3850   1.3850
+   6         4   21          7.95e-16    5.1203   1.1203
   If the weighted bound is uniformly weaker, weights cannot break the conjecture
   and the sharp instance is the unweighted projection case, which is what
   code/adversarial.py searches against band(a,b) = [(s-t)^2,(s+t)^2].
