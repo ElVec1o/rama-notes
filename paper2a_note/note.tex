@@ -361,7 +361,7 @@ loopless bipartite graphs.
 \end{theorem}
 
 The counterexample and its certificate are entirely due to Chris Hall. We record it here
-because it settles the central question of this note, and because everything else in the
+because it settles the central question of this paper, and because everything else in the
 note has to be read in its light. \S\ref{sec:hallce} states his construction, our
 independent verification of it, and what we can add.
 
@@ -554,7 +554,7 @@ matrix are classical and remain by hand.
 
 The following arose from a conversation Chris Hall conducted with a language model and
 shared with us in August 2026. We have checked them, and record them here with their
-status, which differs sharply between the three. None is used elsewhere in this note.
+status, which differs sharply between the three. None is used elsewhere in this paper.
 
 \paragraph{Localization in the maximal abelian cover.}
 Put a circle variable on each of the $b_1(G)$ cotree edges and let $A_G(z)$ be the
@@ -766,7 +766,7 @@ The eight ratio identities, the elementary bounds $32/5<\sqrt{41}<13/2$, the str
 positivity of all six components of $x-Kx$, and a Collatz--Wielandt lemma (a nonnegative
 matrix with a positive strictly subinvariant vector has spectral radius below one) are
 machine-checked in \texttt{RamaLean/HallCounterexample.lean}. The argument common to all three
-counterexamples of this note is isolated once in
+counterexamples of this paper is isolated once in
 \texttt{RamaLean/RatioCertificate.lean}: a ratio system with its decay matrix
 (\texttt{decay}, \texttt{decay\_nonneg}), the Collatz--Wielandt step in the strict form the
 certificate needs (\texttt{decay\_lt\_one}), and the assembly with Angel--Friedman--Hoory as an
@@ -1073,8 +1073,9 @@ four significant figures across four decades of $\eta$, so it lies in the spectr
 
 The counterexample has $b_1=20$, feedback vertex number $5$, and is neither biregular nor
 of bounded feedback vertex number, so it violates the hypotheses of every positive result
-in this note. Theorem~\ref{thm:main} and the closed form at $b_1(G)=1$, the subdivision and
-complete bipartite cases, the reductions of \S\ref{sec:further}, the localization
+in this paper. Theorem~\ref{thm:main} and the closed form at $b_1(G)=1$, the subdivision case,
+the complete bipartite case of the companion paper \cite{PartII}, the reductions of
+\S\ref{sec:further}, the localization
 $\operatorname{Zeros}(\mu_G)\subseteq\operatorname{spec}(G^{\mathrm{ab}})$ and the
 sufficient conditions of the companion paper \cite{PartII} are all unaffected. What changes is the
 question. The counterexample lives exactly in the residue

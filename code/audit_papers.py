@@ -103,7 +103,30 @@ def axioms_of(fullnames):
     return got
 
 
+def build_root():
+    """`lake build` the ROOT module before anything else.
+
+    lean_map.py reads RamaLean.lean as text, so it cannot tell whether the root module has
+    actually been compiled with the imports it lists. A file added to RamaLean.lean and built
+    individually leaves the root's olean stale, and `import RamaLean` then does not expose it:
+    three files verified the same day looked absent for exactly this reason. Building the root
+    first is the only way to make the axiom pass mean what it appears to mean.
+    """
+    p = subprocess.run(['lake', 'build'], cwd=ROOT, capture_output=True, text=True, timeout=3600)
+    ok = p.returncode == 0
+    print(f"lake build (root): {'ok' if ok else 'FAILED'}")
+    if not ok:
+        tail = [l for l in (p.stdout + p.stderr).strip().split('\n') if l.strip()][-4:]
+        for l in tail:
+            print("   ", l[:110])
+    return ok
+
+
 def main():
+    if not build_root():
+        print("\nRoot build failed; the axiom pass below would be meaningless. Stopping.")
+        return 1
+    print()
     decls = declarations()
     sorry_files = set()
     for path in glob.glob(os.path.join(LEANDIR, '*.lean')):
