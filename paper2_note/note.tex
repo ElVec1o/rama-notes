@@ -3245,6 +3245,26 @@ The identity of Theorem~\ref{thm:vertexrec} was checked to $10^{-13}$ on graph,
 projection and general weighted plane families at generic directions
 (\texttt{code/hl\_Wspec.py}, \texttt{code/hl\_Xsign.py}).
 
+Both of the bounds that follow are rungs of a single ladder, and it is worth saying what the
+ladder reaches before giving them. Writing $y=x^2$, the $M_r$ are the elementary symmetric
+functions of the $y$-roots, so with $p_k$ the power sums one has $y_{\max}^k\le p_k$, and any
+a priori bound $p_k\le(4a)^k$ gives the band (\texttt{MomentLadder.le\_of\_power\_sum\_le}).
+Writing $p_k=(m/2)c_k^k$, the $k$-th rung covers dimension $m$ exactly when
+\begin{equation}\label{eq:reach}
+   m\ \le\ 2\Bigl(\frac{4a}{c_k}\Bigr)^{k}
+\end{equation}
+(\texttt{reach\_of\_moment}). Measured on the class, $c_k^k$ is the number of closed walks of
+length $2k$ from a root of the $a$-regular tree, so $c_1=a$ and $c_2=\sqrt{a(2a-1)}$, which are
+the two rungs below; that count grows like $\bigl(4(a-1)\bigr)^kk^{-3/2}$, the base being the
+square of the tree's spectral radius, against a target of $(4a)^k$. Since $4(a-1)<4a$, the reach
+\eqref{eq:reach} is unbounded in $k$ (\texttt{reach\_unbounded}): at $a=3$ it is $146$, $509$ and
+$1489$ at $k=5,7,9$, against the $8$ and $18$ of the first two rungs (\texttt{code/moments2.py}).
+The dimension restriction is therefore an artefact of stopping at two moments rather than
+something intrinsic, and what would remove it at a stroke is an a priori bound
+$p_k\le(m/2)W_{2k}$ for the plane class, with $W_{2k}$ the tree walk count; for graphs that is
+Godsil's path-tree argument, the path tree being a subtree of the universal cover, and for
+noncommuting plane families it is open.
+
 Two bounds follow unconditionally from real-rootedness alone. Writing
 $F_A=x^m-M_1x^{m-2}+M_2x^{m-4}-\cdots$, one has $M_1=\tfrac12\operatorname{tr}
 \operatorname{Adj}(A)\le am/2$ and, using $\|\omega_j\wedge\omega_l\|^2\ge
