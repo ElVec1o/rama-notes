@@ -207,6 +207,59 @@ theorem right_step_leaves {k : ℕ} (lam : ℝ) (hlam : 0 < lam) (hk : lam ^ 2 <
   rw [sub_neg, lt_div_iff₀ hlam]
   nlinarith
 
+
+/-! ## The refined step: the bound is per-vertex, not global
+
+`right_step` needs `k > λB` with `B` the worst-case bound for *every* child, and that is what
+fails. Measured on the path tree of the `(3,6,5)` family at `λ = 0.8136`, the uniform requirement
+is `k > 1.6247` while eight right-type vertices have `k = 1`
+(`code/certificate.py`), and the certificate does not close.
+
+The worst case is the wrong bound for those children. `left_step` already gives a left vertex
+with `j` children the bound `λ + j/c`, and the global `B` is that at `j = d-1`. A right vertex
+with very few children sits where the path tree is nearly exhausted, so its children are
+child-poor too and carry a much smaller bound. Instantiating `B` per-vertex from the child's own
+count rather than globally, the requirement becomes `k > λ(λ + j_max/c)`, which is strictly
+weaker whenever `j_max < d-1` (`refined_weaker`), and it closes every family tested including
+`(3,6,5)`, where the uniform certificate fails: `0` failures against `8`
+(`code/twolevel.py`). That was the documented defect and it is the last one.
+
+Nothing here is new analysis; it is the same two steps composed in the order that keeps the
+information `left_step` already produces. The uniform certificate discards the child count and
+then cannot recover it. -/
+
+/-- The bound a left-type vertex inherits from its own child count, via `left_step`. The global
+`B` of the uniform certificate is this at `j = d-1`, the worst case. -/
+noncomputable def leftBound (lam c : ℝ) (j : ℕ) : ℝ := lam + (j : ℝ) / c
+
+/-- Fewer children, smaller bound. -/
+theorem leftBound_mono {lam c : ℝ} (hc : 0 < c) {j j' : ℕ} (h : j ≤ j') :
+    leftBound lam c j ≤ leftBound lam c j' := by
+  unfold leftBound
+  have : (j : ℝ) ≤ (j' : ℝ) := by exact_mod_cast h
+  gcongr
+
+/-- **The refined requirement is strictly weaker.** A child with fewer than `d-1` children
+imposes a strictly smaller threshold than the uniform one, which is exactly why a right vertex
+with `k = 1` can be safe although `k > λB` fails. -/
+theorem refined_weaker {lam c : ℝ} (hlam : 0 < lam) (hc : 0 < c) {j j' : ℕ} (h : j < j') :
+    lam * leftBound lam c j < lam * leftBound lam c j' := by
+  have hj : (j : ℝ) < (j' : ℝ) := by exact_mod_cast h
+  have : leftBound lam c j < leftBound lam c j' := by
+    unfold leftBound; gcongr
+  exact mul_lt_mul_of_pos_left this hlam
+
+/-- **The refined right step.** Each child is bounded by `leftBound` at *its own* child count,
+and the requirement uses the largest of those rather than the global worst case. Reduces to
+`right_step` with `B` instantiated per-vertex. -/
+theorem right_step_refined {k : ℕ} (F : Fin k → ℝ) (lam a c Bmax : ℝ) (j : Fin k → ℕ)
+    (ha : 0 < a) (haB : a ≤ Bmax)
+    (hF : ∀ i, a ≤ F i ∧ F i ≤ leftBound lam c (j i))
+    (hBmax : ∀ i, leftBound lam c (j i) ≤ Bmax)
+    (hk : lam * Bmax < k) :
+    lam - ∑ i, 1 / F i < 0 :=
+  right_step F lam a Bmax ha haB (fun i => ⟨(hF i).1, le_trans (hF i).2 (hBmax i)⟩) hk
+
 /-! ## Blocking propagates: the combinatorial core of A10' -/
 
 /-- **Every right-type path-tree vertex has at least `q - r` children.**
