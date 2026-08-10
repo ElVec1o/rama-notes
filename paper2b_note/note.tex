@@ -552,19 +552,32 @@ the count is equal at both ends in every case: the path tree has no eigenvalue i
 Godsil's divisibility, which places the roots of $\mu_G$ among those of $\mu_P$ and says nothing
 about where the others go.
 
-So the statement the route proves is true throughout the gap, including where the sign-alternating
-certificate provably cannot hold, and what fails at the edge is the invariant. Measuring
-$\min_v|F_v|$ across the gap names the replacement: it equals $\lambda$ exactly, attained at a
-leaf, at every fraction tested in two of three families, falling to $0.83\lambda$ and
-$0.51\lambda$ only at $(3,6,5)$ near the edge (\texttt{code/minF\_scan.py}). The candidate is
-therefore $|F_v|\ge\lambda$, which is sign-free and tight.
+So the statement the route proves is true throughout the gap, including where the
+sign-alternating certificate cannot hold. An argument therefore exists in principle at every
+$\lambda$ in the gap. What does not exist is a better certificate of \emph{this} family, and that
+is worth separating from the first point.
 
-It does not yet propagate, and the obstruction is now one level down rather than at the level of
-the bounds. From $F_v=\lambda-\sum_u1/F_u$ a modulus bound alone gives nothing, because the
-$1/F_u$ can cancel. Where the children share a sign they cannot, and the bound goes through; near
-the gap edge the signs mix, which is exactly where $\min_v|F_v|$ falls. \textbf{What a proof of
-the inner end needs is control of sign mixing among the children of a single vertex, not a
-sharper bound}, and that is the form in which we leave it.
+Two things settle it. Measuring $\min_v|F_v|$ across the gap suggests the sign-free alternative
+$|F_v|\ge\lambda$: the minimum equals $\lambda$ exactly, attained at a leaf, at every fraction
+tested in two of three families, falling to $0.83\lambda$ and $0.51\lambda$ only at $(3,6,5)$ near
+the edge (\texttt{code/minF\_scan.py}). But it is the harder condition, not a weaker one. With
+every child positive, $F_v=\lambda-\sum_u1/F_u$ falls below $\lambda$ automatically, and
+$|F_v|\ge\lambda$ additionally forces the sum past $2\lambda$, which at a right-type vertex is
+$k\gtrsim2\lambda B$ against the $k>\lambda B$ the sign condition needs --- a factor of two in the
+child count.
+
+And there is no cancellation to repair. The path tree is bipartite by depth, so the children of a
+vertex all lie on one side and are of one type, and same-type siblings never disagree in sign: over
+three families at six gap fractions each, including $0.99$, the number of vertices whose children
+have mixed signs is \emph{zero} in every case, out of $865$, $4185$ and $3220$ parents
+(\texttt{code/signmix.py}).
+
+So the sign-alternating certificate is the best of its family, and its reach is exactly
+$\lambda^2<\Delta$ --- the binding case, where the children at the minimum count are leaves of
+ratio $\lambda$ and the parent is $\lambda-\Delta/\lambda$. \textbf{That boundary is sharp rather
+than an artefact of the certificate's shape}, and extending the route past it needs an argument
+that is not an interval invariant on the ratios at all, since the target it would prove is true
+there and every certificate of this kind provably is not.
 
 Finally, the sign separation is a consequence of bipartiteness: on wheels no natural class
 determines the sign of a path-tree ratio, endpoint degree, depth parity and child count each
