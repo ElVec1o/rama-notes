@@ -1,0 +1,10 @@
+P31 (frozen): no root of mu_H lands outside spec(T_G) at fixed degrees.
+S ranges over s-regular graphs on q vertices, so H = K_{2,q}+S has the SAME degree
+sequence for every S: the gap is fixed and only the roots move.
+   q  s           S  p  |G| delta roots<rho     verdict
+  12  1  cfb4d52b54  3   43     3         4       clean
+  10  3  3fab6f6ab4  3   37     3         6       clean
+  10  2  e6365e777c  3   37     3         6       clean
+  configurations tested: 14   violations: 0   ambiguous: 0
+  P31 holds. Holding the degrees fixed and moving the roots does not put one in
+  a gap either, which was the configuration the earlier searches could not make.

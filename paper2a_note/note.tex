@@ -1106,6 +1106,54 @@ edge: for $W_{10}$ through $W_{20}$ the largest root below $2$ has density of st
 four significant figures across four decades of $\eta$, so it lies in the spectrum
 (\texttt{code/wheels.py}).
 
+Fourth, and this is what the evidence now amounts to. Five searches have been run against
+Conjecture~\ref{conj:mindeg3}, each designed against the failure mode of the last, and all are
+clean. Two reproduce Hall's own mechanism at minimum degree three --- $p$ copies of a block glued
+at a new centre, so that the branch factorization makes every root of $\mu_H$ a root of $\mu_G$
+--- first with off-the-shelf blocks and then with blocks built to the shape of his, $K_{2,q}$ with
+a graph on the $q$-side lifting those degrees to three. A third abandons the construction
+entirely: random graphs of minimum degree three with deliberately spread degrees and \emph{no cut
+vertex}, which is the case a cut-based engine structurally cannot reach. A fourth requires a
+separating pair. A fifth holds the degree sequence fixed, so the gap does not move, and varies
+only the block's internal structure, so the roots do.
+
+\begin{center}
+\begin{tabular}{lrl}
+\emph{engine} & \emph{scale} & \emph{outcome}\\[2pt]
+$1$-cut, off-the-shelf blocks      & $118$ & closest approach $0.169$\\
+$1$-cut, blocks of Hall's shape    & $350$ & clean\\
+separator-free random search       & $419$ & clean\\
+separating-pair random search      & $39$  & clean\\
+fixed degrees, varying structure   & $14$  & clean
+\end{tabular}
+\end{center}
+
+About twelve hundred configurations, and the two closest approaches are both cut-based
+(\texttt{code/D1cut.py}, \texttt{code/D1cut\_adv.py}, \texttt{code/D3broad.py},
+\texttt{code/D3fixdeg.py}). The nearest miss is worth stating because it is nearer than the table
+suggests: a block $K_{2,12}$ with a perfect matching on the $12$-side has
+$\mu_H=(x-1)^4(x+1)^4(x^6-26x^4+157x^2-12)$, so $1$ is a root of multiplicity four and hence a
+root of $\mu_G$, and $1$ lies well inside the central gap of half-width $\sqrt{11}-\sqrt2=1.90$.
+It is not a counterexample only because $1$ is a spectral \emph{atom} of the cover, so it lies in
+$\operatorname{spec}(T)$ after all: the density of states there reads $8.97$, $89.7$ and $897$ as
+$\eta$ falls through $10^{-2}$, $10^{-3}$, $10^{-4}$, the signature of a point mass. Breaking the
+symmetry that creates the atom moves the root off it --- and into the continuous spectrum, not
+into the gap, since the same change moves the degrees that place the gap.
+
+The separator-free class is not merely clean but comfortable, which is a different statement and
+the one worth having. Taking the density of states at a root as the margin, since a violation is
+exactly a zero there, the median over $419$ graphs is stable at $0.15$ from $n=10$ to $n=20$ and
+if anything rises; the \emph{minimum} falls like $1/n$, but the number of roots sampled doubles
+over that range and a minimum over more draws is smaller for that reason alone, the observed
+$4.19\times10^{-2}$ against the $4.04\times10^{-2}$ that sample size predicts
+(\texttt{code/D3margin.py}). So Conjecture~\ref{conj:mindeg3} is not surviving these tests by a
+hair.
+
+What none of it supplies is an argument. Each engine was built against the previous failure mode
+and each came back clean, which raises confidence and yields nothing proof-shaped. Every
+counterexample known has a separation, and the evidence is strongest exactly where separations are
+absent; turning that observation into a theorem is the open problem, and it is not one more search.
+
 \subsection{A second conjecture falls with it}\label{sec:xu}
 
 The counterexample refutes more than the conjecture it was built for. Zili Xu (personal

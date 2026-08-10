@@ -116,6 +116,49 @@ def run(name, record=False):
 CITE = re.compile(r'\\cite[tp]?\s*(?:\[[^\]]*\])*\s*\{([^}]+)\}')
 
 
+NUM = re.compile(r'(?<![\\A-Za-z0-9.])(\d+(?:\\,\d\d\d)*(?:\.\d+)?)(?![0-9])')
+SCRIPT_TT = re.compile(r'\\texttt\{code/([A-Za-z0-9_\\]+)\.py\}')
+
+
+def _nums(text):
+    """Decimal numbers in a string, LaTeX thin-space separators removed."""
+    out = []
+    for t in NUM.findall(text):
+        try:
+            out.append((t, float(t.replace('\\,', ''))))
+        except ValueError:
+            pass
+    return out
+
+
+def quoted_numbers():
+    """Figures a paper states beside a script citation, checked against that script's output.
+
+    A snapshot proves a script still produces what it did. It does not prove the PAPER quotes it
+    correctly, which is the other half and the one a reader depends on. Advisory: a sentence
+    carrying a citation may also carry numbers from elsewhere, so an unmatched figure is a prompt
+    to look rather than a proven error.
+    """
+    findings = []
+    for tex in sorted(glob.glob(os.path.join(ROOT, '*_note', '*.tex'))):
+        src = open(tex, encoding='utf-8', errors='replace').read()
+        paper = os.path.basename(os.path.dirname(tex))
+        for m in SCRIPT_TT.finditer(src):
+            name = m.group(1).replace('\\_', '_')
+            snap = os.path.join(SNAPS, name + '.txt')
+            if not os.path.exists(snap):
+                continue
+            outnums = [v for _, v in _nums(open(snap).read())]
+            lo = src.rfind('.', 0, max(0, m.start() - 400))
+            hi = src.find('.', m.end())
+            sentence = src[lo + 1: hi if hi > 0 else m.end() + 200]
+            for (txt, val) in _nums(sentence):
+                tol = 0.5 * 10 ** (-len(txt.split('.')[1])) if '.' in txt else 0.5
+                if not any(abs(o - val) <= tol for o in outnums):
+                    findings.append((paper, name, txt))
+    return findings
+
+
 def bibliography_report():
     r"""Uncited \bibitem entries, and \cite keys with no entry, per paper."""
     rows = []
@@ -161,6 +204,23 @@ def main():
             if detail:
                 print(f"      {detail}")
         return 1
+    print("\n" + "=" * 78)
+    print("QUOTED NUMBERS (advisory): figures a paper states beside a script citation that do")
+    print("not appear in that script's recorded output, allowing for rounding.")
+    qn = quoted_numbers()
+    if qn:
+        seen = set()
+        for (paper, name, txt) in qn:
+            key = (paper, name, txt)
+            if key in seen:
+                continue
+            seen.add(key)
+            print(f"  {paper.replace('_note',''):<10} code/{name}.py  quotes {txt}")
+        print(f"  {len(seen)} unmatched. Each is a prompt to check, not a proven error: a")
+        print("  sentence carrying a citation may also carry numbers from elsewhere.")
+    else:
+        print("  none: every figure quoted beside a citation appears in that script's output.")
+
     print("\n" + "=" * 78)
     print("BIBLIOGRAPHIES")
     bibbad = False

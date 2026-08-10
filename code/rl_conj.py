@@ -152,6 +152,85 @@ def xu_bound(frames, c, k=2):
     return sigma * v, eta, sigma
 
 
+
+def anisotropic_tight(m, q, a, rng):
+    """2q vectors of deliberately unequal norms, forced into a tight frame so sum A_k = a I,
+    then paired into rank-2 A_k. Anisotropy is the worst eigenvalue ratio within a block."""
+    from scipy.linalg import sqrtm
+    B = rng.standard_normal((m, 2 * q))
+    B = B * np.exp(rng.uniform(-0.9, 0.9, size=2 * q))
+    B = math.sqrt(a) * np.linalg.inv(np.real(sqrtm(B @ B.T))) @ B
+    pairs = [B[:, 2 * k:2 * k + 2] for k in range(q)]
+    As = [P @ P.T for P in pairs]
+    tight = float(np.abs(sum(As) - a * np.eye(m)).max())
+    aniso = max(float(np.linalg.eigvalsh(A)[-1] / max(np.linalg.eigvalsh(A)[-2], 1e-12))
+                for A in As)
+    return pairs, As, tight, aniso
+
+
+def section3():
+    """The invariance holds for ANISOTROPIC A_k once sum A_k = aI, and fails without it."""
+    print("\nSECTION 3. Anisotropy is harmless; the tightness is what carries the identity.\n")
+    print(f"{'m':>4}{'q':>4}{'a':>4}{'tightness':>12}{'anisotropy':>12}{'max|mu-a - F_A|':>18}")
+    worst_aniso = 0.0
+    for (m, q, a) in ((4, 6, 3.0), (4, 8, 4.0), (6, 9, 3.0)):
+        pairs, As, tight, aniso = anisotropic_tight(m, q, a, rng)
+        worst_aniso = max(worst_aniso, aniso)
+        M = [1.0] + [0.0] * (m // 2)
+        for r in range(1, m // 2 + 1):
+            tot = 0.0
+            for T in itertools.combinations(range(len(pairs)), r):
+                C = np.hstack([pairs[k] for k in T])
+                d = float(np.linalg.det(C.T @ C))
+                if d > 0.0:
+                    tot += d
+            M[r] = tot
+        coef = [0.0] * (m + 1)
+        for r in range(m // 2 + 1):
+            coef[2 * r] = ((-1) ** r) * M[r]
+        xr = np.sort(np.roots(coef).real)
+        mu = np.sort(np.roots(mixed_char_poly(As)).real) - a
+        print(f"{m:>4}{q:>4}{int(a):>4}{tight:>12.1e}{aniso:>12.2f}"
+              f"{float(np.max(np.abs(mu - xr))):>18.3e}")
+    print(f"  worst anisotropy tested: {worst_aniso:.1f}")
+
+
+def section4():
+    """The two constants: Adj(A) = aI and sum A_k = a'I are different, and a' > a."""
+    from scipy.optimize import minimize
+    print("\nSECTION 4. The recentring constant is the TIGHT one, and it is not the Adj one.\n")
+    print(f"{'m':>4}{'a (Adj)':>10}{'q':>5}{'|sum A - a\'I|^2':>18}{'a-prime':>10}{'a\'-a':>9}")
+    for (m, a) in ((4, 3.0), (6, 3.0), (6, 4.0)):
+        fam = weighted_tight(m, 4 * m * (m + 1) // 2, a)
+        if fam is None:
+            print(f"{m:>4}{a:>10.0f}   no family"); continue
+        fr, c = fam
+        q = len(fr)
+
+        def assemble(z):
+            s_ = np.exp(z[:q]); th = z[q:2 * q]; ap = z[2 * q]
+            S = np.zeros((m, m))
+            for k in range(q):
+                l1 = s_[k]; l2 = c[k] / l1
+                ct, st = math.cos(th[k]), math.sin(th[k])
+                u = fr[k][:, 0] * ct + fr[k][:, 1] * st
+                v = -fr[k][:, 0] * st + fr[k][:, 1] * ct
+                S += l1 * np.outer(u, u) + l2 * np.outer(v, v)
+            return S - ap * np.eye(m)
+
+        f = lambda z: float((assemble(z) ** 2).sum())
+        best = None
+        for _ in range(30):
+            z0 = np.concatenate([0.5 * rng.standard_normal(q) + 0.5 * np.log(c),
+                                 rng.uniform(0, math.pi, q), [a]])
+            r_ = minimize(f, z0, method='L-BFGS-B',
+                          options={'maxiter': 4000, 'ftol': 1e-18, 'gtol': 1e-14})
+            if best is None or r_.fun < best.fun:
+                best = r_
+        ap = best.x[2 * q]
+        print(f"{m:>4}{a:>10.0f}{q:>5}{best.fun:>18.2e}{ap:>10.4f}{ap - a:>9.4f}")
+
+
 def main():
     print("SECTION 1. The correspondence F_A(x) = mu(x+a), with A_k tight and e_2(A_k) the\nwedge weight.\n")
     print("Coordinate families: M_r must be the matching numbers, and mu(y)-a the F_A roots.")
@@ -224,6 +303,9 @@ def main():
             continue
         print(f"{m:>4}{int(a):>4}{len(frames):>8}{float(np.max(c)):>9.4f}{eta:>8.4f}"
               f"{bnd:>10.4f}{r16:>14.4f}{str(bnd > r16):>9}")
+
+    section3()
+    section4()
 
     print("\n  If the weighted bound is uniformly weaker, weights cannot break the conjecture")
     print("  and the sharp instance is the unweighted projection case, which is what")
