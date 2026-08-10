@@ -56,7 +56,15 @@ def F_dense(Bs, m):
 
 def Theta_of(B):
     """Theta_k = e_2(A_k) * P_{range A_k}; also equals the matrix of
-    v |-> ||iota_v omega_k||^2."""
+    v |-> ||iota_v omega_k||^2.
+
+    Callers pass either an (m,2) array or a list of two columns, so coerce: hl_Wspec.py builds
+    its families as lists and crashed here on B.shape, which made a script the note cites
+    unrunnable.
+    """
+    B = np.asarray(B, dtype=float)
+    if B.ndim == 1:
+        B = B.reshape(-1, 1)
     m = B.shape[0]
     # omega = b1 ^ b2 ;  M_omega v = <v,b1>b2 - <v,b2>b1  ->  Gram form
     b1, b2 = B[:, 0], B[:, 1]

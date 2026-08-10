@@ -145,8 +145,8 @@ def main():
         mom_ok.append((name, mo))
 
     for s in SEEDS:
-        fam = hp.random_plane_family(6, 3.0, seed=s)
-        if fam is None:
+        fam, res = hp.random_plane_family(6, 3.0, seed=s)
+        if fam is None or res > 1e-9:
             continue
         ok, mo = report(f"random plane family s={s}", fam, 6)
         ok_all &= ok
