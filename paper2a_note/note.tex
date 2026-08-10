@@ -48,6 +48,19 @@ The biregular case, which is where the conjecture survives, is the subject of th
 paper \cite{PartII}.
 \end{abstract}
 
+\medskip
+\noindent\textbf{2020 Mathematics Subject Classification.} Primary 05C31; Secondary 05C50,
+05C70, 68V20.
+
+\noindent\textbf{Keywords.} matching polynomial, $d$-matching polynomial, universal cover,
+spectral gap, graph covering, interlacing families, Lean~4, formalization.
+
+\noindent\textbf{Code and data availability.} All computations, the Lean~4/Mathlib sources, and
+the scripts backing every numerical statement are in the \texttt{rama-notes} repository. Each
+numerical claim names the script that produced it; every named script is executed and its output
+compared against a recorded baseline by \texttt{code/cite\_check.py}, and every Lean declaration
+cited is checked for its axiom base by \texttt{code/audit\_papers.py}.
+
 \paragraph{Status conventions.} Claims here are of three kinds, and the text says which each time
 rather than leaving it to the reader. A result described as \emph{formalized}, or cited by a Lean
 declaration name, is machine-checked in Lean~4/Mathlib: the sources are in \texttt{RamaLean/} of
@@ -141,6 +154,30 @@ even polynomial for every $r$; at $r=2$ it is the classical matching
 polynomial $2T_n(x/2)$ of $C_n$, consistent with Godsil--Gutman
 \cite{GG}.)
 \end{corollary}
+
+\subsection*{What this paper does}
+
+The closed form above is the starting point rather than the subject. Read as a statement about
+where the roots of $\mu_{d,G}$ sit, it says that for the cycle they land exactly in
+$\operatorname{spec}(T)$, the spectrum of the universal cover, and not merely in the interval
+$[-\rho,\rho]$ that Hall--Puder--Sawin guarantee. Those differ whenever $T$ has a spectral gap,
+and the question of whether the stronger statement holds in general is the one this paper is
+about.
+
+The order is as follows. \S\ref{sec:uni} proves the stronger statement for every graph of first
+Betti number one and every $d$, by the closed form. \S\ref{sec:conj} states it as a conjecture for
+all graphs, records what it would contain --- the matching-polynomial form of Question~6.3 of
+\cite{HPS}, and Problem~1 of Song, Fan and Miao --- and proves it in two further cases, for
+subdivisions and for complete bipartite graphs. \S\ref{sec:hallce} is the counterexample, due to
+Chris Hall, which shows the conjecture is false: we verify his certificate, machine-check its
+algebra, and extend his graph to a two-parameter family in which the pendant leaves turn out to be
+essential.
+
+The rest of \S\ref{sec:hallce} is the repair. The mechanism behind the counterexample is a
+\emph{separation}, not low connectivity as the examples first suggest, and the sharp hypothesis is
+a local one: minimum degree three, with two failing and three therefore exact. That conjecture,
+$\mathrm{D}3$, is where the subject now stands. The biregular case, which survives the refutation
+and is where the phenomenon actually lives, is the companion paper \cite{PartII}.
 
 \section{Proof}
 

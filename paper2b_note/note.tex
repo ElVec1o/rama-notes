@@ -503,6 +503,15 @@ It uses the framework of Part~I throughout; nothing in Part~I depends on it, exc
 
 \section{A counting refinement}\label{sec:gapcount}
 
+GAPCOUNT is refuted along with the conjecture it refines, and this section is kept because most
+of it does not depend on GAPCOUNT being true. What survives, and is what the section is now for:
+the implication GAPCOUNT $\Rightarrow$ localization and the boundary conditions, machine-checked;
+BAND, which is a theorem about the abelian shadow and independent of either conjecture; the
+settled cases at feedback vertex number one and, conditionally, two; and the two barriers, which
+close routes that would otherwise look open. The sweeps are retained as a record of where the
+failure is \emph{not} visible. A reader interested only in the biregular case may go straight to
+\S\ref{sec:bireg} and the operator form.
+
 Conjecture~\ref{conj:gap} asserts a non-vanishing, which offers no handle. This section
 records a strictly stronger statement that equates two integers, the cases it settles, and
 the two barriers that close off the obvious routes to the rest. Labels are stated
@@ -525,7 +534,7 @@ $x$, with multiplicity, equals $\kappa(x)$.
 
 Conjecture~\ref{conj:gapcount} implies Conjecture~\ref{conj:gap} at $d=1$: $\kappa$ is
 constant across a gap while the root count jumps at any root, so a gap contains none.
-By Theorem~\cite{HallCE} the implication now runs the other way and
+By the counterexample of \cite{HallCE} the implication now runs the other way and
 Conjecture~\ref{conj:gapcount} is false as well, on the same graph: the root $\sqrt5$
 crosses inside a gap on which $\kappa$ is constant. We state it as it was, because the
 implication and the boundary conditions are what the sweeps below actually test, and
@@ -725,6 +734,10 @@ Budan--Fourier, which is exact for a real-rooted polynomial, and $\kappa$ by the
 equations. Over $55\,131$ graphs and $99\,487$ gap points there is no failure of
 Conjecture~\ref{conj:gap} and none of Conjecture~\ref{conj:gapcount}, no run is discarded by
 the validity gate, and $\kappa$ is never further than $0.205$ from an integer.
+That range could not have found the counterexample and should not be read as having looked:
+Hall's graph has $41$ vertices and feedback vertex number five, so it lies outside the sweep in
+both parameters. What the sweep establishes is that the failure is not visible at small size,
+which is why it went unnoticed, and not that it is rare.
 
 The measurement also shows what an estimate would have to exploit. The wrong-parity class
 is not merely small in measure, it is suppressed quadratically in integral: at two triangles
@@ -2866,6 +2879,8 @@ $(\mu_G,\mu_{G-V(C)})$, whose second entry is a genuine polynomial recording
 the attached trees rather than a monomial, together with the covering
 interpretation that makes the recurrence a statement about $\mu_{d,G}$.
 
+
+\appendix
 
 \section{The formalization}
 
