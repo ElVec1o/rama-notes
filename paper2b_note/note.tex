@@ -468,8 +468,9 @@ finite backward recursion, and Theorem~\ref{thm:biregclass} holds verbatim in th
 
 Solving numerically, the condition holds throughout the gap for $(d,q,r)$ equal to $(3,6,4)$,
 $(3,9,4)$, $(3,12,4)$, $(4,8,4)$, $(4,12,4)$ and $(5,10,4)$, and to $69\%$ of the gap for
-$(3,6,5)$ (\texttt{code/depthind.py}). This is the first proof of the inner end of
-\eqref{eq:twosided} for a nontrivial class.
+$(3,6,5)$ (\texttt{code/depthind.py}); \S\ref{sec:pervertex} removes that last restriction by
+bounding each child at its own count rather than at the worst one. This is the first proof of the
+inner end of \eqref{eq:twosided} for a nontrivial class.
 
 This has to be reconciled with \S\ref{sec:must}, which rules out cavity recursions. The
 obstruction there is that every $b$-regular bipartite graph is an induced subgraph of some
@@ -485,14 +486,90 @@ obstruction is exactly what the hypothesis excludes. The condition $\Delta\ge1$ 
 a technical convenience; it is what \S\ref{sec:must} forces, and it is the reason the route
 reaches a nontrivial class rather than nothing or everything.
 
-Two limits are known. For $(3,6,5)$ the certificate is saturated at the point it reaches, both
-bounds being attained with ratio $1.0000$, so no choice of constants does better
-(\texttt{saturation\_blocks\_improvement}); the only other counting fact available, the
-parent-to-child drop, extends the range by nothing, since $q-r=1$ there makes it weaker than the
-depth bound (\texttt{code/combined.py}). And the sign separation is a consequence of
-bipartiteness: on wheels no natural class determines the sign of a path-tree ratio, endpoint
-degree, depth parity and child count each being mixed (\texttt{code/d3ratio.py}), so the
-certificate does not transfer to Conjecture~\ref{conj:mindeg3} in general.
+\subsection{The bound is per-vertex, and the saturation is only of constants}\label{sec:pervertex}
+
+The limit at $(3,6,5)$ is real but narrower than it looks. What is saturated there is the
+\emph{uniform} certificate: both bounds are attained with ratio $1.0000$, so no choice of
+constants does better (\texttt{saturation\_blocks\_improvement}). The refinement below is not a
+choice of constants, and it escapes for that reason.
+
+The requirement \eqref{eq:closure} caps every child by the same $\kappa$, evaluated at the worst
+child count $d-1$. But Proposition~\ref{prop:ratiosteps}(i) already gives a left-type vertex with
+$j$ children the sharper bound $\kappa(j)=\lambda+j/m$, and a right-type vertex with very few
+children sits where the path tree is nearly exhausted, so its children are child-poor too and
+carry a much smaller $\kappa$. Instantiating the bound at each child's own count rather than
+globally, the requirement at a right-type vertex becomes
+\[
+   k\;>\;\lambda\,\kappa(j_{\max}),\qquad j_{\max}=\max_i j_i ,
+\]
+which is strictly weaker whenever $j_{\max}<d-1$ (\texttt{RatioRoute.refined\_weaker},
+\texttt{right\_step\_refined}). Measured on the path trees, it fails nowhere, including at the
+two $(3,6,5)$ points where the uniform requirement fails at eight vertices
+(\texttt{code/twolevel.py}). The saturation result is untouched: it says the constants cannot be
+improved, and this does not improve them.
+
+Substituting Lemma~\ref{lem:blocking} for $j_{\max}$ and asking the requirement for every
+admissible $k$ removes the path tree altogether. With $\Delta=q-r$ it reduces, by one
+cancellation, to two inequalities:
+
+\begin{theorem}\label{thm:structclose}
+If $\lambda<m$ and $\lambda^2<\Delta$, then $\lambda\,\kappa(j)<k$ for every $k\ge\Delta$ and
+every $j\le k-\Delta$.
+\end{theorem}
+
+\begin{proof}
+$\Delta(m-\lambda)>\lambda(\lambda m-\Delta)$ is equivalent to $\Delta>\lambda^2$ after
+cancelling $m$; since $m>\lambda$ and $k\ge\Delta$ the left side only grows with $k$
+(\texttt{RatioRoute.structural\_closure}).
+\end{proof}
+
+Neither hypothesis mentions a path tree, a family or a graph. The second is the binding case
+already noted, where the children are leaves of ratio exactly $\lambda$; the first is what the
+per-vertex bound buys. Over $354$ parameter points $(d,q,r)$ that are \emph{realizable} --- a
+$(d,q)$-biregular graph with $r$ vertices of degree $q$ needs $qr/d$ to be a positive integer ---
+the pair holds at $326$, or $92.1\%$, failing only as $\lambda$ approaches the gap edge
+(\texttt{code/universal\_close.py}). The elementary sharpening $k_u\le\min(d-1,k-\Delta)$, using
+that a child lies in $L$ and has degree $d$, gains nothing at any of them
+(\texttt{code/sharp\_close.py}): the obstruction is the two conditions themselves and not the
+counting.
+
+\subsection{The path tree inherits the gap}\label{sec:inherit}
+
+That obstruction is the invariant's and not the method's, and the reason is worth recording
+because it says the route is not exhausted. The recursion computes $F_v=\mu_{T_v}/\mu_{T_v-v}$,
+so ``no $F$ vanishes'' is exactly $\mu_P(\lambda)\ne0$ --- strictly stronger than
+$\mu_G(\lambda)\ne0$, since $\mu_P$ carries its own roots as well as those of $\mu_G$. Were
+$\mu_P$ to vanish somewhere in the gap, no certificate of this kind could succeed there,
+whatever invariant it used.
+
+It does not. On a tree $\mu_P=\prod_vF_v$ and the $F_v$ are the pivots of the $LDL$ factorization
+of $\lambda I-A_P$, so by Sylvester's law the number of negative $F_v$ counts the eigenvalues of
+$P$ above $\lambda$; comparing the count at the two ends of the gap counts the eigenvalues
+between, in time linear in $|P|$ and with no matrix. Over four $(d,q,r)$ families that are
+\emph{not} complete bipartite, with path trees of $3457$, $17241$, $22402$ and $291429$ vertices,
+the count is equal at both ends in every case: the path tree has no eigenvalue in the gap
+(\texttt{code/pathtree\_inertia.py}). This is `HEURISTIC', four families, and it is stronger than
+Godsil's divisibility, which places the roots of $\mu_G$ among those of $\mu_P$ and says nothing
+about where the others go.
+
+So the statement the route proves is true throughout the gap, including where the sign-alternating
+certificate provably cannot hold, and what fails at the edge is the invariant. Measuring
+$\min_v|F_v|$ across the gap names the replacement: it equals $\lambda$ exactly, attained at a
+leaf, at every fraction tested in two of three families, falling to $0.83\lambda$ and
+$0.51\lambda$ only at $(3,6,5)$ near the edge (\texttt{code/minF\_scan.py}). The candidate is
+therefore $|F_v|\ge\lambda$, which is sign-free and tight.
+
+It does not yet propagate, and the obstruction is now one level down rather than at the level of
+the bounds. From $F_v=\lambda-\sum_u1/F_u$ a modulus bound alone gives nothing, because the
+$1/F_u$ can cancel. Where the children share a sign they cannot, and the bound goes through; near
+the gap edge the signs mix, which is exactly where $\min_v|F_v|$ falls. \textbf{What a proof of
+the inner end needs is control of sign mixing among the children of a single vertex, not a
+sharper bound}, and that is the form in which we leave it.
+
+Finally, the sign separation is a consequence of bipartiteness: on wheels no natural class
+determines the sign of a path-tree ratio, endpoint degree, depth parity and child count each
+being mixed (\texttt{code/d3ratio.py}), so the certificate does not transfer to
+Conjecture~\ref{conj:mindeg3} in general.
 
 
 The biregular case is what survives, and \S\ref{sec:ratio} settles it on a nontrivial class by
