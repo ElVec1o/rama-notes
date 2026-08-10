@@ -2661,23 +2661,17 @@ whenever $m\le8$ and whenever $m\le16+\bigl(\sum_kc_k^2\bigr)/a^2$, the latter r
 known two-moment bound for projections and extending it to all weighted plane families. The
 general case is not closed. A reader who wants only that summary may skip to \S\ref{sec:rank}.
 
-What the problem is, at $b=2$, can be said exactly. The operator
-$\operatorname{Adj}(A):=\sum_k e_2(A_k)P_{\operatorname{range}A_k}$ and the coefficients
-$M_r=\sum_{|T|=r}\|\omega_T\|^2$ depend on the family only through the pairs
-$\bigl(e_2(A_k),\operatorname{range}A_k\bigr)$. So the class they define is the class of
-weighted $2$-plane families
-$\{(c_k,V_k):c_k\ge0,\ \sum_kc_kP_{V_k}\preceq aI\}$, and $F_A$ is the matching
+What the problem is, at $b=2$, can be said exactly. Both $\mu(x+a)$ and the operator
+$\operatorname{Adj}(A):=\sum_k e_2(A_k)P_{\operatorname{range}A_k}$ depend on the
+family only through the pairs $\bigl(e_2(A_k),\operatorname{range}A_k\bigr)$. So the
+class is the class of weighted $2$-plane families
+$\{(c_k,V_k):c_k\ge0,\ \sum_kc_kP_{V_k}\preceq aI\}$, and $\mu(x+a)$ is the matching
 polynomial of such a family; for coordinate planes it is the ordinary weighted
-matching polynomial.
-
-That invariance belongs to the wedge form and not to $\mu[\,\cdot\,]$: two families sharing the
-pairs $\bigl(e_2(A_k),\operatorname{range}A_k\bigr)$ but with anisotropic $A_k$ have different
-mixed characteristic polynomials, the roots differing by order unity rather than by order the
-tolerance (\texttt{code/rl\_conj.py}). On projections the two agree, $e_2\equiv1$ leaving no
-freedom, which is the identity $\nu_G=\mu[P_1,\dots,P_q]$ above and is verified there to $10^{-13}$;
-the plane class is therefore the wedge-form generalisation of the matching polynomial, not the
-$\mu[\,\cdot\,]$ one, and results about mixed characteristic polynomials do not transfer to it
-automatically.
+matching polynomial. The invariance is worth stating carefully, since it holds within the tight
+class and not outside it: with $\sum_kA_k=aI$ imposed, families sharing the pairs
+$\bigl(e_2(A_k),\operatorname{range}A_k\bigr)$ have the same $\mu(x+a)$ even when the $A_k$ are
+strongly anisotropic, verified to $10^{-13}$ at eigenvalue ratios up to $49$
+(\texttt{code/rl\_conj.py}); drop the tightness and the recentring by $a$ has no meaning.
 
 The band being sought is the sharp weighted Heilmann--Lieb constant for plane families, and that
 constant is not $2\sqrt a$. On projections the conjectural sharp value is $2\sqrt{a-1}$, the

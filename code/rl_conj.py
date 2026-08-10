@@ -14,35 +14,36 @@ with sum P_i = a I and b/a <= b-1,
 which at b = 2 is a + 2 sqrt(a-1), the upper edge of the (a,2)-biregular tree band and STRICTLY
 STRONGER than the a + 2 sqrt(a) our note takes as its target.
 
-Talking to Xu about this requires knowing exactly where our F_A and his mu are the same object.
-The answer is not uniform across our class, and pinning down the boundary is what this script is
-for. Section 1 measures, and the result is:
+Talking to Xu about this requires knowing where our F_A is his mu. It is, on the whole class,
+but only under the tightness the note assumes, and getting that wrong is easy.
 
-  UNWEIGHTED (coordinate) FAMILIES: the same object, to machine precision. With A_e = P_e the
-  edge projections, the M_r come out equal to the matching numbers of the graph and the MSS
-  roots reproduce the F_A roots shifted by a, at 1e-13 to 1e-8. So on this subclass our
-  polynomial IS the MSS mixed characteristic polynomial, our band question IS Xu's largest-root
-  question, and code/adversarial.py is already an adversarial search against (**).
+THE CORRESPONDENCE, MEASURED. The note has F_A(x) = mu(x + a) with F_A = x^m - M_1 x^{m-2} + ...,
+where M_r is the wedge form sum_{|T|=r} ||omega_T||^2 built from A_k = b_k1 b_k1' + b_k2 b_k2'
+and omega_k = b_k1 ^ b_k2, so that ||omega_k||^2 = e_2(A_k). The identity holds when
 
-  WEIGHTED FAMILIES: NOT the same object, under either naive scaling. Neither A_k = c_k P_k nor
-  A_k = sqrt(c_k) P_k reproduces F_A; the root discrepancies are 1e-1, not 1e-8. The two
-  candidates are the only natural ones -- e_2(A_k) = c_k, which the note's
-  Adj(A) = sum_k e_2(A_k) P_{range A_k} asks for, forces sqrt(c_k) P_k, while mu being
-  multilinear in the A_k forces the wedge form's degree-one dependence on c_k, hence c_k P_k --
-  and they disagree with each other and with F_A. So the note's weighted plane class is a
-  genuine extension beyond MSS's mixed characteristic polynomial, not a reparameterization of
-  it, and Xu's conjectures do not transfer to it for free.
+    sum_k A_k = a I,
 
-Section 2 unwinds (*) into our normalization and checks the unwinding by reproducing (**)
-exactly on unweighted projections, which is the case where the correspondence holds.
+and it is that constraint, not idempotency, that carries it. Section 1 verifies the identity to
+1e-13 on coordinate families (where the M_r also come out equal to the graph's matching numbers)
+and to 1e-13 on tight families whose A_k are strongly ANISOTROPIC, at eigenvalue ratios up to 49.
+So mu(x+a) really does depend on the family only through the pairs (e_2(A_k), range A_k), as the
+note claims, and the plane class is well defined.
+
+TWO WAYS TO GET THIS WRONG, BOTH OF WHICH I DID FIRST.
+
+  Dropping the tightness. Comparing two families with the same wedge data but no constraint makes
+  the recentring by `a` meaningless, and the roots then disagree by order unity. That is not
+  evidence against the invariance; it is a comparison of two different recentrings.
+
+  Mismatching the weights. For a weighted family with sum_k c_k P_k = a I and P_k a projection,
+  the tight MSS input is A_k = c_k P_k, NOT sqrt(c_k) P_k -- and then e_2(A_k) = c_k^2, so the
+  wedge weights are c_k^2 rather than c_k. Feeding c_k to the wedge form while feeding c_k P_k or
+  sqrt(c_k) P_k to mu compares two different families and disagrees at 1e-1.
 
 A PREDICTION WAS WITHDRAWN HERE. P18 was frozen as "y_max <= 4 c_max (a - c_max) for every
-weighted family with c_max <= a/2", read off from the assumption that the MSS inputs were
-c_k P_k and that Conjecture 1.4 therefore applied verbatim to our weighted class. Section 1
-shows that assumption is false, so the statement was never an instance of Conjecture 1.4 and
-could not have refuted it. P18 is withdrawn as MALFORMED, not refuted: it was a prediction
-about a correspondence that does not exist. The sharp testable instance is the unweighted
-projection case, which code/adversarial.py already searches against
+weighted family with c_max <= a/2", intended to refute Xu's Conjecture 1.4. It rested on the
+second error above. P18 is withdrawn as MALFORMED, not refuted. The sharp testable instance is
+the unweighted projection case, which code/adversarial.py and code/rl_push.py search against
 band(a,b) = [(sqrt(a-1)-sqrt(b-1))^2, (sqrt(a-1)+sqrt(b-1))^2].
 """
 
@@ -87,15 +88,15 @@ def FA_roots(frames, c, m):
     return np.sort(np.roots(coef).real), M
 
 
-def mss_roots(frames, c, a, scaling='sqrt'):
+def mss_roots(frames, c, a):
     """Roots of the MSS mixed characteristic polynomial, shifted: mu(y) -> y - a.
 
-    Two candidate inputs. `sqrt` uses sqrt(c_k) P_k, which makes e_2(A_k) = c_k as the note's
-    Adj(A) = sum_k e_2(A_k) P_k requires. `lin` uses c_k P_k, which is what the wedge form's
-    degree-one dependence on each c_k would require, mu being multilinear in the A_k.
+    The tight input is A_k = c_k P_k, since sum_k c_k P_k = a I is the constraint the recentring
+    by `a` refers to. Its wedge weight is then e_2(A_k) = c_k^2, which is what FA_roots must be
+    fed -- not c_k. For coordinate families c_k = 1 and the distinction is invisible, which is
+    exactly why it survives a careless check.
     """
-    f = math.sqrt if scaling == 'sqrt' else (lambda t: t)
-    As = [f(ci) * (B @ B.T) for ci, B in zip(c, frames)]
+    As = [ci * (B @ B.T) for ci, B in zip(c, frames)]
     return np.sort(np.roots(mixed_char_poly(As)).real) - a
 
 
@@ -152,7 +153,7 @@ def xu_bound(frames, c, k=2):
 
 
 def main():
-    print("SECTION 1. The correspondence F_A(x) = mu(x+a) with MSS inputs sqrt(c_k) P_k.\n")
+    print("SECTION 1. The correspondence F_A(x) = mu(x+a), with A_k tight and e_2(A_k) the\nwedge weight.\n")
     print("Coordinate families: M_r must be the matching numbers, and mu(y)-a the F_A roots.")
     print(f"{'m':>4}{'a':>4}{'M_r = m(G,r)':>14}{'max|mu-a - F_A|':>18}{'max|x|':>9}"
           f"{'2sqrt(a-1)':>12}{'ratio':>8}")
@@ -169,9 +170,9 @@ def main():
         print(f"{m:>4}{a:>4}{str(same):>14}{d:>18.2e}{xmax:>9.4f}{edge:>12.4f}"
               f"{xmax/edge:>8.4f}")
 
-    print("\nWeighted tight families: wedge route vs direct MSS subset formula.")
-    print("(The subset formula is 2^q, so this runs where the NNLS support stays small.)")
-    print(f"{'m':>4}{'a':>4}{'|supp|':>8}{'sqrt(c)P: err':>15}{'cP: err':>12}{'match':>8}")
+    print("\nWeighted tight families, with the weights paired correctly:")
+    print("(A_k = c_k P_k is the tight input; its wedge weight is e_2(A_k) = c_k^2.)")
+    print(f"{'m':>4}{'a':>4}{'|supp|':>8}{'e_2 = c^2':>12}{'wrong: e_2 = c':>16}")
     ntested = 0
     wok = True
     for (m, a) in ((4, 3.0), (4, 4.0), (4, 5.0), (6, 3.0), (6, 4.0)):
@@ -183,16 +184,15 @@ def main():
                 break
         if got is None:
             print(f"{m:>4}{int(a):>4}   no tight family with support <= 18"); continue
-        frames, c = got
-        xr, _ = FA_roots(frames, c, m)
-        d1 = float(np.max(np.abs(mss_roots(frames, c, a, 'sqrt') - xr)))
-        d2 = float(np.max(np.abs(mss_roots(frames, c, a, 'lin') - xr)))
-        hit = 'sqrt' if d1 < 1e-8 else ('lin' if d2 < 1e-8 else 'NEITHER')
-        wok = wok and hit != 'NEITHER'
+        mu = mss_roots(got[0], got[1], a)
+        right = float(np.max(np.abs(mu - FA_roots(got[0], np.asarray(got[1]) ** 2, m)[0])))
+        wrong = float(np.max(np.abs(mu - FA_roots(got[0], np.asarray(got[1]), m)[0])))
+        wok = wok and right < 1e-8
         ntested += 1
-        print(f"{m:>4}{int(a):>4}{len(frames):>8}{d1:>15.2e}{d2:>12.2e}{hit:>8}")
+        print(f"{m:>4}{int(a):>4}{len(got[0]):>8}{right:>12.2e}{wrong:>16.2e}")
+    print(f"\n  weighted correspondence with e_2 = c^2: {wok}")
+
     print(f"\n  coordinate correspondence verified: {okall}")
-    print(f"  weighted correspondence via either naive scaling: {wok}")
     okall = okall and ntested >= 2
     print(f"\n  correspondence verified: {okall}")
     if not okall:
