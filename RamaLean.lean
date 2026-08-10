@@ -91,3 +91,4 @@ import RamaLean.XuBound
 import RamaLean.SpectralAtom
 import RamaLean.GluedSearch
 import RamaLean.PlaneBounds
+import RamaLean.XuAdditiveProduct

@@ -25,6 +25,13 @@ depend on the machine and not on the mathematics. Scripts that exceed the budget
 snapshotted this way and are reported as RUNNING; that is a real gap and is stated rather than
 papered over.
 
+It also checks BIBLIOGRAPHIES, for the same reason. The split handed each paper the monolith's
+37 references; 2a cited 16 of them and 2b cited 28, and six were cited by neither. A manual
+\\begin{thebibliography} produces no warning for an uncited \\bibitem, so both papers were a
+third dead weight with nothing in the toolchain to say so. Note the citation pattern must allow
+the optional-argument form: a first version matched \\cite{...} but not \\cite[Conjecture 1]{RL},
+and would have deleted a live reference.
+
   OK        exited zero and its output matches the snapshot (or none is recorded yet)
   DRIFT     exited zero but its output CHANGED against the snapshot: the paper may now quote
             figures the code no longer produces
@@ -106,6 +113,29 @@ def run(name, record=False):
     return 'DRIFT', 'lengths differ'
 
 
+CITE = re.compile(r'\\cite[tp]?\s*(?:\[[^\]]*\])*\s*\{([^}]+)\}')
+
+
+def bibliography_report():
+    r"""Uncited \bibitem entries, and \cite keys with no entry, per paper."""
+    rows = []
+    for tex in sorted(glob.glob(os.path.join(ROOT, '*_note', '*.tex'))):
+        s = open(tex, encoding='utf-8', errors='replace').read()
+        if '\\begin{thebibliography}' not in s:
+            continue
+        i = s.index('\\begin{thebibliography}')
+        j = s.index('\\end{thebibliography}')
+        defined = re.findall(r'\\bibitem\{([^}]+)\}', s[i:j])
+        cited = set()
+        for c in CITE.findall(s[:i]):
+            cited |= {x.strip() for x in c.split(',')}
+        name = os.path.basename(os.path.dirname(tex))
+        rows.append((name, len(defined),
+                     sorted(k for k in defined if k not in cited),
+                     sorted(cited - set(defined))))
+    return rows
+
+
 def main():
     record = '--snapshot' in sys.argv
     scripts = cited_scripts()
@@ -131,6 +161,19 @@ def main():
             if detail:
                 print(f"      {detail}")
         return 1
+    print("\n" + "=" * 78)
+    print("BIBLIOGRAPHIES")
+    bibbad = False
+    for (name, n, uncited, undefined) in bibliography_report():
+        flag = ''
+        if uncited or undefined:
+            bibbad = True
+            flag = f"   uncited={uncited or '-'}  undefined={undefined or '-'}"
+        print(f"  {name:<18} {n:>3} entries{flag}")
+    if bibbad:
+        print("  An uncited bibitem produces no warning anywhere in the toolchain.")
+        return 1
+
     nsnap = len(glob.glob(os.path.join(SNAPS, '*.txt')))
     print(f"\n  Every cited script runs, and the {nsnap} with recorded snapshots still produce")
     print("  the same numbers. hl_Wspec.py violated the first property silently; a script that")
