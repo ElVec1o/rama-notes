@@ -1,0 +1,3191 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1.2in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{hyperref}
+\sloppy
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{proposition}[theorem]{Proposition}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Q}{\mathbb{Q}}
+
+\title{The biregular case of a spectral-inclusion conjecture:\\
+the weighted plane class and its obstructions}
+\author{Vico Bonfioli\thanks{Lean~4 sources: \texttt{RamaLean/} in the \texttt{rama-notes} repository. Correspondence: \texttt{vicobonfioli@gmail.com}.}}
+\date{August 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+The conjecture that every root of the $d$-matching polynomial $\mu_{d,G}$ lies in
+$\operatorname{spec}(T)$, $T$ the universal cover, is false in general \cite{PartI}. Its
+biregular case survives, contains Problem~1 of Song, Fan and Miao, and is the subject of this
+paper. At $b=2$ the object is the \emph{weighted plane class}: families $\{(c_k,V_k)\}$ of
+weighted $2$-planes with $\sum_kc_kP_{V_k}\preceq aI$, whose matching polynomial is the mixed
+characteristic polynomial of Marcus, Spielman and Srivastava.
+
+We prove a positive margin for the complete bipartite family, so no $K_{d,q}$ refutes the
+repaired statement however wide its gap is made, and we show the margin decays like $n^{-2/3}$,
+the soft-edge exponent, so the statement is true but tight and no size-free bound can prove it.
+We give an exact vertex recursion for the plane class, decompose its cross-term into pieces whose
+nonnegativity would give the band, and prove two unconditional bounds from real-rootedness alone.
+
+The obstructions are the substance. A rank-blind barrier reads the Marchenko--Pastur law and
+cannot reach the tree band at either edge; compressions cannot reach the inner end at all; the
+coefficient ladder's reach is unbounded in the moment order, but an input at a uniform rate is
+the conclusion it would prove, so the dimension restriction is intrinsic; and the tree moment
+bound, the natural a priori input, is false off the coordinate case. A ratio route escapes these
+and settles the inner edge on a nontrivial class. Everything asserted is machine-checked in
+Lean~4/Mathlib unless labelled otherwise.
+\end{abstract}
+
+\section{Preliminaries, from the companion paper}\label{sec:prelim}
+
+This paper is a sequel and does not repeat what it rests on. The conjecture, the closed form at
+first Betti number one, the subdivision theorem, the complete bipartite case and the
+minimum-degree repair are proved in \cite{PartI}; they are restated here without proof, in the
+form used below. Numbering is local to this paper.
+
+\begin{conjecture}\label{conj:gap}
+For every finite graph $G$ and every $d\ge1$, all roots of $\mu_{d,G}$ lie in
+$\operatorname{spec}(T)$, the spectrum of the universal cover of $G$.
+\end{conjecture}
+
+\begin{conjecture}[D3]\label{conj:mindeg3}
+Every finite graph of minimum degree at least three satisfies
+$\operatorname{Zeros}(\mu_G)\subseteq\operatorname{spec}(T_G)$.
+\end{conjecture}
+
+\begin{theorem}\label{thm:main}
+For all $n\ge 1$, $r\ge 1$, with $Y=T_n(x/2)$,
+\[
+\Phi_{n,r}(x)\;=\;U_r(Y)-2U_{r-1}(Y)+U_{r-2}(Y)
+\;=\;\underbrace{\bigl(2T_n(x/2)-2\bigr)}_{\chi_{C_n}(x)}\cdot\,
+\underbrace{U_{r-1}\bigl(T_n(x/2)\bigr)}_{\Psi_r(x)} .
+\]
+\end{theorem}
+
+\begin{corollary}\label{cor:gf}
+$\displaystyle\sum_{d\ge 0}\mu_{d,C_n}(x)\,z^d=\frac{1}{1-2T_n(x/2)\,z+z^2}$,
+\quad and \quad
+$\displaystyle\sum_{r\ge 0}\Phi_{n,r}(x)\,z^r=\frac{(1-z)^2}{1-2T_n(x/2)\,z+z^2}$.
+\end{corollary}
+
+\begin{corollary}[real-rootedness]\label{cor:roots}
+All roots of $\Phi_{n,r}$ lie in $[-2,2]$: with $x=2\cos\theta$,
+$\chi_{C_n}$ vanishes at $\theta=2\pi m/n$ and
+$\Psi_r=\sin(rn\theta)/\sin(n\theta)$ vanishes at $\theta=m\pi/(rn)$ with $r\nmid m$
+(when $r\mid m$ the denominator vanishes too and $\Psi_r=\pm r\neq0$); this leaves
+exactly $n(r-1)$ roots, matching $\deg\Psi_r$.
+\end{corollary}
+
+\begin{corollary}[Fibonacci--Lucas evaluation]\label{cor:fib}
+$\Phi_{n,r}(3)=(L_{2n}-2)\,F_{2nr}/F_{2n}$, since $T_n(3/2)=L_{2n}/2$ and
+$U_{r-1}(L_{2n}/2)=F_{2nr}/F_{2n}$.
+\end{corollary}
+
+\begin{corollary}[parity]\label{cor:parity}
+$\Psi_r(-x)=(-1)^{n(r-1)}\Psi_r(x)$: the quotient is supported on exponents
+of a single parity, like a matching polynomial. (For bipartite $C_n$ it is an
+even polynomial for every $r$; at $r=2$ it is the classical matching
+polynomial $2T_n(x/2)$ of $C_n$, consistent with Godsil--Gutman
+\cite{GG}.)
+\end{corollary}
+
+\begin{theorem}\label{thm:subdiv}
+Let $H$ be $D$-regular, $D\ge2$, and let $S(H)$ be its subdivision, so that the
+universal cover of $S(H)$ is the $(D,2)$-biregular tree with spectral gap
+$\bigl(0,\sqrt{D-1}-1\bigr)$. Then every nonzero root of $\mu_{S(H)}$ has
+absolute value at least $\sqrt{D-1}-1$; that is,
+Conjecture~\ref{conj:gap} holds for $S(H)$ at $d=1$. The constant is the spectral
+gap of the universal cover; we do not claim it is attained, and by the strictness
+of Heilmann--Lieb on finite graphs it is not.
+\end{theorem}
+
+\begin{theorem}\label{thm:kpq}
+Let $2\le p\le q$. Every root of $\mu_{K_{p,q}}$ lies in
+\[
+\{0\}\cup\pm\bigl[\sqrt{q-1}-\sqrt{p-1},\ \sqrt{q-1}+\sqrt{p-1}\bigr],
+\]
+the spectrum of the $(q,p)$-biregular tree. So Conjecture~\ref{conj:gap} holds for
+every $K_{p,q}$ at $d=1$.
+\end{theorem}
+
+Five displays are used by number below and are reproduced here. The averaging identity
+\begin{equation}\label{eq:avg}
+\Phi_{n,r}(x)\;=\;\E_{\sigma\in S_r}\;
+\prod_{\ell\,\in\,\mathrm{cycles}(\sigma)}\bigl(2T_{n\ell}(x/2)-2\bigr).
+\end{equation}
+the recurrence carrying the closed form
+\begin{equation}\label{eq:V}
+V_0=1,\qquad V_1=\mu_G,\qquad
+V_d=\mu_G\,V_{d-1}-\mu_{G-V(C)}^{\,2}\,V_{d-2}.
+\end{equation}
+Newton's identity in the form used for the coefficients
+\begin{equation}\label{eq:newton}
+r\,\Phi_r=\sum_{k=1}^{r}f(k)\,\Phi_{r-k},\qquad\Phi_0=1 ,
+\end{equation}
+the arithmetic--geometric mean step
+\begin{equation}\label{eq:amgm}
+\sqrt{u(u+\alpha)}+1\;\le\;\sqrt{(u+1)(u+1+\alpha)}
+\end{equation}
+and the two-sided statement
+\begin{equation}\label{eq:twosided}
+\text{every root of }g\text{ lies in }\bigl[-2\sqrt m,\,2\sqrt m\bigr],
+\end{equation}
+
+\section{Why the biregular case survives, and how far}\label{sec:bireg}
+
+The refutation leaves the biregular case standing, and this section says why and measures how
+much room it has: a positive margin for the complete bipartite family, the decay of that margin,
+the two obstructions that bar compressions and rank-blind barriers from the inner end, and the
+ratio route that escapes them.
+
+\subsection{Why the biregular case survives}\label{sec:biregblock}
+
+For an $(a,b)$-biregular graph the universal cover is the $(a,b)$-biregular tree, whose
+spectrum is $\{0\}\cup\{x:\tau\le|x|\le\rho\}$ with
+$\tau=|\sqrt{a-1}-\sqrt{b-1}|$ and $\rho=\sqrt{a-1}+\sqrt{b-1}$. Since \cite{HPS} already
+places every root in $[-\rho,\rho]$, Conjecture~\ref{conj:gap} for such a graph is
+\emph{equivalent} to the assertion that no nonzero root satisfies $|x|<\tau$, which is
+Problem~1 of Song, Fan and Miao. That reduction is machine-checked as
+\texttt{BiregularBlocking.biregular\_reduction}, with the tree spectrum and the
+Hall--Puder--Sawin interval as the two hypotheses; neither is in Mathlib. So the biregular
+case is not one fragment of the conjecture among others, it is the whole of what survives.
+
+Both mechanisms of \cite{PartI} are structurally blocked there, and for different
+reasons. The subcubic construction hangs branches on a tree skeleton, and a graph in which
+every vertex has degree at least two is not a tree, by handshaking against the edge count of
+a tree (\texttt{no\_tree\_of\_two\_le\_degree}); a biregular graph with $a,b\ge2$ has minimum
+degree at least two and so admits no such skeleton. Hall's construction needs a wide spread of
+degrees, and a biregular graph has exactly two. Beyond that, the two constructions place their
+roots in \emph{bulk} gaps, at $1.20$, $2.24$ and $2.85$ in the examples above, whereas the
+only gap available in the biregular case is the one at the origin: a counterexample there
+would need a root just above zero, which is a question about near-deficiency of matchings
+rather than about band structure.
+
+There is also a quantitative obstruction, in the direction one would want, though it is not
+complete. At a cut vertex with $p$ isomorphic branches the matching polynomial factors through
+$F=x\mu_H-p\mu_{H-v}$, and $F(0)=-p\,\mu_{H-v}(0)$, so a Lipschitz bound gives
+\[
+   |\theta|\;\ge\;\frac{p\,|\mu_{H-v}(0)|}{M},\qquad M=\sup|F'| ,
+\]
+for every root $\theta$ (\texttt{branch\_root\_sep}). The separation grows linearly in the
+number of branches: strengthening the mechanism drives its roots away from zero, which is the
+opposite of what a biregular counterexample requires. The bound is conditional on
+$\mu_{H-v}(0)\neq0$, that is on $H-v$ having a perfect matching, and Hall's own branch fails
+that, since there $H-v$ is a star of odd order. It therefore blocks the subcubic mechanism and
+not his, and on the subcubic branch it gives $|\theta|\ge1/6$ against a true smallest root of
+$0.662$: valid, and far from sharp.
+
+The vacuity is removable. If $F(0)=0$, divide out the zero: writing $F=x^mG$ with $G(0)\neq0$,
+the nonzero roots of $F$ are the roots of $G$, and $G$ is what should be bounded. For Hall's
+branch $F=x^5(x^4-16x^2+55)$, so $G(0)=55$ and the obstruction disappears; the bound then
+gives $0.991$ against a true root of $\sqrt5$. Carried out on the matching polynomial itself,
+where $\mu_G(x)=\pm x^{\,n-2\nu}g(x^2)$ with $\nu$ the matching number and $g(0)=\pm m_\nu$,
+the classical Cauchy estimate becomes a statement purely about matching numbers.
+
+\begin{proposition}\label{prop:rootsep}
+Let $G$ be a finite graph with matching number $\nu$ and $k$-matching numbers $m_k$. Then
+every nonzero root $\theta$ of $\mu_G$ satisfies
+\[
+   \theta^2\;\ge\;\frac{m_\nu}{m_\nu+\max_{k<\nu}m_k}.
+\]
+\end{proposition}
+
+The estimate is Cauchy's and is classical; only its reading in terms of matching numbers is
+being recorded here. It is machine-checked as \texttt{RootSeparation.cauchy\_lower} and
+\texttt{matching\_root\_sep}, with no hypothesis on the graph.
+
+What makes it worth stating is that the inequality points the useful way. By
+\texttt{biregular\_reduction}, Conjecture~\ref{conj:gap} for an $(a,b)$-biregular graph is
+exactly the absence of a nonzero root below $\tau$, so any graph whose bound reaches $\tau$
+satisfies the conjecture, unconditionally and with no appeal to \cite{AFH}; that implication
+is \texttt{RootSeparation.sfm\_of\_separation}. Run on random biregular graphs
+(\texttt{code/rootsep.py}) it settles three of nine, the smaller ones, the bound falling as
+$0.63,0.45,0.28$ against a fixed $\tau=0.318$ for $(3,4)$-biregular as the graph grows. So it
+decides small cases outright and is too weak for large ones.
+
+The weakness is not intrinsic: Cauchy's estimate uses only the moduli of the coefficients and
+discards the one structural fact available. By Heilmann--Lieb $\mu_G$ is real-rooted, so $g$
+has all roots real and \emph{positive}. For a finite family of positive reals the $\ell^m$
+norm of the reciprocals decreases to the $\ell^\infty$ norm, so with
+$P_m=\sum_i y_i^{-m}$,
+\[
+   \min_i y_i\;\ge\;P_m^{-1/m},
+\]
+sharpening as $m$ grows and exact in the limit. The case $m=1$ is the harmonic bound
+$m_\nu/m_{\nu-1}$, already better than Cauchy; and the $P_m$ are computed exactly from the
+matching numbers by Newton's identities on the reversed polynomial, so every quantity is
+rational.
+
+\begin{proposition}\label{prop:powersum}
+Let $G$ be biregular with $\tau=|\sqrt{a-1}-\sqrt{b-1}|$, and let $q\ge\tau^2$ be rational.
+If $P_m\,q^m\le1$ for some $m\ge1$, then no nonzero root of $\mu_G$ has $|\theta|<\tau$, so
+Conjecture~\ref{conj:gap} holds for $G$.
+\end{proposition}
+
+\begin{proof}
+$y_i^{-m}\le P_m\le q^{-m}$ for each $i$, hence $y_i\ge q\ge\tau^2$.
+\end{proof}
+
+Machine-checked as \texttt{PowerSumCertificate.roots\_ge\_of\_powersum}, with division and
+$m$-th roots avoided so that the check is exact rational arithmetic. Measured in
+\texttt{code/powersum.py}, $m=8$ already agrees with the true smallest root to three or four
+decimal places, and the certificate settles all nine biregular graphs tested, including every
+size at which the Cauchy and harmonic forms fail.
+
+Run at scale it certifies $417$ of $417$ random biregular graphs across nine degree pairs and
+sizes up to $40$ vertices, in exact rational arithmetic throughout
+(\texttt{code/certify\_biregular.py}). Each of those is an unconditional proof of
+Conjecture~\ref{conj:gap} for that graph.
+
+It is a decision procedure and not a proof of the conjecture, and the distinction is not a
+matter of effort. For a finite family of positive reals the $\ell^m$ norm of the reciprocals
+\emph{decreases to} the $\ell^\infty$ norm, so
+\[
+   \sup_m P_m^{-1/m}=y_1
+\]
+exactly: optimising the certificate over $m$ computes the smallest root rather than bounding
+it. Numerically the agreement is already to five decimal places by $m=16$
+(\texttt{code/powersum\_limit.py}). Consequently the certificate succeeds for a graph
+precisely when $y_1>\tau^2$, which is Song--Fan--Miao for that graph, and a bound on $P_m$
+uniform in the size of the graph strong enough to give the conjecture would already be the
+conjecture. The difficulty has not moved, and the route is recorded as closed rather than
+promising. What the certificate does supply is a complete and exact decision procedure, which
+is worth having and is all it is.
+
+Empirically the statement is robust. Over $180$ random $(a,b)$-biregular bipartite graphs on
+up to $40$ vertices, for $(a,b)$ ranging over eight pairs, no root falls below $\tau$; the
+smallest nonzero root stays a factor $1.25$ to $2.2$ above it
+(\texttt{code/biregular.py}). Random sampling is the wrong instrument for a structured
+phenomenon, so an adversarial local search was run as well, descending on the smallest nonzero
+root by degree-preserving edge swaps, which stay inside the biregular class exactly. It barely
+moves the quantity, from $0.6076$ to $0.6005$ over $1200$ swaps in the hardest case, and the
+final ratios to $\tau$ run from $1.42$ to $1.97$ (\texttt{code/biregular\_anneal.py}). The
+smallest nonzero root appears to be rigid inside the biregular class.
+
+That, together with the first Betti number one case where the conjecture is a theorem, is
+where the remaining interest lies.
+
+\subsection{A positive margin for the complete bipartite family}\label{sec:margin}
+
+The biregular case is most exposed at large degree contrast, since the gap $(0,\tau)$ widens
+without bound with $q$. For $K_{d,q}$ the question is decidable in closed form. A $k$-matching
+picks $k$ vertices on each side and matches them, so
+\begin{equation}\label{eq:kdq}
+   \mu_{K_{d,q}}=x^{\,q-d}P(x^2),\qquad
+   P(y)=\sum_{k\le d}(-1)^k\binom{d}{k}(q)_k\,y^{d-k},
+\end{equation}
+with $(q)_k$ the falling factorial. Here $P$ is a Laguerre polynomial, and as $q\to\infty$ its
+zeros satisfy $(y-q)/\sqrt q\to$ the zeros of the probabilists' Hermite polynomial
+$\mathrm{He}_d$. Writing $h_d$ for the largest of those,
+$x_{\min}=\sqrt q-\tfrac{h_d}{2}+o(1)$ against $\tau=\sqrt q-\sqrt{d-1}+o(1)$, so the margin
+tends to $\sqrt{d-1}-h_d/2$; at $q=10^6$ this agrees to four decimals for every $d$ from $3$ to
+$20$ (\texttt{code/d3attack.py}).
+
+\begin{theorem}\label{thm:margin}
+For every $d\ge3$ the limiting margin is positive:
+$\sqrt{d-1}-h_d/2\ \ge\ \tfrac12\bigl(\sqrt{d-1}-\sqrt{d-2}\bigr)>0$.
+\end{theorem}
+
+\begin{proof}
+By the recurrence $\mathrm{He}_{n+1}=y\,\mathrm{He}_n-n\,\mathrm{He}_{n-1}$, the zeros of
+$\mathrm{He}_d$ are the eigenvalues of the Jacobi matrix with zero diagonal and off-diagonal
+entries $\sqrt1,\dots,\sqrt{d-1}$. Its absolute row sums are $\sqrt{i-1}+\sqrt i$, largest in the
+last row, so Gershgorin gives $h_d\le\sqrt{d-2}+\sqrt{d-1}$.
+\end{proof}
+
+The Gershgorin step is \texttt{CompleteBipartiteMargin.abs\_eigenvalue\_le\_max\_rowsum}, proved
+from the eigenvalue equation at an index where the eigenvector is largest; the consequence is
+\texttt{margin\_pos\_of\_rowsum}, and \texttt{no\_root\_below\_gap\_edge} closes the chain. No
+complete bipartite graph violates Conjecture~\ref{conj:gap}, however wide the gap is made.
+
+\subsection{The margin vanishes, so the statement is tight}\label{sec:softedge}
+
+$K_{d,q}$ is not extremal. Random $(d,q)$-biregular graphs have smaller margins, and the margin
+falls as they grow: for $(3,6)$ the minimum over twelve samples falls monotonically across
+fourteen sizes, from $0.5301$ at $n=12$ to $0.2009$ at $n=51$, fitting a power law at
+$R^2\ge0.999$ in each of twelve families spanning $d=3$ to $6$ (\texttt{code/softedge2.py}).
+Matchings are counted exactly, by a bitmask permanent over the smaller side, which is what makes
+the range reachable.
+
+The rate is the soft-edge one. The cavity resolvents on the biregular tree satisfy
+$X=1/(z-A_1Y)$, $Y=1/(z-B_1X)$ with $A_1=d-1$, $B_1=q-1$, so $P=XY$ solves
+$A_1B_1P^2+(A_1+B_1-z^2)P+1=0$; writing $a=\sqrt{A_1}$, $b=\sqrt{B_1}$, its discriminant factors,
+\begin{equation}\label{eq:disc}
+   (z^2-a^2-b^2)^2-4a^2b^2=\bigl(z^2-(a+b)^2\bigr)\bigl(z^2-(b-a)^2\bigr),
+\end{equation}
+locating the band edges at $b\pm a$ (\texttt{SoftEdge.discriminant\_factors}). The inner factor
+has a simple zero there (\texttt{inner\_edge\_simple}), so the density vanishes like
+$\sqrt{x-\tau}$ and the density exponent is $\tfrac12$ for every $(d,q)$. The expected root count
+within $\delta$ of the edge is then $CN\delta^{3/2}$, and the extreme root sits where that count
+is one, giving $\delta=(CN)^{-2/3}$ (\texttt{edge\_scale}, \texttt{sqrt\_edge\_exponent}).
+Writing $\rho(x)=\kappa\sqrt{x-\tau}+O(x-\tau)$, the asymptotic margin is explicit,
+\begin{equation}\label{eq:constant}
+   \delta=\Bigl(\frac{3}{2\kappa n}\Bigr)^{2/3}
+\end{equation}
+(\texttt{sqrt\_edge\_quantile}), and agrees with the analytic quantile to four significant
+figures at $n=10^6$ in all twelve families. The density itself passes a sharp check:
+$n\int_\tau^\rho\rho=r$ to eight decimals, $r$ being the exact number of positive roots.
+
+The consequences are structural, and they disqualify a class of proofs including
+Theorem~\ref{thm:margin}. A quantity positive at every size may admit no uniform positive lower
+bound, so any argument producing a constant independent of $n$ is insufficient in general
+(\texttt{no\_uniform\_lower\_bound}); the Gershgorin constant is such a constant. A lower bound
+may not decay more slowly than the true one, so a proof must reach the exponent
+(\texttt{exponent\_floor}). And the picture is a Friedman-type one: the edge is the greatest lower
+bound of the smallest positive roots and is never attained (\texttt{inf\_not\_attained}), with no
+constant above it bounding them below (\texttt{edge\_unimprovable}). There is no $\varepsilon$ to
+spare, and the statement cannot be softened.
+
+Two limits on this. The fitted exponents vary with the aspect ratio $q/d$ at the sizes reachable,
+from $-0.67$ at $q=2d$ to $-0.61$ at $q=4d$, but so does the exponent of the analytic quantile,
+which is $-2/3$ by construction and reaches it only near $n=10^6$; the variation is a finite-size
+effect (\texttt{code/quantile.py}). And the observed smallest roots sit where the tree measure
+places about $0.5$ roots, a count that drifts as $n^{+0.10}$; that departure is neither the girth,
+which is constant at $4$ throughout, nor the estimator, since the unbiased sample mean drifts
+equally, and it is unexplained (\texttt{code/nobs.py}).
+
+\subsection{Compression cannot reach the inner end}\label{sec:barrier}
+
+There is a structural reason the outer end of \eqref{eq:twosided} is a theorem and the inner end
+is not. The outer bound is a statement about quadratic forms: every Rayleigh quotient of a
+diagonal form lies between its least and greatest entry (\texttt{SoftEdge.rayleigh\_between}), and
+being a statement about forms it passes to every subspace. That is exactly the path-tree
+argument, the path tree being an induced subtree of $T$ and its adjacency form a compression.
+
+A gap is not a statement about quadratic forms and is not inherited. With entries $-1$ and $1$
+the spectrum is $\{-1,1\}$ and $(-1,1)$ is a gap, yet the vector $(1,1)$ has Rayleigh quotient
+$0$, strictly inside it (\texttt{rayleigh\_in\_gap}). So a compression can take values the
+original excludes, and no argument phrased in Rayleigh quotients or compressions can rule them
+out however refined. This is the $P_8$-inside-the-$(3,2)$-biregular-tree phenomenon of
+\cite{PartI} at its smallest, and it is why Heilmann--Lieb, Godsil's path tree and the
+Marcus--Spielman--Srivastava interlacing machinery all deliver one end of the interval and are
+silent about the other.
+
+\subsection{The ratio route}\label{sec:ratio}
+
+What is not barred is the ratio recursion, which bounds ratios of matching polynomials rather
+than Rayleigh quotients. By Godsil $\mu_G$ divides $\mu_P$ for the path tree $P$, and on a tree
+the deletion recurrence is exact and local, $F_v=\lambda-\sum_u 1/F_u$ over the children $u$ of
+$v$ with $F=\lambda$ at leaves, so $\mu_G(\lambda)\ne0$ follows once no $F$ vanishes.
+
+A positive invariant interval cannot do it: invariance would need $a\le\lambda-k/a$, which has a
+positive solution only for $\lambda\ge2\sqrt k$, the Heilmann--Lieb bound. The certificate is
+instead sign-alternating. On path trees of $(d,q)$-biregular graphs at gap points, over
+twenty-two thousand path-tree vertices, the signs separate by vertex type with no exceptions:
+every degree-$d$ vertex has $F>0$ and every degree-$q$ vertex has $F<0$ (\texttt{code/pathratio.py}).
+
+\begin{proposition}\label{prop:ratiosteps}
+Let $\lambda>0$.
+\begin{enumerate}
+\item[(i)] If $F_1,\dots,F_k\in[-C,-c]$ with $c>0$ then $\lambda\le\lambda-\sum_j1/F_j\le\lambda+k/c$.
+\item[(ii)] If $F_1,\dots,F_k\in[a,B]$ with $0<a\le B$ and $k>\lambda B$, or if
+$0<F_j<k/\lambda$ for all $j$, then $\lambda-\sum_j1/F_j<0$.
+\end{enumerate}
+\end{proposition}
+
+These are \texttt{RatioRoute.left\_step}, \texttt{right\_step} and \texttt{right\_step\_sharp};
+(i) holds for every $k$, so a path-tree vertex missing some of its children is still covered, and
+the sharp form of (ii) is what the path trees satisfy, with slack $0.42$ to $4.47$ and no
+violations over every vertex measured (\texttt{code/childbound.py}).
+
+The combinatorial input is an alternation count. Let $\pi$ end at $w\in R$, put
+$k=|N(w)\setminus\pi|$, $p_L=|\pi\cap L|$, $p_R=|\pi\cap R|$, and let $u$ be a child of $w$ with
+child count $k_u$.
+
+\begin{lemma}\label{lem:blocking}
+$q-r\le k$ and $k_u\le k-(q-r)$.
+\end{lemma}
+
+\begin{proof}
+The $q-k$ blocked neighbours of $w$ lie in $L$, so $q-k\le p_L$; the path alternates and ends in
+$R$, so $p_L\le p_R\le r$, giving $q-r\le k$. For the child, $N(u)\subseteq R$ and an unblocked
+neighbour must avoid $\pi\cap R$, so $k_u\le r-p_R\le r-q+k$.
+\end{proof}
+
+The three counting steps are formalized in \texttt{PathCount}: \texttt{blocked\_le\_left} and
+\texttt{unblocked\_le} are the set-counting steps, and \texttt{alt\_count} is the alternation
+count, proved on lists recording which side each path vertex lies on, with
+\texttt{alt\_count\_last} transferring it from the first vertex to the last. At the minimum
+$k=q-r$ the lemma forces $k_u=0$, so the children are leaves of ratio exactly $\lambda$ and the
+parent is $\lambda-k/\lambda<0$ once $k>\lambda^2$.
+
+Assembling both sides gives a system in one constant $m>0$, the lower bound on $|F|$ at
+right-type vertices. With $\kappa(t)=\lambda+t/m$ bounding left-type ratios at child count $t$,
+and Lemma~\ref{lem:blocking} capping a right-type vertex's children at $k-\Delta$ each where
+$\Delta=q-r$, the parent is at most $\lambda-k/\kappa(k-\Delta)$
+(\texttt{RatioRoute.right\_step\_bound}); the invariant propagates when that is at most $-m$,
+which is
+\begin{equation}\label{eq:closure}
+   \lambda+m\;\le\;\frac{k}{\kappa(k-\Delta)}\qquad\text{for all }\Delta\le k\le q-1
+\end{equation}
+(\texttt{closure\_iff}, \texttt{induction\_step}). Equation \eqref{eq:closure} is a fixed-point
+condition on $m$ with no closed form; iterating
+$m\mapsto\min_k\bigl(k/(\lambda+(k-\Delta)/m)-\lambda\bigr)$ from above gives the largest
+admissible $m$.
+
+\begin{theorem}\label{thm:biregclass}
+Let $G$ be $(d,q)$-biregular with $r$ vertices of degree $q$, and $\lambda\in(0,\tau)$. If
+\eqref{eq:closure} admits some $m>0$, then $\mu_G(\lambda)\neq0$.
+\end{theorem}
+
+The recursion consuming the two steps is \texttt{PathTreeInduction.invariant}, by strong induction
+on a height function, with \texttt{no\_vanishing} concluding that no ratio vanishes; the path tree
+enters only through an abstraction carrying a side map, a children map and a height that strictly
+decreases along edges. A single constant is more than the argument needs: the alternation count
+applies at every depth, a path of $\ell$ vertices ending in $L$ having $\lfloor\ell/2\rfloor$
+vertices in $R$, which caps a left-type vertex's children by
+$\min(d-1,\,r-\lfloor\ell/2\rfloor)$ and bounds a right-type vertex's below by
+$q-\lfloor\ell/2\rfloor$. Indexing $\kappa$ and $m$ by depth turns \eqref{eq:closure} into a
+finite backward recursion, and Theorem~\ref{thm:biregclass} holds verbatim in that form
+(\texttt{invariant\_depth}).
+
+Solving numerically, the condition holds throughout the gap for $(d,q,r)$ equal to $(3,6,4)$,
+$(3,9,4)$, $(3,12,4)$, $(4,8,4)$, $(4,12,4)$ and $(5,10,4)$, and to $69\%$ of the gap for
+$(3,6,5)$ (\texttt{code/depthind.py}). This is the first proof of the inner end of
+\eqref{eq:twosided} for a nontrivial class.
+
+This has to be reconciled with \S\ref{sec:must}, which rules out cavity recursions. The
+obstruction there is that every $b$-regular bipartite graph is an induced subgraph of some
+$(a,b)$-biregular graph, and over $b$-regular bipartite graphs the least root tends to zero, so
+on the closure of the biregular graphs under vertex deletion the inequality to be proved is
+false; an induction carrying the target statement through that closure cannot work.
+Theorem~\ref{thm:biregclass} is an induction over vertex-deleted subgraphs, but it does not carry
+the target statement through them. It carries the interval bounds, and those are guarded by
+$\Delta=q-r\ge1$: when $\Delta\le0$ a right-type path-tree vertex may have no children at all,
+the sign alternation fails at once, and \eqref{eq:closure} admits no positive $m$. A $b$-regular
+bipartite graph with parts of equal size has $\Delta=b-r<0$, so the family witnessing the
+obstruction is exactly what the hypothesis excludes. The condition $\Delta\ge1$ is therefore not
+a technical convenience; it is what \S\ref{sec:must} forces, and it is the reason the route
+reaches a nontrivial class rather than nothing or everything.
+
+Two limits are known. For $(3,6,5)$ the certificate is saturated at the point it reaches, both
+bounds being attained with ratio $1.0000$, so no choice of constants does better
+(\texttt{saturation\_blocks\_improvement}); the only other counting fact available, the
+parent-to-child drop, extends the range by nothing, since $q-r=1$ there makes it weaker than the
+depth bound (\texttt{code/combined.py}). And the sign separation is a consequence of
+bipartiteness: on wheels no natural class determines the sign of a path-tree ratio, endpoint
+degree, depth parity and child count each being mixed (\texttt{code/d3ratio.py}), so the
+certificate does not transfer to Conjecture~\ref{conj:mindeg3} in general.
+
+
+The biregular case is what survives, and \S\ref{sec:ratio} settles it on a nontrivial class by
+the ratio recursion. This part develops a second route to the same statement, through counting,
+the coefficient ladder and the operator form, together with the obstructions each of them meets.
+It uses the framework of Part~I throughout; nothing in Part~I depends on it, except that
+\S\ref{sec:ratio} and \cite{PartI} each cite one result proved here.
+
+\section{A counting refinement}\label{sec:gapcount}
+
+Conjecture~\ref{conj:gap} asserts a non-vanishing, which offers no handle. This section
+records a strictly stronger statement that equates two integers, the cases it settles, and
+the two barriers that close off the obvious routes to the rest. Labels are stated
+throughout: what is machine-checked, what is proved modulo a cited classical theorem, and
+what is open.
+
+Let $T$ be the universal cover of a finite connected loopless $G$ on $n$ vertices, and
+$b=b_1(G)$. Writing $A_G$ for the universal-cover adjacency operator as a matrix over
+$C^*_r(F_b)$, a real $x$ lies outside $\operatorname{spec}(T)$ exactly when $xI-A_G$ is
+invertible there, and then the trace of its negative spectral projection,
+\[
+\kappa(x)=\tau_n\bigl(\mathbf 1_{(-\infty,0)}(xI-A_G)\bigr),
+\]
+is an integer in $[0,n]$, because $K_0(C^*_r(F_b))=\mathbb{Z}\cdot[1]$ by Pimsner--Voiculescu.
+
+\begin{conjecture}[GAPCOUNT]\label{conj:gapcount}
+For every $x\notin\operatorname{spec}(T)$, the number of roots of $\mu_G$ strictly above
+$x$, with multiplicity, equals $\kappa(x)$.
+\end{conjecture}
+
+Conjecture~\ref{conj:gapcount} implies Conjecture~\ref{conj:gap} at $d=1$: $\kappa$ is
+constant across a gap while the root count jumps at any root, so a gap contains none.
+By Theorem~\cite{HallCE} the implication now runs the other way and
+Conjecture~\ref{conj:gapcount} is false as well, on the same graph: the root $\sqrt5$
+crosses inside a gap on which $\kappa$ is constant. We state it as it was, because the
+implication and the boundary conditions are what the sweeps below actually test, and
+because the counting refinement remains the right object for whichever class of graphs
+turns out to satisfy the localization. That
+implication, the fact that an integer-valued locally constant function is determined on a
+connected gap, and the boundary conditions $\kappa=0$ above $\rho(T)$ and $\kappa=n$ below
+$-\rho(T)$, are machine-checked in \texttt{RamaLean/GapLabel.lean}. All the content is in
+what happens as a band is crossed.
+
+\subsection{The abelian shadow}
+
+Put a circle variable on each cotree edge and let $A_G(z)$ be the magnetic adjacency matrix,
+$B_k=\lambda_k(\mathbb T^b)$ the $k$-th Floquet band, and $\theta_1\ge\dots\ge\theta_n$ the
+roots of $\mu_G$.
+
+\begin{proposition}[BAND]\label{prop:band}
+$\theta_k\in B_k$ for every $k$. Consequently, for $x\notin\operatorname{spec}(G^{\mathrm{ab}})$
+the number of roots above $x$ equals the number of bands above $x$.
+\end{proposition}
+
+\begin{proof}
+Godsil--Gutman writes $\mu_G$ as the average characteristic polynomial over $\pm1$ edge
+signings, and Marcus--Spielman--Srivastava \cite{MSS} make those signings an interlacing
+family. The common interlacing lemma brackets the average at every index, not only the
+largest, so $\lambda_k(A_s)\le\theta_k\le\lambda_k(A_{s'})$ for two signings. Both are points
+of $\mathbb T^b$, and $B_k$ is the continuous image of a connected space, hence an interval.
+\end{proof}
+
+Everything downstream of those two classical inputs is machine-checked in
+\texttt{RamaLean/BandTheorem.lean}: that bands are order connected
+(\texttt{ordConnected\_range\_of\_continuous}), the squeeze
+(\texttt{mem\_of\_squeezed}), the count identity (\texttt{countAbove\_eq\_countBands}) and
+the recovery of the unicyclic case (\texttt{conj10\_of\_bands\_subset}). The inputs
+themselves enter \texttt{band\_of} as hypotheses.
+
+The core of the common interlacing lemma is machine-checked in
+\texttt{RamaLean/Interlacing.lean}: a sign argument fixes the parity of a root count and
+nothing more, an interlacing confines that count to a window of width two, and parity with
+such a window determines the value. What is not formalized, and is cited to \cite{MSS}, is
+that the signings have a common interlacing at all.
+
+Proposition~\ref{prop:band} settles Conjecture~\ref{conj:gap} whenever every band lies in
+$\operatorname{spec}(T)$, which is exactly $b_1(G)=1$, since $F_1=\mathbb{Z}$ makes the maximal
+abelian cover the universal cover. That recovers \cite{PartI} by a different route
+and sharpens it to $\theta_k\in B_k$. The hypothesis fails at $b_1\ge2$: for $K_4$ the top
+band carries the Perron value $3$ while $\rho(T)=2\sqrt2$.
+
+The counting half of Proposition~\ref{prop:band} does not need \cite{MSS}. If $x$ avoids
+every $\lambda_k(z)$ then $\{z:\lambda_k(z)>x\}$ is clopen, so on a connected parameter space
+the eigenvalue count above $x$ is the same integer for every $z$; every member of the family
+then has the same sign at $x$, so the average does too. Parity follows at once, and parity
+upgrades to equality by counting: crossing one component of the spectrum, each component
+carries an odd number of roots, and $n$ odd positive integers summing to $n$ are all $1$.
+Both steps are machine-checked in \texttt{RamaLean/BandCount.lean}.
+
+\subsection{Feedback vertex number one}
+
+Suppose some vertex $v$ has $F=G-v$ a forest, so every cycle passes through $v$; the first
+Betti number is unrestricted, and flowers, theta graphs and every $K_{2,q}$ qualify.
+
+\begin{proposition}\label{prop:fvs1}
+Conjecture~\ref{conj:gapcount}, hence Conjecture~\ref{conj:gap} at $d=1$, holds for every
+such $G$, modulo Pimsner--Voiculescu and Godsil's path tree.
+\end{proposition}
+
+\begin{proof}
+Eliminating the preimage of $F$ gives a Schur complement $S_v(x)$ which is a \emph{finite}
+sum of group elements, so it lies in the group algebra inside $C^*_r(F_b)$ and not merely in
+$L(F_b)$; that distinction is what makes projectionlessness applicable, since $L(F_b)$ is a
+$\mathrm{II}_1$ factor full of projections. Haynsworth additivity gives
+$\kappa(x)=N_F(x)+\delta(x)$ with $\delta(x)\in\{0,1\}$, and
+$\tau(S_v(x))=\mu_G(x)/\mu_{G-v}(x)$, so definiteness fixes the parity of $N_G-N_F$. Godsil's
+path tree makes $\mu_{G-v}$ interlace $\mu_G$, confining $N_G-N_F$ to $\{0,1\}$. A window of
+width two and a parity determine the value.
+\end{proof}
+
+The assembly is \texttt{FeedbackGapCount.gapcount\_fvs\_one\_of}, with the three classical
+inputs as explicit hypotheses, and \texttt{conj10\_fvs\_one\_of} composes it with the
+skeleton of Section~\ref{sec:gapcount}.
+
+Three remarks on that proof. The combinatorial core, that in an acyclic graph two distinct
+neighbours of $v$ cannot be joined without passing through $v$, is machine-checked
+(\texttt{FeedbackVertex.no\_bypass}); it is why a walk returning to the same lift must enter
+and leave at the same attachment point. The trace formula requires $G$ \emph{simple}: the
+argument uses that a lifted attachment point has exactly one neighbouring lift of $v$.
+Haynsworth additivity needs no appeal to Sylvester's law in a von Neumann algebra: the block
+matrix is congruent to the direct sum of the corner and the Schur complement by explicit
+unipotent factors, and scaling the off-diagonal part keeps every point of the path
+invertible, so the trace of the negative spectral projection is constant along it. That is
+machine-checked in \texttt{RamaLean/Congruence.lean}.
+
+\subsection{Feedback vertex number two, and where it stops}
+
+At $k=2$ the argument breaks in a locatable place: $M_2(C^*_r(F_b))$ is \emph{not}
+projectionless, $\operatorname{diag}(1,0)$ being a counterexample, so $S(x)$ can be
+indefinite. What survives is the $K$-theory, which keeps $\delta(x)\in\{0,1,2\}$. Two
+deletions give a window of width three, so parity leaves a two-way choice between
+$\delta=0$ and $\delta=2$, and one further bit is needed. That bit exists.
+
+\begin{proposition}\label{prop:tiebreak}
+Let $F=G-v_1-v_2$ and let $a,b_1,b_2,c$ count the roots above $x$ of
+$\mu_G,\mu_{G-v_1},\mu_{G-v_2},\mu_F$. If $a-c$ is even then $b_1=b_2$, and
+\[
+a=c\quad\Longleftrightarrow\quad \mu_F(x)\ \text{and}\ \mu_{G-v_1}(x)+\mu_{G-v_2}(x)\ \text{agree in sign}.
+\]
+\end{proposition}
+
+\begin{proof}
+Vertex-deletion interlacing gives $a-b_i\in\{0,1\}$ and $b_i-c\in\{0,1\}$. If $a=c$ then
+$c\le b_i\le a=c$; if $a=c+2$ then $c+1=a-1\le b_i\le c+1$. Either way $b_1=b_2$, so the two
+polynomials share a sign at $x$ and so does their sum.
+\end{proof}
+
+Proposition~\ref{prop:tiebreak} is machine-checked in \texttt{RamaLean/TieBreak.lean}, and it
+needs no hypothesis about $\operatorname{spec}(T)$. It is not enough. The remaining gap is the
+parity itself: at $k=1$ it came free from $\tau(S_v)=\mu_G/\mu_F$ and definiteness, while at
+$k=2$ the corresponding object is the constant term of the abelianised determinant of a
+$2\times2$ matrix over a noncommutative algebra, whose sign has no evident reason to be
+$(-1)^{\delta}$. So feedback vertex number two is \emph{reduced, not proved}. The arithmetic
+that would close it once the parity is supplied, a window of width three together with a
+parity and one tie-break bit, is \texttt{FeedbackTwo.eq\_of\_window3}, and
+\texttt{gapcount\_fvs\_two\_sign} discharges the tie-break using
+Proposition~\ref{prop:tiebreak}, leaving the parity as the sole remaining hypothesis.
+
+What it reduces to is now quantitative. Since $\mu_G/\mu_F$ is the average over
+$\mathbb T^b$ of $\det S(x,z)$, and $\operatorname{sign}\det S(x,z)=(-1)^{\delta_{\mathrm{ab}}(x,z)}$,
+writing $I_j$ for the integral of $|\det S|$ over $\{\delta_{\mathrm{ab}}=j\}$ gives
+$\mu_G/\mu_F=I_0-I_1+I_2$, and the required sign is exactly the assertion that the parity
+class matching $\delta$ dominates the others \emph{in integral}. Measurement
+(\texttt{code/inertia\_split.py}) shows the split is lopsided but not degenerate: at two
+triangles joined by an edge, in a genuine gap with $\delta=1$, the class
+$\delta_{\mathrm{ab}}=1$ occupies $0.987$ of the torus and $\delta_{\mathrm{ab}}=2$ occupies
+$0.013$. The integrand therefore does change sign, so no argument asserting that it does not
+can work. The decomposition and the criterion are recorded in
+\texttt{RamaLean/InertiaSplit.lean}, with a witness that measure alone does not decide it.
+
+\subsection{Two barriers}
+
+Both close off routes that look available.
+
+\begin{proposition}\label{prop:nohom}
+For $b\ge2$ there is no unital $*$-homomorphism $C^*_r(F_b)\to C(\mathbb T^b)$ carrying the
+generators to the coordinates.
+\end{proposition}
+
+\begin{proof}
+Such a map would carry units to units, so $S(x)$ invertible would force $S(x,z)$ invertible
+for every $z$, hence $\det(xI-A_G(z))=\mu_F(x)\det S(x,z)$ nonzero for every $z$, hence
+$\operatorname{spec}(G^{\mathrm{ab}})\subseteq\operatorname{spec}(T)\cup\{\mu_F=0\}$. For
+$K_4$ with a two-element feedback set that fails at $x=3$: the Perron value lies in
+$\operatorname{spec}(G^{\mathrm{ab}})$, while $\rho(T)=2\sqrt2<3$ and $\mu_{K_2}(3)=8$.
+\end{proof}
+
+The refutation shape is machine-checked in \texttt{RamaLean/NoQuotient.lean}. The underlying
+reason is that a quotient descends to reduced $C^*$-algebras when the \emph{kernel} is
+amenable, and $[F_b,F_b]$ is free of infinite rank.
+
+The second barrier is narrower than it first appeared. Every argument that runs on the torus family needs $x$ outside
+$\operatorname{spec}(G^{\mathrm{ab}})$, and on the smallest examples that fails: for $K_4$,
+two triangles joined by an edge, the theta graph and $K_4$ with pendants, the internal gaps
+of $\operatorname{spec}(T)$ are swallowed by bands of the abelian cover. It would be wrong to
+read that as a general obstruction. A certified search over two growing families
+(\texttt{code/torus\_gg.py}) finds the opposite behaviour as soon as the graphs are larger:
+ten of fourteen gap midpoints lie outside $\operatorname{spec}(G^{\mathrm{ab}})$, with a
+margin that grows with the number of vertices: for two $c$-cycles joined by an edge it runs
+$1.18,\,7.52,\,21.50,\,51.35$ as $c$ goes from four to seven. So the torus family is vacuous
+on the smallest graphs and informative as they grow, the reverse of what the first
+computation suggested, and the localization of \cite{PartI} settles
+Conjecture~\ref{conj:gap} outright at every such point, for every first Betti number and with
+no feedback vertex hypothesis.
+
+Nor is that settlement subsumed by Heilmann--Lieb. Those graphs have maximum degree three, so
+Heilmann--Lieb excludes roots only outside $[-2\sqrt2,2\sqrt2]$, while the certified points
+sit at $\pm1.93,\pm1.99,\pm2.04,\pm2.06$, all interior. The certification cannot be a grid
+minimum, which proves nothing when the zero set of $\det(xI-A_G(z))$ is a curve: that
+determinant has degree one in each $z_e$, so its $3^{b_1}$ Fourier coefficients are recovered
+exactly by a three-point transform, they bound the gradient, and a grid search together with
+that Lipschitz constant certifies a positive lower bound, while a sign change on the grid
+certifies the opposite verdict.
+
+\subsection{Evidence}
+
+\texttt{code/universal\_cover.py} computes $\operatorname{spec}(T)$ and $\kappa$ for an
+arbitrary finite graph, by the non-backtracking cavity equations on the directed edges. Its
+regression check is $K_4$ with a pendant at each vertex, where
+$\operatorname{spec}(T)=\pm[\sqrt3-\sqrt2,\sqrt3+\sqrt2]$ in closed form; the solver returns
+$[-3.1456,-0.3163]$ and $[0.3184,3.1477]$. Runs whose density fails to integrate to one are
+discarded, since point spectrum makes the cavity fixed point singular and a diverged
+$\kappa$ reads exactly like a violated Conjecture~\ref{conj:gapcount}. That the cavity map
+preserves the lower half plane, so the iteration is total and the density non-negative, is
+machine-checked in \texttt{RamaLean/Cavity.lean}; convergence is not claimed.
+
+A Rust sweep (\texttt{code/covercheck}) applies this to every connected graph of feedback
+vertex number at most two on up to seven vertices, computing the root count by
+Budan--Fourier, which is exact for a real-rooted polynomial, and $\kappa$ by the cavity
+equations. Over $55\,131$ graphs and $99\,487$ gap points there is no failure of
+Conjecture~\ref{conj:gap} and none of Conjecture~\ref{conj:gapcount}, no run is discarded by
+the validity gate, and $\kappa$ is never further than $0.205$ from an integer.
+
+The measurement also shows what an estimate would have to exploit. The wrong-parity class
+is not merely small in measure, it is suppressed quadratically in integral: at two triangles
+joined by an edge, in the gap at $x=-1.767$, it occupies $0.013$ of the torus and
+contributes $0.0007$ of the integral of $|\det S|$, a margin of $0.9987$. The reason is
+structural: the wrong-parity region is a shell around $\{z:\det S(x,z)=0\}$, where one
+eigenvalue has just crossed and $|\det S|$ is correspondingly small. Small measure and small
+integrand together, which is why the competition is not close.
+
+Scanning a whole gap rather than one point confirms the exponent. Across both internal gaps
+of two triangles joined by an edge, $I_{\mathrm{wrong}}/m_{\mathrm{wrong}}^2$ stays between
+$2.4$ and $5.2$ and the margin never falls below $0.977$
+(\texttt{code/margin\_scan.py}); there is no blow-up at the gap edges, where the
+wrong-parity class is largest and the ratio is smallest. The chain that would turn this into
+an estimate is machine-checked in \texttt{RamaLean/ShellBound.lean}. Its first step is an
+identity rather than a bound: for a $2\times2$ Hermitian matrix the operator norm is the
+larger eigenvalue in absolute value, so
+$|\det S|=\lVert S\rVert\cdot\min(|\lambda_1|,|\lambda_2|)$
+(\texttt{abs\_mul\_eq\_max\_mul\_min}), and on the shell only the crossing eigenvalue
+matters. Weyl makes that eigenvalue Lipschitz in the phase, giving
+$|\det S(z)|\le ML\operatorname{dist}(z,\partial)$ and hence
+$I_{\mathrm{wrong}}\le m_{\mathrm{wrong}}\,ML\operatorname{reach}$, where
+$\operatorname{reach}=\sup_{z\in A}\operatorname{dist}(z,\partial A)$ is the inradius
+(\texttt{det\_le\_on\_shell}). The relevant quantity is the inradius and not the diameter: a
+shell wrapping the torus has diameter of order one however thin it is.
+
+The inradius is then bounded for free. A region of inradius $r$ contains a ball of radius
+$r$, so $c_br^b\le m$ and $\operatorname{reach}\le(m/c_b)^{1/b}$, giving
+\[
+   I_{\mathrm{wrong}}\ \le\ ML\,c_b^{-1/b}\,m_{\mathrm{wrong}}^{\,1+1/b},
+\]
+which at $b=2$ is $m^{3/2}$ (\texttt{reach\_le\_sqrt},
+\texttt{integral\_le\_three\_halves}). The upper half of the estimate is therefore
+unconditional. The region is not a thin shell but a blob, with $m$ of order
+$\operatorname{reach}^2$: measurement gives $\operatorname{reach}/m$ running $2.60$, $3.10$,
+$4.63$, $5.94$, $9.80$ as $m$ falls from $0.052$ to $0.0053$. The exponent $3/2$ is accordingly
+weaker than the $m^2$ the numerics suggest, and stronger than anything needed. The lower half, a bound $I_{\mathrm{right}}\ge c>0$, is open, and
+its natural route is precisely what Proposition~\ref{prop:nohom} rules out.
+
+The obvious substitute is circular, and it is worth saying why. Splitting the average by
+inertia class gives $\mu_G/\mu_F=I_0-I_1+I_2$ \emph{identically}, so
+$I_{\mathrm{right}}-I_{\mathrm{wrong}}=|\mu_G/\mu_F|$ and bounding $I_{\mathrm{right}}$
+below by $|\mu_G/\mu_F|$ assumes exactly the sign at issue. No independent lower bound on
+$|\mu_G(x)|$ is available inside a gap, since Heilmann--Lieb gives root-free intervals only
+outside $[-\rho,\rho]$, where the conjecture is already known.
+
+A substitute that is not circular is the geometric mean. Jensen gives
+\[
+   I_{\mathrm{right}}+I_{\mathrm{wrong}}\;=\;\int_{\mathbb T^b}|\det S|\;\ge\;
+   \exp\Bigl(\int_{\mathbb T^b}\log|\det S|\Bigr)\;=:\;\Delta ,
+\]
+a Mahler measure of the abelian cover, which owes nothing to the sign of $\mu_G$. Hence
+$I_{\mathrm{right}}\ge\Delta-I_{\mathrm{wrong}}$, and domination holds as soon as
+$\Delta>2I_{\mathrm{wrong}}$. Combined with the unconditional upper half this reduces
+feedback vertex number two to a single inequality, $\Delta>2ML c^{-1/2}m^{3/2}$
+(\texttt{RamaLean/JensenRoute.lean}). The geometric mean, which appeared above as the source
+of the obstruction, is here the tool.
+
+Measured across both internal gaps of two triangles joined by an edge, $\Delta$ lies between
+$0.759$ and $0.823$ while $I_{\mathrm{wrong}}$ runs from $10^{-4}$ to $10^{-2}$, so
+$\Delta/2I_{\mathrm{wrong}}$ runs between $41$ and $3927$
+(\texttt{code/jensen\_route.py}); the same script verifies the circularity identity to
+$10^{-15}$. A sweep over $1475$ gap points of graphs of feedback vertex number at most two
+with $2\le b\le4$ records no failure of $\Delta>2I_{\mathrm{wrong}}$ and a worst ratio of
+$298$, and the ratio does not degrade with $b$: its minimum is $298$ at $b=2$, $2070$ at
+$b=3$ and $1740$ at $b=4$ (\texttt{code/jensen\_sweep.py}). What is a Mahler measure over
+$|\mu_F(x)|$ is recorded in \texttt{RamaLean/MahlerRoute.lean}.
+
+\subsection{Why the feedback vertex set should be removed}\label{sec:parity}
+
+The inequality $\Delta>2MLc^{-1/2}m^{3/2}$ is not the right target, and the reason is an
+artefact of the Schur complement rather than a feature of the conjecture. Both $M=\sup\|S\|$
+and the Lipschitz constant $L$ scale like $1/\mu_F(x)$, while $\Delta$ scales like
+$1/\mu_F(x)$; so as $x$ approaches a root of $\mu_F$ inside a gap the left side grows one
+whole factor of $\mu_F$ faster than the right, and the inequality fails at points where
+nothing is wrong. Roots of $\mu_F$ are not excluded from gaps of $\operatorname{spec}(T)$.
+
+The Schur complement is a computational device and can be dropped. With
+$P_x(z)=\det(xI-A_G(z))=\prod_k(x-\lambda_k(z))$ and $N(z)=\#\{k:\lambda_k(z)>x\}$, the sign
+of $P_x$ is $(-1)^{N(z)}$, and the localization of \cite{PartI} gives
+\[
+   \mu_G(x)=\int_{\mathbb T^b}P_x
+   =I_{\mathrm{even}}-I_{\mathrm{odd}},\qquad
+   I_p=\int_{\{N\equiv p\ (2)\}}|P_x| ,
+\]
+with no feedback vertex hypothesis, no restriction on $b$, and no $\mu_F$. It also makes the
+Lipschitz constant explicit instead of measured, and better than the obvious bound. Crudely,
+$\partial A/\partial\theta_j$ has a single entry of modulus one together with its conjugate,
+so its operator norm is $1$ and $\|A(z)-A(w)\|\le\sum_j|\Delta\theta_j|$, which costs a factor
+$b$. First-order perturbation theory does better: $\partial\lambda_k/\partial\theta_j$ is the
+quadratic form of that one edge against a unit eigenvector $v$, so it is at most
+$|v_{u_j}|^2+|v_{v_j}|^2$, and summing over cotree edges charges each vertex once per incident
+cotree edge. Hence
+\[
+   \sum_j\Bigl|\frac{\partial\lambda_k}{\partial\theta_j}\Bigr|\;\le\;D ,
+\]
+with $D$ the largest number of cotree edges at a vertex. $D\le2$ whenever the cotree edges can
+be chosen vertex-disjoint and $D\le\Delta(G)$ always, so $D$ does not grow with the graph while
+$b$ does. The per-edge estimate (\texttt{BandLipschitz.quad\_form\_bound}), the double count
+(\texttt{sum\_deg\_bound}) and the assembly (\texttt{grad\_l1\_bound}) are machine-checked;
+first-order perturbation theory is not in Mathlib and enters \texttt{grad\_l1\_bound} as a
+hypothesis in the shape the argument consumes.
+
+Let $\kappa$ be the number of bands whose range contains $x$. If $\kappa=0$ the localization
+settles $x$. Over $149\,764$ residue points from $40\,146$ graphs on up to eight vertices,
+$|K|=1$ at $140\,661$ and $|K|=2$ at $9103$, and no point has $|K|\ge3$
+(\texttt{code/jsweep}). How often $|K|=0$ happens depends sharply on $b$: $80.2\%$ of $486$
+midpoints
+with $b=2$ lie outside $\operatorname{spec}(G^{\mathrm{ab}})$, against $3.4\%$ of $493$
+midpoints with $b=3$, where a further $69.8\%$ are certified inside and $26.8\%$ undecided,
+so at most $30\%$ of the $b=3$ points can be settled this way
+(\texttt{code/residue\_sweep.py}, \texttt{code/residue\_b3.py}). More torus directions fill
+the gaps in. Over $5971$ residue points, with $\kappa=1$ at $5397$ and $\kappa=2$ at $574$
+and no point with $\kappa\ge3$, the minority-parity region has measure at most
+$0.0674$ and
+$\min(I_{\mathrm{even}},I_{\mathrm{odd}})/\max(I_{\mathrm{even}},I_{\mathrm{odd}})$ is at
+most $0.0169$ (\texttt{code/minority.py}), so the two classes are not close to cancelling.
+
+\begin{proposition}\label{prop:wmean}
+Suppose exactly one band function $\lambda_{k_0}$ attains $x$ on $\mathbb T^b$. Then
+$Q=\prod_{k\ne k_0}(x-\lambda_k)$ has constant sign $s$, and
+\[
+   \mu_G(x)=s\int_{\mathbb T^b}\bigl(x-\lambda_{k_0}(z)\bigr)\,|Q(z)|\,dz .
+\]
+Consequently $\mu_G(x)=0$ if and only if $x$ is the $|Q|$-weighted mean of $\lambda_{k_0}$.
+\end{proposition}
+
+\begin{proof}
+The factors other than $k_0$ never vanish and $\mathbb T^b$ is connected, so $Q$ has one sign.
+The integral is affine in $x$, so it vanishes exactly when
+$x\int|Q|=\int\lambda_{k_0}|Q|$.
+\end{proof}
+
+Machine-checked as \texttt{ParitySplit.zero\_iff\_weighted\_mean} and
+\texttt{ne\_zero\_iff\_ne\_weighted\_mean}, with the identity verified to $10^{-15}$ in
+\texttt{code/kap.py}. A weighted mean lies between the bounds of the function averaged
+(\texttt{mean\_mem\_Icc}), so an $x$ outside the range of the crossing band cannot be that
+mean: \texttt{ne\_zero\_of\_outside\_band} recovers the localization in this case with no
+estimate at all. Conjecture~\ref{conj:gap} at a point with $\kappa=1$ becomes the statement
+that the $|Q|$-weighted mean of the crossing band lies in $\operatorname{spec}(T)$. Measured
+means are $-2.149,-1.483,1.483,2.143,2.150$ on gaps whose interiors sit near $\pm1.77$, so
+they are far from $x$ and inside $\operatorname{spec}(T)$.
+
+Two caveats keep this in proportion. First, over $4900$ gap midpoints $\kappa=1$ at $2206$
+residue points and $\kappa\ge2$ at $183$, so Proposition~\ref{prop:wmean} covers $92.3\%$ of
+the residue and not all of it. Second, the statement it reduces to,
+\[
+   \text{the } |Q|\text{-weighted mean of the crossing band lies in }\operatorname{spec}(T),
+\]
+is a conjecture and is labelled as one; what can be said is that a deliberate attempt to
+break it failed. Over all $2206$ points with $\kappa=1$ the weighted mean lies in
+$\operatorname{spec}(T)$ every time and is never closer than $0.167$ to $x$
+(\texttt{code/wmean\_test.py}), and a single coincidence there would have refuted
+Conjecture~\ref{conj:gap} outright.
+
+\subsection{Separating the band geometry from the weight}\label{sec:split}
+
+Proposition~\ref{prop:wmean} mixes two unrelated things: where the crossing band sits
+relative to $x$, and how much the remaining factors vary. Separating them removes the
+restriction to one crossing band and gives a criterion whose two halves can be attacked
+independently.
+
+Let $K=\{k:x\in B_k\}$ be the crossing set and put
+\[
+   \pi(z)=\prod_{k\in K}\bigl(x-\lambda_k(z)\bigr),\qquad
+   w(z)=\Bigl|\prod_{k\notin K}\bigl(x-\lambda_k(z)\bigr)\Bigr| .
+\]
+The factors outside $K$ never vanish, so their product has a constant sign $s$ and
+$\mu_G(x)=s\int\pi w$.
+
+\begin{proposition}\label{prop:split}
+Write $\pi=\pi_+-\pi_-$ and $J_\pm=\int_{\mathbb T^b}\pi_\pm$, and suppose
+$0<q_{\mathrm{lo}}\le w\le q_{\mathrm{hi}}$. If
+\[
+   \frac{J_+}{J_-}\;>\;\Lambda:=\frac{q_{\mathrm{hi}}}{q_{\mathrm{lo}}} ,
+\]
+then $\mu_G(x)\neq0$. No hypothesis on $|K|$ is used.
+\end{proposition}
+
+\begin{proof}
+$\int\pi w=\int\pi_+w-\int\pi_-w\ge q_{\mathrm{lo}}J_+-q_{\mathrm{hi}}J_->0$.
+\end{proof}
+
+Machine-checked as \texttt{CrossingSplit.ne\_zero\_of\_split}, with the ratio form as
+\texttt{crit\_of\_ratio}. The point is that $J_\pm$ involve only the crossing bands and
+$\Lambda$ only the rest, so a bound on either half is useful on its own; the weighted mean of
+Proposition~\ref{prop:wmean} admits no such division. It is also not the wasteful estimate:
+bounding the whole integrand by $\sup w$ loses the four orders of magnitude that
+$\sup w/\inf w$ can reach, whereas here $\inf w$ is applied to the majority term and $\sup w$
+only to the minority term.
+
+The criterion is not always satisfied. Over $149\,764$ residue points drawn from $40\,146$
+graphs on up to eight vertices it holds $149\,511$ times and fails $253$ times, with worst
+margin $0.0616$ (\texttt{code/jsweep}). A sample of $208$ points had shown it holding every
+time, which was too small to see the failures.
+
+Two facts sharpen what is left. Every failure has exactly one crossing band: at $|K|=2$ the
+criterion holds at all $9103$ points, and no point with $|K|\ge3$ occurs in the corpus at all.
+And Conjecture~\ref{conj:gap} is untouched at the failing points, the true ratio
+$\min(I_+,I_-)/\max(I_+,I_-)$ never exceeding $0.0233$ over the whole corpus, so the
+conclusion holds comfortably where this sufficient condition does not see it. The worst case
+is $n=8$, $b=3$, $|K|=1$, $x=2.0607$ on the graph with edges
+$01,02,03,04,14,25,36,37,56,57$.
+
+What the criterion buys is therefore a reduction covering $99.83\%$ of the residue, together
+with a target that has structure: $J_+/J_-$ is large because $x$ sits near an edge of the
+crossing band, the minority measure never exceeding $0.0674$, and $\Lambda$ is a product of
+band-distance ratios over the non-crossing bands. Bounding either one is a self-contained
+problem, and the $253$ exceptions are a small explicit list to be understood rather than a
+diffuse obstruction.
+
+The weight can be removed from the criterion entirely. A product is bounded above by the
+product of the upper bounds of its factors and below by the product of the lower bounds, and
+for a band that does not cross $x$ the range $B_k=[\ell_k,h_k]$ lies on one side, so the
+corresponding factor is exactly $1+\operatorname{width}(B_k)/\operatorname{dist}(x,B_k)$.
+Hence
+\[
+   \Lambda\;\le\;\prod_{k\notin K}\Bigl(1+\frac{\operatorname{width}(B_k)}
+   {\operatorname{dist}(x,B_k)}\Bigr),
+\]
+machine-checked as \texttt{WeightBound.crit\_of\_band\_geometry} with the per-band identity as
+\texttt{factor\_below} and \texttt{factor\_above}. The criterion then reads entirely in the
+band ranges of the abelian cover, in the same currency as $J_+/J_-$.
+
+That bound is not sufficient on its own, and the failure is measured. The only thing discarded
+is the correlation between bands, since $\sup\prod\le\prod\sup$ is an equality only when the
+extrema align, and that costs a median factor $4.73$ and up to $28.7$. Over $208$ residue
+points the criterion with the true $\Lambda$ holds every time, worst margin $2.149$, while the
+criterion with the product in place of $\Lambda$ holds $207$ times and fails once, at
+$J_+/J_-=1213$ against a product of $2298$. The failing point is the one where $x$ sits
+closest to the edge of the crossing band, minority measure $0.0171$, which is not a
+coincidence: proximity to a band edge makes $J_+/J_-$ large and also tends to bring a second
+band close to $x$, which makes the product large. Decoupling the two halves therefore costs
+most exactly where the margin is thinnest.
+
+Difficulty is conserved and it is worth saying where it went. A weighted mean lies in the
+convex hull of the range of $\lambda_{k_0}$, which is the band containing $x$, and that band
+is not inside $\operatorname{spec}(T)$ precisely because $x$ is in it and outside
+$\operatorname{spec}(T)$. So the containment is not automatic. What has changed is the shape
+of the remaining work: one scalar in one interval in place of two integrals of comparable
+size. Two crude routes to it are already closed. Replacing $|Q|$ by its extremes fails
+because $\sup|Q|/\inf|Q|$ reaches $5.4\cdot10^{4}$ on the same examples, which is far more
+than the small minority measure buys. And deforming the polytorus radii, which leaves the
+constant Fourier coefficient unchanged and so preserves $\mu_G(x)$, cannot help either: at
+radius one the image of $P_x$ lies on a line and spans an arc of exactly $\pi$, while any
+other radius makes $A_G$ non-Hermitian and opens the image into two dimensions, so the arc
+only grows and the half-plane criterion is never reached (\texttt{code/halfplane.py}).
+
+\section{The coefficient ladder}
+
+This also explains the boundary between what is proved and what is not, and the
+explanation is exact.
+
+\begin{theorem}\label{thm:subcoef}
+Let $G$ be $(a,b)$-biregular bipartite with parts of sizes $p\le q$, degree $a$
+on the $p$-side and $b$ on the $q$-side, and let $g(z)=f_G(z+c)$ with
+$c=(a-1)+(b-1)$. Then
+\[
+[z^{p-1}]\,g \;=\; p\,(b-2).
+\]
+Consequently the roots of $g$ have mean $-(b-2)$, and $g$ is the matching
+polynomial of a graph if and only if $b=2$.
+\end{theorem}
+
+\begin{proof}
+Counting edges by their smaller side gives $pa=qb$, so $p\le q$ forces $a\ge b$
+and $b=\min(a,b)$. The polynomial $f_G$ is monic of degree $p$, and its next
+coefficient is $-m_1$, where $m_1$ is the number of $1$-matchings, that is
+$|E|=pa$. Hence
+\[
+[z^{p-1}]\,f_G(z+c)=\binom{p}{1}c-pa=p(a+b-2)-pa=p(b-2).
+\]
+The mean of the roots is $-[z^{p-1}]g/p=-(b-2)$. A matching polynomial of
+degree $p$ involves only every other power of $z$, so its coefficient at
+$z^{p-1}$ vanishes; thus $b=2$ is necessary. It is sufficient: for $b=2$ the
+graph is $S(H)$ for an $a$-regular $H$ and $g=\mu_H$ by \cite{YY}.
+\end{proof}
+
+So for $b=2$ the polynomial $g$ \emph{is} a matching polynomial, Heilmann--Lieb
+applies verbatim, and one recovers Theorem~\ref{thm:subdiv} and the subdivision
+identity as the case $c=(a-1)+1$ of the change of variable. For $b\ge3$ it
+provably is not, and Theorem~\ref{thm:subcoef} says more than that it fails: it
+locates the failure. The roots of $g$ are not centred at the band centre but sit
+a distance $b-2$ below it, towards the lower band edge, which is exactly the
+end of \eqref{eq:twosided} that is open. The asymmetry of the problem and the
+departure from the matching-polynomial class are the same phenomenon, measured
+by the single quantity $b-2$. Examples:
+\[
+g_{K_{3,4}}=z^3+3z^2-9z-19,\quad
+g_{K_{3,5}}=z^3+3z^2-12z-24,\quad
+g_{K_{4,5}}=z^4+8z^3-6z^2-128z-139,
+\]
+with subleading coefficients $3=3(3-2)$, $3=3(3-2)$ and $8=4(4-2)$ as the
+theorem requires.
+
+The same method determines more than the one coefficient, and shows that the
+graph itself does not enter until surprisingly late.
+
+\begin{theorem}\label{thm:universal}
+With notation as in Theorem~\ref{thm:subcoef}, the coefficients of $z^{p}$,
+$z^{p-1}$, $z^{p-2}$ and $z^{p-3}$ in $g$ depend only on $(p,a,b)$, not on $G$.
+Explicitly the first three are $1$, $p(b-2)$ and
+$\tfrac{p}{2}\bigl[(p-1)(b-2)^2-a(b-1)\bigr]$.
+\end{theorem}
+
+\begin{proof}
+The coefficients of $g$ up to $z^{p-j}$ are determined by $m_1,\dots,m_j$, so it
+suffices that $m_1,m_2,m_3$ are functions of $(p,a,b)$ alone. Write $N=|E|=pa=qb$.
+Then $m_1=N$. Two distinct edges of a bipartite graph meet in at most one vertex,
+so $m_2=\binom N2-p\binom a2-q\binom b2$, which after substituting $q=pa/b$ gives
+$m_2=\tfrac{pa}{2}(pa-a-b+1)$; the stated value of $[z^{p-2}]g$ follows from
+$\binom p2c^2-(p-1)Nc+m_2$ with $c=a+b-2$.
+
+For $m_3$, let $L$ be the graph on $E$ in which two edges are adjacent when they
+meet, so $m_3$ is the number of independent $3$-sets of $L$. Every vertex of $L$
+has degree $(a-1)+(b-1)=c$. Three pairwise meeting edges of a bipartite graph
+must share a vertex, since otherwise they form a triangle in $G$; hence the
+number of triangles of $L$ is $t=p\binom a3+q\binom b3$, and the number of
+$2$-edge paths is $N\binom c2-3t$. The standard count
+$\binom N3-\tfrac{Nc}{2}(N-2)+\bigl(N\binom c2-3t\bigr)+2t$ therefore depends
+only on $(p,a,b)$.
+\end{proof}
+
+The graph enters at the very next coefficient, and it does so through a single
+invariant, with coefficient one.
+
+\begin{theorem}\label{thm:c4}
+Let $C_4(G)$ denote the number of $4$-cycles of $G$. Then
+\[
+[z^{p-4}]\,g \;=\; U(p,a,b)+C_4(G),
+\]
+where, writing $\beta=b-2$ and $A=a(b-1)$,
+\[
+U=\binom p4\beta^4-\tfrac32A\beta^2\binom p3
++\frac{A\,(3A+4\beta^2)}{12}\binom p2-\frac{A\,(9A+2b^2-14b+14)}{24}\,p .
+\]
+\end{theorem}
+
+\begin{proof}
+As in Theorem~\ref{thm:universal}, $m_4$ is the number of independent $4$-sets of
+$L$, and inclusion--exclusion expresses it through the \emph{non-induced} counts
+in $L$ of the ten graphs on at most four vertices with no isolated vertex. Nine
+of the ten are universal, by the clique structure of $L$: each vertex of $L$ is a
+cell of the $p\times q$ biadjacency matrix, and two cells are adjacent exactly
+when they share a row or share a column, never both, so every edge of $L$ has a
+well-defined type.
+
+Only the count of $C_4$ in $L$ is not universal. Reading the cyclic word of types
+around a four-cycle of $L$, the words $RRRC$ and $RCCC$ are impossible, since
+three consecutive edges of one type force all four cells into a single line and
+then the fourth edge has that type too; and $RRCC$ is impossible, since it would
+require a cell sharing a column with two distinct cells of one row. This leaves
+$RRRR$ and $CCCC$, whose four cells lie in one line and which therefore number
+$3\bigl[p\binom a4+q\binom b4\bigr]$, and $RCRC$, whose four cells are exactly
+the four entries of a $2\times2$ all-ones submatrix, that is a $4$-cycle of $G$,
+each contributing exactly one. Substituting and applying the shift
+$[z^{p-4}](z+c)^{p-k}=\binom{p-k}{p-4}c^{4-k}$ gives the stated $U$.
+\end{proof}
+
+Together with Theorem~\ref{thm:universal} this determines the top five
+coefficients of $g$ completely:
+\[
+\begin{aligned}
+{}[z^{p-1}]g&=p\beta, &
+[z^{p-2}]g&=\binom p2\beta^2-\tfrac12Ap,\\
+[z^{p-3}]g&=\binom p3\beta^3-A\beta\binom p2+\tfrac16A\beta p, &
+[z^{p-4}]g&=U+C_4(G).
+\end{aligned}
+\]
+For the Heawood graph ($p=7$, $a=b=3$, $C_4=0$) the last reads
+$35-315+231-77=-126$. So the conjecture is insensitive to the graph until girth
+enters, and it enters at the first opportunity: four pairwise disjoint edges are
+first constrained by a $4$-cycle.
+
+Theorem~\ref{thm:universal} has a consequence for what a proof of
+Conjecture~\ref{conj:gap} can look like. The universal coefficients determine the
+first two power sums of the roots of $g$, namely
+$\sum\rho_i=-p(b-2)$ and $\sum\rho_i^2=p\bigl[(b-2)^2+a(b-1)\bigr]$, and those
+two numbers already imply a bound on the least root.
+
+\begin{proposition}\label{prop:moments}
+Every root of $g$ satisfies
+$\rho\ge-(b-2)-\sqrt{(p-1)a(b-1)}$, and this is the sharpest bound implied by
+the coefficients of $z^p,z^{p-1},z^{p-2}$.
+\end{proposition}
+
+\begin{proof}
+The roots are real. Fix a root $\rho$ and apply Cauchy--Schwarz to the other
+$p-1$: $\bigl(\sum\rho_i-\rho\bigr)^2\le(p-1)\bigl(\sum\rho_i^2-\rho^2\bigr)$.
+With $e=\sum\rho_i$ and $S=\sum\rho_i^2$ this is
+$p\rho^2-2e\rho+e^2-(p-1)S\le0$, so
+$\rho\ge\bigl[e-\sqrt{(p-1)(pS-e^2)}\bigr]/p$. Substituting the two power sums
+gives $pS-e^2=p^2a(b-1)$ and the stated bound. Sharpness is the equality case of
+Cauchy--Schwarz.
+\end{proof}
+
+The bound of Proposition~\ref{prop:moments} grows like $\sqrt p$, whereas the
+conjectured bound $-2\sqrt m$ does not depend on $p$ at all. So for all but the
+smallest graphs the moment bound is far weaker, and since by
+Theorem~\ref{thm:universal} the coefficients it uses do not see $G$, no argument
+resting on them can distinguish one $(a,b)$-biregular graph from another. Any
+proof of Conjecture~\ref{conj:gap} must therefore use $m_4$ or beyond, that is,
+it must be sensitive to the cycle structure of $G$. This is consistent with the
+place the conjecture occupies: bounds of the shape $2\sqrt{(a-1)(b-1)}$ are
+non-backtracking bounds, and the non-backtracking operator of a bipartite graph
+is exactly the object that records cycles. That object can be exhibited, but only
+in averaged form, and the reason for the averaging is not incidental.
+
+\section{An expected non-backtracking polynomial}
+
+\begin{lemma}[Chernyak--Chertkov; Watanabe--Fukumizu]\label{lem:gauge}
+Let $G$ be any graph, $A_s$ its adjacency matrix with edges signed by
+$s\in\{\pm1\}^{E}$, and $D$ the degree matrix. Then, with $s$ uniform,
+\[
+\mathbb E_s\,\det\bigl(I+u^2(D-I)-uA_s\bigr)
+=\sum_{M}(-u^2)^{|M|}\prod_{v\notin V(M)}\bigl(1+(d_v-1)u^2\bigr),
+\]
+the sum being over all matchings $M$ of $G$. If $G$ is $(a,b)$-biregular
+bipartite with $P=a-1$ and $Q=b-1$, the right side is $\mu_G(\lambda)$ up to
+normalization at $\lambda=\sqrt{(1+Pu^2)(1+Qu^2)}/u$, and then, with $t=u^2$,
+\begin{equation}\label{eq:tsub}
+\lambda^2-c=\frac1t+mt .
+\end{equation}
+\end{lemma}
+
+The identity is not new and we claim none of it. Chernyak and Chertkov
+\cite[Eqs.~(2),~(6)]{CC} prove that for an arbitrary matrix $H$ the average of
+$\det H(\sigma)$ over $\mathbb Z_2$ edge gaugings equals a monomer--dimer sum with
+weights $w_a=H_{aa}$ and $w_{ab}=-H_{ab}H_{ba}$; taking $H=I+u^2(D-I)-uA$ gives
+the display, since then $w_a=1+(d_a-1)u^2$ and $w_{ab}=-u^2$. Equivalently, the
+averaging step alone is the Godsil--Gutman expansion \cite{GG}, valid for any
+diagonal matrix in place of $I+u^2(D-I)$, and the right-hand side with those
+degree-dependent weights is the monomer--dimer partition function
+$\Xi_G(-u^2,\lambda)$, $\lambda_v=1+(d_v-1)u^2$, of Watanabe and Fukumizu
+\cite[Thm.~5.5]{WF}; on a $(q+1)$-regular graph they reduce it to
+$u^{|V|}\mu_G(1/u+qu)$ \cite[Eq.~(5.3)]{WF}, attributing the regular case to
+Nagle, an attribution we take from \cite{WF}, not having consulted the
+original, and record the consequent band statement, that the roots then lie on
+the
+circle of radius $1/q$. Only \eqref{eq:tsub}, the biregular substitution, is not
+in those sources.
+
+What we do wish to point out is how the left-hand side should be read. By the
+Ihara--Bass formula for signed graphs, $\mathbb E_s\det(I-uW_s)$ is
+$(1-u^2)^{|E|-|V|}$ times the left side above, so the polynomial in
+Lemma~\ref{lem:gauge} is an \emph{expected non-backtracking characteristic
+polynomial}. This reading is absent from the sources just cited, and not by
+oversight in an obvious direction: \cite{CC} obtain the average but explicitly set
+the Ihara spectral parameter to zero, and \cite{WF} display the Bass matrix
+$I-uA_G+u^2(D_G-I)$ next to their Theorem 5.9, a sum over deletions of
+vertex-disjoint cycles, and remark in print that its relation to the graph zeta
+function is unknown. The sign average is exactly what annihilates those cycle
+terms. The closest antecedent we have found is Watanabe and Chertkov
+\cite[Thm.~4]{WC}, who do average a non-backtracking determinant over $\pm1$ edge
+signs and convert it by Ihara--Bass, but for the permanent, that is for perfect
+matchings on $K_{N,N}$, with no degree-dependent vertex weights.
+
+The band condition has a clean reading on that polynomial, and it sharpens a
+published bound. By \eqref{eq:tsub}, a root $\beta$ of $\omega_G$ coming from a
+nonzero root $\lambda$ of $\mu_G$ satisfies $m\beta^2-\rho\beta+1=0$ with
+$\rho=\lambda^2-c$, so the two roots of that quadratic have product $1/m$; they are
+complex conjugates, hence both of modulus $m^{-1/2}$, exactly when
+$|\rho|\le2\sqrt m$, and otherwise real with one inside and one outside that circle.
+Watanabe and Fukumizu prove \cite[Cor.~5.8]{WF} that every root of $\omega_G$ lies
+in the annulus $1/(d_M-1)\le|\beta|\le1/(d_m-1)$, which for an $(a,b)$-biregular
+graph reads $1/(a-1)\le|\beta|\le1/(b-1)$. Conjecture~\ref{conj:gap} at $d=1$
+asserts that all roots except those coming from $\lambda=0$ lie on the single
+circle $|\beta|=m^{-1/2}$, the geometric mean of the two radii they bound by. The
+roots at $\lambda=0$ are $\beta=-1/(a-1)$ and $\beta=-1/(b-1)$, so they sit at the
+two ends of that annulus, which is why it is attained and cannot be narrowed
+without excluding them.
+
+Since $1/t+mt=2\sqrt m\cos\varphi$ exactly when $|t|=1/\sqrt m$:
+
+\begin{corollary}\label{cor:ramanujan}
+For $(a,b)$-biregular bipartite $G$, Conjecture~\ref{conj:gap} at $d=1$ holds for
+$G$ if and only if every root $u$ of the expected non-backtracking characteristic
+polynomial of $G$, other than the trivial ones, satisfies $|u|=m^{-1/4}$.
+\end{corollary}
+
+So the conjecture is a Ramanujan condition after all, but for an \emph{expected}
+polynomial rather than for a spectrum. That is forced. If $\mu_G$ were, up to the
+substitution and prefactor above, the determinant of a single locally described
+operator on $G$, its coefficients could be recovered by interpolation from
+polynomially many determinant evaluations; but those coefficients are the
+matching numbers $m_k$, whose computation is $\#P$-hard even for planar graphs of
+bounded degree \cite{Je}. No unaveraged Bass-type identity for the matching
+polynomial can therefore exist unless $\mathrm{FP}=\#\mathrm P$. This is also why
+the roots of $\mu_G$ are not the spectrum of any operator on $G$, and hence why
+the available technology for such statements is the method of interlacing
+families \cite{MSS}, which works with expected polynomials, rather than a
+spectral argument.
+
+\section{How close the bound comes to being attained}
+
+Proposition~\ref{prop:moments} also explains why the interval is not filled. The
+mean square of the roots is $\bigl[(b-2)^2+a(b-1)\bigr]$, so the fraction of the
+band $[-2\sqrt m,2\sqrt m]$ occupied in mean square is
+\[
+\frac{(b-2)^2+a(b-1)}{4(a-1)(b-1)},
+\]
+which is $7/16$ for $(a,b)=(3,3)$, $1/2$ for $(2,2)$, $3/8$ for $(4,3)$, and
+tends to $1/4$ as $a\to\infty$. The bulk of the spectrum sits well inside the
+band; only the extremes are at issue, which is why moments cannot decide the
+question.
+
+The extremes behave as Theorem~\ref{thm:subcoef} predicts. Writing the least and
+greatest roots as percentages of the two band edges:
+\begin{center}
+\begin{tabular}{lccc}
+\hline
+$G$ & girth & least root & greatest root\\
+\hline
+$K_{3,3}$ & 4 & $89.6\%$ & $57.2\%$\\
+$K_{4,4}$ & 4 & $94.6\%$ & $56.6\%$\\
+circulant $6+6$ & 4 & $96.4\%$ & $74.2\%$\\
+Heawood & 6 & $97.5\%$ & $79.9\%$\\
+Pappus & 6 & $98.6\%$ & $83.4\%$\\
+\hline
+$C_{12}$ & 6 & $96.6\%$ & $96.6\%$\\
+$3C_4$ & 4 & $70.7\%$ & $70.7\%$\\
+\hline
+\end{tabular}
+\end{center}
+The first block has $b=3$, and the least root is consistently far closer to its
+edge than the greatest is to its, the roots are displaced downwards by $b-2$,
+exactly as Theorem~\ref{thm:subcoef} requires. The second block has $b=2$, the
+displacement vanishes, and the two ends are used equally. That is what the table
+shows, and it is all it shows.
+
+It does not bear on sharpness, for a reason worth stating because it is easy to
+miss. Every graph in the table has $a=b$, and there $c=2(a-1)=2\sqrt m$, so
+$\rho=y-c\ge-c=-2\sqrt m$ holds automatically from $y=x^2\ge0$: the lower bound is
+an identity, not a theorem. This is the triviality that Song, Fan and Miao note
+for $d=r$ \cite{SFM}. The percentages above therefore measure only how close the
+least root of $\mu_G$ comes to $0$, and $100\%$ would require $\mu_G(0)=0$, that
+is a graph with no perfect matching, which by K\H onig's theorem no regular
+bipartite graph is. The conjecture has content exactly when $a\ne b$, where
+$c>2\sqrt m$ strictly by the arithmetic--geometric mean inequality.
+
+Where it has content the bound holds with room to spare, and is not approached.
+For $(4,2)$-biregular graphs the conjecture asserts $y\ge c-2\sqrt m=4-2\sqrt3
+=0.5359$; a girth-$4$ family plateaus at $y_{\min}=1.1716$ and a girth-$8$ family
+at $0.7392$. In the trivial regime the same plateauing is visible, and there
+the limit is an algebraic number one can name. For a cubic bipartite circulant on
+$n+n$ vertices with connection set $S$, the matching counts satisfy
+$f_n(y)=\operatorname{tr}A(y)^n$ for a transfer matrix $A(y)$ with entries linear
+in $y$, so by the theorem of Beraha, Kahane and Weiss the roots accumulate where
+the two dominant eigenvalues of $A(y)$ have equal modulus. That happens by a
+genuine collision of two real eigenvalues, below $y^*$ the pair is real and
+distinct, above it a complex-conjugate pair, so the locus is cut out by
+$\operatorname{disc}_\lambda\chi_{A(y)}=0$ and $y^*$ is the left edge of the
+accumulation band. For $S=\{0,1,2\}$, girth $4$,
+\[
+\operatorname{disc}_\lambda\chi=4y^2\bigl(y^4-12y^3+46y^2-84y+5\bigr),
+\]
+and $y^*$ is the least positive root of that quartic, which is irreducible over
+$\mathbb Q$; then $y^*=0.0615663466041589\ldots$ and the limit is
+$100-25y^*=98.4608413349\ldots\%$ of the lower edge. For $S=\{0,1,3\}$, girth
+$6$, the discriminant is $y^3F(y)$ with $F$ irreducible of degree $17$, giving
+$y^*=0.0059255959422562\ldots$ and $99.8518601014\ldots\%$. Both stop strictly
+short of $100\%$. The finite-$n$ values approach these from above with a $1/n^2$
+band-edge law, and $n^2\bigl(y_{\min}(n)-y^*\bigr)$ is constant to five digits at
+$n=200,300,500$, which identifies the extrapolated plateau with the algebraic
+number.
+
+One half of the limit is certified exactly, without appeal to
+Beraha--Kahane--Weiss. On the whole of $[0,y^*)$ the largest eigenvalue modulus of
+$A(y)$ is attained by exactly one eigenvalue, which is real, simple and negative:
+the discriminant has no zero there, so real branches stay real; no two eigenvalues
+are negatives of one another, by a resultant of the even and odd parts of $\chi$
+which has no zero on $(0,y^*]$; and for the octic a separating radius $5/4$, which
+no eigenvalue ever attains, together with one exact Schur count, pins the number of
+eigenvalues outside it at two. Hence $|f_n|\ge|\lambda_1|^n(1-(N-1)(1+\delta)^{-n})$
+on any compact subinterval, giving $\liminf_ny_{\min}(n)\ge y^*$. The reverse
+inequality does use Beraha--Kahane--Weiss: just above $y^*$ the two branches form a
+conjugate pair of equal and maximal modulus, and one needs that theorem to conclude
+that the zeros accumulate there. This is what one should expect:
+a family with a fixed local structure has a fixed Benjamini--Schramm limit, which
+is not a tree, so its matching measure retains a gap at $0$. Non-attainment of
+this kind was already visible to Heilmann and Lieb, who tabulate the largest zero
+against their own bound for six lattices, $11.24$ against $12$, $17.86$ against
+$20$, $41.32$ against $44$, and remark that equality ``cannot be expected to be
+true in general'' \cite[Table 1 and Remark 4.3]{HL}. Girth does help
+monotonically, at $30$ vertices, girth $4$, $6$ and $8$ give $98.166\%$,
+$99.311\%$ and $99.410\%$, but no family of bounded girth can approach the
+edge, and every cubic bipartite circulant has girth at most $6$, since the closed
+hexagon $0,s_1,s_1-s_2,s_1-s_2+s_3,s_3-s_2,s_3$ is always present. We therefore
+make no claim that $2\sqrt m$ is attained or approached. The roots of these
+circulants do satisfy \eqref{eq:twosided}, with maxima $4.06,4.48,6.26$ against
+bounds $4.90,5.66,6.93$.
+
+\section{The multivariate polynomial and the cavity recursion}
+
+The polynomials $g$ admit a clean description. Since a $k$-matching leaves $p-k$
+vertices of $A$ unmatched,
+\begin{equation}\label{eq:multivar}
+f_G(y)=\sum_{k}(-1)^k m_k\,y^{p-k}
+=\sum_{M}(-1)^{|M|}\prod_{v\in A\setminus V(M)}y
+=\mathcal M\bigl(G;\,x_A=y,\ x_B=1\bigr),
+\end{equation}
+the multivariate matching polynomial of Heilmann and Lieb under the asymmetric
+specialization that puts the variable on one side of the bipartition and $1$ on
+the other. So the $g$ are not exotic: they are shifts of matching polynomials in
+the multivariate sense. This is a reformulation and not an advance: for
+bipartite $G$ every edge of a matching covers one vertex of each side, so
+$\mathcal M(G;x_A=y,x_B=z)$ depends only on the product $yz$, and the asymmetric
+specialization therefore carries exactly the information of the univariate
+matching polynomial. In particular no quantitative Heilmann--Lieb theorem for
+non-uniform specializations can help here, and none is available: the
+multivariate bounds of \cite{HL} apply a single graph-wide threshold to every
+variable.
+
+Deleting a vertex now gives two different recursions, because only $A$-vertices
+carry the variable:
+\[
+v\in A:\quad f_G=y\,f_{G-v}-\!\!\sum_{u\sim v}\!f_{G-v-u},
+\qquad
+u\in B:\quad f_G=f_{G-u}-\!\!\sum_{v\sim u}\!f_{G-u-v},
+\]
+whence the cavity recursion
+$R_A=y-\sum1/R_B$, $R_B=1-\sum1/R_A$. On the $(a,b)$-biregular tree, with
+$P=a-1$, $Q=b-1$, its fixed point satisfies $R^2+(P-Q-y)R+yQ=0$, of
+discriminant
+\[
+D(y)=(P-Q-y)^2-4yQ,
+\qquad
+D(y)=0\iff y=(\sqrt P\pm\sqrt Q)^2 .
+\]
+The two roots are exactly the spectrum edges in the variable $y=x^2$, and $D<0$
+strictly between them: the fixed point is complex precisely on the spectrum and
+real precisely off it, as it must be. Both recursions and the discriminant have
+been checked exactly.
+
+Conjecture~\ref{conj:gap} for biregular $G$ is therefore the statement that the
+asymmetric recursion, started from the leaves of the path tree, never produces
+$R=0$ while $D>0$. The natural invariant region is
+\[
+R_A\le-\alpha<0,\qquad R_B\in[\,1,\ 1+Q/\alpha\,],
+\]
+for a parameter $\alpha>0$. A $B$-vertex with children in the region has
+$R_B=1+\sum1/|R_A|\in(1,1+Q/\alpha]$, and a $B$-leaf carries $R_B=1$, exactly
+the lower boundary. An $A$-vertex with its full complement of $P$ children has
+$R_A\le y-P\alpha/(\alpha+Q)$, so the region is closed precisely when
+$y\le h(\alpha)$, where $h(\alpha)=\alpha(P-Q-\alpha)/(\alpha+Q)$. The
+following is elementary and is machine-checked in Lean~4
+(\texttt{region\_closure\_bound}, \texttt{gap\_edge\_identity}):
+\begin{equation}\label{eq:square}
+(s-t)^2(\alpha+t^2)-\alpha(s^2-t^2-\alpha)=\bigl(\alpha-t(s-t)\bigr)^2 ,
+\end{equation}
+so $h(\alpha)\le(s-t)^2$ for every $\alpha$, with equality at
+$\alpha=t(s-t)=\sqrt{PQ}-Q$. The region therefore closes for every $y$ strictly
+below the gap edge and for no $y$ above it: the invariant region is calibrated
+exactly to the spectrum, and \eqref{eq:square} is the reason.
+
+\section{The reflection, and why the band edges are never roots}
+
+One structural fact explains why $b=2$ is the case that closes, and it is a
+reflection. The subdivision identity
+$\mu_{S(H)}(x)=x^{|E|-|V|}\,\mathcal{LM}(H,x^2)$ is due to Yan and Yeh
+\cite{YY}, who also treat the regular and semiregular cases; see
+\cite{WWM}, Corollary 2.3, for a restatement through the multivariate matching
+polynomial. For $H$ $D$-regular it reads $f_G(y)=\mu_H(y-D)$, and
+$\mu_H(-z)=(-1)^{|V(H)|}\mu_H(z)$, so
+\begin{equation}\label{eq:reflect}
+f_G(2c-y)=(-1)^{p}f_G(y),\qquad c=(a-1)+(b-1),
+\end{equation}
+and $c$ is the midpoint of $[(s-t)^2,(s+t)^2]$ because $(s\pm t)^2=c\pm2\sqrt m$.
+The roots of $f_G$ are therefore symmetric about the centre of the band, so for
+$b=2$ the lower bound in \eqref{eq:twosided} is \emph{equivalent} to the upper
+one, and Theorem~\ref{thm:subdiv} is that equivalence. The reflection
+\eqref{eq:reflect} fails as soon as both degrees exceed $2$: it fails for
+$K_{3,4}$, $K_{3,5}$ and already for the regular $K_{3,3}$, so regularity does
+not rescue it. Since $b=2$ holds exactly when $G$ is the subdivision of an
+$a$-regular multigraph, \eqref{eq:reflect} describes the whole of the
+phenomenon, and for $b\ge3$ the lower bound is not a repackaging of the upper
+bound but carries information the upper bound does not. We note that
+\eqref{eq:reflect} has no adjacency analogue: the companion identity
+$\varphi(S(H),x)=x^{|E|-|V|}\varphi(H,x^2-D)$ holds as well, but $\varphi(H,\cdot)$
+has a parity only for bipartite $H$, whereas $\mu_H$ always does. For the
+Petersen graph the matching-side values are symmetric about $D=3$ and the
+adjacency-side values are not.
+
+A consequence of the first is that the band edges are never roots, by an
+argument of a different kind.
+
+\begin{proposition}\label{prop:galois}
+Let $G$ be $(a,b)$-biregular bipartite with $a,b\ge2$, and suppose
+$m=(a-1)(b-1)$ is not a perfect square. Then neither $(s-t)^2$ nor $(s+t)^2$ is
+a root of $f_G$.
+\end{proposition}
+
+\begin{proof}
+$f_G$ has integer coefficients and $(s\mp t)^2=(a+b-2)\mp2\sqrt m$, so for $m$
+not a square the two band edges are conjugate over $\mathbb Q$; if one is a root
+of $f_G$, so is the other. Heilmann and Lieb already give a \emph{strict} bound,
+$|a|<2\sqrt{B_1}$ with $B_1=\Delta-1$ for unit edge weights \cite[Thm.~4.3]{HL},
+but at the max-degree radius, which for $a\ne b$ exceeds $s+t$; strictness at the
+biregular radius therefore has to be argued separately. Every root of $\mu_G$ is
+bounded by the spectral
+radius of a path tree $T_u(G)$ \cite{God81}, and $T_u(G)$ is finite and embeds
+in the universal cover of $G$, the $(a,b)$-biregular tree $T_{a,b}$, with
+degrees bounded by those of $T_{a,b}$. Now $\rho(T_{a,b})=s+t$ is the supremum
+of $\rho$ over finite subtrees of $T_{a,b}$, and that supremum is not attained:
+any finite subtree is a proper subgraph of a larger connected finite subtree,
+and $\rho$ is strictly monotone under proper subgraph containment for finite
+connected graphs. Hence $\rho(T_u(G))<s+t$, so $(s+t)^2$ is not a root of
+$f_G$, and therefore neither is $(s-t)^2$.
+\end{proof}
+
+The hypothesis on $m$ is needed for the argument, not merely for convenience:
+when $m$ is a square the two band edges are rational and independent, and
+conjugacy says nothing. The smallest such case is $(a,b)=(5,2)$, where $m=4$
+and the edges are $1$ and $9$. There the conclusion nevertheless holds, but for
+a different reason, the Heilmann--Lieb bound is strict for finite graphs, so
+Theorem~\ref{thm:subdiv} already excludes the lower edge. Proposition~\ref{prop:galois}
+is the statement for the cases those methods do not reach.
+
+Evaluating $f_G$ in $\mathbb Z[\sqrt m]$ confirms this and exhibits the
+conjugacy: for $K_{3,4}$, $K_{3,5}$, $K_{3,6}$, $K_{4,5}$ the two edge values
+are $53\mp30\sqrt6$, $72\mp40\sqrt8$, $91\mp50\sqrt{10}$, $1877\mp512\sqrt{12}$.
+For $b=2$ the irrational parts vanish, as \eqref{eq:reflect} requires.
+Proposition~\ref{prop:galois} is worth isolating because it uses no induction on
+vertex deletion, and so is not subject to the obstruction of
+Section~\ref{sec:must}; it is
+the only tool we have found with that property, although it controls only the
+edges and not the interior of the gap.
+
+\section{The operator form}
+
+\subsection{The mixed characteristic polynomial}
+
+The multivariate object that does carry the biregular information is the mixed
+characteristic polynomial of Marcus, Spielman and Srivastava: with
+$P_k=\operatorname{diag}(\mathbf 1_{N(k)})$ of rank $b$ and $\sum_kP_k=aI_p$, one
+has $\nu_G=\mu[P_1,\dots,P_q]$, since $\sum_kz_kP_k$ is diagonal and each
+$\partial_{z_k}$ must strike a distinct linear factor, so the surviving terms are
+the injections, that is the matchings. This is the stability route done properly,
+and it locates the shortfall quantitatively: a barrier argument that sees only
+the rank, the trace and $\sum_kP_k=aI$ is reading the Marchenko--Pastur law, and
+yields the interval $\bigl[(\sqrt a-\sqrt b)^2,(\sqrt a+\sqrt b)^2\bigr]$, which
+is strictly wider than the band, the discrepancy being
+$2\bigl[\sqrt{ab}-\sqrt{(a-1)(b-1)}-1\bigr]\ge0$ with equality only at $a=b$. So
+the standard potentials do not even recover the known upper bound. That is not a
+deficiency of the analysis but of the hypotheses, and it can be seen exactly. Take
+$A_k=(b/p)I_p$: these are positive semidefinite with
+$\operatorname{tr}A_k=b$ and $\sum_kA_k=(qb/p)I=aI$, so they satisfy every
+hypothesis the barrier method uses, and $\mu[A_1,\dots,A_q]$ is a Laguerre
+polynomial whose roots converge to the Marchenko--Pastur edges. At $(a,b)=(3,2)$ the
+upper edge is already exceeded at $p=4$, where the largest root is $6.229$ against
+$(s+t)^2=5.828$, and the lower edge at $p=48$, where the smallest is $0.154$
+against $(s-t)^2=0.172$. The Marchenko--Pastur interval is therefore attained on
+those hypotheses, and \emph{no} barrier argument that does not see
+$\operatorname{rank}A_k\le b$ can reach the tree band at either edge. Numerically
+the rank condition is what carries the statement: dropping idempotency but keeping
+$\operatorname{rank}A_k\le b$ and $\operatorname{tr}A_k=b$ produced no violation in
+search, which suggests that class, rather than the projections, as the natural
+target. What is
+missing is a barrier built from the Kesten measure of the $(a,b)$-biregular tree
+rather than from Marchenko--Pastur, which is to say one that uses that the $P_k$
+are $0/1$ diagonal, exactly the combinatorial information free probability
+discards.
+
+That raises the question of how much of the hypothesis is really needed, and the
+answer delimits the problem usefully. Asking for the same conclusion from
+\emph{arbitrary} positive semidefinite $A_k$ of rank $b$ with $\sum_kA_k=aI_p$ is
+false. Take $p=2$, $q=3$, $(a,b)=(3,2)$, and
+$A_1=A_2=\tfrac u2I_2$, $A_3=(3-u)I_2$: each has rank $2=b$ and the sum is $3I=aI$,
+while $\mu[A_1,A_2,A_3](y)=y^2-6y+\bigl(6u-\tfrac32u^2\bigr)$. At $u=\tfrac1{10}$
+the constant term is $\tfrac{117}{200}$ and the roots are $0.09914$ and $5.90086$,
+outside the band $[3-2\sqrt2,3+2\sqrt2]=[0.17157,5.82843]$ at both ends; as
+$u\to0$ the roots tend to $0$ and $6$. The counterexample is diagonal, hence
+commuting, so noncommutativity is not what fails. What fails is that the traces
+are unconstrained: $\operatorname{tr}A_3=5.8\gg b$. Imposing
+$\operatorname{tr}A_k=b$ restores the second coefficient, since it then depends on
+the family only through $\sum_k\|A_k\|_F^2$, which by Cauchy--Schwarz is at least
+$b$ with equality exactly for idempotents. Projections are thus the extreme point
+already at the first nontrivial coefficient.
+
+For rank-$b$ orthogonal projections the statement survives, once one adds the
+hypothesis $a\ge b$, equivalently $p\le q$, which the graph setting supplies
+automatically. Without it the statement is false for a trivial reason: if $p>q$
+then $y^{p-q}$ divides $\mu[P_1,\dots,P_q]$, so $0$ is a root while the lower band
+edge is positive. Taking $p=6$, $q=4$, $(a,b)=(2,3)$ with $P_1=P_2$ and $P_3=P_4$
+the projections onto two complementary $3$-spaces gives a double root at $0$
+against a lower edge of $(\sqrt2-1)^2$. A search over more than
+$10^5$ feasible families, real and complex projections, and the intermediate
+class $\operatorname{rank}\le b$, $\operatorname{tr}=b$, produced no violation,
+the smallest observed margin being $3.6\%$ of the band width. That figure needs a
+caveat, though, and it cuts against the aggregate impression: every tight case in
+those searches has $b=2$, hence lies in the regime settled by
+Proposition~\ref{prop:reflect}. In the genuinely open range $b\ge3$ the observed
+margins are wide, at $(p,q,a,b)=(6,8,4,3)$ the least root is $0.486$ against a
+band edge of $0.101$, a factor of nearly five. The numerical evidence for the open
+part of the statement is thinner than the total counts suggest. Two features make
+this the right generalization to record. First, commuting rank-$b$ projections with
+$\sum_kP_k=aI$ are simultaneously diagonalizable and therefore $0/1$ diagonal, so
+they are \emph{exactly} the biregular incidence families: the projection statement
+is precisely the noncommutative extension of Conjecture~\ref{conj:gap}. Second, the
+universality of Theorem~\ref{thm:universal} persists in that setting, for
+projections the coefficients $E_0,\dots,E_3$ depend only on $(p,q,a,b)$, because
+idempotency collapses every trace of a word of length at most three with a repeated
+letter, while at length four $\operatorname{tr}(A_iA_jA_iA_k)$ does not reduce. The
+first free invariant sits at level four on both sides of the analogy, matching the
+$4$-cycle count of Theorem~\ref{thm:c4}.
+
+\subsection{A determinantal representation}
+
+The mixed characteristic polynomial admits a probabilistic representation which gives
+an unconditional bound with no barrier or stability input. Write $P_k=W_kW_k^{*}$
+with $W_k^{*}W_k=I_b$, set $U=[W_1|\cdots|W_q]/\sqrt a$, and let $\Pi=U^{*}U$, a
+rank-$p$ orthogonal projection on $\mathbb R^{n}$, $n=pa=qb$, whose $q$ diagonal
+$b\times b$ blocks are all $\tfrac1aI_b$. Let $S$ be a sample from the determinantal
+process with kernel $\Pi$ and $s_k(S)$ the number of slots of block $k$ it uses.
+Then
+\begin{equation}\label{eq:dpp}
+y^{\,q-p}\,\mu[P_1,\dots,P_q](y)=\mathbb E_S\prod_{k=1}^q\bigl(y-a\,s_k(S)\bigr),
+\end{equation}
+by expanding $\det(yI+\sum_kz_kP_k)$ over subsets and applying
+$\prod_k(1-\partial_{z_k})$, which annihilates every term using a block twice. Here
+$|S|=p$ always, so $\sum_ks_k=p$, and each $s_k$ is exactly
+$\mathrm{Binomial}(b,1/a)$; for a diagonal family $S$ is simply an independent
+uniform choice of one incident edge at each vertex of the $p$-side.
+
+Since $0\le s_k\le b$, every factor in \eqref{eq:dpp} is positive once $y>ab$, so
+the expectation is, and there is no root there.
+
+\begin{proposition}\label{prop:abbound}
+Every root of $\mu[P_1,\dots,P_q]$ is at most $ab$. Moreover, with
+$m=(a-1)(b-1)$,
+\[
+ab-\bigl(\sqrt{a-1}+\sqrt{b-1}\bigr)^2=\bigl(\sqrt m-1\bigr)^2 .
+\]
+\end{proposition}
+
+So the bound overshoots the conjectured edge by exactly $(\sqrt m-1)^2$, and is
+lossless precisely when $m=1$. At $a=b=2$ the overshoot vanishes
+and $ab=4$ is the upper edge; the roots are nonnegative because the matching numbers
+are, so \textbf{the band is proved outright at $a=b=2$}.
+
+Where $ab$ stands relative to what is known needs care, and we record it exactly. Xu, Xu
+and Zhu \cite[Thm.~1.9]{XXZ} prove, for positive semidefinite $X_1,\dots,X_q$ of rank at
+most $k$ with $\sum X_i\preceq I$ and $\varepsilon=\max\operatorname{tr}X_i$, that
+$\operatorname{maxroot}\mu\le\bigl(\sqrt{1-\varepsilon/(k-1)}+\sqrt\varepsilon\bigr)^2$
+whenever $\varepsilon\le(k-1)^2/k$. Normalizing a rank-$b$ projection family with
+$\sum_kP_k=aI$ by $a$ puts it in exactly that form with $k=b$ and $\varepsilon=b/a$, and
+since the roots scale with the family this gives
+\begin{equation}\label{eq:xxz}
+\lambda_{\max}\ \le\ a\Bigl(\sqrt{1-\tfrac{b}{a(b-1)}}+\sqrt{\tfrac ba}\Bigr)^{2},
+\qquad a\ \ge\ \frac{b^2}{(b-1)^2},
+\end{equation}
+which at $b=2$ is $a+2\sqrt{2a-4}$ for $a\ge4$. That is strictly better than $ab$ for
+every $a>4$, indeed $a+2\sqrt{2a-4}\le2a$ with equality only at $a=4$, formalized as
+\texttt{xxz\_le\_ab} and \texttt{xxz\_eq\_ab\_iff}, and better than
+Marchenko--Pastur throughout. So $ab$ is the best available bound only where the
+hypothesis of \eqref{eq:xxz} fails, which at $b=2$ means $a<4$: at $a=b=2$, where it is
+sharp and settles the band, and at $(a,b)=(3,2)$, where it gives $6$ against a
+Marchenko--Pastur edge of $9.899$ and a band edge of $5.828$. Elsewhere \eqref{eq:xxz} is
+the state of the art:
+\[
+\begin{array}{lrrrrr}
+\hline
+(a,b) & \eqref{eq:xxz} & ab & \text{Marchenko--Pastur} & a+2\sqrt a & \text{band}\\
+\hline
+(3,2) & \text{n/a} & 6.000 & 9.899 & 6.464 & 5.828\\
+(4,2) & 8.000 & 8.000 & 11.657 & 8.000 & 7.464\\
+(9,2) & 16.483 & 18.000 & 19.485 & 15.000 & 14.657\\
+(100,2) & 128.000 & 200.000 & 130.284 & 120.000 & 119.900\\
+(4,3) & 10.977 & 12.000 & 13.928 & - & 9.899\\
+(25,4) & 47.126 & 100.000 & 49.000 & - & 43.971\\
+\hline
+\end{array}
+\]
+The comparison also says what the target of this section is worth: at $b=2$ the bound
+$a+2\sqrt a$ of Proposition~\ref{prop:cross} would improve on \eqref{eq:xxz} for every
+$a>4$, since $\sqrt a\le\sqrt{2a-4}$ there (\texttt{target\_le\_xxz}). It is therefore
+not a weaker target than the literature already provides, but a stronger one everywhere
+the barrier hypothesis holds. Proposition~\ref{prop:abbound} is formalized in
+\texttt{RamaLean/ProductBound.lean} as \texttt{no\_root\_above} and
+\texttt{edge\_gap}.
+
+The representation also supports an exact recursion on the underlying kernels.
+Writing $N_K$ for the transversal expansion attached to a kernel $K$, one has the
+border identity
+\[
+a\,N_{M+ww^{\mathsf T}}=(a-y)\,N_M+N_{\left(\begin{smallmatrix}0&w^{\mathsf T}\\ w&M\end{smallmatrix}\right)},
+\]
+and Schur complements of admissible kernels remain admissible, with
+$\delta_e\le1-c_e$ forced by $K^2\preceq K$. This makes an induction on kernel size
+available in principle. It does not close the upper edge: the scalar cavity
+invariants that carry the classical argument on graphs are false on the kernel
+class, witnessed by explicit rational kernels on which the graph unfolding identity
+fails as an inequality by a $y$-independent amount. What survives is a reduction of
+the upper edge on the whole class to a single inequality on bordered kernels, proved
+for at most two blocks at $b=2$ by monotonicity of transversal determinants under
+downdates, which follows from positivity of the adjugate of a positive semidefinite
+matrix.
+
+\subsection{The case of rank two}
+
+At $b=2$ the representation \eqref{eq:dpp} collapses further. Only $s_k\in\{0,1,2\}$
+occurs, and $\sum_ks_k=p$ forces the counts of $0$s and $1$s to be determined by
+$n_2=\#\{k:s_k=2\}$, so with $\Psi(u)=\mathbb E\,u^{n_2}$ one has
+\[
+\mu(y)=(y-a)^p\,\Psi\bigl(\theta(y)\bigr),\qquad \theta(y)=1-\frac{a^2}{(y-a)^2}.
+\]
+Real-rootedness of $\mu$ forces $\Psi$ to be real-rooted with nonpositive roots,
+hence $n_2$ a sum of independent Bernoulli variables, and the extreme roots of $\mu$
+are $a\bigl(1\pm\sqrt{\pi_{\max}}\bigr)$ for $\pi_{\max}$ the largest of those
+parameters. Since the band at $b=2$ is $[a-2\sqrt{a-1},\,a+2\sqrt{a-1}]$, both edges
+say $a\sqrt{\pi_{\max}}\le2\sqrt{a-1}$:
+
+\begin{proposition}\label{prop:ineq2}
+For $b=2$, Conjecture~\ref{conj:gap} for the projection family is equivalent to
+\[
+\pi_{\max}\ \le\ \frac{4(a-1)}{a^2}\,=\,1-\Bigl(\frac{a-2}{a}\Bigr)^{2}.
+\]
+\end{proposition}
+
+The equivalence of the two edges with each other and with this inequality is
+formalized in \texttt{RamaLean/ProductBound.lean} as \texttt{band\_iff\_pi}; that
+they coincide is Proposition~\ref{prop:reflect} seen through $\theta$, which is
+two-to-one about $y=a$.
+
+\subsection{The matching form}
+
+Recentring at $a$ turns $\mu$ into a matching polynomial, and the coefficients have
+a basis-free form. They also have a Grassmann form: writing
+$A_k=b_{k1}b_{k1}^{\mathsf T}+b_{k2}b_{k2}^{\mathsf T}$ and
+$\omega_k=b_{k1}\wedge b_{k2}\in\Lambda^2\mathbb R^p$, the Cauchy--Binet formula
+gives $e_{2r}\bigl(\sum_{k\in T}A_k\bigr)=\bigl\|\bigwedge_{k\in T}\omega_k\bigr\|^2$,
+so
+\[
+\mu(x+a)=\sum_{T\subseteq[q]}(-1)^{|T|}\Bigl\|\bigwedge_{k\in T}\omega_k\Bigr\|^2x^{\,p-2|T|},
+\]
+and $M_r$ is a sum of squared Pl\"ucker norms. In the commuting case each norm is
+$0$ or $1$ and one recovers the matching numbers.
+
+\begin{theorem}\label{thm:matchingform}
+Let $P_1,\dots,P_q$ be rank-two orthogonal projections on $\mathbb R^p$ with
+$\sum_kP_k=aI$. Then
+\[
+\mu(x+a)=\sum_{r\ge0}(-1)^rM_r\,x^{\,p-2r},\qquad
+M_r=\sum_{|T|=r}e_{2r}\Bigl(\sum_{k\in T}P_k\Bigr),
+\]
+where $e_m$ denotes the $m$-th elementary symmetric function of the spectrum. The
+$M_r$ are nonnegative, $M_0=1$, $M_1=q$, and $M_r\le\binom qr$.
+\end{theorem}
+
+The expression for $M_r$ involves no dilation and no choice of basis for the ranges
+of the $P_k$. When the $P_k$ commute, $\sum_{k\in T}P_k$ is a $0/1$ diagonal matrix
+of rank $2r$ exactly when $T$ is a matching of the multigraph whose edges are the
+blocks, and has rank below $2r$ otherwise; so $e_{2r}$ is the indicator of that
+event and $M_r$ is the number of $r$-matchings. Thus at $b=2$ the recentred mixed
+characteristic polynomial \emph{is} the matching polynomial in the commuting case,
+and $M_r$ is its natural noncommutative extension. Verified exactly on
+$S(K_4)$, $S(K_{3,3})$, the cube, and on noncommuting families including the
+icosahedral one, where the commutators have norm $0.57$.
+
+Two consequences change how the remaining gap should be described. First, in the
+commuting case Proposition~\ref{prop:ineq2} \emph{is} Heilmann--Lieb, so it is a
+theorem there, and it is sharp: the extremal families are the large-girth
+$a$-regular graphs, for which the ratio of $\pi_{\max}$ to its bound rises
+monotonically through $0.866$ at $p=10$ to $0.949$ at $p=38$. No argument with
+slack can close it. Second, and more to the point, in that formulation
+Proposition~\ref{prop:ineq2} says exactly that the roots of a mixed characteristic
+polynomial lie inside the support of the corresponding free convolution, which is
+the known open sharpening of the Marcus--Spielman--Srivastava bound. So $b=2$ is
+not an easier case awaiting a short argument; it is that open problem in another
+notation.
+
+\subsection{The plane class, and two unconditional bounds}
+
+This subsection is the longest in the note, so its outcome is stated first. It delivers an exact
+vertex recursion for the plane class (Theorem~\ref{thm:vertexrec}), checked numerically to
+$10^{-13}$; a decomposition of its cross-term into pieces $C_r$ (Proposition~\ref{prop:cross},
+Theorems~\ref{thm:C2} and~\ref{thm:Cr}) whose nonnegativity would give the band
+$[a-2\sqrt a,\,a+2\sqrt a]$ for all weighted plane families, supported numerically but
+conjectural; and two bounds following unconditionally from real-rootedness alone, giving the band
+whenever $m\le8$ and whenever $m\le16+\bigl(\sum_kc_k^2\bigr)/a^2$, the latter reproducing the
+known two-moment bound for projections and extending it to all weighted plane families. The
+general case is not closed. A reader who wants only that summary may skip to \S\ref{sec:rank}.
+
+What the problem is, at $b=2$, can be said exactly. Both $\mu(x+a)$ and the operator
+$\operatorname{Adj}(A):=\sum_k e_2(A_k)P_{\operatorname{range}A_k}$ depend on the
+family only through the pairs $\bigl(e_2(A_k),\operatorname{range}A_k\bigr)$. So the
+class is the class of weighted $2$-plane families
+$\{(c_k,V_k):c_k\ge0,\ \sum_kc_kP_{V_k}\preceq aI\}$, and $\mu(x+a)$ is the matching
+polynomial of such a family; for coordinate planes it is the ordinary weighted
+matching polynomial. Two points about that identification need care, and both are invisible in
+the projection case.
+
+First, the invariance holds within the tight class and not outside it: with $\sum_kA_k$ a
+multiple of the identity, families sharing the pairs
+$\bigl(e_2(A_k),\operatorname{range}A_k\bigr)$ have the same recentred $\mu$ even when the $A_k$
+are strongly anisotropic, verified to $10^{-13}$ at eigenvalue ratios up to $49$
+(\texttt{code/rl\_conj.py}); without tightness the recentring has no meaning.
+
+Second, the recentring constant is that tight constant, and it is \emph{not} the constant in
+$\operatorname{Adj}(A)\preceq aI$. Plane data with $\operatorname{Adj}(A)=aI$ admits a
+realization with $\sum_kA_k=a'I$ --- solvable to $10^{-16}$ --- but with $a'>a$ strictly:
+$a'=3.567$ against $a=3$ at $m=4$, and $4.228$ against $3$ and $4.961$ against $4$ at $m=6$
+(\texttt{code/rl\_conj.py}). So for weighted families $F_A(x)=\mu(x+a')$ with $a'\ne a$, and the
+identity as stated holds exactly when the two constants agree, which is the projection case
+$A_k=P_k$, where $e_2\equiv1$ gives $\sum_kA_k=\operatorname{Adj}(A)=aI$. Everything below is
+derived from the wedge coefficients $M_r$ and from $\operatorname{Adj}(A)$ directly and is
+unaffected; what does not transfer automatically to the weighted class is a result stated for
+mixed characteristic polynomials, since the two constants there are different.
+
+Consequently the band is stated below on the roots of $F_A$, as $|x|\le2\sqrt a$ with $a$ the
+constant of $\operatorname{Adj}(A)\preceq aI$, and that is the form the unconditional bounds
+establish, through $\lambda^2\le M_1\le am/2$. Written in the $\mu$ variable it becomes
+$[a'-2\sqrt a,\,a'+2\sqrt a]$: the radius is set by the $\operatorname{Adj}$ constant and the
+centre by the tight one. Both the shift $y=x+a'$ and the bound $|x|\le2\sqrt a$ are checked
+directly (\texttt{code/rl\_conj.py}); the two coincide precisely for projection families, where
+$a'=a$, and every $\mu$-variable statement of the band in this note should be read with that
+proviso.
+
+The band being sought is the sharp weighted Heilmann--Lieb constant for plane families, and that
+constant is not $2\sqrt a$. On projections the conjectural sharp value is $2\sqrt{a-1}$, the
+spectral radius of the $a$-regular tree, and $2\sqrt{a-1}<2\sqrt a$ strictly
+(\texttt{XuBound.xu\_lt\_note\_target}); it is the case $b=2$ of the bound
+$\bigl(\sqrt{a-1}+\sqrt{b-1}\bigr)^2$ on $\operatorname{maxroot}\mu$ conjectured by
+Xu\footnote{Personal communication, August 2026, deriving it from a generalisation of
+\cite[Conjecture 1]{RL}.}, which is exactly the upper edge of the $(a,b)$-biregular tree band.
+So $2\sqrt a$ is the ceiling of the cavity argument used here, not the truth, and an argument of
+this kind cannot be sharp.
+
+In that language the vertex step has an exact form. Setting
+$\Theta^{(r)}:=\sum_{|T|=r}M_{\omega_T}\succeq0$ and
+$W(x):=\sum_{r\ge1}(-1)^r\Theta^{(r)}x^{\,m-2r}$, one has
+$\langle e,W(x)e\rangle=F_A(x)-x\,F_{A^{(e)}}(x)$ for every unit vector $e$, where
+$F_A(x)=\mu(x+a)$ and $A^{(e)}$ is the compression to $e^\perp$; consequently
+$\operatorname{tr}W=mF_A-xF_A'$ and $F_A'=\sum_iF_{A^{(e_i)}}$ for any orthonormal
+basis. The cavity hypothesis is then equivalent to a single matrix inequality: when
+$\operatorname{Adj}(A)=aI$, the band $[a-2\sqrt a,\,a+2\sqrt a]$ holds if and only if
+\[
+W(2\sqrt a)+F_A(2\sqrt a)\,I\ \succeq\ 0 ,
+\]
+a coordinate-free statement with no recursion in it.
+
+The matrix $W$ has a closed form. If $\omega_T=c_1\wedge\cdots\wedge c_{2r}$ is
+decomposable with factor matrix $C=[c_1|\cdots|c_{2r}]$ and Gram matrix $G=C^{\mathsf T}C$,
+then $\langle\omega_{\hat\jmath},\omega_{\hat l}\rangle$ is the $(l,j)$ cofactor of
+$G$, so
+\begin{equation}\label{eq:Momega}
+M_{\omega_T}=C\,\operatorname{adj}(G)\,C^{\mathsf T},
+\end{equation}
+whence $\operatorname{tr}M_{\omega_T}=2r\|\omega_T\|^2$ and
+$\operatorname{tr}\Theta^{(r)}=2rM_r$, which is the identity
+$\operatorname{tr}W=mF_A-xF_A'$ again. Two of the levels are forced to be scalar:
+$\Theta^{(1)}=\operatorname{Adj}(A)=aI$ by hypothesis, and when $m$ is even
+$\Theta^{(m/2)}=M_{m/2}\,I$, since a top-degree form is a multiple of the volume
+form and $\|\iota_v\omega\|^2=\|\omega\|^2\|v\|^2$ for such. Hence for $m\le4$ every
+level is scalar, $W(x)$ is a scalar matrix, and the matrix inequality degenerates to
+a scalar one; from $m=5$ on it does not, and that is where the content begins.
+
+Behind the matrix inequality there is a vertex recursion valid in every direction,
+which the graph case sees only along the coordinate axes.
+
+\begin{theorem}\label{thm:vertexrec}
+Let $A$ be a weighted $2$-plane family on $\mathbb R^m$ with bivectors $\omega_k$,
+and let $e$ be a unit vector. Put $f_k=\iota_e\omega_k$, so that
+\[
+\omega_k=e\wedge f_k+\omega_k',\qquad
+f_k,\ \omega_k'\in e^\perp ,
+\]
+and $\omega_k'$ is the bivector of the compressed family $A^{(e)}$. Then for every
+$r\ge1$
+\[
+M_r(A)=M_r\bigl(A^{(e)}\bigr)
++\sum_{|T|=r}\Bigl\|\sum_{k\in T}f_k\wedge\omega'_{T\setminus k}\Bigr\|^2 ,
+\]
+and consequently, with $N_r(e)$ denoting that sum of squares,
+\[
+F_A(x)=x\,F_{A^{(e)}}(x)-N_e(x),\qquad
+N_e(x)=\sum_{r\ge1}(-1)^{r-1}N_r(e)\,x^{\,m-2r}.
+\]
+\end{theorem}
+
+\begin{proof}
+Since $e$ is a unit vector, $\iota_e(\omega_k-e\wedge f_k)=f_k-f_k=0$, so
+$\omega_k-e\wedge f_k$ lies in $\Lambda^2(e^\perp)$; writing $b_i=\beta_ie+b_i'$
+identifies it as $b_1'\wedge b_2'$, the bivector of the compressed block. As
+$e\wedge f_k$ is a $2$-form it commutes with the other factors, and $e\wedge e=0$
+kills every term using two of them, so
+$\omega_T=\omega_T'+e\wedge\sum_{k\in T}f_k\wedge\omega'_{T\setminus k}$. The two
+summands lie in $\Lambda^{2r}(e^\perp)$ and $e\wedge\Lambda^{2r-1}(e^\perp)$, which
+are orthogonal, so the norms add; summing over $|T|=r$ gives the first display, and
+the second is that display multiplied by $(-1)^rx^{\,m-2r}$ and summed.
+\end{proof}
+
+We have looked for Theorem~\ref{thm:vertexrec} in the literature and not found it. The
+whole arXiv corpus mentioning ``mixed characteristic polynomial'' is seven papers, all
+working through the barrier function or interlacing families; the generalizations of
+Heilmann--Lieb we can find are to hypergraphs \cite{Zhang}, to spanning subgraphs with
+degree constraints, and to multivariate independence polynomials, all of them
+graph-theoretic; and a search of arXiv for ``matching polynomial'' together with any of
+Grassmann, Pl\"ucker, bivector or exterior algebra returns nothing. That is weak evidence:
+the Gram form below is elementary enough to be folklore, the pre-arXiv matching-polynomial
+literature is not covered by such a search, and the statement could well appear under
+different language, hyperbolic or Lorentzian polynomials, or the theory of stable
+polynomials, where Pl\"ucker coordinates do occur but in the different role of
+characterizing stability by total nonnegativity. We claim only that we have not found it.
+
+The exterior algebra can be dispensed with entirely, and doing so identifies the
+theorem with a known lemma. Let $C$ be the $m\times2r$ matrix whose columns are the
+factors of $\omega_T$, so that $\|\omega_T\|^2=\det(C^{\mathsf T}C)$. Splitting off
+$e$ is the decomposition $C=eg^{\mathsf T}+C'$ with $g=C^{\mathsf T}e$ and
+$C'=(I-ee^{\mathsf T})C$ the compressed factor matrix; since $e^{\mathsf T}C'=0$ and
+$\|e\|=1$,
+\[
+C^{\mathsf T}C=C'^{\mathsf T}C'+gg^{\mathsf T} .
+\]
+So the content of Theorem~\ref{thm:vertexrec} is the \emph{matrix determinant lemma}
+\begin{equation}\label{eq:mdl}
+\det\bigl(A+gg^{\mathsf T}\bigr)=\det A+g^{\mathsf T}\operatorname{adj}(A)\,g,
+\qquad A=C'^{\mathsf T}C' ,
+\end{equation}
+and the nonnegativity of the cavity term is nothing but positivity of the adjugate of
+a positive semidefinite matrix. In particular $M_r(A)\ge M_r(A^{(e)})$ needs no
+computation at all. Splitting $g$ into its $r$ blocks of two identifies the pieces:
+the block-diagonal part of the quadratic form \eqref{eq:mdl} is
+$\sum_k\theta_kM''_{k,r-1}$ and the off-block-diagonal part is $C_r$, which is how the
+cross terms should be read.
+
+For a coordinate family at a coordinate direction $e=e_v$ one has $f_k=\pm e_u$ for
+the edges $k=uv$ and $f_k=0$ otherwise, the cross terms vanish, and
+$N_r(e_v)=\sum_{u\sim v}m_{r-1}(G-v-u)$: the theorem is then the Heilmann--Lieb
+vertex recursion. At a generic direction, or for a family that is not diagonal, the
+cross terms do not vanish and the recursion is not the classical one. Two things
+follow at once. First, taking $r$ arbitrary, $M_r(A)\ge M_r(A^{(e)})$ for every unit
+$e$: the matching numbers of a plane family decrease under compression in every
+direction, which for graphs is $m_r(G)\ge m_r(G-v)$. Second, the whole band reduces
+to the sign of the cross terms.
+
+\begin{proposition}\label{prop:cross}
+Write $X_e:=N_e-\sum_k\theta_kF_{A''_k}$ for the cross-term part of $N_e$, where
+$\theta_k=\|f_k\|^2$ and $A''_k$ is the compression to $\{e,f_k\}^\perp$. If
+$X_e(x)\le0$ for every weighted $2$-plane family with $\operatorname{Adj}\preceq aI$,
+every unit $e$ and every $x\ge2\sqrt a$, then every such family satisfies the band
+$[a-2\sqrt a,\,a+2\sqrt a]$.
+\end{proposition}
+
+\begin{proof}
+Induct on $m$. Put $R_e=F_A/F_{A^{(e)}}$ and $R_k'=F_{A^{(e)}}/F_{A''_k}$. Dividing
+Theorem~\ref{thm:vertexrec} by $F_{A^{(e)}}$,
+\[
+R_e=x-\sum_k\frac{\theta_k}{R_k'}-\frac{X_e}{F_{A^{(e)}}} .
+\]
+The class is closed under compression, so the inductive hypothesis $R_k'\ge x/2$
+applies, and $\sum_k\theta_k=\sum_k\|\iota_e\omega_k\|^2
+=\langle e,\operatorname{Adj}(A)e\rangle\le a$. Hence $R_e\ge x-2a/x$, and
+$x-2a/x\ge x/2$ exactly when $x\ge2\sqrt a$. The base case $m\le1$ is $R_e=x$.
+So $R_e\ge x/2>0$ for $x\ge2\sqrt a$, and $F_A=R_eF_{A^{(e)}}$ has no root there;
+$F_A$ is even or odd, so all roots lie in $[-2\sqrt a,2\sqrt a]$.
+\end{proof}
+
+The leading cross term can be evaluated exactly, and it is a square.
+
+\begin{theorem}\label{thm:C2}
+Let $A$ be a weighted $2$-plane family on $\mathbb R^m$ and $e$ a unit vector, and put
+$f_k=\iota_e\omega_k$, $\omega_k'=\omega_k-e\wedge f_k$ and $u_k=\iota_{f_k}\omega_k'$.
+Then
+\[
+C_2=\Bigl\|\sum_kf_k\otimes\omega_k'\Bigr\|^2-\Bigl\|\sum_ku_k\Bigr\|^2 ,
+\]
+and $\sum_ku_k$ is the off-diagonal $(e,e^\perp)$ block of $\operatorname{Adj}(A)$. So if
+$\operatorname{Adj}(A)=aI$ then
+\[
+C_2=\Bigl\|\sum_kf_k\otimes\omega_k'\Bigr\|^2\ \ge\ 0,
+\]
+with equality if and only if $\sum_kf_k\otimes\omega_k'=0$.
+\end{theorem}
+
+\begin{proof}
+For a vector $u$ and forms $\alpha,\gamma$ one has
+$\iota_w(u\wedge\alpha)=\langle w,u\rangle\alpha-u\wedge\iota_w\alpha$, hence
+\begin{equation}\label{eq:wedgeip}
+\langle u\wedge\alpha,\ w\wedge\gamma\rangle
+=\langle u,w\rangle\langle\alpha,\gamma\rangle-\langle\iota_w\alpha,\iota_u\gamma\rangle .
+\end{equation}
+Applying \eqref{eq:wedgeip} to each cross term with $\alpha=\omega_l'$,
+$\gamma=\omega_k'$ gives
+$C_2=\sum_{k\ne l}\bigl[\langle f_k,f_l\rangle\langle\omega_k',\omega_l'\rangle
+-\langle u_k,u_l\rangle\bigr]$.
+
+Now $f_k=\iota_e\omega_k$ lies in the plane of $\omega_k$, and it is orthogonal to $e$,
+so it lies in the image of that plane under the projection to $e^\perp$, which is the
+plane of $\omega_k'$. Hence $f_k\wedge\omega_k'=0$, and since
+$\|f_k\|^2\|\omega_k'\|^2=\|\iota_{f_k}\omega_k'\|^2+\|f_k\wedge\omega_k'\|^2$ for simple
+$\omega_k'$, this says exactly
+$\|f_k\|^2\|\omega_k'\|^2=\|u_k\|^2$. Therefore
+\[
+\sum_{k\ne l}\langle f_k,f_l\rangle\langle\omega_k',\omega_l'\rangle
+=\Bigl\|\sum_kf_k\otimes\omega_k'\Bigr\|^2-\sum_k\|u_k\|^2,
+\qquad
+\sum_{k\ne l}\langle u_k,u_l\rangle=\Bigl\|\sum_ku_k\Bigr\|^2-\sum_k\|u_k\|^2,
+\]
+and subtracting gives the display. For the last claim, polarizing
+$\langle v,\Theta_kv\rangle=\|\iota_v\omega_k\|^2$ at $v=e$ against $v\in e^\perp$ gives
+$\langle e,\operatorname{Adj}(A)v\rangle=-\langle v,\sum_k u_k\rangle$, so
+$\operatorname{Adj}(A)=aI$ forces $\sum_ku_k=0$.
+\end{proof}
+
+Theorem~\ref{thm:C2} is sharp in the way the data show: over coordinate families
+$\min_eC_2=0$ to machine precision, attained exactly at the coordinate directions, where
+each summand $f_k\otimes\omega_k'$ vanishes separately, every $\omega_k$ either
+contains $e$ in its plane, so $\omega_k'=0$, or is orthogonal to it, so $f_k=0$. That is
+precisely why the classical recursion has no cross terms. Off that locus the minimum is
+strictly positive.
+
+The proof reindexes, and doing so gives every level at once.
+
+\begin{theorem}\label{thm:Cr}
+For every $r\ge2$,
+\[
+C_r=\sum_{|S|=r-2}\Bigl[\,Q_S-\|W_S\|^2\,\Bigr],
+\qquad
+\begin{aligned}
+Q_S&=\sum_{k,l\notin S}\langle f_k,f_l\rangle
+\bigl\langle\omega_k'\wedge\omega_S',\ \omega_l'\wedge\omega_S'\bigr\rangle,\\
+W_S&=\sum_{k\notin S}\iota_{f_k}\bigl(\omega_k'\wedge\omega_S'\bigr),
+\end{aligned}
+\]
+and $Q_S=\bigl\|\sum_{k\notin S}f_k\otimes(\omega_k'\wedge\omega_S')\bigr\|^2\ge0$.
+\end{theorem}
+
+\begin{proof}
+Writing $T=S\cup\{k,l\}$ reindexes $C_r$ as
+$\sum_{|S|=r-2}\sum_{k\ne l\notin S}\langle f_k\wedge\omega_l'\wedge\omega_S',\
+f_l\wedge\omega_k'\wedge\omega_S'\rangle$. Apply \eqref{eq:wedgeip} with
+$\alpha=\omega_l'\wedge\omega_S'$ and $\gamma=\omega_k'\wedge\omega_S'$. The wedge
+$\omega_k'\wedge\omega_S'$ is a product of vectors, hence simple, and
+$f_k\wedge(\omega_k'\wedge\omega_S')=(f_k\wedge\omega_k')\wedge\omega_S'=0$ by the proof
+of Theorem~\ref{thm:C2}; so
+$\|f_k\|^2\|\omega_k'\wedge\omega_S'\|^2=\|\iota_{f_k}(\omega_k'\wedge\omega_S')\|^2$,
+and the diagonal terms of the two double sums cancel exactly as before. The Gram matrix
+of the vectors $\omega_k'\wedge\omega_S'$ is positive semidefinite, so $Q_S$ is the
+squared norm of $\sum_{k\notin S}f_k\otimes(\omega_k'\wedge\omega_S')$.
+\end{proof}
+
+At $r=2$ the set $S$ is empty, $W_\emptyset=\sum_k\iota_{f_k}\omega_k'$ vanishes by
+tightness, and Theorem~\ref{thm:Cr} is Theorem~\ref{thm:C2}. At $r=3$ it does not
+vanish, but it simplifies: since $\iota_{f_n}\omega_n'$ lies in the plane of $\omega_n'$,
+the self term $(\iota_{f_n}\omega_n')\wedge\omega_n'$ is zero, and using
+$\sum_ku_k=0$,
+\[
+W_{\{n\}}=\sum_{k\ne n}\omega_k'\wedge\iota_{f_k}\omega_n' .
+\]
+So the obstruction at $r=3$ is exactly the failure of the compressed planes to be
+mutually orthogonal, and it is the only obstruction: everything else is a square.
+
+It is worth being exact about what this settles. Writing the condition $X_e\le0$ at
+$x=2\sqrt a$ in the form
+\begin{equation}\label{eq:Chat}
+\sum_{r\ge2}(-1)^rC_r\,(4a)^{2-r}\ \ge\ 0 ,
+\end{equation}
+Theorem~\ref{thm:C2} is the leading coefficient of \eqref{eq:Chat}, that is the case
+$a\to\infty$. It gives $X_e\le0$ outright when $m\le5$, where $C_2$ is the only cross
+term. That range does not improve on the two-moment bounds above, so
+Theorem~\ref{thm:C2} does not by itself enlarge the unconditional range; what it supplies
+is the first structural reason for the sign.
+
+The obvious next step, bounding $C_3$ by $4a\,C_2$ so as to reach $m\le7$, is not
+available, and it fails for a reason worth recording rather than for lack of effort. The
+ratio $4a\,C_2/C_3$ decreases steadily in $m$, over cubic graphs it runs $3.49$ at
+$m=8$, $2.00$ at $m=10$ (Petersen), $1.38$ at $m=12$ (Franklin), $1.03$ at $m=14$
+(Heawood), and crosses below $1$ at $m=16$, where the M\"obius--Kantor graph gives
+$0.827$, then $0.687$ (Pappus, $m=18$), $0.590$ (Desargues, $m=20$) and $0.457$ (Nauru,
+$m=24$). So $C_3\le4aC_2$ is false in general, and increasingly so.
+
+The reason is visible one level down. For odd $r$ the criterion wants $C_r$ small, that
+is $\|W_S\|^2$ close to $Q_S$; but the ratio $\sum_n\|W_n\|^2/\sum_nQ_n$ decays, running
+$0.207$, $0.190$, $0.154$, $0.119$, $0.101$ over the same graphs at $m=8,\dots,16$. So
+$C_3$ is essentially $\sum_nQ_n$, an undamped sum of Schur squares, and the contraction
+$W$ supplies almost no cancellation. Whatever makes \eqref{eq:Chat} hold is therefore the
+alternation \emph{between} levels, not any cancellation \emph{within} one.
+
+What the same computation shows is that the truncation is what fails, not the conclusion.
+Writing $\Sigma_R$ for the partial sum of \eqref{eq:Chat} over $2\le r\le R$:
+\[
+\begin{array}{lcrrrrr}
+\hline
+G & m & \Sigma_2 & \Sigma_3 & \Sigma_4 & \Sigma_5 & \Sigma_6\\
+\hline
+\text{cube} & 8 & 1.268 & 0.905 & 0.926 & & \\
+\text{Petersen} & 10 & 1.624 & 0.812 & 0.891 & 0.891 & \\
+\text{Franklin} & 12 & 1.713 & 0.468 & 0.730 & 0.713 & 0.713\\
+\text{Heawood} & 14 & 2.007 & 0.060 & 0.679 & 0.603 & 0.607\\
+\text{M\"obius--Kantor} & 16 & 2.139 & -0.448 & 0.669 & 0.458 & 0.476\\
+\text{Pappus} & 18 & 2.142 & -0.974 & 0.739 & 0.291 & \\
+\text{Desargues} & 20 & 2.235 & -1.552 & 0.969 & 0.127 & \\
+\text{Nauru} & 24 & 2.231 & -2.656 & 1.786 & & \\
+\hline
+\end{array}
+\]
+The values are for one direction per graph, fixed by the seed in
+\texttt{code/hl\_Cr.py}, which also regenerates Theorem~\ref{thm:Cr} against the
+definition of $C_r$. The terms $|C_r|(4a)^{2-r}$ peak at $r=3$ and then decay
+geometrically, at $m=16$ they run
+$2.14,\,2.59,\,1.12,\,0.211,\,0.0176$, so the series converges, but the number of
+terms needed grows with $m$: three nearly suffice at $m=14$, four at $m=16$, and at
+$m=20$ and $24$ the partial sums have not settled by $\Sigma_5$. So \eqref{eq:Chat} is
+not a statement of bounded length, and in particular the two-term reading fails outright
+from $m=16$. By Theorem~\ref{thm:Cr} every term is a Schur square minus the square of a
+contraction, so what a proof must supply is control of the alternating sum of the $Q_S$
+across levels.
+
+How much room the inequality actually has is worth measuring, and the answer is that
+there is a great deal, and that the recursion cannot use any of it. Evaluating the
+exact ratio $R_e=F_A/F_{A^{(e)}}$ at $x=2\sqrt a$ on regular graphs, in units of the
+threshold $x/2=\sqrt a$:
+\[
+\begin{array}{lccc}
+\hline
+a & \text{graphs} & R_e/(x/2) & \text{spread}\\
+\hline
+3 & \text{cube, Petersen, Franklin, Heawood} & 1.3662\text{--}1.3692 & 3.0\cdot10^{-3}\\
+4 & C_8(1,2),\,C_{10}(1,2),\,C_{12}(1,2) & 1.3488\text{--}1.3497 & 8.6\cdot10^{-4}\\
+5 & C_8(1,2,4),\,C_{10}(1,2,5) & 1.3246\text{--}1.3322 & 7.5\cdot10^{-3}\\
+\hline
+\end{array}
+\]
+The ratio is a function of $a$ alone to three digits, independent of the graph and of the
+dimension, and exceeds the threshold by a third. The slack $-X_e/(F_{A^{(e)}}\sqrt a)$
+likewise \emph{increases} with $m$, running $0.033,0.044,0.049,0.058$ over the four cubic
+graphs above.
+
+That constant can be identified exactly. Averaging the vertex identity over directions
+gives $\mathbb E_eF_{A^{(e)}}=F_A'/m$, which is $F_A'=\sum_iF_{A^{(e_i)}}$ again, so
+the direction-averaged ratio is
+\[
+\bar R=\frac{mF_A}{F_A'}=\Bigl(\frac1m\sum_i\frac1{x-\rho_i}\Bigr)^{-1}=\frac1{G(x)},
+\]
+$G$ the Stieltjes transform of the root measure of $F_A$. For a coordinate family $F_A$ is
+the matching polynomial, and the Kesten--McKay measure of parameter $a$ has Stieltjes
+transform $G(z)=2(a-1)/\bigl((a-2)z+a\sqrt{z^2-4(a-1)}\bigr)$. At $z=2\sqrt a$ the radical
+is \emph{exactly} $2$, and everything collapses:
+
+\begin{proposition}\label{prop:km}
+$\dfrac{1}{G(2\sqrt a)}\Big/\sqrt a=\dfrac{\sqrt a+2}{\sqrt a+1}=1+\dfrac1{1+\sqrt a}$.
+\end{proposition}
+
+The passage from a finite graph to that value is usually made by citing convergence of the
+matching measure. It need not be: the evaluation point lies strictly outside the support,
+so the whole step can be made finite and effective, with an explicit rate. We are grateful
+to P\'eter Csikv\'ari for pointing us to the mechanism, which is his with P.\ E.\ Frenkel
+\cite{CsF}, after Ab\'ert and Hubai for the chromatic polynomial.
+
+Their theorem is that for a monic multiplicative graph polynomial of bounded exponential
+type, the power sum $p_j(G)$ of the roots is a fixed linear combination of counts of
+\emph{connected} subgraphs of $G$; the matching polynomial is such a polynomial. In
+Godsil's formulation \cite{Go} the matching-measure moments count closed \emph{tree-like}
+walks, and the trace of such a walk of length $j$ carries at most $j/2$ edges. Since a
+subgraph with fewer than $\operatorname{girth}(G)$ edges is a forest, and since in an
+$a$-regular graph the number of copies of a fixed tree is $|V(G)|$ times a function of $a$
+alone, one gets an identity rather than a limit.
+
+\begin{proposition}\label{prop:km-moments}
+Let $G$ be $a$-regular of girth $g$. Then $p_j(G)/|V(G)|$ equals the $j$-th moment of the
+Kesten--McKay measure of parameter $a$ for every $j<2g$. The threshold is sharp: for
+$K_4$, $K_5$, $K_{3,3}$, $K_{4,4}$, the cube, Petersen and Heawood, the first differing
+moment is exactly $2g$ whenever one exists at all
+\textup{(}\texttt{code/moment\_girth.py}, exact arithmetic\textup{)}.
+\end{proposition}
+
+Because Heilmann--Lieb confines the roots to $[-\rho,\rho]$ with $\rho=2\sqrt{a-1}$, while
+the evaluation point is $x=2\sqrt a$, the ratio $\rho/x=\sqrt{1-1/a}$ is strictly below
+one. A finite geometric expansion with remainder, and no infinite series anywhere, then
+converts matching moments into matching transforms.
+
+\begin{proposition}\label{prop:transfer}
+Let $\nu_1,\nu_2$ be probability measures on $[-\rho,\rho]$ whose moments agree up to order
+$k$, and let $x>\rho$. Then
+\[
+\bigl|G_{\nu_1}(x)-G_{\nu_2}(x)\bigr|\ \le\ \frac{2\rho^{k+1}}{x^{k+1}(x-\rho)},
+\]
+and if both transforms are at least $c>0$ the reciprocals differ by at most that quantity
+divided by $c^2$.
+\end{proposition}
+
+\begin{proof}
+For $|t|\le\rho<x$ one has the identity
+$1/(x-t)=\sum_{j\le k}t^j/x^{j+1}+t^{k+1}/\bigl(x^{k+1}(x-t)\bigr)$, whose right-hand side
+does not depend on $k$. Integrating, the polynomial parts agree by hypothesis, and each
+remainder is at most $\rho^{k+1}/\bigl(x^{k+1}(x-\rho)\bigr)$ in absolute value. The
+statement for reciprocals is $|1/S_1-1/S_2|=|S_2-S_1|/(S_1S_2)$.
+\end{proof}
+
+\begin{remark}\label{rem:csik}
+Csikv\'ari asks (personal communication, August 2026) whether $\mu_G(2\sqrt{d-1})$ has a
+combinatorial meaning for $d$-regular $G$ with $|V(G)|$ even, observing that it should at
+least be a positive integer. It does, and the answer is in his own paper with Bencs
+\cite{BCs}. Their polynomial
+$R_G(z)=\sum_{M}(-z)^{|M|}\prod_{v\notin V(M)}(z+d_v-1)$ is, for $d$-regular $G$, a
+transformation of the matching polynomial: comparing coefficients termwise,
+\[
+R_G(z)=z^{n/2}\,\mu_G\!\Bigl(\frac{z+d-1}{\sqrt z}\Bigr).
+\]
+The point $2\sqrt{d-1}$ is not an arbitrary argument of that substitution. Solving
+$(\sqrt z+ (d-1)/\sqrt z)=2\sqrt{d-1}$ gives $(\sqrt z-\sqrt{d-1})^2=0$, so it is exactly
+the \emph{double root}, attained only at $z=d-1$. Their Corollary 2.7 expands
+$R_G(w)=\sum_{A\in\mathcal{PF}}2^{c(A)}(w-1)^{n-|A|}$ over pseudo-forests $A$, edge sets each
+of whose components carries at most one cycle, with $c(A)$ the number of cycles. Putting
+$w=d-1$,
+\begin{equation}\label{eq:pf}
+\mu_G\bigl(2\sqrt{d-1}\bigr)\;=\;(d-1)^{-n/2}\sum_{A\in\mathcal{PF}(G)}2^{c(A)}(d-2)^{\,n-|A|}.
+\end{equation}
+At $d=3$ the weight is $1$ and \eqref{eq:pf} reads: $2^{n/2}\mu_G(2\sqrt2)$ is the number of
+pseudo-forests of $G$ counted with multiplicity $2$ per cycle. The values are $19$, $74$,
+$76$, $297$, $1162$ for $K_4$, $K_{3,3}$, the prism, the cube and Petersen.
+
+The transformation, the double root and the evaluation are machine-checked in
+\texttt{RamaLean/PseudoForest.lean}; Corollary 2.7 is \cite{BCs} and enters as a hypothesis.
+Identity \eqref{eq:pf} is verified by brute force in \texttt{code/pseudoforest.py} on nine
+regular graphs of degrees $3$ and $4$ and orders $4$ to $10$, in exact arithmetic. The
+positivity and integrality Csikv\'ari notes in passing are separately machine-checked in
+\texttt{RamaLean/EvenEval.lean}, together with the observation that the parity hypothesis is
+needed: for $|V(G)|$ odd the value is $2\sqrt{d-1}$ times an integer.
+\end{remark}
+
+Propositions~\ref{prop:km-moments} and~\ref{prop:transfer} together bound the distance from
+the finite-graph ratio to the value of Proposition~\ref{prop:km} by a quantity decaying
+like $(1-1/a)^{g}$, with no convergence theorem invoked. The bound is not tight, since
+$|m_j|\le\rho^j$ discards the $j^{-3/2}$ decay of the Kesten--McKay moments at the edge: at
+$a=3$ it gives $0.62$, $0.41$, $0.28$ at girths $4,5,6$ against observed errors of
+$3.2\cdot10^{-3}$, $9.2\cdot10^{-4}$, $2.2\cdot10^{-4}$. What it does give, and the
+citation did not, is an effective statement about a finite graph.
+
+So the cavity ratio exceeds the threshold the induction can propagate by exactly
+$1/(1+\sqrt a)$, and the excess tends to $0$ as $a$ grows, which is the analytic shadow
+of $2\sqrt a$ being asymptotically attained.
+
+The limit appears to be attained from above, never crossed, which suggests that
+Proposition~\ref{prop:km} states an infimum rather than merely a limit:
+
+\begin{conjecture}\label{conj:km}
+For every weighted $2$-plane family with $\operatorname{Adj}(A)=aI$ and every unit $e$,
+\[
+\frac{R_e}{x/2}\ \ge\ 1+\frac1{1+\sqrt a}\qquad\text{at }x=2\sqrt a .
+\]
+\end{conjecture}
+
+This was not violated in any family tested, over graphs and over general weighted plane
+families, minimizing over directions; the smallest margin observed was
+$2.2\cdot10^{-4}$, at the highest-girth cubic graph, which is where
+Proposition~\ref{prop:km} says it should be. Conjecture~\ref{conj:km} is strictly
+stronger than $X_e\le0$, which is its $c=1$ case, and by Proposition~\ref{prop:rigid} it
+cannot be proved by this induction either, the recursion propagates $c=1$ and nothing
+else, whatever is true. Against the exact values the prediction is
+$1.366025$ at $a=3$, $1.333333$ at $a=4$ and $1.309017$ at $a=5$, and the error decays
+with the girth exactly as Kesten--McKay convergence requires: over cubic graphs
+$3.2\cdot10^{-3}$ at girth $4$ (the cube), $9.2\cdot10^{-4}$ at girth $5$ (Petersen), and
+$2.2\cdot10^{-4}$, $1.7\cdot10^{-4}$, $1.2\cdot10^{-4}$, $1.2\cdot10^{-4}$ at girth $6$
+(Heawood, M\"obius--Kantor, Pappus, Desargues). None of that slack is available to the
+argument:
+
+\begin{proposition}\label{prop:rigid}
+Fix $a>0$ and suppose the inductive hypothesis of Proposition~\ref{prop:cross} is
+strengthened from $R\ge x/2$ to $R\ge c\,(x/2)$ for some $c>0$. At $x=2\sqrt a$ the
+recursion sustains this only for $c=1$.
+\end{proposition}
+
+\begin{proof}
+Propagating $R\ge c\sqrt a$ requires $c\sqrt a\le2\sqrt a-a/(c\sqrt a)$, which after
+clearing the denominator is $a(c-1)^2\le0$, so $c=1$.
+\end{proof}
+
+There is one hypothesis the argument has not used, and it changes what has to be proved.
+The class is \emph{not} closed under compression in the tight sense:
+
+\begin{proposition}\label{prop:deficient}
+For a weighted $2$-plane family with $\operatorname{Adj}(A)=aI$ and any unit $e$,
+\[
+\operatorname{Adj}\bigl(A^{(e)}\bigr)=a\,I_{e^\perp}-F,\qquad F=\sum_kf_kf_k^{\mathsf T},
+\qquad \operatorname{tr}F=a .
+\]
+\end{proposition}
+
+\begin{proof}
+For $u,v\perp e$ one has $\iota_u\omega_k=-\langle u,f_k\rangle e+\iota_u\omega_k'$ with
+$\iota_u\omega_k'\perp e$, so
+$\langle\iota_u\omega_k,\iota_v\omega_k\rangle
+=\langle u,f_k\rangle\langle v,f_k\rangle+\langle\iota_u\omega_k',\iota_v\omega_k'\rangle$;
+summing and using $\operatorname{Adj}(A)=aI$ gives the display, and
+$\operatorname{tr}F=\sum_k\theta_k=\langle e,\operatorname{Adj}(A)e\rangle=a$.
+\end{proof}
+
+So compressing costs exactly a positive semidefinite matrix of trace $a$, and the children
+of a tight family are deficient by a definite amount. Spending that deficiency strengthens
+the induction. Write $d(e)=a-\langle e,\operatorname{Adj}(A)e\rangle\ge0$ for the local
+deficiency, and replace the hypothesis $R\ge x/2$ of Proposition~\ref{prop:cross} by
+\[
+(\mathrm H)\qquad R_e\ \ge\ \frac x2+\frac{2\,d(e)}{x}.
+\]
+This is consistent at the base ($m\le1$: $R_e=x$, $d=a$, and $x/2+2a/x=x$ exactly), and at
+a tight family $d\equiv0$, so it still delivers the band.
+
+\begin{proposition}\label{prop:defstep}
+Let $g_k=\langle\hat f_k,F\hat f_k\rangle$ be the deficiency the children inherit. Then
+$(\mathrm H)$ propagates provided
+\[
+X_e\ \le\ \frac{2F_{A^{(e)}}}{x}\sum_k\frac{\theta_k\,g_k}{a+g_k},
+\]
+and the estimate is lossless: the two sides of the resulting comparison are identically
+equal.
+\end{proposition}
+
+The right-hand side is \emph{strictly positive}, since $g_k\ge\theta_k>0$. So the
+strengthened induction does not require $X_e\le0$; it requires $X_e$ below an explicit
+positive quantity. On the graphs tested $(\mathrm H)$ held with margin $0.52$ to $0.71$,
+and the sufficient condition held with the right-hand side exceeding $|X_e|$ by a factor
+of five to twenty.
+
+That is worth having because an upper bound on $X_e$ does exist, and the deficiency
+supplies it. Applying the vertex identity a second time writes each child polynomial as
+$F_{A''_k}=\bigl(F_{A^{(e)}}-q_k\bigr)/x$ with
+$q_k=\langle\hat f_k,W^{(e)}(x)\hat f_k\rangle$, so
+$\sum_k\theta_kF_{A''_k}=\bigl(aF_{A^{(e)}}-\operatorname{tr}(FW^{(e)})\bigr)/x$, and
+substituting into $X_e=N_e-\sum_k\theta_kF_{A''_k}$ gives a relation between the vertex
+matrices at two consecutive levels:
+
+\begin{proposition}\label{prop:twolevel}
+$x\,X_e=\operatorname{tr}\bigl(F\,W^{(e)}(x)\bigr)-x\,\langle e,W(x)e\rangle
+-a\,F_{A^{(e)}}(x)$, and consequently
+\[
+x\,X_e\ \le\ a\,\lambda_{\max}\bigl(W^{(e)}(x)\bigr)-x\,\langle e,W(x)e\rangle
+-a\,F_{A^{(e)}}(x).
+\]
+\end{proposition}
+
+\begin{proof}
+The identity is the substitution above. For the bound, $F=\sum_k\theta_k\hat f_k\hat
+f_k^{\mathsf T}$ is a nonnegative combination of unit rank-ones with
+$\sum_k\theta_k=\operatorname{tr}F=a$, so
+$\operatorname{tr}(FW^{(e)})=\sum_k\theta_kq_k\le\bigl(\sum_k\theta_k\bigr)
+\lambda_{\max}(W^{(e)})$; no spectral theory is needed beyond the definition of
+$\lambda_{\max}$.
+\end{proof}
+
+This is the first upper bound on $X_e$ in the development, every earlier statement
+bounded it below or computed it exactly, and the trace step is not lossy where it
+matters: on $K_5$ and $K_6$, where $X_e=0$, it holds with equality. Together with
+Proposition~\ref{prop:defstep}, whose target is strictly positive, the band is therefore
+reduced to a spectral bound on the child's vertex matrix.
+
+That bound has a clean form in the cavity ratios, and the form explains what is left.
+Write $r=R_e/(x/2)$ and $r'=\bigl(\max_{e'}R'_{e'}\bigr)/(x/2)$. Since
+$\lambda_{\max}(W^{(e)})=F_{A^{(e)}}-x\min_{e'}F_{A''}$ and
+$\min_{e'}F_{A''}=F_{A^{(e)}}/\max_{e'}R'_{e'}$, the bound
+$\lambda_{\max}(W^{(e)})\le xF_A/a-3F_{A^{(e)}}$ is exactly
+\begin{equation}\label{eq:ratiotarget}
+r'\ \le\ \frac1{2-r}.
+\end{equation}
+
+\begin{proposition}\label{prop:kmtarget}
+The Kesten--McKay value of Proposition~\ref{prop:km} satisfies \eqref{eq:ratiotarget}
+automatically: with $u=1/(1+\sqrt a)$ and $r=r'=1+u$, one has $(1+u)(1-u)=1-u^2\le1$, and
+the slack is exactly
+\[
+\frac1{1-u}-(1+u)=\frac{u^2}{1-u}=\frac1{\sqrt a\,(1+\sqrt a)} .
+\]
+\end{proposition}
+
+So the target is not merely consistent with the Kesten--McKay picture, it is
+\emph{implied} by it, with a slack that vanishes like $1/a$, matching the asymptotic
+tightness of $2\sqrt a$. On the graphs tested \eqref{eq:ratiotarget} holds throughout, and
+it is tight exactly where $X_e=0$: at $K_5$ and $K_6$ the two sides agree to four digits
+($1.5673$ and $1.5194$), while the larger-girth graphs have margin. What remains
+unproved is therefore not \eqref{eq:ratiotarget} in the abstract but the gap between the
+true ratios and their Kesten--McKay values, which is Conjecture~\ref{conj:km} together
+with its analogue one level down.
+
+The constant is therefore not an artefact of the estimate: $\sqrt a$ is the fixed
+point of $\rho\mapsto x-a/\rho$ at $x=2\sqrt a$, the value at which the two roots of
+$\rho^2-x\rho+a$ collide. For $x>2\sqrt a$ the inductive hypothesis has an interval
+of admissible thresholds and the argument has slack; at $x=2\sqrt a$ the interval is
+a point and it has none. That is exactly why $2\sqrt a$, and not the conjectured
+$2\sqrt{a-1}$, is the ceiling of every argument of this shape. The cross terms
+$C_r=N_r-\sum_k\theta_kM''_{k,r-1}
+=\sum_{|T|=r}\sum_{k\ne l\in T}\langle f_k\wedge\omega'_{T\setminus k},
+f_l\wedge\omega'_{T\setminus l}\rangle$ were nonnegative in every family tested, and at
+$r=2$ that is now Theorem~\ref{thm:C2}. The nonnegativity is not termwise, and it is
+worth recording that it is not, since the termwise statement is the natural thing to try
+and it is false: single pairs $(k,l)$
+and even whole summands $\sum_{k\ne l\in T}$ take negative values, the smallest
+observed being $-1.9\cdot10^{-3}$ and $-3.8\cdot10^{-3}$ over weighted plane
+families in dimensions six and eight. If $C_r\ge0$ holds it is therefore a statement about the sum over all
+$T$ of a given size, not about its terms. Summed, it survives minimization over the
+sphere, and sharply: for coordinate families $\min_e C_2=0$ to machine precision,
+attained exactly at the coordinate directions, where the classical recursion lives,
+while for noncommuting projection and general plane families the minimum is strictly
+positive, growing from $0.048$ at $m=4$ to $0.777$ at $m=8$. Finally
+$X_e=\sum_{r\ge2}(-1)^{r-1}C_rx^{\,m-2r}$ was nonpositive at $x=2\sqrt a$ in every case
+under direct maximization over the sphere, zero to $4\cdot10^{-12}$ for coordinate
+families, strictly negative otherwise, over graph families in dimensions $4,5,6$,
+projection families in dimensions $4,6$ and weighted plane families in dimension $4$.
+The identity of Theorem~\ref{thm:vertexrec} was checked to $10^{-13}$ on graph,
+projection and general weighted plane families at generic directions
+(\texttt{code/hl\_Wspec.py}, \texttt{code/hl\_Xsign.py}).
+
+Both of the bounds that follow are rungs of a single ladder, and it is worth saying what the
+ladder reaches before giving them. Writing $y=x^2$, the $M_r$ are the elementary symmetric
+functions of the $y$-roots, so with $p_k$ the power sums one has $y_{\max}^k\le p_k$, and any
+a priori bound $p_k\le(4a)^k$ gives the band (\texttt{MomentLadder.le\_of\_power\_sum\_le}).
+Writing $p_k=(m/2)c_k^k$, the $k$-th rung covers dimension $m$ exactly when
+\begin{equation}\label{eq:reach}
+   m\ \le\ 2\Bigl(\frac{4a}{c_k}\Bigr)^{k}
+\end{equation}
+(\texttt{reach\_of\_moment}). Measured on the class, $c_k^k$ is the number of closed walks of
+length $2k$ from a root of the $a$-regular tree, so $c_1=a$ and $c_2=\sqrt{a(2a-1)}$, which are
+the two rungs below; that count grows like $\bigl(4(a-1)\bigr)^kk^{-3/2}$, the base being the
+square of the tree's spectral radius, against a target of $(4a)^k$. Since $4(a-1)<4a$, the reach
+\eqref{eq:reach} is unbounded in $k$ (\texttt{reach\_unbounded}): at $a=3$ it is $146$, $509$ and
+$1489$ at $k=5,7,9$, against the $8$ and $18$ of the first two rungs (\texttt{code/moments2.py}).
+What the reach costs is an a priori bound on $p_k$, and the natural candidate is
+$p_k\le(m/2)W_{2k}$ with $W_{2k}$ the tree walk count; for graphs that is Godsil's path-tree
+argument, the path tree being a subtree of the universal cover. Off the coordinate case it is
+false. Weighted families with $\operatorname{Adj}(A)=aI$ exceed it by $1.008$, $1.134$ and
+$1.315$ at $m=6,8,10$ and $a=3$, the excess growing in both $k$ and $m$, so no constant-factor
+version survives either; coordinate families obey it, with equality at $k=1,2$
+(\texttt{code/momentbound.py}, \texttt{code/p16verify.py}). Weakening it to a rate,
+$p_k\le(m/2)R^kW_{2k}$, leaves the reach unbounded exactly when $R<a/(a-1)$
+(\texttt{rate\_lt\_target}, \texttt{reach\_unbounded\_of\_rate}), and the measured rates sit far
+inside that: $0.97$, $1.02$, $1.05$, $1.07$, $1.09$ at $m=6,\dots,14$ and $a=3$
+(\texttt{code/excessrate.py}). That is still not a route, for a reason that is structural rather
+than numerical.
+
+\begin{proposition}\label{prop:ladder-nogo}
+Let $y_1,\dots,y_n\ge0$, let $c>0$, and suppose $\sum_iy_i^k\le Cc^k$ for every $k\ge1$, with
+$C$ independent of $k$. Then $y_i\le c$ for every $i$.
+\end{proposition}
+
+\begin{proof}
+If $y_i>c$ then $(y_i/c)^k\le\bigl(\sum_jy_j^k\bigr)/c^k\le C$ for every $k$, while the left
+side is unbounded \textup{(}\texttt{MomentLadder.band\_of\_all\_moments}\textup{)}.
+\end{proof}
+
+Applied with $c=4(a-1)R$, a rate bound holding at every rung already forces
+$y_{\max}\le4(a-1)R$. So at $R<a/(a-1)$ the hypothesis is strictly stronger than the band it is
+meant to prove, and at $R\ge a/(a-1)$ every rung collapses to $m\le2$
+(\texttt{reach\_trivial\_of\_rate}). The ladder has content only at a single finite $k$, where it
+buys the finite range \eqref{eq:reach} and nothing more; the dimension restriction is intrinsic
+to it.
+
+Two bounds follow unconditionally from real-rootedness alone. Writing
+$F_A=x^m-M_1x^{m-2}+M_2x^{m-4}-\cdots$, one has $M_1=\tfrac12\operatorname{tr}
+\operatorname{Adj}(A)\le am/2$ and, using $\|\omega_j\wedge\omega_l\|^2\ge
+1-\operatorname{tr}(P_jP_l)$, $M_1^2-2M_2\le\operatorname{tr}
+\operatorname{Adj}(A)^2-\sum_kc_k^2$. Since the largest root $\lambda$ satisfies
+$\lambda^2\le M_1$ and $\lambda^4\le M_1^2-2M_2$, the band
+$[a-2\sqrt a,a+2\sqrt a]$ holds whenever $m\le8$, and whenever
+$m\le16+\bigl(\sum_kc_k^2\bigr)/a^2$, which for projection families is
+$m\le32a/(2a-1)$. The second reproduces the known two-moment bound for projections
+and extends it to all weighted plane families. Adversarial search over rank-two projection families and
+over random biregular graphs reaches $0.83$ of the threshold at $a=3$ and $0.72$ at
+$a=4$, with no violation; graphs are marginally more extremal than general
+projections.
+
+\subsection{The reflection for projections}
+
+At $b=2$ the whole question also collapses onto the known half, by a symmetry.
+
+\begin{proposition}\label{prop:reflect}
+Let $P_1,\dots,P_q$ be rank-$2$ orthogonal projections on $\mathbb R^p$ with
+$\sum_kP_k=aI$. Then $\mu[P_1,\dots,P_q](2a-y)=(-1)^p\mu[P_1,\dots,P_q](y)$; in
+particular $\lambda_{\min}+\lambda_{\max}=2a$.
+\end{proposition}
+
+\begin{proof}
+The mixed characteristic polynomial is affine-linear in each slot, so it commutes
+with taking expectations slotwise, and for rank-one slots
+$\mu[v_1v_1^{\mathsf T},\dots]=\det\bigl(yI-\sum_kv_kv_k^{\mathsf T}\bigr)$, since a
+multi-affine polynomial is sent by $\prod_k(1-\partial_k)$ to its value at
+$z=(-1,\dots,-1)$. Choose an orthonormal pair $e_k,f_k$ spanning the range of $P_k$
+and set $v_k=e_k+\varepsilon_kf_k$ with $\varepsilon_k$ independent uniform signs.
+Then $\mathbb E\,v_kv_k^{\mathsf T}=P_k$ and
+$v_kv_k^{\mathsf T}=P_k+\varepsilon_kS_k$ with
+$S_k=e_kf_k^{\mathsf T}+f_ke_k^{\mathsf T}$ and $S_k^2=P_k$, so
+$\mu(y)=\mathbb E_\varepsilon\det\bigl((y-a)I-\sum_k\varepsilon_kS_k\bigr)$. That is
+an even or odd function of $t=y-a$ according to the parity of $p$, because
+$\varepsilon\mapsto-\varepsilon$ preserves the distribution.
+\end{proof}
+
+The last step, which carries the whole proposition, is formalized in
+\texttt{RamaLean/SignReflection.lean} as \texttt{sign\_avg\_reflect}: for any family of
+matrices $S_1,\dots,S_q$ the sign average
+$\sum_{\varepsilon\in\{\pm1\}^q}\det\bigl(tI-\sum_k\varepsilon_kS_k\bigr)$ satisfies
+$\rho(-t)=(-1)^n\rho(t)$, with no hypothesis on the $S_k$; the shift and the exchange
+of band edges $2a-(\sqrt{a-1}+1)^2=(\sqrt{a-1}-1)^2$ are
+\texttt{mixedChar\_reflect} and \texttt{band\_edges\_swap}. The step identifying the
+sign average with $\mu$ is formalized in the same file: by \texttt{sum\_prod\_sgn} a
+nonempty sign monomial averages to zero over $\{\pm1\}^q$, proved by the same
+involution, so by \texttt{sum\_multiaffine} the average of a multi-affine function
+returns $2^q$ times its constant term, which for
+$\det\bigl(yI+\sum_kz_kA_k\bigr)$ with rank-one $A_k$ is what
+$\prod_k(1-\partial_{z_k})$ extracts.
+
+Since $2a-(\sqrt{a-1}+1)^2=(\sqrt{a-1}-1)^2$, the two band edges are exchanged by
+the reflection, so at $b=2$ the lower bound is \emph{equivalent} to the upper one.
+For diagonal families the upper bound is Godsil's path-tree theorem and $b=2$ is
+therefore settled, that is Theorem~\ref{thm:subdiv} again. For projections it is
+not: the path tree is a graph construction, and the only bound available in that
+generality is the Marchenko--Pastur edge $(\sqrt a+\sqrt b)^2$, which is strictly
+larger than $(s+t)^2$. So at $b=2$ the projection statement is reduced to its upper
+half, not closed. The mechanism in the diagonal case is transparent: there
+$\sum_k\varepsilon_kS_k$ is a signed adjacency matrix, the expectation is
+Godsil--Gutman, and one recovers $\nu_{S(H)}(y)=\mu_H(y-a)$.
+
+This also locates the obstruction at $b\ge3$ sharply. Writing
+$N_k=v_kv_k^{\mathsf T}-P_k$ one has $N_k^2=(b-2)N_k+(b-1)P_k$, with spectrum
+$\{b-1,\,-1^{(b-1)}\}$ on the range of $P_k$; the reflection needs this invariant
+under $N_k\mapsto-N_k$, which happens exactly when $b=2$. Equivalently: the mean
+root is always $a$, since $\sum_i\lambda_i=\operatorname{tr}\sum_kP_k=pa$, while the
+band centre is $a+b-2$. The conjecture therefore asserts a skew of exactly $b-2$,
+which is the operator form of the displacement in Theorem~\ref{thm:subcoef} and is
+invisible to any reflection or first-moment argument.
+
+The source of that skew can be named exactly. The jump $N_k$ has spectrum
+$\{b-1,\,(-1)^{(b-1)}\}$ on the range of $P_k$, whose moments are
+\[
+m_1=0,\qquad m_2=b(b-1),\qquad m_3=b(b-1)(b-2).
+\]
+So the third moment vanishes precisely when $b=2$: Proposition~\ref{prop:reflect}
+is not an accident of small $b$ but the vanishing of the jump skewness, and for
+$b\ge3$ any argument reaching the lower edge must see a third-order quantity.
+
+\section{The band is the support of a free convolution power}
+
+There is a single reason behind all of this, and it is worth stating because it
+accounts uniformly for the failure of every method tried. Let
+$\chi=(1-\tfrac1b)\delta_0+\tfrac1b\delta_b$, and let $\nu$ be the centred slot
+spectrum $\tfrac1b\delta_{b-1}+(1-\tfrac1b)\delta_{-1}$, so that
+$\chi=\delta_1\boxplus\nu$.
+
+\begin{proposition}\label{prop:freepower}
+$\operatorname{supp}\bigl(\chi^{\boxplus a}\bigr)
+=\bigl[(\sqrt{a-1}-\sqrt{b-1})^2,\ (\sqrt{a-1}+\sqrt{b-1})^2\bigr]$.
+\end{proposition}
+
+So the band is the support of a free convolution \emph{power}. Every method that
+fails computes instead a compound free Poisson of rate $a$ with jump $\nu$, whose
+free cumulants are $a\,m_n(\nu)$ rather than $a\,\kappa_n(\nu)$, and
+\[
+m_n(\nu)=\kappa_n(\nu)\ \ (n\le3),\qquad
+\kappa_4(\nu)-m_4(\nu)=-2(b-1)^2 .
+\]
+The two sequences agree through third order and part company at the fourth, by
+exactly $-2a(b-1)^2$. Order four is where every structure in this problem turns
+over, and it does so three independent times: the coefficients $E_0,\dots,E_3$ are
+determined by the parameters while $E_4$ carries the $4$-cycle count; the moment and
+free-cumulant sequences of the jump agree up to order three and split at order four;
+and the parallel-class construction for the finite free convolution reproduces the
+elementary symmetric functions $e_1,e_2,e_3$ of $\mu$ and first fails at $e_4$. That is why the barrier bound, the scalar free convolution
+and the finite free convolution all overshoot by the same margin of about $1.1$,
+and it is the analytic form of the third-moment obstruction above.
+
+The finite free cumulants of $\mu$ itself follow the free power, not the Poisson:
+\[
+\kappa_1=a,\qquad \kappa_2=\frac{ap(b-1)}{p-1},\qquad
+\kappa_3=\frac{ap^2(b-1)(b-2)}{(p-1)(p-2)},
+\]
+with $\kappa_4$ the first that depends on the family, matching the coefficient
+ladder, where $E_0,\dots,E_3$ are universal and $E_4$ carries the $4$-cycle count.
+Note $\kappa_3=0$ exactly when $b=2$: Proposition~\ref{prop:reflect} is visible in
+the cumulants.
+
+Two further facts delimit what can be done with this. Writing
+$\psi_0(x)=x^{p-p/b}(x-b)^{p/b}$ and $\Psi=\psi_0^{\boxplus_pa}$, the polynomial
+$\Psi$ satisfies the band at every $p$, but $\mu\ne\Psi$ in general and there is no
+real-rooted $\rho$ with $\mu=\Psi\boxplus_p\rho$ unless the two agree: finite free
+deconvolution is unique, so such a $\rho$ would have $\kappa_1=\kappa_2=0$, and
+$\kappa_2$ is a positive multiple of the variance of the roots, forcing
+$\rho=x^p$. The very agreement of the first three cumulants is what forbids the
+factorization. Divisibility by a single copy, $\mu=\psi_0\boxplus_p\rho$ with $\rho$ real-rooted,
+would by the Marcus--Spielman--Srivastava bound give a lower bound on
+$\lambda_{\min}$, and it holds in small cases; but it is not a property of the
+class. Taking $b=2$ and the incidence families of $3$-regular graphs, the
+deconvolution $\rho$ is real-rooted for $S(K_4)$ at $p=4$ and for $K_{3,3}$ at
+$p=6$, and fails for the cube $Q_3$ at $p=8$ and the Petersen graph at $p=10$,
+where the largest imaginary part of a root of $\rho$ is $0.133$ and $0.290$
+respectively. The cube is the informative case: it is $3$-regular and bipartite,
+hence $1$-factorable, so the failure is not caused by the absence of a partition of
+the blocks into parallel classes. Whatever separates the projection class from the
+positive semidefinite relaxation, single-copy divisibility is not it: at
+$(p,a,b)=(12,4,2)$ the scalar family, which violates the band, admits the
+factorization while a projection family does not.
+
+Two general facts about free convolution came out of the attempt, and they bound
+what any argument of this shape can achieve. For finitely supported probability
+measures,
+\begin{equation}\label{eq:squeeze}
+\min\operatorname{supp}\omega+\min\operatorname{supp}\tau
+\ \le\ \min\operatorname{supp}(\omega\boxplus\tau)
+\ \le\ \min\operatorname{supp}\tau+m_1(\omega),
+\end{equation}
+the lower bound from the operator model and the upper from
+$\min\operatorname{supp}(\omega\boxplus\tau)=\sup_{w<0}[K_\tau(w)+R_\omega(w)]$
+together with the monotonicity of $R_\omega$, which follows from Cauchy--Schwarz.
+And if $\min\operatorname{supp}\tau\ge c$ then
+$\tau(\{c\})\le\mu_2/\bigl(\mu_2+(m_1-c)^2\bigr)$, so by Bercovici--Voiculescu an
+atom of mass exceeding $\omega(\{\min\operatorname{supp}\omega\})$ pins the left
+edge of $\omega\boxplus\tau$ at $c$ exactly.
+
+Applied with $\omega=\chi$, for which $m_1=1$, \eqref{eq:squeeze} says that
+convolving with $\chi$ moves the left edge by at most $1$. Any certificate that
+tries to reach the band edge by exhibiting $\mu$ as a free convolution with $\chi$
+is therefore capped, and the first three cumulants do not constrain the other
+factor enough: there are measures with exactly the forced values of
+$\kappa_1,\kappa_2,\kappa_3$, real-rooted, supported in $[0,ab]$, whose convolution
+with $\chi$ has left edge $0$. At $(a,b)=(5,4)$, $p=12$ one may take
+$x^4(x-4)^3(x-6)^4(x-12)$, whose mass at $0$ exceeds $1/b$.
+
+The same atom mechanism explains the hypothesis $a\ge b$: for $a<b$ the measure
+$\chi^{\boxplus a}$ carries an atom at $0$ of mass $1-a/b$, so its left edge is $0$
+and the band statement is empty.
+
+\section{Rank monotonicity, and what it explains}\label{sec:rank}
+
+What does separate them can be said exactly, in terms of the representation
+\eqref{eq:dpp}. For a general positive semidefinite family with $\sum_kA_k=aI$ the
+marginal of $s_k$ has probability generating function
+$\prod_i\bigl(\tfrac{a-\alpha_i}{a}+\tfrac{\alpha_i}{a}z\bigr)$ over the eigenvalues
+$\alpha_i$ of $A_k$, a Poisson binomial; it is exactly $\mathrm{Binomial}(b,1/a)$ if
+and only if every $\alpha_i$ lies in $\{0,1\}$, that is if and only if $A_k$ is a
+rank-$b$ projection. Among Poisson binomials of fixed mean $b/a$ with $n$ equal
+parameters the variance is $(b/a)(1-b/(na))$, increasing in $n$; so the projections,
+where $n=b$, are the \emph{variance-minimizing} extreme point of the whole family.
+The scalar counterexample $A_k=(b/p)I$ sits at the opposite end, at the Poisson
+limit, with variance exceeding the projection value by exactly $b/a^2$.
+
+This has a consequence that organizes the whole picture. Fix $(a,b)$ and let the
+common rank $n$ of the $A_k$ vary, with $A_k=(b/n)Q_k$ for rank-$n$ projections
+$Q_k$ summing to $(an/b)I$, so that $\operatorname{tr}A_k=b$ and $\sum_kA_k=aI$
+throughout. At $(a,b)=(4,2)$, $p=6$, $q=12$ the extreme roots move monotonically:
+\begin{center}
+\begin{tabular}{ccc}
+\hline
+$n$ & least root & greatest root\\
+\hline
+$2$ & $1.129$ & $6.871$\\
+$3$ & $1.004$ & $7.706$\\
+$4$ & $0.951$ & $8.090$\\
+$5$ & $0.921$ & $8.317$\\
+$6$ & $0.903$ & $8.467$\\
+\hline
+\end{tabular}
+\end{center}
+against the band $[0.536,7.464]$ at $n=b=2$ and the Marchenko--Pastur interval
+$[0.343,11.657]$ approached as $n\to p$. So the conjectured band is the endpoint at
+$n=b$ of a family of intervals increasing in $n$, whose other endpoint is
+Marchenko--Pastur, and the Marchenko--Pastur value is attained. That is the correct
+reading of the obstructions recorded above: each of them is sharp for the class it
+sees, namely the one with $n$ unrestricted, and the conjecture is the assertion that
+restricting to $n=b$ contracts the interval all the way to the tree band.
+
+The condition $\operatorname{rank}A_k\le b$ is therefore the condition that the
+occupancy of a block fluctuates as little as possible at its given mean, and the
+conjecture asserts that minimal marginal fluctuation propagates to the extreme
+confinement recorded above. That suggests the right statement is one about measures
+rather than matrices: for a random vector $(s_1,\dots,s_q)$ of nonnegative integers
+with $\sum_ks_k=p$ almost surely, each $s_k$ exactly $\mathrm{Binomial}(b,1/a)$, and
+joint generating function homogeneous of degree $p$ and real stable, are the roots
+of $\mathbb E\prod_k(y-as_k)$ confined to the band? Every projection family induces
+such a law, and the scalar family does not, failing the marginal condition.
+
+That class is rigid, which is what makes the reformulation faithful rather than a
+weakening. The marginal condition is itself a rigidity statement: in the polarized
+picture it holds if and only if the $b$ slots inside each block are exactly jointly
+independent Bernoulli$(1/a)$. Consequently, any \emph{determinantal} law satisfying
+the two combinatorial conditions has a rank-$p$ projection kernel whose diagonal
+$b\times b$ blocks are $\tfrac1aI_b$, that is, it is the Naimark kernel of a
+projection family; and any law given by independent balls in bins satisfying them
+comes from an $(a,b)$-biregular incidence matrix, that is, from a commuting family.
+So the two canonical constructions of stable laws produce nothing new. At $b=2$ more
+is true: for $(p,q,a,b)=(4,6,3,2)$ and $(3,6,4,2)$ the affine hull of the stable laws
+in the class coincides with the affine hull of the projection families, of dimensions
+$54$ and $14$ against $78$ and $38$ for the two combinatorial conditions alone. The
+measure formulation is therefore not a relaxation at $b=2$.
+
+The two combinatorial conditions alone do not suffice, and the point at which they
+fail is sharp: over all laws satisfying them the largest root is confined to the band
+only for $q$ below an explicit threshold, and it reaches the trivial value $ab$
+exactly at $q=a^b$, the smallest $q$ at which the binomial profile
+$n_j=q\binom bj(a-1)^{b-j}a^{-b}$ is integral. Stability is what must supply the
+rest, and it cannot be seen by any argument that symmetrizes: the divisibility
+constraint that stability imposes, namely that $(w+a-1)^{b-1}$ divides
+$\mathbb E\bigl[s_l\,w^{s_k}\bigr]$, becomes vacuous on exchangeable laws.
+Negative association alone is likewise insufficient, by an explicit permutation
+counterexample whose polynomial has a root at $ab$.
+
+The size of the claim is also worth recording. Since $E_1$ and $E_2$ are universal,
+the root distribution of $\mu$ has mean $a$ and variance $a(b-1)$ for every
+admissible family. Measured against that, the lower band edge sits between $1.35$
+and $1.92$ standard deviations below the mean over the range $3\le a\le100$,
+tending to $2$ as $a$ grows. The conjecture is therefore a statement of extreme
+concentration: the least of $p$ roots is confined to about two standard deviations,
+where an unstructured sample of that size would reach out to order
+$\sqrt{\log p}$.
+
+\subsection{The extremal problem in dimension four}
+
+Graphs are not always extremal in that class, however, and the smallest case can be
+settled exactly. This is no longer needed for the band, at $p=4$, $b=2$ the
+reflection gives $\mu(t+a)=t^4-2at^2+\beta$, and real-rootedness alone forces
+$0\le\beta\le a^2$, hence $t^2\le2a\le4(a-1)$, but it identifies the extremal
+families. Take $b=2$, $p=4$, so $q=2a$ and $\sum_kP_k=aI_4$. Writing
+$g_{ij}=\operatorname{tr}(P_iP_j)$ and $h_{ij}=\operatorname{tr}\bigl((P_iP_j)^2\bigr)$,
+
+\begin{proposition}\label{prop:E4}
+For rank-$2$ orthogonal projections $P_1,\dots,P_q$ on $\mathbb R^4$ with
+$\sum_kP_k=\tfrac q2I$,
+\[
+E_4=\frac{q^4}{16}-\frac{q^3}{4}+\frac q2+\frac14\sum_{i\ne j}\bigl(g_{ij}^2-h_{ij}\bigr),
+\]
+and every summand is nonnegative. Equality holds exactly when
+$\operatorname{rank}(P_iP_j)\le1$ for all $i\ne j$.
+\end{proposition}
+
+Nonnegativity is immediate once the right object is named: for $i\ne j$ put
+$X=P_jP_iP_j\succeq0$; then $\operatorname{tr}\bigl((P_iP_j)^m\bigr)=\operatorname{tr}(X^m)$
+for every $m\ge1$, so $g_{ij}^2-h_{ij}=(\operatorname{tr}X)^2-\operatorname{tr}X^2
+=2\sum_{r<s}\lambda_r\lambda_s\ge0$. The last step is formalized in
+\texttt{RamaLean/TracePSD.lean}: \texttt{sq\_sum\_sub\_sum\_sq} gives the identity
+$\bigl(\sum f\bigr)^2-\sum f^2=\sum_i\sum_{j\ne i}f_if_j$ over any finite index set
+and \texttt{sum\_sq\_le\_sq\_sum} the inequality under nonnegativity, with the
+spectral input carried as explicit hypotheses on the matrix form.
+
+Identifying a $2$-plane $U\subset\mathbb R^4$ with its unit simple bivector
+$\omega_U\in\Lambda^2\mathbb R^4\cong\mathbb R^6$ gives
+$g_{ij}^2-h_{ij}=2\langle\omega_i,\omega_j\rangle^2$, so the Welch bound for $q$
+unit vectors in a $6$-dimensional space yields
+\[
+E_4\ \ge\ \frac{q^4}{16}-\frac{q^3}{4}+\frac{q^2}{12},
+\]
+with equality exactly when $\{\omega_k\}$ is a tight frame of \emph{simple}
+bivectors. This gives $30$, $400/3$, $1150/3$ and $876$ at $q=6,8,10,12$, matching
+the values found numerically.
+
+At $q=6$ the bound reads $E_4\ge30$, attained by the incidence family of $K_4$; and
+there the tight-frame condition degenerates to ``orthonormal basis'', which is the
+one value of $q$ at which it can be met by simple bivectors alone. That is why
+graphs are extremal at $q=6$ and not at $q=8$, where the minimum $400/3$ lies
+strictly below the graph minimum $134$: the coincidence is the degeneration, not a
+principle. Even at $q=6$ the graphs are only a slice of the minimizers, the
+equality locus is $4$-dimensional modulo $O(4)$, and taking the $\omega_k$ from the
+six icosahedral axes, with the two $\mathbb R^3$ components Galois conjugate over
+$\mathbb Q(\sqrt5)$, produces a noncommuting family with all
+$g_{ij}=4/5$ and $E_4=30$. A lower bound of the same shape is known in the random setting: Brito,
+Dumitriu and Harris \cite{BDH} show that a random bipartite biregular graph
+satisfies $\eta^+_{\min}\ge\sqrt{d_1-1}-\sqrt{d_2-1}-\varepsilon_n$ with high
+probability. That is an asymptotic statement about adjacency eigenvalues of
+random graphs; Conjecture~\ref{conj:gap} is a deterministic statement about
+matching polynomial roots of every graph.
+
+\section{What a proof must contain}\label{sec:must}
+
+Each of the methods that does not reach the band fails for a reason that can be
+named exactly, and each such reason is a property that a proof must have. We
+collect them here as a specification rather than as a list of failures: a proof
+must not induct on vertex deletion, must not be a side-constant specialization of
+the multivariate matching polynomial, must control deficient vertices of the path
+tree, and must not pass through Floquet theory. Every one of these is sharp, in
+the sense that the method in question is exactly optimal for the class of objects
+it can see; that is the content of Section~\ref{sec:rank}.
+
+The lower bound, unlike the upper bound, is not monotone
+under vertex deletion. The Heilmann--Lieb argument for $|x|\le2\sqrt{\Delta-1}$
+inducts on vertex deletion, which is available because $\Delta$ only decreases.
+The quantity $|\sqrt{a-1}-\sqrt{b-1}|$ has no such monotonicity: deleting one
+vertex of the larger side of $K_{3,4}$ produces $K_{3,3}$, which is regular, and
+the gap collapses to zero, for $a=b$ one has $c=2\sqrt m$, so the interval
+$[c-2\sqrt m,\,c+2\sqrt m]$ has its lower end at $0$ and the statement is empty. So the naive induction by vertex deletion, which is
+what yields the upper bound, cannot prove the lower one.
+
+That obstruction can be strengthened, and in a way that rules out the whole
+family of such arguments rather than one instance of it. Every $b$-regular
+bipartite graph is an induced subgraph of some $(a,b)$-biregular graph, by an
+explicit padding construction; and over $b$-regular bipartite graphs the least
+root of $\nu_G$ tends to $0$, in closed form $2\sin(\pi/2N)$ for $b=2$. So on the
+class obtained by closing the biregular graphs under vertex deletion, the
+infimum of the least root is $0$, and the inequality to be proved is simply
+false there. Any argument that deletes vertices and applies an inductive
+hypothesis, cavity recursions, stability transfer, the Heilmann--Lieb
+induction, is an induction over that closure, and therefore cannot work,
+not because biregularity is lost but because the statement itself fails. An induction that
+carries something other than the target statement is not excluded, and \S\ref{sec:ratio} gives
+one: its hypothesis $q-r\ge1$ is precisely a hypothesis the padding family above violates. For
+$\mathrm{AG}(2,3)$, where $(s-t)^2=0.10102$, the minimum over all choices of $d$
+deleted vertices on the larger side runs $0.3593$, $0.2424$, $0.1383$, $0.0549$
+for $d=0,1,2,3$: it drops below the target at depth three.
+
+A second route, substituting side-constant values into the multivariate matching
+polynomial of Heilmann and Lieb, fails for a reason that is visible in one line.
+Writing $M_G(z;x)=\sum_Mz^{|M|}\prod_{v\notin M}x_v$ and setting $x_v=\alpha$ on
+the $p$-side and $x_v=\beta$ on the $q$-side gives
+$\sum_km_kz^k\alpha^{p-k}\beta^{q-k}$, in which the exponent pair contributes
+$c^{p-q}$ under $(\alpha,\beta)\mapsto(c\alpha,\beta/c)$ independently of $k$; so
+the specialization depends on $\alpha$ and $\beta$ only through the product
+$\alpha\beta$. Since the image of a product of two upper half-planes is
+$\mathbb C\setminus[0,\infty)$, stability under this substitution says exactly
+that the roots are real and nonnegative, and nothing more. In particular it says
+the same thing when $a=b$, where the conclusion to be proved is empty. No choice
+of $\alpha$ and $\beta$ can see $a-b$.
+
+Two obstructions remain in the direct approach, both caused by cycles in $G$. First, a leaf of the path
+tree that is an $A$-vertex carries $R_A=y>0$, of the wrong sign. This one is
+disposed of: a maximal self-avoiding walk ending at $w\in A$ contains all $a$
+neighbours of $w$, hence at least $a$ vertices of $B$ and therefore at least $a$
+vertices of $A$, so
+\[
+p<a\ \Longrightarrow\ \text{the path tree has no }A\text{-leaf},
+\]
+which covers every $K_{p,q}$ with $p<q$. Second, and this is what blocks the
+argument, an internal $A$-vertex of the path tree may have $k<P$ children, the
+walk having already consumed part of its neighbourhood; the bound
+$R_A\le y-P\alpha/(\alpha+Q)$ then fails. With $k=1$ closure would require
+$\alpha(1-\alpha-Q)/(\alpha+Q)\ge y$, impossible for $b\ge3$ since $Q\ge2$.
+Deficiency occurs already in $K_{3,4}$, where the walk $a_1b_1a_2b_2a_3$ leaves
+$a_3$ with two children rather than three. What the argument as it stands
+establishes is that a \emph{full} truncated biregular tree carries no eigenvalue
+in the gap, consistent with the deficient subtree $P_8$ carrying one; that is a
+statement about the tree and not about $G$. Controlling deficient $A$-vertices
+is the open problem.
+
+The case $b\ge3$ of the biregular family is the remaining open one, since $b=2$
+is Theorem~\ref{thm:subdiv}; note that every graph named below has $a\ne b$, so
+the statement being tested is not the empty one. It has been tested at $d=1$ on
+$K_{3,4},K_{3,5},K_{3,6},K_{3,7},K_{3,8},K_{4,5},K_{4,6},K_{4,7},K_{5,6}$ and a
+$(3,2)$ design incidence graph, with smallest-root ratios between $1.51$ and
+$3.33$ and no root in a gap.
+
+The natural attack is Godsil's recursion $R_v=x-\sum_{u}1/R_u$, whose fixed
+points on the $(a,b)$-biregular tree are real precisely off the spectrum. Asking
+that the region $R_b\in[x,P/x)$, $P=a-1$, $Q=b-1$, be closed under the
+recursion reduces to $u^2-(2P+Q)u+P^2>0$ at $u=x^2$, i.e.\ to
+$u<\bigl(2P+Q-\sqrt{Q^2+4PQ}\bigr)/2$. This is satisfied throughout the gap
+with room to spare: the ratio of that threshold to $(\sqrt P-\sqrt Q)^2$ ranges
+from $2.7$ to $37.7$ over the cases above. So the analytic part of an induction
+is not the difficulty.
+
+What blocks it is the boundary. A leaf of the path tree carries $R=x>0$, while
+the argument wants $R<0$ at $a$-vertices, and mixed signs among the children of
+a $b$-vertex leave the sum uncontrolled. One might hope to exploit that the
+counterexample to the naive subtree argument, $P_8$ inside the $(3,2)$-biregular
+tree, is deficient at \emph{internal} vertices, whereas a path tree is full at
+internal vertices; but that is false for graphs of small girth, where a
+self-avoiding walk can be blocked early, in $K_4$ the walk $0,1,2$ admits a
+single extension. We therefore leave $b\ge3$ open.
+
+A proof of Conjecture~\ref{conj:gap} cannot go through Floquet theory. For
+$b_1=b$ the deck group of the universal cover is the free group $F_b$, and
+Floquet theory is exactly the statement that for an \emph{abelian} deck group
+the fibres are indexed by the characters of that group; the two coincide only
+at $b=1$, where $F_1=\mathbb{Z}$. For $b\ge2$ the correct index set is the
+unitary dual of $F_b$, and the relevant object is the adjacency operator in the
+reduced $C^*$-algebra of $F_b$. This is not merely a technical obstruction: the
+computations of \cite{PartI} show that the per-component weight in the
+exponential formula, a single graph for $b=1$, becomes a sum over the many
+non-isomorphic connected $\ell$-covers for $b\ge2$.
+
+That framework is not empty. As $d\to\infty$, independent uniform random
+permutations are strongly asymptotically free \cite{BC}, and consequently the
+spectrum of a random $d$-lift of $G$ converges to $\operatorname{spec}(T)$.
+Conjecture~\ref{conj:gap} is a finite-$d$ statement about the expected
+characteristic polynomial rather than an asymptotic statement about typical
+lifts, and its content is precisely that the containment holds uniformly in
+$d$, with no exceptional set. What the $b_1=1$ case shows is that the interval
+in \cite{HPS} is not the natural receptacle for the roots, and that the correct
+one is spectral rather than metric.
+
+
+\section{Related work}
+Two ingredients are classical and are used, not claimed. The factorization of
+the characteristic polynomial of a cyclic cover into twisted determinants at
+roots of unity is the block-circulant diagonalization
+\cite{MS,DFMRS}; in the infinite-cover limit it is the Floquet--Bloch
+decomposition of a periodic discrete operator, and $y=-P/(2Q)$ is the
+corresponding Floquet discriminant. The identity
+$\Phi_{G,r}=\chi_G\cdot\mu_{r-1,G}$ is \cite{HPS}. Closest in form is
+McSorley and Feinsilver \cite{MF}. For a path whose edges are cyclically
+labelled with $t$ labels they establish a $(\tau,\Delta)$-recurrence
+$\Phi_{N}=\tau\Phi_{N-1}-\Delta\Phi_{N-2}$, which is the algebraic skeleton of
+\eqref{eq:V}, and their Theorem 4.4 solves it as
+$\Delta^{N/2}U_N(\tau/2\sqrt{\Delta})$, exactly the form used here. In the
+univariate specialization their $\tau$ is the matching polynomial of the cycle
+$C_t$ and $\Delta=(-1)^tx_1\cdots x_t$ is a monomial; passing between their
+counting normalization and the characteristic one used here is the
+homogenization $V_d\mapsto c^dV_d$, under which a monomial $\Delta$ becomes
+$\mu_{G-V(C)}=1$. Their Theorems 4.4 and 4.5 together give
+$U_{dn+n-1}=U_d(T_n)U_{n-1}$, the identity invoked in Section~1 to pass between
+Theorem~\ref{thm:main} and Hall's conjecture, so that bridge was already
+available in 2009. Their parameter is the number of label periods along a path
+and their graphs are paths, cycles and rooted trees; there is no covering and
+no cycle with trees attached. What is added here is the pair
+$(\mu_G,\mu_{G-V(C)})$, whose second entry is a genuine polynomial recording
+the attached trees rather than a monomial, together with the covering
+interpretation that makes the recurrence a statement about $\mu_{d,G}$.
+
+
+\section{The formalization}
+
+The core algebraic derivation, the exponential formula, the closed form of
+Theorem~\ref{thm:main} for all $n,r$ (equivalently, everything from the cycle
+weights \eqref{eq:avg} to the closed form), its factorization, and the parity
+Corollary~\ref{cor:parity}, is machine-checked in Lean~4 over Mathlib (v4.30).
+The main entry points:
+
+\begin{itemize}
+\item \texttt{Paper2.expFormula}, the exponential formula
+  \eqref{eq:newton} in integer form
+  $r\,A_r=\sum_k r^{(k)} f(k)A_{r-k}$ over any commutative ring, proved via
+  Mathlib's Cauchy cycle-type count
+  (\texttt{Equiv.Perm.\allowbreak card\_of\_\allowbreak cycleType\_mul\_eq});
+\item \texttt{Paper2.thm1\_Sr}, Theorem~\ref{thm:main} in the form:
+  the expected cycle weight \eqref{eq:avg} equals the closed form, for all
+  $n,r$, over any $\Q$-algebra domain;
+\item \texttt{Paper2.cG\_factored}, \texttt{Paper2.quotient\_parity}, the factorization and Corollary~\ref{cor:parity}.
+\end{itemize}
+
+The three remaining corollaries are now formalized in full.
+Corollary~\ref{cor:gf} is proved as a literal identity of formal power series,
+\texttt{Paper2GenFun.genU\_mul} giving
+$(1-2YX+X^2)\sum_dU_d(Y)X^d=1$ and \texttt{genPhi\_mul} the companion form with numerator
+$(1-X)^2$, by coefficient comparison against the Chebyshev recurrence.
+Corollary~\ref{cor:roots} is proved as the statement about roots,
+\texttt{Paper2Roots.Phi\_ne\_zero\_of\_two\_lt\_abs}: if $|x|>2$ then
+$\Phi_{n,r}(x)\neq0$, via $|T_n(x/2)|>1$ (\texttt{one\_lt\_abs\_cT}) and the vanishing of
+neither factor of the factorization.
+Corollary~\ref{cor:fib} is proved for all $n$ and $r$,
+\texttt{Paper2FibLucas.cor2\_phi3\_general}, replacing the bounded
+\texttt{native\_decide}; the route is the identity $F_{j+2m}+F_j=L_mF_{j+m}$ for even $m$
+(\texttt{fib\_shift}), whose base cases are $F_{2m}=L_mF_m$ and, using Cassini,
+$F_{2m+1}+1=L_mF_{m+1}$, and which is stated without truncated subtraction by writing
+$L_m=2F_{m+1}-F_m$.
+
+Trust base for the general theorems: \texttt{propext}, \texttt{Classical.choice},
+\texttt{Quot.sound} only (checked with \texttt{\#print axioms}); the bounded
+\texttt{native\_decide} checks additionally invoke \texttt{Lean.ofReduceBool}.
+No \texttt{sorry}. The single remaining unformalized ingredient of the
+\emph{graph-theoretic} statement is the sentence before \eqref{eq:avg}: a lift
+of a cycle is a disjoint union of cycles, elementary covering-space
+combinatorics for which Mathlib currently lacks the vocabulary.
+
+For the biregular half, \texttt{RamaLean/BipartiteMatchingPoly.lean} supplies a
+matching polynomial for bipartite graphs, Mathlib having none, and formalizes:
+the deletion recursion $Q_G=Q_{G-v}-z\sum_{u\sim v}Q_{G-v-u}$
+(\texttt{bipQ\_delete\_left}); the general Taylor shift
+$[X^j]f(X+c)=\sum_i\binom{i+j}{j}f_{i+j}c^i$
+(\texttt{taylor\_coeff\_of\_natDegree\_le}), from which the coefficient formulas at
+$p-1$, $p-2$ and $p-4$ follow; the count $2m_2+|{\rm confL}|+|{\rm confR}|=|E|(|E|-1)$
+with the two conflict classes as degree sums; and the combinatorial inputs to
+Theorems~\ref{thm:universal} and~\ref{thm:c4}, that three pairwise-meeting edges
+of a bipartite graph share a vertex (\texttt{three\_meeting\_share}), that the
+conflict degree of an edge is $(d_u-1)+(d_v-1)$ (\texttt{conflict\_degree}), the
+trichotomy for four-cycles of the conflict graph
+(\texttt{four\_cycle\_trichotomy}), and the identity the whole expansion runs on,
+that the matching indicator is the alternating sum over subsets of the conflicting
+pairs (\texttt{alt\_sum\_conflictPairs}). Several of these, including the
+trichotomy, depend on no axioms at all. \texttt{RamaLean/Paper2Unicyclic.lean}
+further formalizes that the lower band edge is $(\sqrt P-\sqrt Q)^2$ and so
+vanishes exactly when $P=Q$ (\texttt{gap\_eq\_zero\_iff}), which is the triviality
+recorded above.
+
+The inclusion--exclusion itself is formalized as a chain. The matching indicator is
+the alternating sum over subsets of the conflicting pairs of a set of edges
+(\texttt{alt\_sum\_conflictPairs}); substituting it turns $m_k$ into a double sum
+(\texttt{mCount\_eq\_sum\_alt}); because conflict is intrinsic to a pair of edges,
+the inner index set depends on the outer one only through a containment
+(\texttt{powerset\_conflictPairs\_eq}), so the two summations exchange
+(\texttt{mCount\_inclusion\_exclusion}); the resulting weight is a binomial
+coefficient, by a bijection between the $k$-subsets containing a fixed $V$ and the
+$(k-|V|)$-subsets of the complement
+(\texttt{card\_powersetCard\_filter\_superset}), giving
+\[
+m_k=\sum_{S}(-1)^{|S|}\binom{|E|-|V(S)|}{k-|V(S)|}
+\]
+over sets $S$ of conflicting pairs (\texttt{mCount\_closed\_form}); and since the
+weight sees $S$ only through $|S|$ and $|V(S)|$, the sum fibers over that pair
+(\texttt{mCount\_grouped}, \texttt{mCount\_grouped\_range}), which is the grouping
+by subgraph type. The chain is exercised end to end at $k=1$
+(\texttt{mCount\_one\_via\_inclusion\_exclusion}): every nonempty set of
+conflicting pairs has at least two endpoints, so only the empty set survives the
+binomial and contributes $\binom{|E|}{1}$, reproving $m_1=|E|$ through the
+inclusion--exclusion rather than by the direct bijection, so that two independent
+routes cross-check each link.
+
+What is \emph{not} formalized is the evaluation of the ten resulting counts as
+explicit functions of $(p,a,b)$ and $C_4(G)$, the step at which
+\texttt{three\_meeting\_share} and \texttt{four\_cycle\_trichotomy} are applied, together with the numerical verifications. One obstacle there is worth recording:
+the formalized conflict set consists of \emph{ordered} pairs, so each edge of the
+conflict graph occurs twice. This leaves the inclusion--exclusion untouched, since
+the alternating sum vanishes over any nonempty index set whether or not it double
+counts, but it means the grouping enumerates more configurations than the ten
+unordered types above, and aligning the two would require rebuilding the conflict
+set on unordered pairs.
+
+The operator side of Sections~\cite{PartI}--\ref{sec:rank} is formalized in four
+further files, all on the standard three axioms and with no \texttt{sorry}.
+\texttt{RamaLean/SignReflection.lean} carries
+Proposition~\ref{prop:reflect} to the point where only the rank-one expansion of
+$\mu$ is left by hand: \texttt{sign\_avg\_reflect} proves that
+$\sum_{\varepsilon\in\{\pm1\}^q}\det(tI-\sum_k\varepsilon_kS_k)$ is even or odd in
+$t$ according to the parity of the dimension, with \emph{no} hypothesis on the
+$S_k$, by the involution $\varepsilon\mapsto-\varepsilon$; \texttt{sum\_prod\_sgn}
+is character orthogonality on the Boolean cube, proved by the same involution
+applied to one coordinate; \texttt{sum\_multiaffine} deduces that averaging a
+multi-affine function over signs returns $2^q$ times its constant term, which is
+exactly what $\prod_k(1-\partial_{z_k})$ extracts; and
+\texttt{mixedChar\_reflect} and \texttt{band\_edges\_swap} supply the shift and the
+identity $2a-(\sqrt{a-1}+1)^2=(\sqrt{a-1}-1)^2$ that exchanges the band edges.
+\texttt{RamaLean/ProductBound.lean} proves Proposition~\ref{prop:abbound}
+(\texttt{no\_root\_above}: a convex combination of products of positive numbers is
+positive) together with the exact overshoot $ab-(s+t)^2=(\sqrt m-1)^2$
+(\texttt{edge\_gap}) and its vanishing exactly at $m=1$
+(\texttt{edge\_gap\_eq\_zero\_iff}), which is the case $a=b=2$ where the band is
+proved outright; it also proves Proposition~\ref{prop:ineq2}, that at $b=2$ the two
+band edges are the single condition $\pi_{\max}\le4(a-1)/a^2$
+(\texttt{band\_iff\_pi}), and that the strictly weaker $\pi_{\max}\le4/a$ already
+yields $a+2\sqrt a$, which beats the Marchenko--Pastur edge for every $a$ and the
+product bound $ab$ for $a>4$ (\texttt{weak\_bound}, \texttt{weak\_beats\_mp},
+\texttt{weak\_beats\_ab}). \texttt{RamaLean/GramDet.lean} discharges the exterior-algebra inputs by writing them in
+Gram coordinates, where each becomes a determinant statement. \texttt{det\_border} is the
+bordered determinant formula
+$\det\bigl[\begin{smallmatrix}a&r^{\mathsf T}\\ c&G\end{smallmatrix}\bigr]
+=a\det G-r^{\mathsf T}\operatorname{adj}(G)c$, which is exactly \eqref{eq:wedgeip};
+\texttt{det\_gram\_eq\_zero\_of\_dep} is $f_k\wedge\omega_k'=0$, the vanishing of a Gram
+determinant on a dependent family; and \texttt{hsimple\_of\_border\_zero} combines them
+into $\|f_k\|^2\|\omega_k'\|^2=\|\iota_{f_k}\omega_k'\|^2$, which is precisely the
+hypothesis \texttt{hsimple} used below, so that hypothesis is now proved rather than
+assumed. \texttt{RamaLean/Tightness.lean} supplies the other input, \texttt{htight}: that
+$\operatorname{Adj}(A)=aI$ forces $\sum_k\iota_{f_k}\omega_k'=0$. Working in coordinates,
+with a rank-two block presented by its two spanning vectors, the polarization step becomes
+three elementary facts, \texttt{iota\_antisymm}, that
+$\langle a,\iota_b\omega\rangle=-\langle b,\iota_a\omega\rangle$, which is a two-term
+\texttt{ring} identity; \texttt{iota\_proj\_of\_orthogonal}, that compressing the block to
+$e^\perp$ does not change the pairing against $f_k$; and that each $\iota_{f_k}\omega_k'$
+already lies in $e^\perp$. \texttt{tight\_sum\_contraction\_eq\_zero} assembles them, and
+\texttt{crossTerm\_nonneg\_of\_tight} composes the result with
+\texttt{CrossTerm.crossTerm\_nonneg}, so that Theorem~\ref{thm:C2} is machine-checked from
+the tightness hypothesis alone. \texttt{RamaLean/Plucker.lean} closes the last link, the identification of
+\texttt{CrossTerm}'s coordinate vector \texttt{w} with the Pl\"ucker coordinates of
+$\omega_k'$. Representing $b_1\wedge b_2$ by its antisymmetric array on \emph{ordered}
+pairs scaled by $1/\sqrt2$ makes \texttt{pl\_dot}, that the resulting inner product is the
+Gram determinant, hold with no $i<j$ bookkeeping: the double count and the two factors of
+$1/\sqrt2$ cancel. \texttt{iota\_eq\_comb} writes $f_k=\iota_e\omega_k$ in the compressed
+plane with explicit coefficients $-\langle e,b_2\rangle$ and $\langle e,b_1\rangle$, and
+\texttt{hsimple\_of\_comb} then makes \texttt{hsimple} a \texttt{ring} identity rather
+than an assumption. \texttt{crossTerm\_nonneg\_plucker} assembles everything:
+\textbf{for a tight family of rank-two blocks and any unit vector, $C_2\ge0$ is
+machine-checked with no hypothesis remaining}.
+
+The same holds at every level. \texttt{GramDet.border\_gram} identifies the bordered Gram
+matrix of $[v\mid M]$ with the Gram matrix of the bordered family;
+\texttt{border\_det\_eq\_zero\_of\_mem\_span} then gives $f\wedge\omega=0$ whenever $f$
+lies in the column span, which it always does; and \texttt{hsimple\_of\_mem\_span} combines
+them into $\|f\|^2\|\omega\|^2=\|\iota_f\omega\|^2$ for a wedge of \emph{any} number of
+vectors. So the hypothesis \texttt{hsimple} of Theorem~\ref{thm:Cr} is discharged at every
+$r$, not only at $r=2$, and what Theorem~\ref{thm:Cr} asserts, that each $S$-summand of
+$C_r$ is a Schur square minus the square of a contraction, is machine-checked
+unconditionally. Finally \texttt{gram\_det\_basis\_of\_injective} and
+\texttt{gram\_det\_basis\_of\_not\_injective} prove that for a coordinate family the Gram
+determinant of a set of blocks is $1$ on matchings and $0$ otherwise, that is
+$F_A=\mu_G$; that is the first of the two inputs to Proposition~\ref{prop:km}, and the
+second, the Kesten--McKay limit, is the only analytic ingredient anywhere in this section
+and is cited rather than proved.
+\texttt{RamaLean/CrossTerm.lean} carries Theorems~\ref{thm:C2} and~\ref{thm:Cr}.
+\texttt{crossTerm\_eq\_sq\_sub} is the general level: with no hypothesis beyond
+\texttt{hsimple} it proves
+$\sum_{k\ne l}[\langle f_k,f_l\rangle\langle w_k,w_l\rangle-\langle u_k,u_l\rangle]
+=\|\sum_kf_k\otimes w_k\|^2-\|\sum_ku_k\|^2$, which is the $S$-summand of
+Theorem~\ref{thm:Cr} once $w_k=\omega_k'\wedge\omega_S'$ and
+$u_k=\iota_{f_k}(\omega_k'\wedge\omega_S')$. Its two geometric
+inputs are hypotheses, \texttt{hsimple}, that $f_k\wedge\omega_k'=0$ in its metric form
+$\|f_k\|^2\|\omega_k'\|^2=\|u_k\|^2$, and \texttt{htight}, that $\sum_ku_k=0$, and
+\texttt{crossTerm\_eq\_sq} specializes it to $r=2$, where tightness kills the second
+square, and proves that they force $C_2$ to equal
+$\sum_{i,j}\bigl(\sum_k(f_k)_i(\omega_k')_j\bigr)^2$, with \texttt{crossTerm\_nonneg} and
+\texttt{crossTerm\_eq\_zero\_iff} the consequences. The supporting
+\texttt{sum\_gram\_prod\_eq\_sum\_sq} is the Schur product theorem in the case needed,
+that $\sum_{k,l}\langle f_k,f_l\rangle\langle w_k,w_l\rangle$ is a sum of squares. No
+exterior algebra is involved: the bivectors enter only through their coordinates.
+\texttt{RamaLean/VertexSplit.lean} carries the Gram form of
+Theorem~\ref{thm:vertexrec}. Its core, \texttt{det\_add\_vecMulVec}, is the adjugate
+form \eqref{eq:mdl} of the matrix determinant lemma; Mathlib has the lemma only as
+$\det(A+uv^{\mathsf T})=\det A\cdot\det(1+v^{\mathsf T}A^{-1}u)$ and records the
+adjugate form as an explicit \texttt{TODO}, so this supplies it, under the hypothesis
+that $\det A$ is a unit, which is what the application needs, the Gram matrix of an
+independent family being positive definite. \texttt{det\_le\_det\_add\_vecMulVec} is
+the inequality the recursion consumes, $M_r(A)\ge M_r(A^{(e)})$, deduced from
+\texttt{AdjugatePSD.adjugate\_posDef}. The singular case is scoped out as in
+\texttt{AdjugatePSD}: both sides of \eqref{eq:mdl} are polynomial in the entries, so it
+extends by continuity from $A+\varepsilon I$, and that limit is not formalized.
+\texttt{RamaLean/CavityThreshold.lean} carries
+Proposition~\ref{prop:cross}: \texttt{cavity\_step} is the induction step, that
+child ratios at least $x/2$, nonnegative weights of total at most $a$, a nonpositive
+remainder and $4a\le x^2$ force the parent ratio to be at least $x/2$ again;
+\texttt{threshold\_iff} is its sharpness, that $x-2a/x\ge x/2$ holds \emph{if and
+only if} $x\ge2\sqrt a$; \texttt{double\_root\_at\_threshold} is the structural
+form of the same statement, the factorization
+$\rho^2-2\sqrt a\,\rho+a=(\rho-\sqrt a)^2$ that collapses the interval of admissible
+thresholds to a point; and \texttt{no\_slack\_propagates} is
+Proposition~\ref{prop:rigid}; \texttt{cavity\_step\_deficient} is
+Proposition~\ref{prop:defstep}, the strengthened step; \texttt{compression\_sum},
+\texttt{trace\_le\_of\_rayleigh} and \texttt{remainder\_upper} are
+Proposition~\ref{prop:twolevel}; and \texttt{ratio\_form},
+\texttt{one\_add\_le\_inv\_one\_sub}, \texttt{inv\_one\_sub\_sub\_one\_add},
+\texttt{km\_slack\_calc} and \texttt{km\_satisfies\_target} are
+\eqref{eq:ratiotarget} and Proposition~\ref{prop:kmtarget}. Proposition~\ref{prop:deficient} is
+\texttt{Tightness.adj\_compressed}, with the per-block splitting
+\texttt{Tightness.iota\_split}. \texttt{RamaLean/KestenMcKay.lean} carries
+Proposition~\ref{prop:km}: \texttt{radical\_at\_edge} that the radical is exactly $2$ at
+the threshold, \texttt{G\_at\_edge} the closed form there, \texttt{inv\_G\_div\_edge} the
+constant $1+1/(1+\sqrt a)$, and \texttt{excess\_eq}, \texttt{excess\_pos},
+\texttt{excess\_lt} that the excess is exactly $1/(1+\sqrt a)$, positive for every $a>1$
+and below any $\varepsilon$ once $\sqrt a>1/\varepsilon$. The two inputs it does not
+formalize are the ones that are not arithmetic: that $F_A$ is the matching polynomial,
+which is Theorem~\ref{thm:matchingform}. The Kesten--McKay step is no longer cited as a
+limit: \texttt{RamaLean/MomentTransfer.lean} carries Proposition~\ref{prop:transfer} in
+full, namely the exact geometric expansion with remainder
+(\texttt{geom\_remainder}), the remainder bound (\texttt{remainder\_le}), the moment
+transfer (\texttt{stieltjes\_close}), its form for reciprocals (\texttt{inv\_close}) and the
+positivity of the gap between the support and the evaluation point
+(\texttt{edge\_gap\_pos}). What remains cited is the locality of root moments, which is
+\cite{CsF} after \cite{AH}, and Godsil's tree-like walk formulation \cite{Go}. The vertex recursion of Theorem~\ref{thm:vertexrec} and the
+sign of $X_e$ enter as hypotheses; what is machine-checked is that they close the
+induction, and that they close it exactly at $2\sqrt a$.
+\texttt{RamaLean/TracePSD.lean} and
+\texttt{RamaLean/AdjugatePSD.lean} carry the two positivity facts the extremal
+computation and the kernel recursion run on. In both, the standard input is a
+visible hypothesis rather than a hidden one: \texttt{trace\_sq\_le\_sq\_trace}
+takes the spectral decomposition of a positive semidefinite matrix as an explicit
+assumption, and \texttt{adjugate\_posDef} is proved in the definite case, the
+semidefinite limit $A+\varepsilon I$ being left by hand.
+
+\texttt{RamaLean/LaguerreBand.lean} carries Theorem~\ref{thm:kpq} in full on the
+inequality side: \texttt{sqrt\_amgm} and \texttt{sqrt\_step} are the arithmetic--geometric
+mean step \eqref{eq:amgm}, \texttt{rowRadius\_le} and \texttt{lastRow\_le} are the two
+Gershgorin row bounds, \texttt{band\_endpoints} identifies the disc with the biregular
+tree band, and \texttt{laguerre\_band} assembles them through Mathlib's
+\texttt{eigenvalue\_mem\_ball}. What is not formalized is the classical passage from
+$\mu_{K_{p,q}}$ to the Laguerre polynomial and thence to its Jacobi matrix; that
+identification is a coefficient comparison and is done by hand above.
+
+The three developments of \cite{PartI} are formalized to the extent stated
+there. \texttt{RamaLean/AbelianCover.lean} proves that the integrand is real
+(\texttt{det\_sub\_smul\_one\_im}), that a continuous real function with vanishing average
+on a connected space has a zero (\texttt{exists\_zero\_of\_integral\_zero}), and the
+resulting localization and reduction; the Godsil--Gutman expansion is assumed as the
+hypothesis \texttt{haverage}. \texttt{RamaLean/TreeSubstitution.lean} proves the
+substitution identity as a homogenization (\texttt{homogenize}), fixes its orientation on
+the star (\texttt{star\_ratio}), and transports Heilmann--Lieb through a subdivision
+(\texttt{subdivision\_root}, \texttt{subdivision\_abs}); the covering combinatorics is by
+hand. \texttt{RamaLean/FeedbackVertex.lean} proves the combinatorial core
+(\texttt{no\_bypass}, via Mathlib's characterization of acyclicity by path uniqueness), the
+resolvent diagonal, the algebraic collapse of the trace formula, and the trace step; the
+Pimsner--Voiculescu input appears as an explicit hypothesis of
+\texttt{feedback\_one\_of}, since it is not in Mathlib. Every theorem in all four files
+depends only on the three standard axioms, and none uses \texttt{native\_decide}.
+
+\begin{remark}
+Everything here is stated for the uniform permutation model; by
+\cite{HPS} the quotient coincides with the $(r-1)$-matching polynomial,
+so Theorem~\ref{thm:main} can alternatively be deduced from \cite{CGHRS}, with the caveat
+about that preprint's status recorded in \cite{PartI}'s preamble.
+We believe the generating function of Corollary~\ref{cor:gf}, the
+evaluation of Corollary~\ref{cor:fib}, and the formalization are new.
+\end{remark}
+
+
+\begin{thebibliography}{9}
+\bibitem{Zhang} A hypergraph Heilmann--Lieb theorem, arXiv:2206.09558 (2022).
+\bibitem{XXZ} Z.~Xu, Z.~Xu, Z.~Zhu, \emph{Improved bounds in Weaver's
+$\mathrm{KS}_r$ conjecture for high rank positive semidefinite matrices},
+arXiv:2106.09205 (2021).
+\bibitem{GG} C.~Godsil, I.~Gutman, \emph{On the matching polynomial of a
+graph}, in: Algebraic Methods in Graph Theory, 1981.
+\bibitem{HPS} C.~Hall, D.~Puder, W.~Sawin, \emph{Ramanujan coverings of
+graphs}, Adv.\ Math.\ \textbf{323} (2018), 367--410.
+\bibitem{CGHRS} G.~Cochran, C.~Groothuis, A.~Herring, R.~Rohatgi,
+E.~Stucky, \emph{A new (combinatorial) proof of the commutativity of
+matching polynomials for cycles}, arXiv:1810.05889 (2018). Preprint; no journal
+reference or DOI as of August 2026.
+\bibitem{WWM} J.~Wan, W.~Wang, A.~Mohammadian, \emph{On the matching
+polynomials of graphs with small number of cycles}, arXiv:2103.10580 (2021).
+\bibitem{SFM} Y.-M.~Song, Y.-Z.~Fan, Z.~Miao, \emph{Hypergraph coverings and
+Ramanujan hypergraphs}, arXiv:2310.01771 (2023).
+\bibitem{YY} W.~Yan, Y.-N.~Yeh, \emph{On the matching polynomial of subdivision
+graphs}, Discrete Appl.\ Math.\ \textbf{157} (2009) 195--200. The identity used
+here is their Corollary 2.1: for $G$ $d$-regular, $m(S(G),x)=x^{m-n}m(G,x^2-d)$.
+\bibitem{BDH} G.~Brito, I.~Dumitriu, K.~D.~Harris, \emph{Spectral gap in random
+bipartite biregular graphs and applications}, Combin.\ Probab.\ Comput.\
+\textbf{31} (2022) 229--267.
+\bibitem{HL} O.~J.~Heilmann, E.~H.~Lieb, \emph{Theory of monomer-dimer
+systems}, Comm.\ Math.\ Phys.\ \textbf{25} (1972) 190--232.
+\bibitem{DMOSS} Y.~Deshpande, A.~Montanari, R.~O'Donnell, T.~Schramm, S.~Sen,
+\emph{The threshold for SDP-refutation of random regular NAE-3SAT},
+arXiv:1804.05230 (2018). Theorem 4.5 is the Ihara--Bass formula for edge-signed
+graphs, specializing \cite{WF2}.
+
+\bibitem{WF2} Y.~Watanabe, K.~Fukumizu, \emph{Graph zeta function in the Bethe
+free energy and loopy belief propagation}, NIPS 22 (2009).
+
+\bibitem{Mo} A.~Mohammadian, \emph{Laplacian matching polynomial of graphs},
+J. Algebraic Combin. \textbf{52} (2020) 33--39. The average of the Laplacian
+characteristic polynomials over all signings, with vertex weights $x-d(v)$;
+independently Zhang and Chen, Discrete Appl. Math. (2020).
+
+\bibitem{CC} V.~Y. Chernyak, M.~Chertkov, \emph{Fermions and loops on graphs.
+II. A monomer-dimer model as a series of determinants}, J. Stat. Mech. (2008)
+P12012.
+
+\bibitem{WC} Y.~Watanabe, M.~Chertkov, \emph{Belief propagation and loop calculus
+for the permanent of a non-negative matrix}, J. Phys. A \textbf{43} (2010)
+242002.
+
+\bibitem{Na} J.~F. Nagle (not consulted; attribution as in \cite{WF}),
+\emph{New series-expansion method for the dimer
+problem}, Phys. Rev. \textbf{152} (1966) 190--197.
+
+\bibitem{Je} M.~Jerrum, \emph{Two-dimensional monomer-dimer systems are
+computationally intractable}, J. Statist. Phys. \textbf{48} (1987) 121--134.
+
+\bibitem{WF} Y.~Watanabe, K.~Fukumizu, \emph{New graph polynomials from the Bethe
+approximation of the Ising partition function}, Combin. Probab. Comput.
+\textbf{20} (2011) 299--320.
+
+\bibitem{God81} C.~D. Godsil, \emph{Matchings and walks in graphs},
+J. Graph Theory \textbf{5} (1981), 285--297.
+
+\bibitem{God93} C.~D. Godsil, \emph{Algebraic Combinatorics}, Chapman and Hall,
+New York, 1993, Theorem 6.1.1 and \S5.6.
+\bibitem{Cs} P.~Csikv\'ari, \emph{Lower matching conjecture, and a new proof of
+Schrijver's and Gurvits's theorems}, J.\ Eur.\ Math.\ Soc.\ (2017);
+arXiv:1406.0766.
+\bibitem{BC} C.~Bordenave, B.~Collins, \emph{Eigenvalues of random lifts and
+polynomials of random permutation matrices}, Ann.\ of Math.\ \textbf{190}
+(2019) 811--875.
+\bibitem{MF} J.~P.~McSorley, P.~Feinsilver, \emph{Multivariate matching
+polynomials of cyclically labelled graphs}, Discrete Math.\ \textbf{309} (2009)
+3205--3218.
+\bibitem{MS} H.~Mizuno, I.~Sato, \emph{Characteristic polynomials of some graph
+coverings}, Discrete Math.\ \textbf{142} (1995) 295--298.
+\bibitem{DFMRS} C.~Dalf\'o, M.~A.~Fiol, M.~Miller, J.~Ryan, J.~\v{S}ir\'a\v{n},
+\emph{An algebraic approach to lifts of digraphs}, Discrete Appl.\ Math.\
+\textbf{269} (2019) 68--76.
+\bibitem{MSS} A.~Marcus, D.~Spielman, N.~Srivastava, \emph{Interlacing
+families I: Bipartite Ramanujan graphs of all degrees}, Ann.\ of Math.\
+\textbf{182} (2015), 307--325.
+\bibitem{CsF} P.~Csikv\'ari, P.~E.~Frenkel, \emph{Benjamini--Schramm continuity
+of root moments of graph polynomials}, European J.\ Combin.\ \textbf{52} (2016),
+part B, 302--320.
+\bibitem{AH} M.~Ab\'ert, T.~Hubai, \emph{Benjamini--Schramm convergence and the
+distribution of chromatic roots for sparse graphs}, Combinatorica \textbf{35}
+(2015), 127--151.
+\bibitem{Go} C.~D.~Godsil, \emph{Matchings and walks in graphs}, J.\ Graph
+Theory \textbf{5} (1981), 285--297.
+\bibitem{ACFK} M.~Ab\'ert, P.~Csikv\'ari, P.~E.~Frenkel, G.~Kun, \emph{Matchings
+in Benjamini--Schramm convergent graph sequences}, Trans.\ Amer.\ Math.\ Soc.\
+\textbf{368} (2016), 4197--4218.
+\bibitem{HallCE} C.~Hall, \emph{A simple bipartite counterexample to Conjecture 10:
+  spectral localization of the ordinary matching polynomial}, verification note, personal
+  communication, August 2026.
+\bibitem{RL} M.~Ravichandran, J.~Leake, \emph{Mixed determinants and the Kadison--Singer
+  problem}, Math. Ann. \textbf{377} (2020), 511--541.
+\bibitem{AFH} O.~Angel, J.~Friedman, S.~Hoory, \emph{The non-backtracking spectrum of the
+  universal cover of a graph}, Trans.\ Amer.\ Math.\ Soc.\ \textbf{367} (2015), 4287--4318;
+  arXiv:0712.0192.
+\bibitem{LMST} W.~Li, M.~Magee, M.~Sabri, D.~Thomas, \emph{Eigenvalues of maximal
+  abelian covers}, arXiv:2508.17332 (2025).
+\bibitem{Sp} T.~J.~Spier, \emph{Eigenvalues of universal covers and the matching
+  polynomial}, arXiv:2510.05041 (2025).
+\bibitem{BCs} F.~Bencs, P.~Csikv\'ari, \emph{Evaluations of Tutte polynomials of
+regular graphs}, arXiv:2105.06798 (2021).
+\bibitem{PartI} V.~Bonfioli, \emph{Roots of $d$-matching polynomials and the spectrum of
+  the universal cover: a closed form at first Betti number one, and a refuted conjecture},
+  companion paper, 2026.
+\end{thebibliography}
+
+\end{document}

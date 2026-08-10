@@ -1,0 +1,1201 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1.2in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{hyperref}
+\sloppy
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{proposition}[theorem]{Proposition}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Q}{\mathbb{Q}}
+
+\title{Roots of $d$-matching polynomials and the spectrum of the universal cover:\\
+a closed form at first Betti number one, and a refuted conjecture}
+\author{Vico Bonfioli\thanks{Lean~4 sources: \texttt{RamaLean/} in the \texttt{rama-notes} repository. Correspondence: \texttt{vicobonfioli@gmail.com}.}}
+\date{August 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Hall, Puder and Sawin place the roots of the $d$-matching polynomial $\mu_{d,G}$ in the interval
+$[-\rho,\rho]$, $\rho$ the spectral radius of the universal cover $T$. We conjectured that they
+lie in $\operatorname{spec}(T)$ itself, a proper subset of that interval whenever $T$ has a
+spectral gap: no root ever enters a gap. This strengthens their theorem and is the
+matching-polynomial form of their Question~6.3.
+
+\textbf{That conjecture is false, and the counterexample is due to Chris Hall} \cite{HallCE}. His
+graph is simple, connected, loopless and bipartite on $41$ vertices: five copies of $K_{2,5}$, a
+pendant leaf on one degree-five vertex of each, and a central vertex joined to the other five.
+Its matching polynomial is $x^{21}(x^4-11x^2+25)^4(x^2-5)(x^2-11)$, and $\sqrt5$ lies in an
+internal gap of $\operatorname{spec}(T)$, certified by an exact ratio system in the sense of
+Angel--Friedman--Hoory \cite{AFH}. We verified his certificate independently, machine-checked its
+algebra, and show his example is the smallest member of a two-parameter family in which the
+pendant leaves are essential.
+
+We prove the conjecture for every connected $G$ of first Betti number one and every $d$, by
+giving $\mu_{d,G}$ in closed form, and we locate the repair. Minimum degree two fails, bounded
+maximum degree fails, and $2$-connectivity fails, so connectivity is a confound and the mechanism
+is a separation; minimum degree three is the surviving hypothesis, and three is the exact
+threshold. Everything asserted is machine-checked in Lean~4/Mathlib unless labelled otherwise.
+The biregular case, which is where the conjecture survives, is the subject of the companion
+paper \cite{PartII}.
+\end{abstract}
+
+\section{Introduction and statement}
+
+The expected characteristic polynomial of a random lift is the object at the
+heart of the interlacing-families method of Marcus--Spielman--Srivastava
+\cite{MSS}, who used the $r=2$ (signing) case to prove that bipartite Ramanujan
+graphs exist in every degree; Hall--Puder--Sawin \cite{HPS} extended the
+framework to arbitrary coverings. We evaluate it in closed form for the cycle.
+
+A \emph{permutation $r$-lift} of a graph $G$ replaces each vertex by $r$
+copies and each edge $\{u,v\}$ by the perfect matching $u_i\sim v_{\sigma(i)}$
+of a permutation $\sigma\in S_r$ chosen independently and uniformly per edge.
+For the cycle $C_n$, gauge-fixing a spanning path reduces the lift to a single
+permutation $\sigma\in S_r$ on the closing edge, and the lift decomposes into
+disjoint cycles: each $\ell$-cycle of $\sigma$ contributes a cycle $C_{n\ell}$
+(fixed points contribute copies of $C_n$). Since
+$\chi_{C_m}(x)=\det(xI-A_{C_m})=2T_m(x/2)-2$, the expected characteristic
+polynomial is the expected cycle weight
+\begin{equation}\label{eq:avg}
+\Phi_{n,r}(x)\;=\;\E_{\sigma\in S_r}\;
+\prod_{\ell\,\in\,\mathrm{cycles}(\sigma)}\bigl(2T_{n\ell}(x/2)-2\bigr).
+\end{equation}
+
+\begin{theorem}\label{thm:main}
+For all $n\ge 1$, $r\ge 1$, with $Y=T_n(x/2)$,
+\[
+\Phi_{n,r}(x)\;=\;U_r(Y)-2U_{r-1}(Y)+U_{r-2}(Y)
+\;=\;\underbrace{\bigl(2T_n(x/2)-2\bigr)}_{\chi_{C_n}(x)}\cdot\,
+\underbrace{U_{r-1}\bigl(T_n(x/2)\bigr)}_{\Psi_r(x)} .
+\]
+\end{theorem}
+
+The factored form identifies the quotient $\Psi_r$, by the theorem of
+Hall--Puder--Sawin \cite{HPS} equating the expected new-eigenvalue
+characteristic polynomial with the $d$-matching polynomial ($d=r-1$), as
+\[
+\mu_{d,C_n}(x)\;=\;U_{d}\bigl(T_n(x/2)\bigr),
+\]
+which is equivalent (through $\mathcal P_d(2t)=U_d(t)$, $\mathcal
+C_n(2t)=2T_n(t)$ and the composition identity
+$U_{dn+n-1}=U_d(T_n)\,U_{n-1}$) to \emph{Hall's conjecture}
+$\mathcal C_{n,d}=\mathcal P_d(\mathcal C_n)$, proved combinatorially in \cite{CGHRS}.
+That preprint has remained unrefereed since 2018 and carries no journal reference or
+DOI as of August 2026. The reason is not mathematical. Chris Hall, who posed the
+conjecture, has told us (personal communication, August 2026) that Andrew Herring was his
+first doctoral student; Hall gave him the conjecture, Herring presented it as a problem at
+a workshop, and the group of \cite{CGHRS} solved it there. They submitted the result, met
+a couple of rejections, and abandoned the attempt for want of motivation rather than for
+any defect. Hall regards the proof as correct, and so do we. We record the episode because
+a reader weighing what is established about this identity should know both that the
+combinatorial proof stands and that the present derivation is, as far as we can tell, the
+first refereed or machine-checked one.
+Our route is different and elementary; we make no use of matching-polynomial
+combinatorics.
+
+\begin{corollary}\label{cor:gf}
+$\displaystyle\sum_{d\ge 0}\mu_{d,C_n}(x)\,z^d=\frac{1}{1-2T_n(x/2)\,z+z^2}$,
+\quad and \quad
+$\displaystyle\sum_{r\ge 0}\Phi_{n,r}(x)\,z^r=\frac{(1-z)^2}{1-2T_n(x/2)\,z+z^2}$.
+\end{corollary}
+
+\begin{corollary}[real-rootedness]\label{cor:roots}
+All roots of $\Phi_{n,r}$ lie in $[-2,2]$: with $x=2\cos\theta$,
+$\chi_{C_n}$ vanishes at $\theta=2\pi m/n$ and
+$\Psi_r=\sin(rn\theta)/\sin(n\theta)$ vanishes at $\theta=m\pi/(rn)$ with $r\nmid m$
+(when $r\mid m$ the denominator vanishes too and $\Psi_r=\pm r\neq0$); this leaves
+exactly $n(r-1)$ roots, matching $\deg\Psi_r$.
+\end{corollary}
+
+\begin{corollary}[Fibonacci--Lucas evaluation]\label{cor:fib}
+$\Phi_{n,r}(3)=(L_{2n}-2)\,F_{2nr}/F_{2n}$, since $T_n(3/2)=L_{2n}/2$ and
+$U_{r-1}(L_{2n}/2)=F_{2nr}/F_{2n}$.
+\end{corollary}
+
+\begin{corollary}[parity]\label{cor:parity}
+$\Psi_r(-x)=(-1)^{n(r-1)}\Psi_r(x)$: the quotient is supported on exponents
+of a single parity, like a matching polynomial. (For bipartite $C_n$ it is an
+even polynomial for every $r$; at $r=2$ it is the classical matching
+polynomial $2T_n(x/2)$ of $C_n$, consistent with Godsil--Gutman
+\cite{GG}.)
+\end{corollary}
+
+\section{Proof}
+
+Write $f(\ell)=2T_\ell(Y)-2$ with $Y=T_n(x/2)$; by the composition identity
+$T_{n\ell}=T_\ell\circ T_n$ this is the per-cycle factor in \eqref{eq:avg}.
+
+\emph{Step 1 (exponential formula).} For any commutative ring $R$ and
+$f:\mathbb N\to R$, the $S_r$-average
+$\Phi_r=\E_\sigma\prod_{\ell\in\mathrm{cycles}(\sigma)}f(\ell)$ satisfies
+\begin{equation}\label{eq:newton}
+r\,\Phi_r=\sum_{k=1}^{r}f(k)\,\Phi_{r-k},\qquad\Phi_0=1 ,
+\end{equation}
+the coefficient form of $\sum_r\Phi_r z^r=\exp\bigl(\sum_\ell f(\ell)z^\ell/\ell\bigr)$.
+(Proof: group $\sigma$ by cycle type $\lambda$ with Cauchy's count
+$r!/z_\lambda$, mark a part, and re-index; see the Lean file
+\texttt{Paper2ExpFormula.lean} for the fully detailed version.)
+
+\emph{Step 2 (Chebyshev generating function).} With $f(\ell)=2T_\ell(Y)-2$,
+\[
+\sum_{\ell\ge1}f(\ell)\frac{z^\ell}{\ell}
+=-\log\bigl(1-2Yz+z^2\bigr)+2\log(1-z)
+\quad\Longrightarrow\quad
+\sum_{r\ge0}\Phi_r z^r=\frac{(1-z)^2}{1-2Yz+z^2}.
+\]
+Extracting coefficients against $\sum U_r(Y)z^r=(1-2Yz+z^2)^{-1}$ gives
+$\Phi_r=U_r-2U_{r-1}+U_{r-2}$, and the three-term recurrence
+$U_r+U_{r-2}=2YU_{r-1}$ collapses this to $(2Y-2)\,U_{r-1}(Y)$.
+\hfill$\square$
+
+In the formalization the analytic Step 2 is replaced by an equivalent
+finite argument: the closed form is shown to satisfy \eqref{eq:newton}
+directly (a second-difference induction), and \eqref{eq:newton} with
+$\Phi_0=1$ determines $\Phi$ over a characteristic-zero domain.
+
+\section{Graphs of first Betti number one}\label{sec:uni}
+
+The proof above uses cycles in exactly one place: gauge-fixing a spanning path
+leaves a \emph{single} permutation, because $C_n$ has $|E|-|V|+1=1$. The
+argument therefore applies verbatim to any connected $G$ with
+$b_1(G)=|E|-|V|+1=1$, a cycle with trees attached, and we record what it gives.
+
+By \cite{HPS} the expected characteristic polynomial of a random $r$-lift of
+\emph{any} graph factors as $\chi_G\cdot\mu_{r-1,G}$; the content below is
+therefore not that factorization but a closed form for the factor
+$\mu_{d,G}$ itself. Question 6.5 of \cite{HPS} asks which parts of the theory
+of the matching polynomial $\mu_{1,G}$ generalize to $\mu_{d,G}$; the following
+answers it for $b_1(G)=1$.
+
+Let $C$ be the unique cycle of $G$ and let $G-V(C)$ be the forest obtained by
+deleting its vertices. Write $\mu_H$ for the ordinary matching polynomial of a
+graph $H$, with $\mu_\emptyset=1$. Define
+\begin{equation}\label{eq:V}
+V_0=1,\qquad V_1=\mu_G,\qquad
+V_d=\mu_G\,V_{d-1}-\mu_{G-V(C)}^{\,2}\,V_{d-2}.
+\end{equation}
+
+\begin{theorem}\label{thm:uni}
+For every connected $G$ with $b_1(G)=1$ and every $d\ge0$, $\mu_{d,G}=V_d$.
+\end{theorem}
+
+For $G=C_n$ the deleted forest is empty, so $\mu_{G-V(C)}=1$ and \eqref{eq:V}
+is the recurrence for $U_d(\mu_{C_n}/2)=U_d(T_n(x/2))$: Theorem~\ref{thm:main}
+is the case $\mu_{G-V(C)}=1$. In general the attached trees enter only through
+$\mu_{G-V(C)}$; for the triangle with one pendant edge,
+$\mu_G=x^4-4x^2+1$ and $\mu_{G-V(C)}=x$.
+
+The proof goes through the twisted characteristic polynomial. Let $e=uv$ be the
+unique non-tree edge, let $A_G(z)$ be the adjacency matrix of $G$ with the
+$(u,v)$ entry replaced by $z$ and the $(v,u)$ entry by $z^{-1}$, and set
+$F(x,z)=\det(xI-A_G(z))$.
+
+\begin{lemma}\label{lem:PQ}
+$F(x,z)=\mu_G(x)-\mu_{G-V(C)}(x)\,(z+z^{-1})$.
+\end{lemma}
+
+\begin{proof}
+By the Sachs coefficient theorem $\det(xI-A)$ expands over elementary
+subgraphs, that is disjoint unions of edges and cycles. Since a permutation
+uses each of the two twisted entries at most once and
+$A_G(z)^{\mathsf T}=A_G(z^{-1})$, the determinant is of the form
+$P(x)+Q(x)(z+z^{-1})$. Replacing $z$ by $\pm1$ and averaging kills exactly the
+elementary subgraphs whose cycle traverses $e$; as $G$ has the single cycle $C$,
+those are the subgraphs containing $C$, so $P=\mu_G$, and the surviving terms
+contribute $Q=-\mu_{G-V(C)}$, a cycle component carrying the Sachs weight $-2$.
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:uni}]
+Gauge-fix a spanning tree: the $r$-lift is determined by one permutation
+$\sigma\in S_r$ on $e$, and its components are indexed by the cycles of
+$\sigma$, the component of an $\ell$-cycle being the $\ell$-fold cyclic cover
+$G_\ell$. Decomposing the $\mathbb{Z}/\ell$ action into characters gives the
+classical factorization $\chi_{G_\ell}(x)=\prod_{j=0}^{\ell-1}F(x,\omega^j)$
+with $\omega=e^{2\pi i/\ell}$ \cite{MS,DFMRS}. With $P,Q$ as in
+Lemma~\ref{lem:PQ} and $y=-P/(2Q)$,
+\[
+\chi_{G_\ell}=\prod_{j=0}^{\ell-1}\Bigl(P+2Q\cos\tfrac{2\pi j}{\ell}\Bigr)
+=(-Q)^{\ell}\bigl(2T_\ell(y)-2\bigr),
+\]
+so by the exponential formula \eqref{eq:newton}, with $w=-Qz$,
+\[
+\sum_{r\ge0}\Phi_{G,r}z^{r}
+=\exp\Bigl(\sum_{\ell\ge1}\bigl(2T_\ell(y)-2\bigr)\frac{w^{\ell}}{\ell}\Bigr)
+=\frac{(1-w)^2}{1-2yw+w^2},
+\]
+and extracting coefficients as in Section~2 gives
+$\Phi_{G,r}=\chi_G\cdot(-Q)^{r-1}U_{r-1}(y)$. Comparing with
+$\Phi_{G,r}=\chi_G\cdot\mu_{r-1,G}$ \cite{HPS} yields
+$\mu_{d,G}=(-Q)^{d}U_d(y)$, which satisfies \eqref{eq:V}.
+\end{proof}
+
+Since $U_d(y)=2^{d}\prod_{k=1}^{d}(y-\cos\tfrac{k\pi}{d+1})$, the theorem can
+be restated as a product,
+$\mu_{d,G}(x)=\prod_{k=1}^{d}F\bigl(x,e^{\,ik\pi/(d+1)}\bigr)$, whence:
+
+\begin{corollary}\label{cor:unirr}
+For $b_1(G)=1$, $\mu_{d,G}$ is a product of $d$ real-rooted polynomials, and its
+roots are exactly the eigenvalues of the Hermitian matrices
+$A_G\bigl(e^{\,ik\pi/(d+1)}\bigr)$, $1\le k\le d$.
+\end{corollary}
+
+This is the real-rootedness theorem of \cite{HPS} for this family, with the
+roots identified. The localization itself, that a vanishing $V_d$ forces
+$|\mu_G|\le2|\mu_{G-V(C)}|$, so that a root can never sit in a spectral gap, is machine-checked in Lean~4 as \texttt{cV\_root\_mem\_band}, resting on
+\texttt{cU\_ne\_zero\_of\_one\_le\_abs}: the Chebyshev polynomial $U_d$ has no
+root of absolute value at least one.
+
+The roots can be located much more precisely than that. Since $b_1(G)=1$ the
+group $\pi_1(G)$ is $\mathbb{Z}$, so the universal cover $T$ of $G$ \emph{is}
+the $\mathbb{Z}$-cover, and $T$ is a periodic decorated chain whose adjacency
+operator decomposes by Floquet--Bloch into the fibres $A_G(e^{i\theta})$. Hence
+\[
+\operatorname{spec}(T)=\bigcup_{\theta}\operatorname{spec}A_G(e^{i\theta})
+=\Bigl\{x:\ \exists\,s\in[-1,1],\ \mu_G(x)=2s\,\mu_{G-V(C)}(x)\Bigr\},
+\]
+a finite union of bands, together with a flat band at each common zero of
+$\mu_G$ and $\mu_{G-V(C)}$, where $F(x,\cdot)$ vanishes identically.
+
+\begin{corollary}\label{cor:floquet}
+For $b_1(G)=1$ the roots of $\mu_{d,G}$ are exactly the solutions of
+$\mu_G(x)=2\cos\!\bigl(\tfrac{k\pi}{d+1}\bigr)\mu_{G-V(C)}(x)$ for
+$1\le k\le d$. In particular every root of every $\mu_{d,G}$ lies in
+$\operatorname{spec}(T)$, and as $d\to\infty$ the roots equidistribute on
+$\operatorname{spec}(T)$ with respect to its density of states.
+\end{corollary}
+
+\begin{proof}
+Immediate from Theorem~\ref{thm:uni} in the form
+$\mu_{d,G}=\prod_{k}F(x,e^{ik\pi/(d+1)})$ and
+$F(x,e^{i\theta})=\mu_G-2\cos\theta\,\mu_{G-V(C)}$. The equidistribution is the
+arcsine law for $\cos\bigl(k\pi/(d+1)\bigr)$ transported through the fibre map.
+\end{proof}
+
+Hall--Puder--Sawin place the roots of $\mu_{d,G}$ in the Ramanujan
+\emph{interval} $[-\rho,\rho]$, $\rho$ being the spectral radius of $T$.
+Corollary~\ref{cor:floquet} places them in $\operatorname{spec}(T)$, which is a
+union of bands and is a proper subset of that interval whenever $T$ has a
+spectral gap: no root of any $\mu_{d,G}$ can ever enter a gap. The two
+statements coincide exactly when the band structure is trivial, and that is
+precisely the case of a cycle, where $\mu_{G-V(C)}=1$ and
+$\operatorname{spec}(T)=[-2,2]$ is the whole interval. Attaching even a single
+pendant edge opens gaps, and they are not small (computed band structures,
+proportion of $[-\rho,\rho]$ that is a gap):
+\[
+\begin{array}{lcc}
+\hline
+G & \rho & \text{gap proportion}\\
+\hline
+C_n & 2 & 0\%\\
+\text{triangle}+\text{pendant} & 2.170 & 36.5\%\\
+C_4+\text{pendant} & 2.136 & 45.9\%\\
+\text{triangle}+P_2 & 2.214 & 51.3\%\\
+C_4+P_3 & 2.189 & 54.1\%\\
+\text{triangle}+K_{1,3} & 2.514 & 65.9\%\\
+\hline
+\end{array}
+\]
+So the cycle is not merely the easiest case of Theorem~\ref{thm:uni}: it is the
+degenerate one, the unique member of the family whose spectrum has no gaps and
+for which the Ramanujan interval is attained. Any cycle with a tree attached
+exhibits a band structure that no cycle can display.
+
+\paragraph{The boundary is sharp.}
+For $b_1(G)=b$ the lift is determined by $b$ permutations, that is by an action
+of the free group $F_b$ on $[r]$, whose orbits are the components of the lift.
+The exponential formula still applies, in the form
+$N_r=\sum_{\ell}\binom{r-1}{\ell-1}C_\ell N_{r-\ell}$ with
+$N_r=(r!)^{b}\Phi_{G,r}$ and $C_\ell$ the sum of $\chi$ over the transitive
+$b$-tuples on $[\ell]$; we have verified this for $b\le3$. What fails is the
+atom. For $b=1$ every transitive tuple gives the \emph{same} cover $G_\ell$, so
+$C_\ell=(\ell-1)!\,\chi_{G_\ell}$: one graph per $\ell$, with $\chi_{G_\ell}$
+Chebyshev in $\ell$. For $b\ge2$ the transitive tuples number $(\ell-1)!$ times
+the count of index-$\ell$ subgroups of $F_b$ and spread over many
+non-isomorphic covers with distinct spectra, so $C_\ell$ carries no such
+structure. Accordingly Theorem~\ref{thm:uni} is not merely unproved for
+$b\ge2$: it is false there already at $d=1$, as we checked for the theta graph,
+the bowtie, $K_4$, $K_{2,3}$ and two triangles joined by an edge.
+
+Theorem~\ref{thm:uni} was verified by exact integer computation against the
+definition of $\mu_{d,G}$ as an average of matching polynomials over all
+$d$-covers, and against brute-forced lift averages, on thirteen named unicyclic
+graphs for $r\le6$ and on a random sample of thirty-four for $r\le5$;
+Lemma~\ref{lem:PQ} was checked on eleven.
+
+\section{A conjecture for all graphs}\label{sec:conj}
+Corollary~\ref{cor:floquet} is proved by Floquet theory, which is available
+only because $\pi_1(G)=\mathbb{Z}$. Its \emph{statement}, however, makes sense
+for every graph, and we know one case of it: at $b_1(G)=1$ it is
+Corollary~\ref{cor:floquet}, for every $d$. We therefore propose:
+
+\begin{conjecture}\label{conj:gap}
+For every finite graph $G$ and every $d\ge1$, all roots of $\mu_{d,G}$ lie in
+$\operatorname{spec}(T)$, the spectrum of the universal cover of $G$.
+\end{conjecture}
+
+\begin{theorem}[Hall \cite{HallCE}]\label{thm:hallce}
+Conjecture~\ref{conj:gap} is false, already at $d=1$ and already for simple connected
+loopless bipartite graphs.
+\end{theorem}
+
+The counterexample and its certificate are entirely due to Chris Hall. We record it here
+because it settles the central question of this note, and because everything else in the
+note has to be read in its light. \S\ref{sec:hallce} states his construction, our
+independent verification of it, and what we can add.
+
+The biregular case of Conjecture~\ref{conj:gap} at $d=1$ is not new. It is
+Problem~1 of Song, Fan and Miao \cite{SFM}, posed in 2023: they ask whether the
+matching polynomial of the incidence graph $B_H$ of a $(d,r)$-regular hypergraph
+has no root $\mu$ with $0<|\mu|<|\sqrt{d-1}-\sqrt{r-1}|$, and every
+$(d,r)$-biregular bipartite graph is such an incidence graph. Their Theorem 1.8
+attaches a consequence: an affirmative answer would give every $(d,r)$-regular
+hypergraph a left-sided Ramanujan $2$-covering. The only bound in that direction
+we know of is their Lemma 5.5, which goes the other way,
+$0<\mu_{\tau}(B_H)\le\max\{\sqrt d,\sqrt r\}$. We are not aware of any proof,
+partial result or counterexample. Conjecture~\ref{conj:gap} extends their problem
+in two directions, to arbitrary graphs and to all $d$.
+
+Question 6.3 of \cite{HPS} asks the corresponding question for graph
+eigenvalues, and leaves it open: it distinguishes graphs whose nontrivial
+spectrum lies in the \emph{interval} $[-\rho,\rho]$ from those whose nontrivial
+spectrum lies in $\operatorname{spec}(T)$, observes that the two notions
+separate exactly when $T$ has a gap, and gives the biregular tree as the
+example. Conjecture~\ref{conj:gap} is the matching-polynomial form of that
+distinction.
+
+The conjecture strengthens the root-localization theorem of \cite{HPS}, which
+places the roots in the interval $[-\rho,\rho]$ with $\rho$ the spectral radius
+of $T$;
+the conjecture places them in $\operatorname{spec}(T)$ itself. The two agree
+whenever $T$ has no spectral gap, in particular for regular $G$, where $T$
+is a regular tree and $\operatorname{spec}(T)=[-2\sqrt{q},2\sqrt{q}]$ is an
+interval. They differ exactly when $T$ has a gap, and the smallest examples are
+biregular: for $K_{2,3}$ the universal cover is the $(3,2)$-biregular tree,
+with spectrum $\{0\}\cup\pm[\sqrt2-1,\sqrt2+1]$ and hence a gap
+$(0,\sqrt2-1)$ inside the Ramanujan interval. We have tested the conjecture on the
+biregular family, where the universal cover is an $(a,b)$-biregular tree with
+spectrum $\{0\}\cup\pm[\,|s-t|,s+t\,]$, $s=\sqrt{a-1}$, $t=\sqrt{b-1}$, so the
+gap is $(0,|s-t|)$. In each case $\mu_{d,G}$ was computed by averaging matching
+polynomials over all $d$-covers. No root ever lies in the gap; we also record
+the smallest nonzero $|{\rm root}|$ as a multiple of the gap edge, which
+measures how close the bound comes to being attained.
+\[
+\begin{array}{lccccc}
+\hline
+G & b_1 & \text{type} & \text{gap edge} & d & \min|{\rm root}|/\text{gap edge}\\
+\hline
+K_{2,3} & 2 & (3,2) & 0.4142 & 1,2,3,4 & 2.72,\ 2.19,\ 1.94,\ 1.78\\
+K_{2,4} & 3 & (4,2) & 0.7321 & 1,2,3 & 1.93,\ 1.65,\ 1.52\\
+K_{2,5} & 4 & (5,2) & 1.0000 & 1,2,3 & 1.66,\ 1.46,\ 1.37\\
+K_{3,4} & 6 & (4,3) & 0.3178 & 1,2 & 3.04,\ 2.31\\
+K_{3,5} & 8 & (5,3) & 0.5858 & 1,2 & 2.10,\ 1.73\\
+\text{subdivision of }K_4 & 3 & (3,2) & 0.4142 & 1,2 & 1.97,\ 1.67\\
+\hline
+\end{array}
+\]
+All of these have $b_1\ge2$, so none is covered by
+Corollary~\ref{cor:floquet}. It is worth recording that even $d=1$ is not
+formal. There $\mu_{1,G}$ is the ordinary matching polynomial, whose roots are
+eigenvalues of the path tree of $G$ (Godsil), and the path tree embeds in $T$;
+but eigenvalues of a finite subtree of $T$ need not lie in
+$\operatorname{spec}(T)$ when $T$ has a gap. For the $(3,2)$-biregular tree,
+whose gap is $(0,\sqrt2-1)$, the path $P_8$ is a subtree with eigenvalue
+$2\cos(4\pi/9)=0.3473$ inside that gap. So the $d=1$ case does not follow from
+the path-tree argument. It is nevertheless a theorem for an infinite family.
+
+\subsection{Subdivisions: the case of minimum degree two}
+
+\begin{theorem}\label{thm:subdiv}
+Let $H$ be $D$-regular, $D\ge2$, and let $S(H)$ be its subdivision, so that the
+universal cover of $S(H)$ is the $(D,2)$-biregular tree with spectral gap
+$\bigl(0,\sqrt{D-1}-1\bigr)$. Then every nonzero root of $\mu_{S(H)}$ has
+absolute value at least $\sqrt{D-1}-1$; that is,
+Conjecture~\ref{conj:gap} holds for $S(H)$ at $d=1$. The constant is the spectral
+gap of the universal cover; we do not claim it is attained, and by the strictness
+of Heilmann--Lieb on finite graphs it is not.
+\end{theorem}
+
+Theorem~\ref{thm:subdiv} settles the case $\min(d,r)=2$ of Problem~1 of
+\cite{SFM}.
+Their uniformity condition allows $r\ge2$, and they observe that when $H$ is a
+simple graph the incidence graph $B_H$ is exactly the subdivision $S(H)$; so
+their question at $r=2$ asks precisely whether $\mu_{S(H)}$ has no root $\mu$
+with $0<|\mu|<|\sqrt{D-1}-1|$. By their Theorem 1.8 this gives every
+$D$-regular graph, viewed as a $(D,2)$-regular hypergraph, a left-sided
+Ramanujan $2$-covering. The case $d=2$ follows as well, since $B_H$ is a
+bipartite graph and $\mu_{B_H}$ does not distinguish its two sides: a
+$(2,r)$-regular hypergraph has for incidence graph the subdivision of an
+$r$-regular graph, and the quantity $|\sqrt{d-1}-\sqrt{r-1}|$ is symmetric in
+$d$ and $r$. The case $\min(d,r)\ge3$ of their problem remains open in general, as does
+Conjecture~\ref{conj:gap} for $\min(a,b)\ge3$; Theorem~\ref{thm:kpq} below settles the
+complete bipartite graphs inside that range, $K_{3,4}$ among them.
+
+\begin{proof}
+By the subdivision identity $\mu_{S(H)}(x)=x^{|E|-|V|}\,\mu_H(x^2-D)$
+\cite{WWM}, the nonzero roots of $\mu_{S(H)}$ are the $x$ with $x^2=D+\theta$
+for $\theta$ a root of $\mu_H$. Heilmann--Lieb gives $\theta\ge-2\sqrt{D-1}$,
+so with $s=\sqrt{D-1}$ we get $x^2\ge s^2+1-2s=(s-1)^2$, whence
+$|x|\ge s-1$. Sharpness: for cubic $H$ of large girth $\theta_{\min}\to-2\sqrt2$,
+so the bound is approached.
+\end{proof}
+
+The inequality step is machine-checked in Lean~4 as \texttt{subdivision\_gap}.
+The theorem is exactly Heilmann--Lieb for $H$ transported through the
+subdivision identity, and the numbers match: for $H=K_4$, $\mu_{K_4}=x^4-6x^2+3$
+gives smallest positive root $\sqrt{3-\sqrt{3+\sqrt6}\,}=0.8158$, against the
+gap edge $0.4142$; the subdivisions of $K_{3,3}$, the prism, $Q_3$, the Wagner,
+Petersen, Heawood and M\"obius--Kantor graphs give
+$0.701,0.714,0.650,0.647,0.607,0.563,0.551$, decreasing toward the gap edge
+with the girth and never reaching it.
+
+For $K_{2,3}$ the computation was pushed to $d=6$ using
+$\mu_{d,G}=\E[\chi_H]/\chi_G$ over $(d+1)$-covers, which is polynomial time per
+cover, together with the reduction of the first free permutation to one
+representative per cycle type; the ratios continue
+$1.68$ at $d=5$ and no root in the gap at $d=6$. That last case is a caution
+worth recording: in floating point it appeared to produce roots at
+$\pm0.055$, well inside the gap, which an exact integer recomputation showed to
+be an artefact of evaluating a degree-$30$ polynomial built from $35\times35$
+characteristic polynomials in double precision.
+
+ The last column decreases monotonically in $d$ in
+every case, which is what the conjecture predicts: by
+Corollary~\ref{cor:floquet} in the $b_1=1$ case the roots equidistribute on
+$\operatorname{spec}(T)$, so they should approach the gap edge without crossing
+it. The evidence is therefore not merely that the bound holds but that it is
+approached, though no computation here reaches the regime where the ratio is
+close to $1$.
+
+\subsection{Complete bipartite graphs}\label{sec:kpq}
+
+The smallest graph in the open range $\min(a,b)\ge3$ is $K_{3,4}$, which is
+$(4,3)$-biregular. The complete bipartite family is settled outright, by an exact
+computation rather than by transport from a regular graph.
+
+\begin{theorem}\label{thm:kpq}
+Let $2\le p\le q$. Every root of $\mu_{K_{p,q}}$ lies in
+\[
+\{0\}\cup\pm\bigl[\sqrt{q-1}-\sqrt{p-1},\ \sqrt{q-1}+\sqrt{p-1}\bigr],
+\]
+the spectrum of the $(q,p)$-biregular tree. So Conjecture~\ref{conj:gap} holds for
+every $K_{p,q}$ at $d=1$.
+\end{theorem}
+
+\begin{proof}
+Since $m_k(K_{p,q})=\binom pk\binom qk k!$, comparison of coefficients with
+$L_p^{(\alpha)}(t)=\sum_k(-1)^k\binom{p+\alpha}{p-k}t^k/k!$ at $\alpha=q-p$ gives
+\[
+\mu_{K_{p,q}}(x)=x^{\,q-p}(-1)^p\,p!\;L_p^{(q-p)}(x^2),
+\]
+so the nonzero roots are the square roots of the zeros of a Laguerre polynomial.
+Those zeros are the eigenvalues of the $p\times p$ symmetric tridiagonal Jacobi
+matrix $J$ with $J_{kk}=2k+\alpha+1$ and $J_{k,k+1}=J_{k+1,k}=\sqrt{(k+1)(k+\alpha+1)}$,
+$0\le k\le p-1$.
+
+Put $c=p+q-2$ and $g(u)=\sqrt{u(u+\alpha)}-u$, and apply Gershgorin to $J-cI$. The
+shifted diagonal in row $k$ is $2k-2p+3$, which is at most $-1$ for $k\le p-2$, so
+the radius of an interior row is
+\[
+(2p-3-2k)+\sqrt{k(k+\alpha)}+\sqrt{(k+1)(k+1+\alpha)}\;=\;2p-2+g(k)+g(k+1),
+\]
+the index cancelling exactly. The step inequality
+\begin{equation}\label{eq:amgm}
+\sqrt{u(u+\alpha)}+1\;\le\;\sqrt{(u+1)(u+1+\alpha)}
+\end{equation}
+reduces, on squaring, to $\sqrt{u(u+\alpha)}\le u+\alpha/2$, which is
+$\alpha^2\ge0$. It makes $g$ nondecreasing along the integers, so the radius is
+largest at $k=p-2$, where it is $1+\sqrt{(p-2)(p-2+\alpha)}+\sqrt{(p-1)(q-1)}$ and
+\eqref{eq:amgm} at $u=p-2$ bounds it by $2\sqrt{(p-1)(q-1)}$. The last row has
+shifted diagonal $1$ and the single off-diagonal entry $\sqrt{(p-1)(q-1)}$, so its
+radius lies within the same bound as soon as $(p-1)(q-1)\ge1$, which holds for
+$p\ge2$. Hence every eigenvalue $t$ of $J$ satisfies
+$|t-(p+q-2)|\le2\sqrt{(p-1)(q-1)}$; since
+$\bigl(\sqrt{q-1}\pm\sqrt{p-1}\bigr)^2=(p+q-2)\pm2\sqrt{(p-1)(q-1)}$, that disc is
+exactly the stated band for $x^2=t$. The factor $x^{q-p}$ contributes the root $0$,
+which lies in the tree spectrum.
+\end{proof}
+
+The bound is sharp: at $p=q$ every interior Gershgorin row attains it, and the
+conclusion is then the Heilmann--Lieb interval for the $p$-regular $K_{p,p}$. It
+does need $p\ge2$: at $p=1$ the only zero is $q$ while the band degenerates to
+$\{q-1\}$, the $(q,1)$-``biregular tree'' being the finite star $K_{1,q}$. For
+$K_{3,4}$ the Laguerre factor is $t^3-12t^2+36t-24$, with zeros
+$0.935,\ 3.30,\ 7.76$ against the band $[0.101,\ 9.899]$.
+
+Inequality \eqref{eq:amgm}, the two row bounds, the endpoint identity and the
+Gershgorin step are machine-checked in Lean~4 as \texttt{LaguerreBand.sqrt\_step},
+\texttt{rowRadius\_le}, \texttt{lastRow\_le}, \texttt{band\_endpoints} and
+\texttt{laguerre\_band}. The coefficient identification and the passage to the Jacobi
+matrix are classical and remain by hand.
+
+\subsection{Three further reductions}\label{sec:further}
+
+The following arose from a conversation Chris Hall conducted with a language model and
+shared with us in August 2026. We have checked them, and record them here with their
+status, which differs sharply between the three. None is used elsewhere in this note.
+
+\paragraph{Localization in the maximal abelian cover.}
+Put a circle variable on each of the $b_1(G)$ cotree edges and let $A_G(z)$ be the
+resulting magnetic adjacency matrix. Haar integration over $\mathbb T^{b_1}$ annihilates
+every permutation cycle of length at least three, since a simple cycle must use a cotree
+edge and therefore carries a nontrivial character; fixed points and transpositions survive,
+and those are exactly the matchings. Hence
+\[
+\mu_G(x)=\int_{\mathbb T^{b_1}}\det\bigl(xI-A_G(z)\bigr)\,dz .
+\]
+For $|z|=1$ the matrix $A_G(z)$ is Hermitian, so the integrand is real for real $x$; and a
+continuous real function on a connected space whose average vanishes must vanish somewhere.
+Therefore every matching root is an eigenvalue of some $A_G(z)$, that is
+$\operatorname{Zeros}(\mu_G)\subseteq\operatorname{spec}(G^{\mathrm{ab}})$, and
+Conjecture~\ref{conj:gap} at $d=1$ becomes
+\[
+\operatorname{Zeros}(\mu_G)\cap\bigl(\operatorname{spec}(G^{\mathrm{ab}})\setminus
+\operatorname{spec}(T)\bigr)=\emptyset .
+\]
+The realness of the integrand, the vanishing-average argument and the reduction are
+machine-checked (\texttt{AbelianCover.det\_sub\_smul\_one\_im},
+\texttt{exists\_zero\_of\_integral\_zero}, \texttt{root\_mem\_of\_average},
+\texttt{reduction}). The cancellation over cycle types, left by hand above, reduces to one
+statement: a sum of nonzero vectors with pairwise disjoint supports is nonzero. The cycles of
+a permutation are vertex-disjoint, hence use disjoint edge sets, hence have homology classes
+of disjoint support, and each class is nonzero because a cycle must use a cotree edge. That
+lemma is \texttt{TorusGodsilGutman.sum\_ne\_zero\_of\_disjoint\_support}, and the sign and
+averaging steps are re-proved in the same file in the compact form
+\texttt{sign\_const\_of\_nonvanishing}, \texttt{nonvanishing\_average\_ne\_zero},
+\texttt{mu\_ne\_zero\_of\_nonvanishing}, the last being the contrapositive actually used.
+The two graph-theoretic inputs it consumes are also machine-checked. That every cycle uses at
+least one cotree edge is \texttt{CotreeCycle.exists\_cotree\_edge}: if all its edges lay in
+the tree, the walk would transfer to a cycle there, which acyclicity forbids, and no relation
+between the tree and $G$ is needed beyond acyclicity. That vertex-disjoint cycles use disjoint
+edge sets is \texttt{disjoint\_edges\_of\_disjoint\_support}. What remains informal is only
+the identification of the monomial attached to a permutation with the sum of the homology
+classes of its cycles, which is bookkeeping about how the magnetic matrix is set up rather
+than a mathematical step. The
+identity is checked numerically to $7\cdot10^{-15}$ on seven graphs with $b_1$ up to four
+(\texttt{code/torus\_gg.py}).
+
+It is worth being precise about what the connectedness of $\mathbb T^{b_1}$ contributes,
+since Godsil--Gutman average over the $2^{|E|}$ signings and obtain the same identity. A
+nonvanishing continuous function on a finite discrete set may take both signs, so no
+conclusion about the average follows; on a connected space it may not. The inclusion
+$\operatorname{Zeros}(\mu_G)\subseteq\operatorname{spec}(G^{\mathrm{ab}})$ is a consequence of
+the topology of the parameter space, not of the averaging.
+
+The localization is useful in the negative direction too: any counterexample must live in
+$\operatorname{spec}(G^{\mathrm{ab}})\setminus\operatorname{spec}(T)$.
+
+Two 2025 papers settle the companion question for the \emph{point} spectrum, in the opposite
+direction. Li, Magee, Sabri and Thomas \cite{LMST} characterise the eigenvalues of
+$G^{\mathrm{ab}}$ as the reals that are roots of $\mu_{G\setminus\Gamma}$ for every
+$2$-regular subgraph $\Gamma$, which at $\Gamma=\emptyset$ gives
+$\operatorname{pointspec}(G^{\mathrm{ab}})\subseteq\operatorname{Zeros}(\mu_G)$; Spier
+\cite{Sp} proves that $G^{\mathrm{uni}}$ and $G^{\mathrm{ab}}$ have the same eigenvalues.
+Those concern flat bands, so neither contains nor is contained in the inclusion above, which
+concerns the full spectrum. But Spier's theorem says the two covers are indistinguishable at
+the level of point spectrum, and the residue
+$\operatorname{spec}(G^{\mathrm{ab}})\setminus\operatorname{spec}(T)$ is exactly where they
+become distinguishable, so that is where a proof of Conjecture~\ref{conj:gap} has to act.
+
+\paragraph{Feedback vertex number one.}
+Suppose some vertex $v$ has $F=G-v$ a forest, so that every cycle of $G$ passes through
+$v$; the first Betti number is then unrestricted, and flowers, theta graphs and every
+$K_{2,q}$ qualify. Writing the universal cover's adjacency operator as a matrix over
+$C^*_r(F_{b_1})$ and eliminating the preimage of $F$, the Schur complement $S_v(x)$ onto
+the fibre over $v$ is a \emph{finite} sum of group elements, so it lies in the group
+algebra inside $C^*_r(F_{b_1})$ rather than merely in the von Neumann algebra
+$L(F_{b_1})$. That is the load-bearing point, since $L(F_{b_1})$ is a $\mathrm{II}_1$
+factor full of projections while $C^*_r(F_{b_1})$ is projectionless by Pimsner--Voiculescu.
+A self-adjoint invertible element of a projectionless $C^*$-algebra is definite, so its
+canonical trace cannot vanish. And that trace is
+\[
+\tau\bigl(S_v(x)\bigr)=x-\sum_{p\sim v}\frac{\mu_{F-p}(x)}{\mu_F(x)}
+=\frac{\mu_G(x)}{\mu_{G-v}(x)} ,
+\]
+the first equality because returning to the same lift of $v$ forces a walk to enter and
+leave a lifted component of $F$ at the same attachment point (two distinct attachment
+points of one component sit under distinct lifts of $v$, else the universal cover would
+contain a cycle), and the second by the matching recursion at $v$ together with the
+cofactor formula for a forest resolvent. A root of $\mu_G$ that is not a root of
+$\mu_{G-v}$ therefore makes $\tau(S_v)$ vanish, forcing $S_v$ to be non-invertible, hence
+the root lies in $\operatorname{spec}(T)$.
+
+We machine-check the pieces that can be: the combinatorial core
+(\texttt{FeedbackVertex.no\_bypass}), the resolvent diagonal
+(\texttt{resolvent\_diag}), the algebraic collapse of the trace formula
+(\texttt{matching\_ratio}), and the trace step (\texttt{trace\_ne\_zero\_of\_definite}).
+Pimsner--Voiculescu is not in Mathlib, so \texttt{feedback\_one\_of} carries it as an
+explicit hypothesis in the shape the argument consumes. We therefore state this as
+established modulo that classical input, and not as machine-checked end to end.
+
+\paragraph{Two closure operations.}
+Attaching a fixed rooted tree $R$ at every vertex sends $\mu_{d,H}$ to
+$\beta^{N}\mu_{d,H}(\alpha/\beta)$ with $\alpha=\mu_R$, $\beta=\mu_{R-o}$ and
+$N=d\,|V(H)|$, because an uncovered vertex leaves its whole copy of $R$ free while a
+covered one leaves $R-o$; the same ratio $\alpha/\beta$ is what the Schur complement of
+the universal cover produces, so the conjecture is inherited. Starting from a regular
+graph, where the conjecture is immediate, this yields graphs of arbitrarily large first
+Betti number whose universal covers have genuine gaps. Independently, the subdivision
+identity survives averaging over $d$-covers, since suppressing the degree-two fibres of a
+cover of $S(H)$ gives a cover of $H$ and a product of independent uniform permutations is
+uniform; that upgrades Theorem~\ref{thm:subdiv} from $d=1$ to every $d$, and with it the
+whole $(D,2)$-biregular family. The substitution identity and the root transfer are
+machine-checked (\texttt{TreeSubstitution.homogenize}, \texttt{star\_ratio},
+\texttt{subdivision\_root}, \texttt{subdivision\_abs}); the covering combinatorics, which
+is the same fibre bookkeeping as \texttt{CoverCounts}, is by hand. Neither operation
+touches the irreducible core: both reduce the spectral problem to a \emph{scalar} transfer
+function, and the difficulty begins where elimination leaves a matrix-valued one.
+
+\subsection{The biregular case is one interval, and we have one end of it}
+Let $G$ be $(a,b)$-biregular bipartite, $s=\sqrt{a-1}$, $t=\sqrt{b-1}$. Since
+$G$ is bipartite, $\mu_G(x)=x^{\varepsilon}f(x^2)$ for a polynomial $f$ and
+$\varepsilon\in\{0,1,2,\dots\}$. Put
+\[
+c=(a-1)+(b-1),\qquad m=(a-1)(b-1),\qquad g(z)=f(z+c).
+\]
+The universal cover has spectrum $\{0\}\cup\pm[\,|s-t|,s+t\,]$, and
+$(s\pm t)^2=c\pm2\sqrt m$, so
+\[
+x\in\operatorname{spec}(T)\ \setminus\{0\}
+\iff
+x^2-c\in\bigl[-2\sqrt m,\ 2\sqrt m\bigr].
+\]
+The change of variable therefore turns Conjecture~\ref{conj:gap}, for biregular
+$G$, into a single clean statement:
+\begin{equation}\label{eq:twosided}
+\text{every root of }g\text{ lies in }\bigl[-2\sqrt m,\,2\sqrt m\bigr],
+\end{equation}
+which is a Heilmann--Lieb interval of effective degree $m+1$.
+
+It is worth recording what this says about the matching generating polynomial
+$M_G(w)=\sum_km_kw^k$, since that, rather than $\mu_G$, is the object of
+\cite{HL}. From $f_G(y)=y^pM_G(-1/y)$ the roots correspond by $w=-1/y$, so a
+lower bound on the least positive root of $f_G$ is an upper bound on the modulus
+of the roots of $M_G$. Writing $Q_G(z)=M_G(-z)=\sum_k(-1)^km_kz^k$, the
+reciprocal-and-reflect of $f_G$:
+\begin{equation}\label{eq:annulus}
+\text{Conjecture~\ref{conj:gap} at }d=1
+\iff
+\text{every root of }Q_G\text{ lies in }\Bigl(0,\ (s-t)^{-2}\Bigr].
+\end{equation}
+Heilmann--Lieb, in the same variable, says every root of $Q_G$ is at least
+$\bigl(2\sqrt{\Delta-1}\bigr)^{-2}$ in modulus. The two statements bound the
+roots of one polynomial from the two sides, so \eqref{eq:twosided} and
+\eqref{eq:annulus} are the same dichotomy seen in reciprocal coordinates. This
+is a restatement and nothing more, but it is the coordinate in which the
+classical machinery is written, and $Q_G$ is the polynomial whose deletion
+recursion $Q_G=Q_{G-v}-z\sum_{u\sim v}Q_{G-v-u}$ is formalized in the
+accompanying Lean development. The upper end of
+\eqref{eq:twosided} is known: the path-tree argument of Godsil bounds the roots
+of $\mu_G$ by the spectral radius of the path tree, which for an
+$(a,b)$-biregular graph with $a,b\ge2$ is at most $s+t$
+\cite{God81,God93}. It is worth
+noting that \cite{HL} proved the corresponding statement only in the regular
+case; the irregular case is due to Godsil and to \cite{MSS}. The lower end is
+the conjecture. \emph{They are the two ends of one interval}, so
+what is missing is exactly half of a two-sided Heilmann--Lieb theorem for
+biregular bipartite graphs.
+
+
+\section{Hall's counterexample}\label{sec:hallce}
+
+Everything in this section except \S\ref{sec:hallfamily} is due to Chris Hall, who
+constructed the graph, found the certificate, and wrote the verification note
+\cite{HallCE}. Our contribution is the independent check, the formalization of the
+algebra, and the family in \S\ref{sec:hallfamily}.
+
+\subsection{The graph and its matching polynomial}
+
+Let $G$ consist of a central vertex $c$; for $1\le i\le5$ a copy of $K_{2,5}$ with
+degree-five vertices $v_i,w_i$ and middle vertices $u_{i,1},\dots,u_{i,5}$; a pendant leaf
+$\ell_i$ at each $w_i$; and the edges $cv_i$. It is simple, connected, loopless and
+bipartite, with $41$ vertices, $60$ edges and $b_1(G)=20$.
+
+Writing $H$ for one branch after deleting $c$, the vertex-deletion recurrence gives
+$\mu_{H-v}=x^5(x^2-6)$ and $\mu_H=x^4(x^4-11x^2+25)$, and then
+\begin{equation}\label{eq:hallmu}
+   \mu_G(x)=\mu_H(x)^4\bigl(x\mu_H(x)-5\mu_{H-v}(x)\bigr)
+   =x^{21}(x^4-11x^2+25)^4(x^2-5)(x^2-11),
+\end{equation}
+so $\sqrt5$ is a simple root. Identity \eqref{eq:hallmu}, the simplicity of the root, and
+the value of the cofactor are machine-checked in \texttt{RamaLean/HallCounterexample.lean}
+as an identity in $\mathbb Z[X]$ (\texttt{muG\_eq}, \texttt{muG\_root\_sqrt5},
+\texttt{muG\_root\_simple}).
+
+\subsection{The spectral exclusion}
+
+Angel, Friedman and Hoory \cite{AFH} characterise invertibility of $A_T-\lambda I$ by the
+existence of a finite nonzero \emph{ratio system}: an assignment $r_e$ to directed edges
+with $\lambda=1/r_e+\sum_{e\to f}r_f$, whose decay matrix $\mathcal R_{e,f}=|r_f|^2$ on
+non-backtracking pairs has spectral radius below one. Hall exhibits such a system at
+$\lambda=\sqrt5$ with eight edge types and ratios in $\mathbb Q(\sqrt5,\sqrt{41})$. Its
+decay matrix has $120$ states; the ten states at the leaves are transient, and the
+recurrent block of $110$ states reduces by symmetry to a $6\times6$ orbit quotient $K$ for
+which
+\[
+   x=(20,121,47,33,28,16)^{\mathsf T}\quad\text{satisfies}\quad Kx<x
+\]
+componentwise, so $\rho(K)<1$ by Perron--Frobenius. Hence $\sqrt5\notin
+\operatorname{spec}(A_T)$, and with \eqref{eq:hallmu} this proves
+Theorem~\ref{thm:hallce}. Since $G$ is bipartite the same holds at $-\sqrt5$, and
+Hall--Puder--Sawin place $\pm\sqrt5$ inside $[-\rho(T),\rho(T)]$, so these are roots in a
+genuine internal gap.
+
+The eight ratio identities, the elementary bounds $32/5<\sqrt{41}<13/2$, the strict
+positivity of all six components of $x-Kx$, and a Collatz--Wielandt lemma (a nonnegative
+matrix with a positive strictly subinvariant vector has spectral radius below one) are
+machine-checked in \texttt{RamaLean/HallCounterexample.lean}. The argument common to all three
+counterexamples of this note is isolated once in
+\texttt{RamaLean/RatioCertificate.lean}: a ratio system with its decay matrix
+(\texttt{decay}, \texttt{decay\_nonneg}), the Collatz--Wielandt step in the strict form the
+certificate needs (\texttt{decay\_lt\_one}), and the assembly with Angel--Friedman--Hoory as an
+explicit hypothesis (\texttt{spec\_excluded}). The three instances differ only in the numbers
+supplied. A schema rather than closed-form algebra is the right level here: Hall's ratios lie
+in $\mathbb{Q}(\sqrt5,\sqrt{41})$, but that is a feature of his graph, and for the $31$-vertex
+one the ratios admit no minimal polynomial of small degree and moderate height. The theorem of \cite{AFH} is
+not in Mathlib and enters as an explicit hypothesis, in the shape it is consumed.
+
+We verified the certificate independently, reconstructing every object from the graph
+rather than copying the displayed matrices: the matching numbers
+$(1,60,1585,24260,238105,1564976,6973855,20805500,39784375,44062500,21484375)$; the ratio
+equations on all $120$ directed edges; the strongly connected components of the decay
+digraph; the orbit quotient rebuilt from follower counts; and the decay rate by two
+independent routes, the componentwise certificate and the characteristic polynomial
+$t^6-\tfrac{201+19s}{800}t^2+\tfrac{21s-241}{250}$ with $s=\sqrt{41}$. As a physical check,
+the non-backtracking cavity Green function at $\sqrt5+i\eta$ converges to Hall's real
+ratios as $\eta\downarrow0$, with density of states vanishing linearly in $\eta$.
+
+\subsection{A family, and the role of the leaves}\label{sec:hallfamily}
+
+Hall's graph is the case $p=q=5$ of the family $G(p,q)$ with $p$ branches, each a copy of
+$K_{2,q}$ carrying a pendant leaf. The branch arithmetic is uniform: the last factor of
+$\mu_{G(p,q)}$ is
+\[
+   x^{q}\bigl(x^4-(2q+1+p)x^2+q^2+p(q+1)\bigr).
+\]
+Whether its smaller root lies in a gap of $\operatorname{spec}(T)$ is a separate question
+from whether that root is rational, and the two are independent: over $2\le p,q\le7$ the
+discriminant is a perfect square in six cases, while nine cases give a root inside a gap,
+and the two sets overlap in only three. The counterexamples are
+\[
+   (p,q)\in\{(7,3),(6,4),(7,4),(5,5),(6,5),(7,5),(6,6),(7,6),(7,7)\},
+\]
+with $41,43,43,49,50,55,57,64,71$ vertices; Hall's $(5,5)$ is the smallest. The least $p$
+that works is $7,6,5,6,7$ for $q=3,4,5,6,7$, so the phenomenon is cheapest exactly at
+$p=q=5$.
+
+Removing the pendant leaves altogether, so that every $w_i$ has degree $q$, destroys the
+effect over the same range: for all $36$ pairs with $2\le p,q\le7$ the root lies inside
+$\operatorname{spec}(T)$, with the diagnostic separated by three orders of magnitude
+(\texttt{code/hall\_family.py}). The test throughout is the scaling of the density of states
+at the root, which vanishes linearly in $\eta$ outside the spectrum and tends to a positive
+limit inside, and which avoids the cavity mass gate that these flat-band graphs fail.
+
+That observation is real but it does not mean what it appears to mean. Neither minimum
+degree at least two nor bounded maximum degree repairs Conjecture~\ref{conj:gap}, and a
+single graph on $31$ vertices, smaller than Hall's, refutes both at once.
+
+\begin{proposition}\label{prop:subcubic}
+There is a simple connected graph on $31$ vertices, with every degree equal to two or three,
+having a root of its matching polynomial in an internal gap of $\operatorname{spec}(T)$.
+\end{proposition}
+
+Take the rooted binary tree of depth three and identify each of its eight leaves with a
+vertex of an attached triangle. Internal skeleton vertices have degree three, each attachment
+vertex has degree three, the remaining triangle vertices have degree two, and the skeleton
+root has degree two, so the degree set is exactly $\{2,3\}$ and there are $31$ vertices and
+$38$ edges. The matching polynomial has the factor $x^4-7x^2+8$, whose smaller positive root
+\[
+   \theta=\sqrt{\tfrac{7-\sqrt{17}}{2}}=1.19935282014558573\ldots
+\]
+lies in an internal gap of $\operatorname{spec}(T)$: the gap is narrow, of width about
+$0.016$, with spectrum on both sides. The factorisation was computed twice by independent
+routes, the rooted pair recursion for a tree of blocks and a memoised vertex-deletion
+recursion, and the spectral exclusion is certified as in \S\ref{sec:hallce}: Newton at $40$
+digits, seeded from the cavity fixed point, gives a real ratio system on all $76$ directed
+edges with residual $5\cdot10^{-41}$ and every ratio nonzero, with decay rate
+\[
+   \rho=0.99273509760803033\ldots<1 .
+\]
+The margin $1-\rho=0.0073$ is thinner than elsewhere in this section but is resolved far
+beyond the precision used. Verified in \texttt{code/subcubic.py}.
+
+The polynomial half is machine-checked in \texttt{RamaLean/SubcubicCounterexample.lean}. The
+quartic is not an accident of the depth: at depth two the recursion already factors as
+\[
+   X\!\cdot\!A_1-2B_1=X^2(X^2-3)(X^4-7X^2+8)
+\]
+(\texttt{quartic\_factor}), so the quartic divides $A_2$ and hence $\mu_G=A_3$
+(\texttt{quartic\_dvd\_A3}), whose degree is confirmed to be $31$
+(\texttt{degree\_A3}). What depth three supplies is not the root but the gap: at depth two the
+same root lies inside $\operatorname{spec}(T)$, and only the deeper skeleton opens a gap
+around it. That is worth stating because it separates the two halves of a counterexample
+cleanly, and says which one is the binding constraint here.
+
+The construction explains why the earlier families needed large degrees: there the number of
+branches was the degree of the central vertex, so many branches forced high degree. A tree
+skeleton separates the two, supplying arbitrarily many branches at degree three. What the
+mechanism needs is branches, not degree.
+
+\begin{proposition}\label{prop:mindeg2}
+There are simple connected bipartite graphs of minimum degree two with a root of the matching
+polynomial in an internal gap of $\operatorname{spec}(T)$.
+\end{proposition}
+
+Replace each pendant leaf of $G(p,q)$ by a pendant cycle $C_k$ attached at $w_i$. Every new
+vertex then has degree two, as do the middle vertices of $K_{2,q}$, so the graph has minimum
+degree two, and the branches still meet only at $c$, so the deletion recurrence still
+computes $\mu_G$. The effect survives, at a price in size: it needs larger $p$ and $q$ than
+the pendant-leaf version, which is why a search stopping at $p,q\le7$ sees it only for
+$k=5$. Counterexamples occur at
+\[
+   (k,p,q)\in\{(5,7,7),(4,7,8),(3,8,8),(5,7,8),(5,8,7),(4,8,8),(5,8,8)\},
+\]
+the smallest having $92$ vertices, against $41$ for Hall's. So the leaves make the
+construction cheaper without being necessary to it.
+
+For $(k,p,q)=(5,7,7)$, on $92$ vertices with $140$ edges and degrees between two and nine,
+the root is the algebraic number $\theta=2.852901286261237\ldots$, the largest root of the
+irreducible octic $x^8-26x^6+187x^4-350x^2+91$, which divides $x\mu_H-p\mu_{H-v}$ and hence
+$\mu_G$.
+
+The spectral exclusion is certified, in a different form from \cite{HallCE} and for a
+structural reason. A ratio system exists for \emph{every} $\lambda$ outside
+$\operatorname{spec}(A_T)$, so the ratio equations impose no condition on $\lambda$ and there
+is nothing to eliminate; exact algebra in a fixed number field is therefore not available in
+the way it is for Hall's example, where the ratios happen to lie in
+$\mathbb{Q}(\sqrt5,\sqrt{41})$. Instead the certificate is a posteriori. The $280$ directed
+edges fall into $11$ orbits, listed in \texttt{code/mindeg2\_exact.py} together with their
+non-backtracking follower counts, and the orbit equations are checked against the full
+$280$-edge fixed point. Newton at $80$ digits gives ratios with residual
+$5.6\cdot10^{-81}$, all nonzero; since $\|J^{-1}\|_\infty=204.8$, the Newton--Kantorovich
+bound places an exact solution within $1.1\cdot10^{-78}$ of the computed one. The decay rate
+there is
+\[
+   \rho=0.9666941618858803717\ldots,\qquad 1-\rho=0.0333,
+\]
+while the entrywise Lipschitz constant of the orbit quotient in the ratios is $45$, so $\rho$
+can move by at most $5.7\cdot10^{-76}$ over the certified ball: the margin exceeds that by a
+factor $6\cdot10^{73}$. Hence $\rho<1$ for the exact solution, and by \cite{AFH}
+$\theta\notin\operatorname{spec}(A_T)$. A Collatz--Wielandt vector gives the same conclusion
+independently, at $0.9829$. The statement is thus rigorous modulo Newton--Kantorovich exactly
+as it is rigorous modulo \cite{AFH}, both classical. Verified in \texttt{code/mindeg2.py} and
+\texttt{code/mindeg2\_exact.py}.
+
+\subsection{Approximate localization}\label{sec:defect}
+
+The counterexamples miss by very little. Locating the gap edges sharply, by bisecting the
+Angel--Friedman--Hoory decay rate to $\rho=1$ rather than by scanning a density of states,
+gives for each of them the distance from the root to $\operatorname{spec}(T)$:
+
+\begin{center}
+\begin{tabular}{lrrr}
+family & $n$ & root & defect\\\hline
+pendant leaf $(7,3)$ & $43$ & $1.88040$ & $0.0072$\\
+pendant leaf $(5,5)$, Hall's & $41$ & $2.23607$ & $0.0118$\\
+pendant leaf $(7,6)$ & $64$ & $2.47528$ & $0.0348$\\
+pendant $C_5$ $(7,7)$ & $92$ & $2.85290$ & $0.0014$\\
+pendant $C_3$ $(8,8)$ & $97$ & $3.01489$ & $0.0021$\\
+triangles, depth $3$ & $31$ & $1.19935$ & $0.00024$\\
+\end{tabular}
+\end{center}
+
+Over thirteen counterexamples on $31$ to $97$ vertices, drawn from two unrelated families, the
+defect never exceeds $0.035$ and shows no growth in $n$. Every violated gap has width at most
+$0.22$. This suggests that Conjecture~\ref{conj:gap} is wrong in its constant rather than in
+its shape.
+
+\begin{conjecture}[D1]\label{conj:defect}
+There is an absolute constant $C$ such that for every finite graph $G$ and every root $\theta$
+of $\mu_G$, $\operatorname{dist}(\theta,\operatorname{spec}(T_G))\le C$.
+\end{conjecture}
+
+The statement was fixed before the confirming data was produced and has survived an
+out-of-sample test on ten counterexamples disjoint from the three that suggested it. The
+scaled form with $C/|V(G)|$ is not refuted but is not supported either: $\operatorname{defect}
+\cdot n$ varies by a factor of three hundred with no pattern.
+
+What D1 would buy is machine-checked in \texttt{RamaLean/DefectLocalization.lean}. It says
+exactly that the roots lie in the closed $C$-neighbourhood of $\operatorname{spec}(T)$
+(\texttt{zeros\_subset\_thickening}), so at $C=0$ it is Conjecture~\ref{conj:gap} itself
+(\texttt{thickening\_zero}); and it restores that conjecture away from the edges:
+
+\begin{proposition}\label{prop:core}
+If every root lies within $C$ of $\operatorname{spec}(T)$ and $(a,b)$ is a gap, then no root
+lies in $(a+C,\,b-C)$.
+\end{proposition}
+
+So under D1 every gap wider than $2C$ has a root-free core, and any counterexample is confined
+to a narrow gap, which is what the measured widths show. The open interval is not an artefact:
+a root may sit exactly at distance $C$ from the spectrum, and the gap edges themselves belong
+to $\operatorname{spec}(T)$ (\texttt{root\_free\_core}, \texttt{conj10\_of\_zero\_defect}).
+
+This is the form in which the question seems worth attacking. It is also the natural one: a
+root descending to a spectral edge but never passing it is the Alon--Boppana picture, and
+Conjecture~\ref{conj:gap} was the assertion that matching roots are Ramanujan in that sense
+without exception. D1 says the exceptions exist but are uniformly small.
+
+\subsection{The mechanism is a separation}\label{sec:mechanism}
+
+Every counterexample is built on a separation. If a vertex $v$ separates $G$ into $p$ isomorphic
+branches $H$, the deletion recurrence gives
+\begin{equation}\label{eq:branch}
+   \mu_G=\mu_H^{\,p-1}\bigl(x\mu_H-p\,\mu_{H-v}\bigr),
+\end{equation}
+and the root is placed by tuning $p$ and $H$; this is
+\texttt{CutVertexMechanism.branch\_factor}, with \texttt{root\_of\_branch\_factor} transferring
+a root of the last factor to $\mu_G$. Hall's graph and the graphs of
+\S\ref{sec:hallfamily} are of this shape.
+
+A cut vertex is only the smallest separation. Two hubs $u,v$ with $p$ identical branches
+attached to both leave no cut vertex, since removing either hub leaves the graph joined through
+the other, while $\{u,v\}$ separates it into $p$ pieces. Writing $A=\mu_B$ for the branch,
+$A_1,A_2$ for the branch with one anchor deleted and $A_{12}$ for both, deletion at $u$ and then
+at $v$ gives
+\begin{equation}\label{eq:twocut}
+   \mu_G=A^{\,p-2}\bigl(x^2A^2-px(A_1+A_2)A+pA_{12}A+p(p-1)A_1A_2\bigr),
+\end{equation}
+which is \texttt{SeparationOrder.two\_cut\_factor}, with \texttt{root\_of\_two\_cut}.
+
+The bracket in \eqref{eq:twocut} is \emph{quadratic} in $p$ where the bracket in
+\eqref{eq:branch} is linear. Read as polynomials in the branch count the two have degrees one and
+two, with leading coefficient $A_1A_2$ in the second case
+(\texttt{cutBracket\_natDegree}, \texttt{twoCutBracket\_natDegree}, \texttt{freedom\_grows}).
+Excluding cut vertices does not remove the engine; it upgrades it.
+
+\begin{proposition}\label{prop:twoconn}
+There are $2$-connected counterexamples to Conjecture~\ref{conj:gap}.
+\end{proposition}
+
+Let $B_{q,T}$ be $K_{2,q}$ with a path of $T$ further vertices appended to one of its two
+degree-$q$ vertices; attach the other degree-$q$ vertex to $u$ and the end of the path to $v$,
+and take $p$ copies.
+
+\begin{center}
+\begin{tabular}{lrrrrrr}
+branch & $p$ & $n$ & $\kappa(G)$ & $\theta$ & defect & gap width\\\hline
+$B_{4,2}$ & $7$ & $58$ & $2$ & $2.137920$ & $0.003574$ & $0.14758$\\
+$B_{5,2}$ & $6$ & $56$ & $2$ & $2.287307$ & $0.005624$ & $0.06636$\\
+$B_{5,3}$ & $6$ & $62$ & $2$ & $2.317609$ & $0.008332$ & $0.09876$\\
+\end{tabular}
+\end{center}
+
+All three are simple, bipartite, of minimum degree two and maximum degree at most seven, and of
+vertex connectivity exactly two, computed by Menger as a unit-capacity maximum flow over every
+non-adjacent pair. Each $\theta$ is an algebraic number of degree $12$ or $14$ isolated from the
+exact integer bracket, and \eqref{eq:twocut} is checked against a brute-force matching
+polynomial. That $\theta\notin\operatorname{spec}(T)$ is confirmed twice: the
+Angel--Friedman--Hoory decay rate at $40$ digits is $0.943$ to $0.959$, and the density of states
+of the universal cover, from the complex cavity equations, falls by a factor of ten per decade of
+$\eta$ at $\theta$ while an in-band control holds constant to four figures
+(\texttt{code/twocut.py}).
+
+Equation \eqref{eq:twocut} is the case $k=2$ of a general expansion. With $k$ hubs and $p$
+branches attached to all of them,
+\begin{equation}\label{eq:kcut}
+   \mu_G=\sum_{S\subseteq[k]}(-1)^{|S|}x^{\,k-|S|}
+        \sum_{P\vdash S}(p)_{|P|}\Bigl(\prod_{J\in P}A_J\Bigr)A^{\,p-|P|},
+\end{equation}
+with $A_J$ equal to $\mu_B$ with the anchors indexed by $J$ deleted and $(p)_m$ the falling
+factorial: $A^{p-k}$ times a bracket of degree $k$ in $p$. A $k$-cut thus needs only
+$k$-connectedness while supplying a degree-$k$ polynomial to tune. No counterexample above
+connectivity two is known: a search over thirty-eight branch families at $k=3,4,5$ with up to
+$62$ vertices, with \eqref{eq:kcut} checked against brute force at $k=3$, produced none, and it
+is not vacuous, those graphs carrying two to five gaps of total width $0.40$ to $0.75$
+(\texttt{code/kcut.py}).
+
+\subsection{The threshold is the minimum degree}\label{sec:mindeg3}
+
+Connectivity is not the right invariant, because a graph of vertex connectivity $\kappa$ has
+minimum degree at least $\kappa$, and it is the minimum degree that the counterexamples respond
+to. Every counterexample above has minimum degree at most two: Hall's has leaves, the
+$31$-vertex graph of Proposition~\ref{prop:mindeg2} has degree-2 vertices, and so do all three
+graphs of Proposition~\ref{prop:twoconn}.
+
+The two-hub construction separates the two conditions exactly, since it can be run with branches
+whose every vertex has degree at least three: ladders anchored at both ends of both rails,
+prisms, and $K_{3,q}$ blocks with two of the three degree-$q$ vertices anchored. That yields
+$102$ graphs of minimum degree three whose vertex connectivity is \emph{two}, so each retains the
+separating pair the engine needs, and $77$ of them have a gap of width at least $0.05$, several
+wider than $2.9$, against the $0.066$ to $0.148$ that the counterexamples of
+Proposition~\ref{prop:twoconn} occupy. None has a root in a gap (\texttt{code/mindeg3.py}).
+
+\begin{conjecture}[D3]\label{conj:mindeg3}
+Every finite graph of minimum degree at least three satisfies
+$\operatorname{Zeros}(\mu_G)\subseteq\operatorname{spec}(T_G)$.
+\end{conjecture}
+
+Conjecture~\ref{conj:mindeg3} implies the corresponding statement for $3$-connected graphs
+(\texttt{MinimumDegreeThreshold.C2\_of\_D3}), and it is sharp: minimum degree two is refuted by
+Proposition~\ref{prop:mindeg2}, so three is the \emph{least} sufficient bound
+(\texttt{threshold\_is\_three}).
+
+Three remarks fix how much this claims. First, the regular case is trivial and worth separating
+off: for $d$-regular $G$ the universal cover is the $d$-regular tree, whose spectrum is exactly
+the interval $[-2\sqrt{d-1},2\sqrt{d-1}]$ in which Heilmann and Lieb confine every root, so there
+is nothing to violate (\texttt{conj10\_of\_regular}). The content lies in irregular graphs.
+
+Second, minimum degree three narrows the gaps but does not remove them, so
+Conjecture~\ref{conj:mindeg3} is not true for want of anywhere to hide: over $38$ graphs the mean
+total gap width falls from $0.99$ at $\delta\le2$ to $0.09$ at $\delta\ge3$, while individual
+gaps at $\delta=3$ reach $2.9$ (\texttt{code/gapscale.py}).
+
+Third, the evidence covers a family unlike the rest. Wheels, a hub joined to a cycle, have
+minimum degree three, are non-bipartite by construction, and carry gaps from $(2.02,2.08)$ at
+$W_5$ out to $(2.02,3.20)$ at $W_{11}$. None up to $W_{14}$ has a root in any gap, and at the
+closest approach the verdict rests on the density-of-states ladder rather than on locating a gap
+edge: for $W_{10}$ through $W_{20}$ the largest root below $2$ has density of states constant to
+four significant figures across four decades of $\eta$, so it lies in the spectrum
+(\texttt{code/wheels.py}).
+
+\subsection{What survives}
+
+The counterexample has $b_1=20$, feedback vertex number $5$, and is neither biregular nor
+of bounded feedback vertex number, so it violates the hypotheses of every positive result
+in this note. Theorem~\ref{thm:main} and the closed form at $b_1(G)=1$, the subdivision and
+complete bipartite cases, the reductions of \S\ref{sec:further}, the localization
+$\operatorname{Zeros}(\mu_G)\subseteq\operatorname{spec}(G^{\mathrm{ab}})$ and the
+sufficient conditions of the companion paper \cite{PartII} are all unaffected. What changes is the
+question. The counterexample lives exactly in the residue
+$\operatorname{spec}(G^{\mathrm{ab}})\setminus\operatorname{spec}(T)$ that
+\S\ref{sec:further} identifies as the only place a counterexample could live, so the
+framework was pointed at the right region; what it lacked was any reason for that region to
+be empty. The open problem is to characterise the graphs for which
+$\operatorname{Zeros}(\mu_{d,G})\subseteq\operatorname{spec}(T)$ holds;
+Conjecture~\ref{conj:mindeg3} is our proposal, and \S\ref{sec:mindeg3} records its evidence and
+its sharpness. The content lies entirely in graphs whose universal cover has gaps, and the
+canonical such family is the $(a,b)$-biregular one, which is Problem~1 of Song, Fan and Miao.
+
+
+\section{Related work and formalization}
+
+The $d$-matching polynomial and the interval $[-\rho,\rho]$ are due to Hall, Puder and Sawin; the
+counterexample refuting the inclusion is due to Chris Hall \cite{HallCE} and is reproduced here
+with his permission, with our own independent verification of its certificate. The
+Angel--Friedman--Hoory ratio criterion \cite{AFH} is what certifies the gap.
+
+The Lean~4/Mathlib sources are in \texttt{RamaLean/} of the accompanying repository, and carry no
+\texttt{sorry} and no custom axioms. Formalized here: the closed form at first Betti number one
+and its corollaries, the counterexample's algebra, the branch and two-cut factorizations, the
+separation mechanism, and the minimum-degree threshold, including that minimum degree two does
+not suffice and that three is therefore exact. Statements are labelled \texttt{VERIFIED},
+\texttt{HEURISTIC} or \texttt{CONJECTURE} in the sources, and the labels are used with their
+plain meaning: a \texttt{HEURISTIC} claim is supported by computation and is not proved.
+
+\begin{thebibliography}{9}
+\bibitem{Zhang} A hypergraph Heilmann--Lieb theorem, arXiv:2206.09558 (2022).
+\bibitem{XXZ} Z.~Xu, Z.~Xu, Z.~Zhu, \emph{Improved bounds in Weaver's
+$\mathrm{KS}_r$ conjecture for high rank positive semidefinite matrices},
+arXiv:2106.09205 (2021).
+\bibitem{GG} C.~Godsil, I.~Gutman, \emph{On the matching polynomial of a
+graph}, in: Algebraic Methods in Graph Theory, 1981.
+\bibitem{HPS} C.~Hall, D.~Puder, W.~Sawin, \emph{Ramanujan coverings of
+graphs}, Adv.\ Math.\ \textbf{323} (2018), 367--410.
+\bibitem{CGHRS} G.~Cochran, C.~Groothuis, A.~Herring, R.~Rohatgi,
+E.~Stucky, \emph{A new (combinatorial) proof of the commutativity of
+matching polynomials for cycles}, arXiv:1810.05889 (2018). Preprint; no journal
+reference or DOI as of August 2026.
+\bibitem{WWM} J.~Wan, W.~Wang, A.~Mohammadian, \emph{On the matching
+polynomials of graphs with small number of cycles}, arXiv:2103.10580 (2021).
+\bibitem{SFM} Y.-M.~Song, Y.-Z.~Fan, Z.~Miao, \emph{Hypergraph coverings and
+Ramanujan hypergraphs}, arXiv:2310.01771 (2023).
+\bibitem{YY} W.~Yan, Y.-N.~Yeh, \emph{On the matching polynomial of subdivision
+graphs}, Discrete Appl.\ Math.\ \textbf{157} (2009) 195--200. The identity used
+here is their Corollary 2.1: for $G$ $d$-regular, $m(S(G),x)=x^{m-n}m(G,x^2-d)$.
+\bibitem{BDH} G.~Brito, I.~Dumitriu, K.~D.~Harris, \emph{Spectral gap in random
+bipartite biregular graphs and applications}, Combin.\ Probab.\ Comput.\
+\textbf{31} (2022) 229--267.
+\bibitem{HL} O.~J.~Heilmann, E.~H.~Lieb, \emph{Theory of monomer-dimer
+systems}, Comm.\ Math.\ Phys.\ \textbf{25} (1972) 190--232.
+\bibitem{DMOSS} Y.~Deshpande, A.~Montanari, R.~O'Donnell, T.~Schramm, S.~Sen,
+\emph{The threshold for SDP-refutation of random regular NAE-3SAT},
+arXiv:1804.05230 (2018). Theorem 4.5 is the Ihara--Bass formula for edge-signed
+graphs, specializing \cite{WF2}.
+
+\bibitem{WF2} Y.~Watanabe, K.~Fukumizu, \emph{Graph zeta function in the Bethe
+free energy and loopy belief propagation}, NIPS 22 (2009).
+
+\bibitem{Mo} A.~Mohammadian, \emph{Laplacian matching polynomial of graphs},
+J. Algebraic Combin. \textbf{52} (2020) 33--39. The average of the Laplacian
+characteristic polynomials over all signings, with vertex weights $x-d(v)$;
+independently Zhang and Chen, Discrete Appl. Math. (2020).
+
+\bibitem{CC} V.~Y. Chernyak, M.~Chertkov, \emph{Fermions and loops on graphs.
+II. A monomer-dimer model as a series of determinants}, J. Stat. Mech. (2008)
+P12012.
+
+\bibitem{WC} Y.~Watanabe, M.~Chertkov, \emph{Belief propagation and loop calculus
+for the permanent of a non-negative matrix}, J. Phys. A \textbf{43} (2010)
+242002.
+
+\bibitem{Na} J.~F. Nagle (not consulted; attribution as in \cite{WF}),
+\emph{New series-expansion method for the dimer
+problem}, Phys. Rev. \textbf{152} (1966) 190--197.
+
+\bibitem{Je} M.~Jerrum, \emph{Two-dimensional monomer-dimer systems are
+computationally intractable}, J. Statist. Phys. \textbf{48} (1987) 121--134.
+
+\bibitem{WF} Y.~Watanabe, K.~Fukumizu, \emph{New graph polynomials from the Bethe
+approximation of the Ising partition function}, Combin. Probab. Comput.
+\textbf{20} (2011) 299--320.
+
+\bibitem{God81} C.~D. Godsil, \emph{Matchings and walks in graphs},
+J. Graph Theory \textbf{5} (1981), 285--297.
+
+\bibitem{God93} C.~D. Godsil, \emph{Algebraic Combinatorics}, Chapman and Hall,
+New York, 1993, Theorem 6.1.1 and \S5.6.
+\bibitem{Cs} P.~Csikv\'ari, \emph{Lower matching conjecture, and a new proof of
+Schrijver's and Gurvits's theorems}, J.\ Eur.\ Math.\ Soc.\ (2017);
+arXiv:1406.0766.
+\bibitem{BC} C.~Bordenave, B.~Collins, \emph{Eigenvalues of random lifts and
+polynomials of random permutation matrices}, Ann.\ of Math.\ \textbf{190}
+(2019) 811--875.
+\bibitem{MF} J.~P.~McSorley, P.~Feinsilver, \emph{Multivariate matching
+polynomials of cyclically labelled graphs}, Discrete Math.\ \textbf{309} (2009)
+3205--3218.
+\bibitem{MS} H.~Mizuno, I.~Sato, \emph{Characteristic polynomials of some graph
+coverings}, Discrete Math.\ \textbf{142} (1995) 295--298.
+\bibitem{DFMRS} C.~Dalf\'o, M.~A.~Fiol, M.~Miller, J.~Ryan, J.~\v{S}ir\'a\v{n},
+\emph{An algebraic approach to lifts of digraphs}, Discrete Appl.\ Math.\
+\textbf{269} (2019) 68--76.
+\bibitem{MSS} A.~Marcus, D.~Spielman, N.~Srivastava, \emph{Interlacing
+families I: Bipartite Ramanujan graphs of all degrees}, Ann.\ of Math.\
+\textbf{182} (2015), 307--325.
+\bibitem{CsF} P.~Csikv\'ari, P.~E.~Frenkel, \emph{Benjamini--Schramm continuity
+of root moments of graph polynomials}, European J.\ Combin.\ \textbf{52} (2016),
+part B, 302--320.
+\bibitem{AH} M.~Ab\'ert, T.~Hubai, \emph{Benjamini--Schramm convergence and the
+distribution of chromatic roots for sparse graphs}, Combinatorica \textbf{35}
+(2015), 127--151.
+\bibitem{Go} C.~D.~Godsil, \emph{Matchings and walks in graphs}, J.\ Graph
+Theory \textbf{5} (1981), 285--297.
+\bibitem{ACFK} M.~Ab\'ert, P.~Csikv\'ari, P.~E.~Frenkel, G.~Kun, \emph{Matchings
+in Benjamini--Schramm convergent graph sequences}, Trans.\ Amer.\ Math.\ Soc.\
+\textbf{368} (2016), 4197--4218.
+\bibitem{HallCE} C.~Hall, \emph{A simple bipartite counterexample to Conjecture 10:
+  spectral localization of the ordinary matching polynomial}, verification note, personal
+  communication, August 2026.
+\bibitem{RL} M.~Ravichandran, J.~Leake, \emph{Mixed determinants and the Kadison--Singer
+  problem}, Math. Ann. \textbf{377} (2020), 511--541.
+\bibitem{AFH} O.~Angel, J.~Friedman, S.~Hoory, \emph{The non-backtracking spectrum of the
+  universal cover of a graph}, Trans.\ Amer.\ Math.\ Soc.\ \textbf{367} (2015), 4287--4318;
+  arXiv:0712.0192.
+\bibitem{LMST} W.~Li, M.~Magee, M.~Sabri, D.~Thomas, \emph{Eigenvalues of maximal
+  abelian covers}, arXiv:2508.17332 (2025).
+\bibitem{Sp} T.~J.~Spier, \emph{Eigenvalues of universal covers and the matching
+  polynomial}, arXiv:2510.05041 (2025).
+\bibitem{BCs} F.~Bencs, P.~Csikv\'ari, \emph{Evaluations of Tutte polynomials of
+regular graphs}, arXiv:2105.06798 (2021).
+\bibitem{PartII} V.~Bonfioli, \emph{The biregular case of a spectral-inclusion
+  conjecture: the weighted plane class and its obstructions}, companion paper, 2026.
+\end{thebibliography}
+
+\end{document}
