@@ -318,13 +318,20 @@ The second condition is the one already known — it is `binding_case`, the requ
 minimum-child-count configuration closes, where `children_are_leaves` forces every child to be a
 leaf of ratio exactly `λ`. The first is new and is what the per-vertex bound buys.
 
-Measured (`code/universal_close.py`), the pair holds at 11 of 14 parameter points tested,
-including `(3,9,4)`, `(3,12,6)` and `(3,20,10)`; there the ratio route closes *provably* rather
-than family by family. It fails at `Δ` small with `λ` near the gap edge — `(3,20,19)` and
-`(3,20,18)` at `frac = 0.99`, where `c ≤ 0` — and there the refinement still closes on the actual
-path trees (`code/twolevel.py`) because the measured child counts sit far below the worst case
-`k - Δ` that `child_count_drop` allows. So what a proof needs at those parameters is a sharper
-structural bound on the child's child count, and that is now the single identified gap. -/
+Measured over 354 *realizable* parameter points — a `(d,q)`-biregular bipartite graph with
+`|R| = r` needs `|L| = qr/d` to be a positive integer, and an earlier sweep of this omitted the
+check and counted `(3,20,19)`, where `qr/d = 126.667`, among its failures — the pair holds at
+**326**, or `92.1%` (`code/universal_close.py`). There the ratio route closes *provably* rather
+than family by family.
+
+The `28` failures sit where `λ` approaches the gap edge, at `frac = 0.9` and `0.99`, and they are
+the two conditions themselves rather than a weakness elsewhere: `code/sharp_close.py` checks the
+sharper combinatorial bound `ku ≤ min(d-1, k-(q-r))`, which uses the elementary fact that a child
+lies in `L` and has degree `d`, and it gains **nothing** at any parameter point, because both
+tests stop earlier on the constants. So the obstruction is not the child-count bound. It is that
+near the gap edge either `λ² < Δ` fails, which is `binding_case` failing and means the
+sign-alternating pattern cannot hold at the minimum child count, or `λ < c` fails. Extending the
+route to the edge needs a different invariant there, not a better combinatorial bound. -/
 theorem structural_closure {lam c : ℝ} (hlam : 0 < lam) (hlc : lam < c)
     {Delta k j : ℕ} (hD : lam ^ 2 < (Delta : ℝ)) (hk : Delta ≤ k)
     (hj : (j : ℝ) ≤ (k : ℝ) - (Delta : ℝ)) :

@@ -67,9 +67,16 @@ def main():
     cgt = 0
     allk = 0
     fails = []
-    for (d, q) in ((3, 6), (3, 9), (3, 12), (4, 8), (4, 12), (5, 10), (5, 15), (6, 12), (3, 20)):
-        for r in (q - 1, q - 2, q - 3, max(1, q // 2)):
-            if r <= 0 or q - r <= 0:
+    for (d, q) in ((3, 6), (3, 9), (3, 12), (4, 8), (4, 12), (5, 10), (5, 15), (6, 12),
+                   (3, 20), (3, 30), (4, 20), (6, 18), (5, 20), (3, 15), (4, 16), (7, 14)):
+        for r in range(1, q):
+            # REALIZABILITY: a (d,q)-biregular bipartite graph with |R| = r needs |L| = qr/d
+            # to be a positive integer. The first version of this sweep omitted the check and
+            # counted (3,20,19), where qr/d = 126.667, among its failures.
+            mL = q * r / d
+            if abs(mL - round(mL)) > 1e-12 or round(mL) < 2:
+                continue
+            if q - r <= 0:
                 continue
             for frac in (0.25, 0.5, 0.75, 0.9, 0.99):
                 res = analyse(d, q, r, frac)
@@ -82,7 +89,7 @@ def main():
                         allk += 1
                 else:
                     fails.append((d, q, r, frac, res['reason'], res['c'], res['lam']))
-                if frac in (0.5, 0.99) and r in (q - 1, max(1, q // 2)):
+                if frac == 0.99 and len(fails) <= 6:
                     print(f"{f'({d},{q},{r})':>12}{frac:>7.2f}{res['lam']:>9.4f}{res['B']:>9.4f}"
                           f"{res['c']:>9.4f}{res['Delta']:>7}"
                           f"{str(res['ok']):>7}{str(res.get('allk', False)):>14}")
@@ -94,10 +101,13 @@ def main():
         print(f"\n  P25 IS FALSE at {len(fails)} points. Worst examples:")
         for (d, q, r, frac, why, c, lam) in fails[:8]:
             print(f"    (d,q,r)=({d},{q},{r}) frac={frac}: {why}, c={c:.4f} lam={lam:.4f}")
-        print("\n  The refinement is still correct -- twolevel.py verifies it on real path trees --")
-        print("  but child_count_drop is too weak to carry it at these parameters. What a proof")
-        print("  needs there is a stronger structural bound on the CHILD's child count than")
-        print("  ku <= k - (q-r): the measured j are far below that worst case.")
+        print("\n  The refinement is still correct -- twolevel.py verifies it on real path trees.")
+        print("  The failures are NOT a weakness of the child-count bound: code/sharp_close.py")
+        print("  shows the sharper ku <= min(d-1, k-(q-r)) gains nothing, because both tests")
+        print("  bail earlier on the constants. They are the two conditions themselves,")
+        print("  lambda < c and lambda^2 < Delta, and they fail where lambda sits near the gap")
+        print("  edge. So the certificate covers the gap except near its edge, and what would")
+        print("  extend it is a different invariant there, not a better combinatorial bound.")
     else:
         print("\n  P25 HOLDS. On every parameter point tested the refined requirement follows")
         print("  from min_children and child_count_drop alone, with no appeal to a particular")
