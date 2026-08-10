@@ -2687,6 +2687,15 @@ derived from the wedge coefficients $M_r$ and from $\operatorname{Adj}(A)$ direc
 unaffected; what does not transfer automatically to the weighted class is a result stated for
 mixed characteristic polynomials, since the two constants there are different.
 
+Consequently the band is stated below on the roots of $F_A$, as $|x|\le2\sqrt a$ with $a$ the
+constant of $\operatorname{Adj}(A)\preceq aI$, and that is the form the unconditional bounds
+establish, through $\lambda^2\le M_1\le am/2$. Written in the $\mu$ variable it becomes
+$[a'-2\sqrt a,\,a'+2\sqrt a]$: the radius is set by the $\operatorname{Adj}$ constant and the
+centre by the tight one. Both the shift $y=x+a'$ and the bound $|x|\le2\sqrt a$ are checked
+directly (\texttt{code/rl\_conj.py}); the two coincide precisely for projection families, where
+$a'=a$, and every $\mu$-variable statement of the band in this note should be read with that
+proviso.
+
 The band being sought is the sharp weighted Heilmann--Lieb constant for plane families, and that
 constant is not $2\sqrt a$. On projections the conjectural sharp value is $2\sqrt{a-1}$, the
 spectral radius of the $a$-regular tree, and $2\sqrt{a-1}<2\sqrt a$ strictly
