@@ -78,6 +78,10 @@ def cited():
 MATHLIB_PREFIX = ('Finset.', 'Matrix.', 'Nat.', 'Lean.', 'Real.', 'Complex.',
                   'Equiv.', 'Polynomial.', 'MeasureTheory.', 'SimpleGraph.')
 TOOLING = {'RamaLean', 'lake', 'sorry', 'native_decide', 'propext', 'ring', 'det',
+           # status labels, not declarations: the papers set them in \texttt because they
+           # are literal labels in the Lean sources, and without this they read as dangling
+           'VERIFIED', 'HEURISTIC', 'CONJECTURE', 'REFUTED', 'OPEN', 'Classical.choice',
+           'Quot.sound',
            'decide', 'omega', 'simp', 'nlinarith', 'linarith', 'w', 'TODO',
            'eigenvalue_mem_ball', 'Classical.choice', 'Quot.sound'}
 
