@@ -2667,11 +2667,25 @@ family only through the pairs $\bigl(e_2(A_k),\operatorname{range}A_k\bigr)$. So
 class is the class of weighted $2$-plane families
 $\{(c_k,V_k):c_k\ge0,\ \sum_kc_kP_{V_k}\preceq aI\}$, and $\mu(x+a)$ is the matching
 polynomial of such a family; for coordinate planes it is the ordinary weighted
-matching polynomial. The invariance is worth stating carefully, since it holds within the tight
-class and not outside it: with $\sum_kA_k=aI$ imposed, families sharing the pairs
-$\bigl(e_2(A_k),\operatorname{range}A_k\bigr)$ have the same $\mu(x+a)$ even when the $A_k$ are
-strongly anisotropic, verified to $10^{-13}$ at eigenvalue ratios up to $49$
-(\texttt{code/rl\_conj.py}); drop the tightness and the recentring by $a$ has no meaning.
+matching polynomial. Two points about that identification need care, and both are invisible in
+the projection case.
+
+First, the invariance holds within the tight class and not outside it: with $\sum_kA_k$ a
+multiple of the identity, families sharing the pairs
+$\bigl(e_2(A_k),\operatorname{range}A_k\bigr)$ have the same recentred $\mu$ even when the $A_k$
+are strongly anisotropic, verified to $10^{-13}$ at eigenvalue ratios up to $49$
+(\texttt{code/rl\_conj.py}); without tightness the recentring has no meaning.
+
+Second, the recentring constant is that tight constant, and it is \emph{not} the constant in
+$\operatorname{Adj}(A)\preceq aI$. Plane data with $\operatorname{Adj}(A)=aI$ admits a
+realization with $\sum_kA_k=a'I$ --- solvable to $10^{-16}$ --- but with $a'>a$ strictly:
+$a'=3.567$ against $a=3$ at $m=4$, and $4.228$ against $3$ and $4.961$ against $4$ at $m=6$
+(\texttt{code/rl\_conj.py}). So for weighted families $F_A(x)=\mu(x+a')$ with $a'\ne a$, and the
+identity as stated holds exactly when the two constants agree, which is the projection case
+$A_k=P_k$, where $e_2\equiv1$ gives $\sum_kA_k=\operatorname{Adj}(A)=aI$. Everything below is
+derived from the wedge coefficients $M_r$ and from $\operatorname{Adj}(A)$ directly and is
+unaffected; what does not transfer automatically to the weighted class is a result stated for
+mixed characteristic polynomials, since the two constants there are different.
 
 The band being sought is the sharp weighted Heilmann--Lieb constant for plane families, and that
 constant is not $2\sqrt a$. On projections the conjectural sharp value is $2\sqrt{a-1}$, the
