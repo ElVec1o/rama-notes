@@ -1,0 +1,56 @@
+Cavity ratios on path trees, at gap points.  Measurement, not assumption.
+=== (3,6)-biregular, n=12 (left 8, right 4), gap (0, 0.8219)
+  lam=0.2055  paths=  3457  min|F|=0.2055  pos=2668 neg=789  rootF=0.4155
+        left (deg 3): n=  2668  range [0.2055, 0.4155]  neg 0
+       right (deg 6): n=   789  range [-19.2627, -9.5286]  neg 789
+      tree fixed points (F_d, F_q): (0.346,-14.255)
+  lam=0.4109  paths=  3457  min|F|=0.4109  pos=2668 neg=789  rootF=0.8619
+        left (deg 3): n=  2668  range [0.4109, 0.8619]  neg 0
+       right (deg 6): n=   789  range [-9.3232, -4.4561]  neg 789
+      tree fixed points (F_d, F_q): (0.715,-6.586)
+  lam=0.6164  paths=  3457  min|F|=0.6164  pos=2668 neg=789  rootF=1.3927
+        left (deg 3): n=  2668  range [0.6164, 1.3927]  neg 0
+       right (deg 6): n=   789  range [-5.8730, -2.6283]  neg 789
+      tree fixed points (F_d, F_q): (1.155,-3.712)
+  lam=0.7808  paths=  3457  min|F|=0.7808  pos=2668 neg=789  rootF=1.9716
+        left (deg 3): n=  2668  range [0.7808, 1.9716]  neg 0
+       right (deg 6): n=   789  range [-4.3424, -1.7808]  neg 789
+      tree fixed points (F_d, F_q): (1.726,-2.117)
+=== (3,6)-biregular, n=15 (left 10, right 5), gap (0, 0.8219)
+  lam=0.2055  paths= 17241  min|F|=0.2055  pos=13400 neg=3841  rootF=0.4156
+        left (deg 3): n= 13400  range [0.2055, 0.4200]  neg 0
+       right (deg 6): n=  3841  range [-24.1297, -4.6616]  neg 3841
+      tree fixed points (F_d, F_q): (0.346,-14.255)
+  lam=0.4109  paths= 17241  min|F|=0.4109  pos=13400 neg=3841  rootF=0.8626
+        left (deg 3): n= 13400  range [0.4109, 0.9053]  neg 0
+       right (deg 6): n=  3841  range [-11.7567, -2.0226]  neg 3841
+      tree fixed points (F_d, F_q): (0.715,-6.586)
+  lam=0.6164  paths= 17241  min|F|=0.6164  pos=13400 neg=3841  rootF=1.3973
+        left (deg 3): n= 13400  range [0.6164, 1.6105]  neg 0
+       right (deg 6): n=  3841  range [-7.4953, -1.0060]  neg 3841
+      tree fixed points (F_d, F_q): (1.155,-3.712)
+  lam=0.7808  paths= 17241  min|F|=0.5000  pos=13400 neg=3841  rootF=1.9914
+        left (deg 3): n= 13400  range [0.7808, 2.7806]  neg 0
+       right (deg 6): n=  3841  range [-5.6232, -0.5000]  neg 3841
+      tree fixed points (F_d, F_q): (1.726,-2.117)
+=== (3,9)-biregular, n=16 (left 12, right 4), gap (0, 1.4142)
+  lam=0.3536  paths= 22402  min|F|=0.3536  pos=19351 neg=3051  rootF=0.5353
+        left (deg 3): n= 19351  range [0.3536, 0.5353]  neg 0
+       right (deg 9): n=  3051  range [-22.2739, -13.7886]  neg 3051
+      tree fixed points (F_d, F_q): (0.475,-16.496)
+  lam=0.7071  paths= 22402  min|F|=0.7071  pos=19351 neg=3051  rootF=1.1047
+        left (deg 3): n= 19351  range [0.7071, 1.1047]  neg 0
+       right (deg 9): n=  3051  range [-10.6066, -6.3640]  neg 3051
+      tree fixed points (F_d, F_q): (0.973,-7.512)
+  lam=1.0607  paths= 22402  min|F|=1.0607  pos=19351 neg=3051  rootF=1.7753
+        left (deg 3): n= 19351  range [1.0607, 1.7753]  neg 0
+       right (deg 9): n=  3051  range [-6.4818, -3.6534]  neg 3051
+      tree fixed points (F_d, F_q): (1.547,-4.110)
+  lam=1.3435  paths= 22402  min|F|=1.3435  pos=19351 neg=3051  rootF=2.5344
+        left (deg 3): n= 19351  range [1.3435, 2.5344]  neg 0
+       right (deg 9): n=  3051  range [-4.6111, -2.3781]  neg 3051
+      tree fixed points (F_d, F_q): (2.243,-2.223)
+What a certificate must cover: the observed sign pattern and the distance of the
+ratios from zero.  If the positive and negative ratios separate cleanly by vertex
+type, a two-interval invariant is the right shape; if the leaves sit on the wrong
+side, the certificate must treat depth explicitly.

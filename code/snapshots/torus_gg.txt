@@ -1,0 +1,58 @@
+CLAIM A: mu_G(x) = average over the torus of det(xI - A_G(z))
+       graph  n  b      x       mu_G(x)       avg det       err
+          K3  3  1   -2.3     -5.267000     -5.267000  3.37e-16
+          K3  3  1   -0.7      1.757000      1.757000  2.53e-16
+          K3  3  1    0.4     -1.136000     -1.136000  0.00e+00
+          K3  3  1    1.9      1.159000      1.159000  3.83e-16
+          K3  3  1    3.1     20.491000     20.491000  0.00e+00
+          K4  4  3   -2.3     -0.755900     -0.755900  7.77e-16
+          K4  4  3   -0.7      0.300100      0.300100  4.44e-16
+          K4  4  3    0.4      2.065600      2.065600  6.45e-16
+          K4  4  3    1.9     -5.627900     -5.627900  1.58e-16
+          K4  4  3    3.1     37.692100     37.692100  1.89e-16
+          C5  5  1   -2.3    -15.028430    -15.028430  1.18e-16
+          C5  5  1   -0.7     -1.953070     -1.953070  1.14e-16
+          C5  5  1    0.4      1.690240      1.690240  1.31e-16
+          C5  5  1    1.9     -0.034010     -0.034010  8.60e-16
+          C5  5  1    3.1    152.836510    152.836510  0.00e+00
+      twotri  6  2   -2.3      9.337189      9.337189  9.51e-16
+      twotri  6  2   -0.7      2.826949      2.826949  3.14e-16
+      twotri  6  2    0.4      0.584896      0.584896  2.22e-16
+      twotri  6  2    1.9     -5.468819     -5.468819  3.25e-16
+      twotri  6  2    3.1    345.748981    345.748981  6.58e-16
+         K23  5  2   -2.3     -5.161430     -5.161430  3.44e-16
+         K23  5  2   -0.7     -2.310070     -2.310070  1.92e-16
+         K23  5  2    0.4      2.026240      2.026240  2.19e-16
+         K23  5  2    1.9     -4.993010     -4.993010  1.07e-15
+         K23  5  2    3.1    126.145510    126.145510  2.25e-16
+ petersenish  6  2   -2.3      7.337189      7.337189  2.42e-16
+ petersenish  6  2   -0.7      0.826949      0.826949  4.44e-16
+ petersenish  6  2    0.4     -1.415104     -1.415104  3.14e-16
+ petersenish  6  2    1.9     -7.468819     -7.468819  0.00e+00
+ petersenish  6  2    3.1    343.748981    343.748981  1.65e-16
+         K33  6  4   -2.3    -14.601011    -14.601011  2.07e-15
+         K33  6  4   -0.7      0.776749      0.776749  6.88e-15
+         K33  6  4    0.4     -3.346304     -3.346304  1.33e-16
+         K33  6  4    1.9    -11.263019    -11.263019  4.73e-15
+         K33  6  4    3.1    223.314781    223.314781  4.33e-15
+worst relative error 6.88e-15
+CLAIM B: how much of Conjecture 10 does 'x outside spec(G^ab)' settle?
+The test has to be certified. det(xI - A_G(z)) vanishes on a CURVE in T^b, so a
+grid minimum proves nothing by itself. But f(z) = det(xI - A_G(z)) is a
+trigonometric polynomial of degree one in each z_e, so its 3^b coefficients are
+recovered exactly by a DFT on a 3-point grid, they bound the gradient, and a grid
+search plus that Lipschitz constant certifies a positive lower bound. A sign
+change on the grid certifies the opposite, that x lies in spec(G^ab).
+       graph                   gap        x  certified min                   verdict
+          K3   spec(T) has no internal gap
+          K4   spec(T) has no internal gap
+          C5   spec(T) has no internal gap
+      twotri   ( -1.8400, -1.6800)  -1.7600       0.000000                    inside
+      twotri   (  1.6933,  1.8533)   1.7733       0.000000                    inside
+         K23   spec(T) has no internal gap
+ petersenish   ( -1.8400, -1.6800)  -1.7600       0.000000                    inside
+ petersenish   (  1.6933,  1.8533)   1.7733       0.000000                    inside
+         K33   b = 4, torus search skipped
+0 settled by claim B, 4 in the residue, 0 undecided
+'outside' means x misses spec(G^ab) and Conjecture 10 holds there for free.
+'inside' is the residue: a gap of spec(T) swallowed by a band of the cover.

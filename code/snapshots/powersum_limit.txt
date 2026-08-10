@@ -1,0 +1,24 @@
+A. does P_m^{-1/m} converge to the true smallest root?
+  a  b  k   n       m=1       m=2       m=4       m=8      m=16      m=32   true y1
+  3  4  2  14   0.28064   0.46487   0.50524   0.50763   0.50765   0.50765   0.50765
+  3  4  3  21   0.17525   0.33453   0.37707   0.38064   0.38070   0.38070   0.38070
+  3  4  4  28   0.12527   0.26334   0.30401   0.30793   0.30802   0.30802   0.30802
+  3  5  2  16   0.45743   0.84225   0.96462   0.97700   0.97727   0.97727   0.97727
+  3  5  3  24   0.29634   0.64658   0.78212   0.80040   0.80110   0.80110   0.80110
+  3  5  4  32   0.21960   0.54404   0.68829   0.71152   0.71274   0.71275   0.71275
+the m-column converges upward to the true value, confirming
+sup_m P_m^{-1/m} = y_1: optimising over m computes the root, it does not bound it.
+B. does the margin shrink as the graph grows?
+  a  b  k   n    tau^2   true y1  y1/tau^2  certifiable?
+  3  4  1   7  0.10102   0.93582     9.264           yes
+  3  4  2  14  0.10102   0.50636     5.012           yes
+  3  4  3  21  0.10102   0.37571     3.719           yes
+  3  4  4  28  0.10102   0.31560     3.124           yes
+  3  5  1   8  0.34315   1.51739     4.422           yes
+  3  5  2  16  0.34315   0.97246     2.834           yes
+  3  5  3  24  0.34315   0.83469     2.432           yes
+  3  5  4  32  0.34315   0.70687     2.060           yes
+the certificate succeeds exactly when y1 > tau^2, which is the conjecture for
+that graph. As the graph grows y1 decreases toward tau^2, so the margin the
+certificate needs shrinks. A uniform bound on P_m strong enough to give the
+conjecture would already BE the conjecture: the difficulty has not moved.

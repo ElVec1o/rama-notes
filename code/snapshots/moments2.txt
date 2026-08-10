@@ -1,0 +1,16 @@
+P15 (frozen): c_k stays below 4a, so the dimension restriction is removable.
+  a   m    4a       c1       c2       c3       c4       c6       c8      c10  reach m<=  at k
+  3  10    12    3.000    3.873    4.421    4.802      nan      nan      nan        146     5
+  3  14    12    3.000    3.873    4.409    4.780    5.267      nan      nan        509     7
+  3  18    12    3.000    3.873    4.420    4.801    5.307    5.632      nan       1489     9
+  4  10    16    4.000    5.292    6.102    6.661      nan      nan      nan        119     5
+  4  14    16    4.000    5.292    6.141    6.747    7.559      nan      nan        294     7
+  4  18    16    4.000    5.292    6.130    6.724    7.518    8.030      nan        799     9
+  5  10    20    5.000    6.708    7.811    8.583      nan      nan      nan        100     5
+  5  14    20    5.000    6.708    7.824    8.617    9.673      nan      nan        249     7
+  5  18    20    5.000    6.708    7.839    8.651    9.749   10.459      nan        544     9
+  c_k increases toward 4(a-1), the square of the tree spectral radius, and 4a exceeds
+  that by a factor a/(a-1); the reachable dimension therefore grows like (a/(a-1))^k.
+    a=3: 4(a-1)=8, 4a=12, growth per moment 1.500
+    a=4: 4(a-1)=12, 4a=16, growth per moment 1.333
+    a=5: 4(a-1)=16, 4a=20, growth per moment 1.250

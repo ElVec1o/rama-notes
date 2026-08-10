@@ -1,0 +1,11 @@
+graph         d   n    (d-1)^(n/2) mu   pseudo-forest sum
+K4            3   4                76                  76  OK
+K33           3   6               592                 592  OK
+prism         3   6               608                 608  OK
+cube          3   8              4752                4752  OK
+petersen      3  10             37184               37184  OK
+K44           4   8            188568              188568  OK
+C8sq          4   8            195534              195534  OK
+cubic6        3   6               608                 608  OK
+wagner        3   8              4720                4720  OK
+identity verified on all cases

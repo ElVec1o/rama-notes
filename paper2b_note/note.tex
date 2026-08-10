@@ -46,6 +46,19 @@ and settles the inner edge on a nontrivial class. Everything asserted is machine
 Lean~4/Mathlib unless labelled otherwise.
 \end{abstract}
 
+\paragraph{Status conventions.} Claims here are of three kinds, and the text says which each time
+rather than leaving it to the reader. A result described as \emph{formalized}, or cited by a Lean
+declaration name, is machine-checked in Lean~4/Mathlib: the sources are in \texttt{RamaLean/} of
+the accompanying repository, carry no \texttt{sorry}, and rest only on the standard axioms
+\texttt{propext}, \texttt{Classical.choice} and \texttt{Quot.sound}. A claim described as
+\emph{measured}, \emph{verified to} a stated tolerance, or \emph{checked numerically} is
+computational evidence and is not a proof; the script producing it is named, and every named
+script is run and its output compared against a recorded baseline
+(\texttt{code/cite\_check.py}). A claim called a \emph{conjecture} is unproved, and is called
+that even where the evidence is strong.
+
+
+
 \section{Preliminaries, from the companion paper}\label{sec:prelim}
 
 This paper is a sequel and does not repeat what it rests on. The conjecture, the closed form at
