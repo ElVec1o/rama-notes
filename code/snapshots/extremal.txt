@@ -1,0 +1,9 @@
+P39 (frozen): no random tight projection family exceeds the commuting one at the same
+(p, q, a, b).
+    family   (a,b)   p   q  band edge   commuting  best random        gap  tried
+       C_4   (2,2)   4   4     4.0000    3.847759     3.845256  +0.002503      6
+       C_6   (2,2)   6   6     4.0000    3.931852     3.905355  +0.026497      6
+  commuting families beaten: 0
+  P39 holds where tested. That is evidence for the extremality, not a proof, and
+  the search is random rather than adversarial: it samples the class, it does not
+  attack the statement.

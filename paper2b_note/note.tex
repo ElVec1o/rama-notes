@@ -2160,6 +2160,15 @@ the order-four solve are $10^{-18}$ on the directions tested (\texttt{code/tange
 Orders two, three and four are therefore all satisfiable on the cone; passing from every finite
 order to an actual curve is a further step, and is not taken here.
 
+Beyond the second order, the extremality itself has been searched for directly. At four
+commuting families the commuting point is the largest value found over between $32$ and $40$
+random tight projection families at the same $(p,q,a,b)$, by margins of $0.0004$ for $C_4$,
+$0.016$ for $C_6$, $0.046$ for $K_{3,3}$ and $0.048$ for the cube, every value staying below the
+band edge (\texttt{code/extremal.py}). That is the statement of \S\ref{sec:rank} seen from the
+other side: within the projection class the commuting families are the largest, while across the
+rank-$n$ interpolation the projections are the smallest. Neither observation is a proof, and the
+conjunction of the two is what Conjecture~1.4 would need.
+
 Whether every direction of that cone is the velocity of a genuine curve is not settled here. It
 holds wherever it has been looked at: over the $42$ cross basis directions of the Fano family and
 over directions obtained by projecting random kernel elements onto $\{Q=0\}$, the nearest point of
@@ -2310,9 +2319,11 @@ against $361$ at $\mathrm{AG}(2,3)$ for the same-group direction, with equality 
 cross one. The scalar core is machine-checked as \texttt{TangentObstruction.no\_second\_order}.
 
 That reduction is specific to projections, and the specificity is the point rather than a
-caveat. Relaxing idempotency to positive semidefiniteness of rank $b$ destroys it immediately, since
-$A_k=(b/p)I_p$ is PSD of the right trace with $\sum_kA_k=aI$ and exceeds the band already at
-$p=4$, as recorded in \S\ref{sec:leaves}. That is not evidence against Xu's conjecture, which is about projections; it is the
+caveat. Relaxing idempotency destroys it immediately, since $A_k=(b/p)I_p$ is positive semidefinite of
+the right trace with $\sum_kA_k=aI$ and exceeds the band already at $p=4$, as recorded in
+\S\ref{sec:leaves}. Its rank is $p$ rather than $b$, so what it shows is that trace and tightness
+do not suffice; the rank-$n$ interpolation of \S\ref{sec:rank} is the statement that does keep the
+rank fixed. That is not evidence against Xu's conjecture, which is about projections; it is the
 obstruction recorded in \S\ref{sec:leaves} for $A_k=(b/p)I_p$, appearing again. It does mean any
 argument for the monotonicity must use idempotency and not only the rank, the trace and
 $\sum_kA_k=aI$, and it is why the search above enforces $\|A_k^2-A_k\|$ rather than assuming it:
@@ -3470,8 +3481,8 @@ The obstructions are the part we would most want a reader to take away, because 
 route that looks open from outside.
 
 \begin{itemize}
-\item A barrier argument that sees only the rank, the trace and $\sum_kP_k=aI$ is reading the
-  Marchenko--Pastur law, and $A_k=(b/p)I_p$ satisfies all three while exceeding the tree band
+\item A barrier argument that sees only the trace and $\sum_kP_k=aI$ is reading the
+  Marchenko--Pastur law, and $A_k=(b/p)I_p$ satisfies both while exceeding the tree band
   already at $p=4$. No such argument can reach either edge.
 \item Compressions cannot reach the inner end at all: a compression takes values the original
   excludes, so no argument phrased in Rayleigh quotients can exclude them.
