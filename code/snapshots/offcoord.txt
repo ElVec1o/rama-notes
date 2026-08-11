@@ -34,8 +34,8 @@ the commuting family. A start beating the commuting value refutes extremality.
 RELAXATION -- the same search with idempotency DROPPED: PSD, rank b, tight. Not
 Xu's class, and reported only to show the monotonicity above needs idempotency.
          match   (a,b)  projections  PSD relaxed   |A^2-A|  over band
-  Fano/Heawood   (3,3)     0.899507     0.887079     0.579         no
-       AG(2,3)   (4,3)     0.909774     0.894161     0.372         no
+  Fano/Heawood   (3,3)     0.899507     0.899532     0.821         no
+       AG(2,3)   (4,3)     0.909774     0.910310     1.215         no
   Above the band in the relaxed class is the obstruction already recorded for
   A_k = (b/p)I, not evidence about Xu's conjecture, which is about projections.
   deformations that beat their coordinate start: 0
@@ -44,7 +44,6 @@ Xu's class, and reported only to show the monotonicity above needs idempotency.
   commuting families are the best seen, locally and globally at these sizes. That
   is the reduction Conjecture 1.4 would need, the commuting case being now a
   theorem, but it is evidence for the monotonicity and not the monotonicity.
-  The claim is specific to PROJECTIONS. Relaxing to PSD rank-b breaks it at once:
-  random tight PSD families reach 1.03 at Fano and 1.01 at Pappus, above the band
-  outright, which is the obstruction the note already records for A_k = (b/p)I and
-  is not evidence about Xu's conjecture.
+  The claim is specific to PROJECTIONS. Relaxing to PSD rank-b breaks it: the
+  same search without idempotency reached at most 0.910 here, below the band in this run; the note
+  records the violation independently for A_k = (b/p)I at p = 4.

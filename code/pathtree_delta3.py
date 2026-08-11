@@ -31,8 +31,9 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from gapscale import gap_profile
 from D3broad import spread_graph, connected
 from pathtree_inertia import inertia
+import quickmode
 
-BUDGET = 25.0 if '--quick' in __import__('sys').argv else 2100.0
+BUDGET = 25.0 if quickmode.QUICK else 2100.0
 
 
 def main():

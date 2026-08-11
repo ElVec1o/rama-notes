@@ -49,8 +49,9 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from twocut import mu_of, x
 from gapscale import setup, rho_at
 from D1cut_adv import dos_at, outside_spectrum
+import quickmode
 
-BUDGET_S = 25.0 if '--quick' in __import__('sys').argv else 2700.0
+BUDGET_S = 25.0 if quickmode.QUICK else 2700.0
 
 
 def spread_graph(n, rng, nhub, hubdeg):

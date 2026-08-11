@@ -51,8 +51,9 @@ import sympy as sp
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from twocut import mu_of, x
 from gapscale import gap_profile
+import quickmode
 
-BUDGET_S = 25.0 if '--quick' in __import__('sys').argv else 2400.0
+BUDGET_S = 25.0 if quickmode.QUICK else 2400.0
 
 
 # ---------------------------------------------------------------- block library

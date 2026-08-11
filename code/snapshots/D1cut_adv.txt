@@ -33,7 +33,15 @@ K2,6+cycle+chord    8  8   65     4   5.2915         4                nan       
       K2,6+rand0    8  6   49     3   4.8990         4                nan       clean
       K2,6+rand0    8  8   65     3   5.2915         4                nan       clean
       K2,6+rand1    8  3   25     3   4.8990         4                nan       clean
-  configurations tested: 31
+      K2,6+rand1    8  4   33     3   4.8990         4                nan       clean
+      K2,6+rand1    8  5   41     3   4.8990         4                nan       clean
+      K2,6+rand1    8  6   49     3   4.8990         4                nan       clean
+      K2,6+rand1    8  8   65     3   5.2915         4                nan       clean
+      K2,6+rand2    8  3   25     3   4.8990         4                nan       clean
+      K2,6+rand2    8  4   33     3   4.8990         4                nan       clean
+      K2,6+rand2    8  5   41     3   4.8990         4                nan       clean
+      K2,6+rand2    8  6   49     3   4.8990         4                nan       clean
+  configurations tested: 39
   P21 holds. Every root is strictly inside the spectrum, decided pointwise.
   Hall's mechanism, with blocks built to its own design, does not reach a gap at
   minimum degree three.

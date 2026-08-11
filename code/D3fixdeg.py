@@ -32,8 +32,9 @@ import networkx as nx
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from gapscale import setup
 from D1cut_adv import outside_spectrum, mu_roots, glue, degrees
+import quickmode
 
-BUDGET = 25.0 if '--quick' in __import__('sys').argv else 2100.0
+BUDGET = 25.0 if quickmode.QUICK else 2100.0
 
 
 def block(q, S_edges):

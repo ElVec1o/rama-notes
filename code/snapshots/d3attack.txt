@@ -26,6 +26,6 @@ B. genuine (3,q)-biregular graphs, from balanced 3-uniform designs
 C. two hubs, TWO branch types: tuning the branches instead of the count
   mixed-branch expansion self-check (n=20): OK
            types p1 p2    n dmin kappa #gaps  maxgap    verdict
-39s
+<t>
 D3 survives both attacks.  The K_{3,q} margin is 0.5502 and does not close;
   no biregular design and no mixed-branch resonator reaches into a gap.

@@ -58,7 +58,7 @@ from tff import restore, tff_residual, proj_rank_b
 from xu_sharp import heawood, pappus, ag23, pg23, tutte_coxeter, mu_from_incidence
 
 QUICK = quickmode.QUICK
-BUDGET_S = 25.0 if QUICK else 600.0
+BUDGET_S = 25.0 if QUICK else 1500.0
 TOL_TIGHT = 1e-9
 
 
@@ -281,6 +281,16 @@ def main():
     print("Xu's class, and reported only to show the monotonicity above needs idempotency.\n")
     print(f"{'match':>14}{'(a,b)':>8}{'projections':>13}{'PSD relaxed':>13}"
           f"{'|A^2-A|':>10}{'over band':>11}")
+    relaxed = {}
+
+    def psd_retract(B, a):
+        S = B.sum(axis=0)
+        w, V = np.linalg.eigh(S)
+        if w.min() <= 1e-10:
+            return None
+        Si = V @ np.diag(w ** -0.5) @ V.T
+        return a * np.einsum('ij,kjl,lm->kim', Si, B, Si)
+
     for (nm, a, b, n, lines) in cases:
         if time.time() - t0 > BUDGET_S:
             print("  [budget reached]")
@@ -289,19 +299,34 @@ def main():
         A0 = coord_family(n, lines)
         r0, _ = ratio_of(A0, a, b)
         rbest, ibest = 0.0, 0.0
-        for _ in range(10 if QUICK else 40):
+        for _ in range(3 if QUICK else 10):
+            if time.time() - t0 > BUDGET_S:
+                break
             B = np.stack([np.linalg.qr(rng.standard_normal((n, b)))[0] for _ in range(q)])
-            B = np.einsum('kij,klj->kil', B, B)
-            S = B.sum(axis=0)
-            w, V = np.linalg.eigh(S)
-            if w.min() <= 1e-10:
+            cur = psd_retract(np.einsum('kij,klj->kil', B, B), a)
+            if cur is None:
                 continue
-            Si = V @ np.diag(w ** -0.5) @ V.T
-            cur = a * np.einsum('ij,kjl,lm->kim', Si, B, Si)
-            r, _ = ratio_of(cur, a, b)
-            if r > rbest:
-                rbest = r
+            rcur, _ = ratio_of(cur, a, b)
+            eps = 0.3
+            for _ in range(30 if QUICK else 150):     # the search, which is where >1 comes from
+                if time.time() - t0 > BUDGET_S:
+                    break
+                Y = np.empty_like(cur)
+                for k in range(q):
+                    X = rng.standard_normal((n, n)); X = X - X.T
+                    U = expm(eps * X)
+                    Y[k] = U @ cur[k] @ U.T
+                cand = psd_retract(Y, a)
+                if cand is None:
+                    continue
+                rc, _ = ratio_of(cand, a, b)
+                if rc > rcur:
+                    cur, rcur = cand, rc
+                eps *= 0.99
+            if rcur > rbest:
+                rbest = rcur
                 ibest = max(float(np.abs(cur[k] @ cur[k] - cur[k]).max()) for k in range(q))
+        relaxed[nm] = rbest
         print(f"{nm:>14}{f'({a},{b})':>8}{r0:>13.6f}{rbest:>13.6f}{ibest:>10.3f}"
               f"{('YES' if rbest > 1.0 else 'no'):>11}")
     print("  Above the band in the relaxed class is the obstruction already recorded for")
@@ -321,10 +346,22 @@ def main():
         print("  commuting families are the best seen, locally and globally at these sizes. That")
         print("  is the reduction Conjecture 1.4 would need, the commuting case being now a")
         print("  theorem, but it is evidence for the monotonicity and not the monotonicity.")
-        print("  The claim is specific to PROJECTIONS. Relaxing to PSD rank-b breaks it at once:")
-        print("  random tight PSD families reach 1.03 at Fano and 1.01 at Pappus, above the band")
-        print("  outright, which is the obstruction the note already records for A_k = (b/p)I and")
-        print("  is not evidence about Xu's conjecture.")
+        print("  The claim is specific to PROJECTIONS. Relaxing to PSD rank-b breaks it: the")
+        over = sorted(((v, k) for k, v in relaxed.items() if v > 1.0), reverse=True)
+        if over:
+            print("  same search without idempotency exceeds the band outright at "
+                  + ", ".join(f"{k} ({v:.3f})" for v, k in over) + ",")
+            print("  which is the obstruction the note already records for A_k = (b/p)I and is not")
+            print("  evidence about Xu's conjecture. Any proof of the monotonicity must therefore")
+            print("  use idempotency and not merely rank, trace and tightness.")
+        else:
+            if relaxed:
+                print("  same search without idempotency reached at most "
+                      f"{max(relaxed.values()):.3f} here, below the band in this run; the note")
+                print("  records the violation independently for A_k = (b/p)I at p = 4.")
+            else:
+                print("  relaxed search did not run inside the budget, so this run says nothing")
+                print("  about it; the note records the violation for A_k = (b/p)I at p = 4.")
     return 0
 
 

@@ -5,6 +5,6 @@ vertex, tested pointwise with the DOS gate.
   10   31                  3..9 False      5          nan       clean
   10   27                  4..8 False      5          nan       clean
   10   20                  3..9 False      5          nan       clean
-  graphs tested: 25   violations: 0   ambiguous: 0
+  graphs tested: 32   violations: 0   ambiguous: 0
   P22 holds. D3 survives a search that assumes no separator at all, which is the
   case both cut engines structurally could not reach.

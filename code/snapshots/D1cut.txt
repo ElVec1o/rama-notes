@@ -6,7 +6,8 @@ minimum degree three.
           K4    4      3  4   17      3                              none             -      clean
           K4    4      3  5   21      3                     [2.780,2.880]  2.3344@0.446      clean
           K4    4      3  7   29      3      [2.800,3.000]; [3.020,3.200]  2.3344@0.466      clean
-  configurations tested: 4
+          K5    5      4  3   16      3                              none             -      clean
+  configurations tested: 5
   P20 holds. Hall's own mechanism -- cut vertex plus divisor root -- does not
   reach a gap at minimum degree three, over every block tested. That is the
   construction actually known to produce counterexamples, so this is stronger

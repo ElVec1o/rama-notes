@@ -38,6 +38,7 @@
   interval cannot express.  That is the precise defect, and it is the remaining work.
 P32 (frozen): at delta >= 3, the path tree has no eigenvalue in a gap of spec(T).
    n   degrees                 gap       |P|   neg lo   neg hi  eigs in gap    verdict
-  graphs with a gap tested: 0   trusted hits: 0   discarded on a near-zero pivot: 0
+   8      3..7       [2.280,2.540]       146        1        1            0         inherits
+  graphs with a gap tested: 1   trusted hits: 0   discarded on a near-zero pivot: 0
   P32 holds. The path tree inherits the gap at minimum degree three too, so the
   containment is a live hypothesis and not merely a stronger one.

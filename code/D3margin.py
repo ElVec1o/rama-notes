@@ -31,8 +31,9 @@ import numpy as np
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from D1cut_adv import dos_at
 from D3broad import spread_graph, connected, has_cut_vertex, mu_roots
+import quickmode
 
-BUDGET = 25.0 if '--quick' in __import__('sys').argv else 2400.0
+BUDGET = 2400.0
 
 
 def main():
@@ -42,11 +43,11 @@ def main():
     print(f"{'n':>4}{'graphs':>8}{'roots':>8}{'min DOS at a root':>20}{'median':>12}"
           f"{'degrees':>12}")
     trend = []
-    for n in (10, 12, 14, 16, 18, 20):
+    for n in quickmode.few((10, 12, 14, 16, 18, 20), 3):
         vals = []
         ng = 0
         spread = (99, 0)
-        for _ in range(140):
+        for _ in range(12 if quickmode.QUICK else 140):
             if time.time() - t0 > BUDGET:
                 break
             E = spread_graph(n, rng, int(rng.integers(1, 4)),

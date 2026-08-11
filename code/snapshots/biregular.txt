@@ -13,7 +13,7 @@
   3  6  1   6   3   9    0.82185      1.463290        ok
   3  6  3  18   9  27    0.82185      1.139384        ok
   3  6  4  24  12  36    0.82185      1.082483        ok
-180 biregular graphs tested in 22s
+180 biregular graphs tested in <t>
   a  b  threshold  smallest nonzero |root| seen    ratio
   3  4    0.31784                      0.519773    1.635
   3  5    0.58579                      0.799902    1.366
