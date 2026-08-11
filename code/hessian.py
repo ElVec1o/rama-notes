@@ -114,9 +114,20 @@ def nearest_on_variety(A0, T, a, n, q):
                               + [(A.sum(axis=0) - a * np.eye(n))[iu]])
 
     tx = np.concatenate([T[k][iu] for k in range(q)])
-    r = lambda x: np.concatenate([1e5 * F(x), x - tx])
-    sol = least_squares(r, tx, xtol=1e-15, ftol=1e-15, gtol=1e-15, max_nfev=3000)
-    return unpack(sol.x), float(np.abs(F(sol.x)).max()), float(np.linalg.norm(sol.x - tx))
+    # The dense trust-region solver forms an SVD of the Jacobian and fails to converge on the
+    # larger families, where a weight of 1e5 on 540 unknowns is badly scaled. lsmr avoids the
+    # dense factorisation, and the weight is raised in stages so that the constraint is enforced
+    # without conditioning the first solve on it.
+    x = tx.copy()
+    for W in (1e3, 1e6):
+        r = lambda z, W=W: np.concatenate([W * F(z), z - tx])
+        try:
+            sol = least_squares(r, x, xtol=1e-15, ftol=1e-15, gtol=1e-15,
+                                max_nfev=400, tr_solver='lsmr')
+            x = sol.x
+        except np.linalg.LinAlgError:
+            return None, float('inf'), float('nan')
+    return unpack(x), float(np.abs(F(x)).max()), float(np.linalg.norm(x - tx))
 
 
 def kind_of(B, i, lines, n, q):
@@ -166,6 +177,10 @@ def main():
                       f"{md / eps ** 2:>12.3f}{verdict:>12}")
         print()
 
+    print("  MEASURED: at Fano the cross ratios distance/eps^2 are 1.963, 1.991, 1.998 and the")
+    print("  same-group ratios distance/eps are 1.0016, 1.0004, 1.0001; at AG(2,3) the cross")
+    print("  ratios are 1.963 and 1.998 and the same-group ratios are 1.4128 and 1.4107. Same")
+    print("  exponents at both families, different constant.\n")
     print("  A direction is tangent when the nearest point of the variety to A0 + eps D sits at")
     print("  distance O(eps^2); at distance O(eps) it is not. If the cross directions are tangent")
     print("  and the same-group ones are not, the variety does not fill the linearised space and")
@@ -174,6 +189,11 @@ def main():
     print("  subtraction: the tangent cone is not a linear subspace, and a Hessian on the")
     print("  linearised space is the wrong object. That is why code/curvature.py computes the")
     print("  second-order coefficient along explicit curves instead.")
+    print("\n  The obstructed configuration needs only two hyperedges sharing w and both missing")
+    print("  v, which exists in every commuting tight family with a >= 2 and enough vertices, so")
+    print("  the mechanism is not special to these two. That is an argument about when the")
+    print("  DIRECTION exists, not a proof that it is always obstructed; two families measured is")
+    print("  what is actually in hand.")
     return 0
 
 

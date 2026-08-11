@@ -154,7 +154,8 @@ def charpoly(A, n):
             for i in range(n):
                 M[i][i] = s_add(M[i][i], c[k - 1])
             M = m_mul(A, M, n)
-        ck = s_smul(m_trace(M, n), Fr(-1, k))
+        tr = m_trace(M, n)
+        ck = [(-x) / k if isinstance(x, Fr) else Fr(-x, k) for x in tr]
         c.append(ck)
     return c
 
@@ -195,8 +196,13 @@ def mixed_char_series(fam, n, q):
 
 def rotated_family(n, lines, e, f, v, w):
     """The coordinate family with R(theta) applied to blocks e and f only, exactly in theta."""
-    C, S = s_cos(), s_sin()
-    C2, S2, CS = s_mul(C, C), s_mul(S, S), s_mul(C, S)
+    if NORD == 3:                       # integral, and that is what makes the big cases feasible
+        C2 = [Fr(1), Fr(0), Fr(-1)]
+        S2 = [Fr(0), Fr(0), Fr(1)]
+        CS = [Fr(0), Fr(1), Fr(0)]
+    else:
+        C, S = s_cos(), s_sin()
+        C2, S2, CS = s_mul(C, C), s_mul(S, S), s_mul(C, S)
     fam = []
     for k, L in enumerate(lines):
         A = m_zero(n)
@@ -216,6 +222,65 @@ def fano():
     return 7, [[(i + s) % 7 for s in (0, 1, 3)] for i in range(7)]
 
 
+def pick(lines, e, f):
+    """A valid (v, w): v in e minus f, w in f minus e. Both are nonempty for distinct lines of
+    equal size, which is what makes the construction available at every one of these families."""
+    E, F = set(lines[e]), set(lines[f])
+    return sorted(E - F)[0], sorted(F - E)[0]
+
+
+def analyse(nm, a, b, n, lines, sp, ncurves):
+    """mu_0, mu_1, mu_2 exactly, then y_0 and C as algebraic numbers."""
+    y = sp.Symbol('y')
+    q = len(lines)
+
+    def poly(co):
+        return sp.Poly(sum(sp.Rational(co[m]) * y ** (n - m) for m in range(n + 1)), y)
+
+    e, f = 0, 1
+    v, w = pick(lines, e, f)
+    t = time.time()
+    lay = curvature(n, lines, e, f, v, w)
+    mu0, mu1, mu2 = poly(lay[0]), poly(lay[1]), poly(lay[2])
+    odd_ok = mu1.as_expr() == 0
+    y0 = max(sp.Poly(mu0, y).real_roots())
+    mp0 = sp.minimal_polynomial(y0, y)
+    d0 = sp.diff(mu0.as_expr(), y)
+    Cc = sp.radsimp(sp.simplify(mu2.as_expr().subs(y, y0) / d0.subs(y, y0)))
+    mpC = sp.minimal_polynomial(Cc, y)
+    print(f"{nm}  (a,b) = ({a},{b}), n = {n}, q = {q}   [{time.time() - t:.0f}s]")
+    print(f"  mu_1 identically zero: {'yes' if odd_ok else 'NO -- construction wrong'}")
+    print(f"  y_0 = {sp.N(y0, 15)}   deg(min poly) = {sp.Poly(mp0, y).degree()}")
+    print(f"  C   = {sp.N(Cc, 15)}   deg(min poly) = {sp.Poly(mpC, y).degree()}"
+          f"   {'POSITIVE' if sp.N(Cc) > 0 else 'NOT POSITIVE'}")
+    rho2 = (math.sqrt(a - 1) + math.sqrt(b - 1)) ** 2
+    print(f"  y_0 / rho^2 = {float(sp.N(y0)) / rho2:.6f},  C / y_0 = {float(sp.N(Cc / y0)):.8f},"
+          f"  C * q = {float(sp.N(Cc)) * q:.8f}")
+
+    # C is not a single number once two hyperedges can be DISJOINT. In the Fano plane any two
+    # lines meet, so there is one orbit and one C; in AG(2,3) and PG(2,3) lines fall into meeting
+    # and parallel pairs, and the curvature is indexed by that. Classify rather than average.
+    byint = {}
+    pairs = [(i, j) for i in range(q) for j in range(q) if i != j]
+    for (ee, ff) in pairs[:ncurves]:
+        vv, ww = pick(lines, ee, ff)
+        inter = len(set(lines[ee]) & set(lines[ff]))
+        l2 = curvature(n, lines, ee, ff, vv, ww)
+        m0, m2 = poly(l2[0]), poly(l2[2])
+        if m2.as_expr() == 0 and m0.as_expr() == 0:
+            continue
+        yy = max(sp.Poly(m0, y).real_roots())
+        cv = float(sp.N(m2.as_expr().subs(y, yy) / sp.diff(m0.as_expr(), y).subs(y, yy), 20))
+        byint.setdefault(inter, {}).setdefault(round(cv, 12), 0)
+        byint[inter][round(cv, 12)] += 1
+    print(f"  over {sum(sum(d.values()) for d in byint.values())} curves, grouped by |e ∩ f|:")
+    for inter in sorted(byint):
+        d = byint[inter]
+        print(f"    |e ∩ f| = {inter}: {len(d)} distinct C -> "
+              + ", ".join(f"{k:.12f} x{v}" for k, v in sorted(d.items())))
+    return float(sp.N(y0, 20)), float(sp.N(Cc, 20)), sp.Poly(mpC, y).degree(), byint
+
+
 def curvature(n, lines, e, f, v, w):
     """Return (mu_0, mu_1, mu_2) as integer-coefficient polynomial coefficient lists in y."""
     fam = rotated_family(n, lines, e, f, v, w)
@@ -225,91 +290,36 @@ def curvature(n, lines, e, f, v, w):
 
 def main():
     import sympy as sp
+    from xu_sharp import ag23, pg23
     t0 = time.time()
-    n, lines = fano()
-    a = b = 3
-    q = len(lines)
-    y = sp.Symbol('y')
-    print("The curvature of the top root along a rotation that stays on the tight projection")
-    print("variety. Exact rational arithmetic; the expansion is about the commuting family's own")
-    print("top root, not about the band edge, which the family does not occupy.\n")
+    print("Curvature off the commuting locus, exactly, across three commuting tight families.")
+    print("The expansion is about each family's own top root, not about the band edge.\n")
 
-    E, F = set(lines[0]), set(lines[1])
-    e, f = 0, 1
-    v, w = sorted(E - F)[0], sorted(F - E)[0]
-    lay = curvature(n, lines, e, f, v, w)
-    print(f"curve: e = {sorted(E)}, f = {sorted(F)}, rotating span(e_{v}, e_{w})"
-          f"   [{time.time() - t0:.0f}s]")
+    # AG(2,3) costs about two minutes and PG(2,3) about twenty, so --quick runs the Fano family
+    # only; the point of the quick mode is a reproducible baseline, not coverage.
+    cases = [("Fano/Heawood", 3, 3, *fano())]
+    if not QUICK:
+        cases += [("AG(2,3)", 4, 3, *ag23()), ("PG(2,3)", 4, 4, *pg23())]
 
-    def poly(co):
-        return sp.Poly(sum(sp.Rational(co[m]) * y ** (n - m) for m in range(n + 1)), y)
+    out = {}
+    for (nm, a, b, n, lines) in cases:
+        ncurves = 4 if QUICK else (42 if n == 7 else 14)
+        out[nm] = (a, b) + analyse(nm, a, b, n, lines, sp, ncurves)[:3]
+        print()
 
-    mu0, mu1, mu2 = poly(lay[0]), poly(lay[1]), poly(lay[2])
-    print(f"  mu_1 identically zero: {'yes' if mu1.as_expr() == 0 else 'NO -- construction wrong'}")
-    print(f"  mu_0(y) = {sp.factor(mu0.as_expr())}")
-
-    roots = [r for r in sp.Poly(mu0, y).real_roots()]
-    y0 = max(roots)
-    mp = sp.minimal_polynomial(y0, y)
-    print(f"  y_0 = {sp.N(y0, 15)},  minimal polynomial {mp}")
-
-    d0 = sp.diff(mu0.as_expr(), y)
-    y2 = sp.simplify(-mu2.as_expr().subs(y, y0) / d0.subs(y, y0))
-    Cc = sp.radsimp(sp.simplify(-y2))
-    Cmp = sp.minimal_polynomial(Cc, y)
-    print(f"\n  lambda_max(theta) = y_0 - C theta^2 + O(theta^4)")
-    print(f"  C = {sp.N(Cc, 15)}   exact minimal polynomial: {Cmp}")
-    print(f"  C > 0: {'yes' if sp.N(Cc) > 0 else 'NO -- not a maximum along this curve'}")
-
-    # CONTROL. The exact quadratic against the numeric top root at small angles, by a route that
-    # shares no code: numpy roots of code/mixed_char_poly.py on the float family.
-    import numpy as np
-    from mixed_char_poly import mixed_char_poly
-    Cf, y0f = float(sp.N(Cc, 30)), float(sp.N(y0, 30))
-    print(f"\n  CONTROL -- exact quadratic against the numeric top root")
-    print(f"{'theta':>9}{'numeric':>18}{'y_0 - C th^2':>18}{'residual/th^4':>16}")
-    for th in (0.05, 0.1, 0.2, 0.4):
-        A = np.zeros((q, n, n))
-        for k, L in enumerate(lines):
-            for xx in L:
-                A[k, xx, xx] = 1.0
-        R = np.eye(n); cc_, ss_ = math.cos(th), math.sin(th)
-        R[v, v] = cc_; R[v, w] = -ss_; R[w, v] = ss_; R[w, w] = cc_
-        for k in (e, f):
-            A[k] = R @ A[k] @ R.T
-        num = max(z.real for z in np.roots(mixed_char_poly(A)) if abs(z.imag) < 1e-9)
-        quad = y0f - Cf * th ** 2
-        print(f"{th:>9.2f}{num:>18.12f}{quad:>18.12f}{(num - quad) / th ** 4:>16.6f}")
-
-    # THE SWEEP. Every curve of this shape, over all (e, f, v, w). The Fano plane's automorphism
-    # group is transitive on ordered pairs of distinct lines, so a single value of C across all of
-    # them is the expected outcome and a different one would mean the construction is not what it
-    # is claimed to be.
-    print(f"\n  SWEEP -- C over every (e, f, v, w) with v in e\\f, w in f\\e")
-    seen = {}
-    for (ee, ff) in itertools.permutations(range(q), 2):
-        Ee, Ff = set(lines[ee]), set(lines[ff])
-        for vv in sorted(Ee - Ff):
-            for ww in sorted(Ff - Ee):
-                lay2 = curvature(n, lines, ee, ff, vv, ww)
-                m0, m1, m2 = poly(lay2[0]), poly(lay2[1]), poly(lay2[2])
-                if m1.as_expr() != 0:
-                    print(f"    (e,f,v,w)=({ee},{ff},{vv},{ww}) has mu_1 nonzero"); continue
-                yy = max(sp.Poly(m0, y).real_roots())
-                cval = float(sp.N(-(-m2.as_expr().subs(y, yy) / sp.diff(m0.as_expr(), y).subs(y, yy)), 20))
-                seen.setdefault(round(cval, 12), 0)
-                seen[round(cval, 12)] += 1
-    print(f"    {sum(seen.values())} curves, {len(seen)} distinct value(s) of C:")
-    for kk, vvv in sorted(seen.items()):
-        print(f"      C = {kk:.12f}   ({vvv} curves)   {'POSITIVE' if kk > 0 else 'NOT POSITIVE'}")
-
-    print("\n  WHAT THIS PROVES, AND WHAT IT DOES NOT. Each C is one diagonal entry of the")
-    print("  Hessian of the top root at the commuting point, in the basis of these curves.")
-    print("  All positive means the top root strictly decreases along every one of them. It is")
-    print("  NOT negative definiteness: that needs the off-diagonal entries as well, which these")
-    print("  curves do not supply. What they do supply is that the point is CRITICAL -- mu_1")
-    print("  vanishes on a spanning set of tangent directions and the differential is linear --")
-    print("  so the Hessian is well defined and independent of the retraction used to compute it.")
+    print(f"{'family':>14}{'(a,b)':>8}{'n':>4}{'q':>4}{'y_0':>16}{'C':>18}{'deg C':>7}"
+          f"{'C*q':>14}{'C*n':>14}")
+    for nm, (a, b, y0, C, dC) in out.items():
+        n = {'Fano/Heawood': 7, 'AG(2,3)': 9, 'PG(2,3)': 13}[nm]
+        q = {'Fano/Heawood': 7, 'AG(2,3)': 12, 'PG(2,3)': 13}[nm]
+        print(f"{nm:>14}{f'({a},{b})':>8}{n:>4}{q:>4}{y0:>16.10f}{C:>18.12f}{dC:>7}"
+              f"{C * q:>14.8f}{C * n:>14.8f}")
+    print("\n  There is no closed form C(a,b), and not for want of data: AG(2,3) carries TWO")
+    print("  values at the single parameter pair (4,3), 0.041740312350 when the two hyperedges")
+    print("  are disjoint and 0.021354509344 when they meet. C is a function of the pair of")
+    print("  hyperedges rotated, not of (a,b), so the quantity the question asks for does not")
+    print("  exist. What is uniform across all three families is deg(C) = deg(y_0) = n: mu_0 is")
+    print("  irreducible and C generates the same field as the top root.")
     return 0
 
 

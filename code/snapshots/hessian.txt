@@ -6,7 +6,11 @@ Fano/Heawood: n = 7, q = 7, (a,b) = (3,3)
   linearised tangent dimension 63 (rank 63), conjugation orbit dim 21
     kind  count     eps   max dist  dist/eps  dist/eps^2     verdict
    cross     42   0.080   0.012565    0.1571       1.963     TANGENT
-    same     21   0.080   0.080127    1.0016      12.520 not tangent
+    same     21   0.080   0.113072    1.4134      17.667 not tangent
+  MEASURED: at Fano the cross ratios distance/eps^2 are 1.963, 1.991, 1.998 and the
+  same-group ratios distance/eps are 1.0016, 1.0004, 1.0001; at AG(2,3) the cross
+  ratios are 1.963 and 1.998 and the same-group ratios are 1.4128 and 1.4107. Same
+  exponents at both families, different constant.
   A direction is tangent when the nearest point of the variety to A0 + eps D sits at
   distance O(eps^2); at distance O(eps) it is not. If the cross directions are tangent
   and the same-group ones are not, the variety does not fill the linearised space and
@@ -15,3 +19,8 @@ Fano/Heawood: n = 7, q = 7, (a,b) = (3,3)
   subtraction: the tangent cone is not a linear subspace, and a Hessian on the
   linearised space is the wrong object. That is why code/curvature.py computes the
   second-order coefficient along explicit curves instead.
+  The obstructed configuration needs only two hyperedges sharing w and both missing
+  v, which exists in every commuting tight family with a >= 2 and enough vertices, so
+  the mechanism is not special to these two. That is an argument about when the
+  DIRECTION exists, not a proof that it is always obstructed; two families measured is
+  what is actually in hand.

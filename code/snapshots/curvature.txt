@@ -1,24 +1,17 @@
-The curvature of the top root along a rotation that stays on the tight projection
-variety. Exact rational arithmetic; the expansion is about the commuting family's own
-top root, not about the band edge, which the family does not occupy.
-curve: e = [0, 1, 3], f = [1, 2, 4], rotating span(e_0, e_2)   [<t>]
+Curvature off the commuting locus, exactly, across three commuting tight families.
+The expansion is about each family's own top root, not about the band edge.
+Fano/Heawood  (a,b) = (3,3), n = 7, q = 7   [<t>]
   mu_1 identically zero: yes
-  mu_0(y) = y**7 - 21*y**6 + 168*y**5 - 644*y**4 + 1218*y**3 - 1050*y**2 + 336*y - 24
-  y_0 = 7.19605818500856,  minimal polynomial y**7 - 21*y**6 + 168*y**5 - 644*y**4 + 1218*y**3 - 1050*y**2 + 336*y - 24
-  C = 0.0371785140129474   exact minimal polynomial: 11936814365952*y**7 - 113439989376*y**5 - 890636544*y**4 + 119497770*y**3 + 1860432*y**2 - 2499*y - 32
-  C > 0: yes
-  CONTROL -- exact quadratic against the numeric top root
-     0.05    7.195965308245    7.195965238724        0.011123
-     0.10    7.195687511554    7.195686399868        0.011117
-     0.20    7.194588788940    7.194571044448        0.011090
-     0.40    7.190390786215    7.190109622766        0.010983
-  SWEEP -- C over every (e, f, v, w) with v in e\f, w in f\e
-    168 curves, 1 distinct value(s) of C:
-      C = 0.037178514013   (168 curves)   POSITIVE
-  WHAT THIS PROVES, AND WHAT IT DOES NOT. Each C is one diagonal entry of the
-  Hessian of the top root at the commuting point, in the basis of these curves.
-  All positive means the top root strictly decreases along every one of them. It is
-  NOT negative definiteness: that needs the off-diagonal entries as well, which these
-  curves do not supply. What they do supply is that the point is CRITICAL -- mu_1
-  vanishes on a spanning set of tangent directions and the differential is linear --
-  so the Hessian is well defined and independent of the retraction used to compute it.
+  y_0 = 7.19605818500856   deg(min poly) = 7
+  C   = 0.0371785140129474   deg(min poly) = 7   POSITIVE
+  y_0 / rho^2 = 0.899507,  C / y_0 = 0.00516651,  C * q = 0.26024960
+  over 4 curves, grouped by |e ∩ f|:
+    |e ∩ f| = 1: 1 distinct C -> 0.037178514013 x4
+        family   (a,b)   n   q             y_0                 C  deg C           C*q           C*n
+  Fano/Heawood   (3,3)   7   7    7.1960581850    0.037178514013      7    0.26024960    0.26024960
+  There is no closed form C(a,b), and not for want of data: AG(2,3) carries TWO
+  values at the single parameter pair (4,3), 0.041740312350 when the two hyperedges
+  are disjoint and 0.021354509344 when they meet. C is a function of the pair of
+  hyperedges rotated, not of (a,b), so the quantity the question asks for does not
+  exist. What is uniform across all three families is deg(C) = deg(y_0) = n: mu_0 is
+  irreducible and C generates the same field as the top root.

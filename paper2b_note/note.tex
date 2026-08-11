@@ -2008,7 +2008,28 @@ y_0=7.19605818500856\ldots,\quad C=0.03717851401295\ldots,
 \]
 with $y_0$ a root of $y^7-21y^6+168y^5-644y^4+1218y^3-1050y^2+336y-24$ and $C$ algebraic of the
 same degree. All $168$ curves of this shape give the same $C$, as the $2$-transitivity of the Fano
-plane requires (\texttt{code/curvature.py}).
+plane requires.
+
+Running the same computation on two further commuting families shows what $C$ depends on, and it
+is not what one would guess.
+\begin{center}
+\begin{tabular}{lccccc}
+family & $(a,b)$ & $n$ & $y_0$ & $C$, $|e\cap f|=1$ & $C$, $|e\cap f|=0$\\
+\hline
+Fano & $(3,3)$ & $7$ & $7.196058185$ & $0.037178514013$ & ---\\
+$\mathrm{AG}(2,3)$ & $(4,3)$ & $9$ & $9.005835502$ & $0.021354509344$ & $0.041740312350$\\
+$\mathrm{PG}(2,3)$ & $(4,4)$ & $13$ & $10.916978461$ & $0.022914015843$ & ---\\
+\hline
+\end{tabular}
+\end{center}
+There is no closed form $C(a,b)$, and not for want of data: $\mathrm{AG}(2,3)$ carries two values
+at the single parameter pair $(4,3)$, according to whether the two hyperedges rotated are disjoint
+or meet. In the two projective planes every pair of lines meets, which is why each of them shows
+one value; the affine plane has parallel classes and shows both. So the curvature is a function of
+the pair of hyperedges, not of $(a,b)$, and the quantity a scaling law would name does not exist.
+What is uniform is arithmetic rather than metric: in all three families $\mu_0$ is irreducible of
+degree $n$ and $\deg C=\deg y_0=n$, so $C$ generates the same field as the top root
+(\texttt{code/curvature.py}).
 
 That is one diagonal entry of a second-order form, not definiteness, and the natural next step is
 unavailable for a reason worth recording. Linearising idempotency and tightness at the commuting
@@ -2022,6 +2043,15 @@ directions are not closed under subtraction: the commuting point is a \emph{sing
 variety, its tangent cone is not a linear subspace, and a Hessian on the linearised space is the
 wrong object. Local maximality therefore remains open, and what it needs is a second-order theory
 on that cone.
+
+The same is true at $\mathrm{AG}(2,3)$, where the linearised space has dimension $180$ against a
+conjugation orbit of $36$: the $131$ cross directions give $\mathrm{dist}/\varepsilon^2$ equal to
+$1.963$ and $1.998$ at $\varepsilon=0.08$ and $0.02$, and the $49$ same-group directions give
+$\mathrm{dist}/\varepsilon$ equal to $1.4128$ and $1.4107$. The exponents agree with the Fano
+family and only the constant differs. The obstructed configuration asks only for two hyperedges
+sharing $w$ and both missing $v$, which exists in any commuting tight family with $a\ge2$ and
+enough vertices; that says when the direction exists, not that it is always obstructed, and two
+families measured is what is in hand.
 
 That reduction is specific to projections, and the specificity is the point rather than a
 caveat. Relaxing idempotency to positive semidefiniteness of rank $b$ destroys it immediately, since
