@@ -15,6 +15,7 @@ for _v in ('OMP_NUM_THREADS','OPENBLAS_NUM_THREADS','MKL_NUM_THREADS'): os.envir
 import sympy as sp
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from gapscale import setup, rho_at, gap_profile
+import quickmode
 x=sp.Symbol('x')
 
 def wheel(L):

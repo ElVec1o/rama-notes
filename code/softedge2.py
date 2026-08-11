@@ -36,12 +36,15 @@ import time
 import random
 import numpy as np
 import sympy as sp
+import os as _os, sys as _sys
+_sys.path.insert(0, _os.path.dirname(_os.path.abspath(__file__))
+                 if '__file__' in globals() else 'code')   # jensen_sweep exec()s some of
+                 # these, and __file__ is undefined there
+import quickmode
 
 y = sp.Symbol('y')
-BUDGET = 1700.0
-CKPT = 'private/softedge2_ckpt.txt'
-
-
+BUDGET = quickmode.budget(1700.0, 25.0)
+CKPT = quickmode.ckpt('private/softedge2_ckpt.txt')
 # ------------------------------------------------------------------ generation
 def biregular_base(d, q, r):
     """left i joined to right (i*d + j) mod r: exactly biregular, since i*d+j covers 0..rq-1."""

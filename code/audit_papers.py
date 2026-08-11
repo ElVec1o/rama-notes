@@ -28,6 +28,11 @@ import re
 import sys
 import glob
 import subprocess
+import os as _os, sys as _sys
+_sys.path.insert(0, _os.path.dirname(_os.path.abspath(__file__))
+                 if '__file__' in globals() else 'code')   # jensen_sweep exec()s some of
+                 # these, and __file__ is undefined there
+import quickmode
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PAPERS = ['paper2a_note/note.tex', 'paper2b_note/note.tex']

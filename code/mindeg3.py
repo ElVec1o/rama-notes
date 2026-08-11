@@ -49,9 +49,10 @@ import sympy as sp
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from twocut import branch_data, bracket, assemble, mu_of, x
 from gapscale import setup, rho_at, gap_profile, connectivity
+import quickmode
 
-BUDGET = 1500.0
-CKPT = 'private/mindeg3_ckpt.txt'
+BUDGET = quickmode.budget(1500.0, 25.0)
+CKPT = quickmode.ckpt('private/mindeg3_ckpt.txt')
 MIN_GAP = 0.05
 
 

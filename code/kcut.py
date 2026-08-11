@@ -40,12 +40,15 @@ import itertools
 import numpy as np
 import sympy as sp
 from scipy.sparse import csr_matrix
+import os as _os, sys as _sys
+_sys.path.insert(0, _os.path.dirname(_os.path.abspath(__file__))
+                 if '__file__' in globals() else 'code')   # jensen_sweep exec()s some of
+                 # these, and __file__ is undefined there
+import quickmode
 
 x = sp.Symbol('x')
-BUDGET = 1800.0
-CKPT = 'private/kcut_ckpt.txt'
-
-
+BUDGET = quickmode.budget(1800.0, 25.0)
+CKPT = quickmode.ckpt('private/kcut_ckpt.txt')
 # ------------------------------------------------------------------ matching polynomial
 def mu_of(adj, S):
     @functools.lru_cache(maxsize=None)

@@ -10,9 +10,13 @@ the walk stays inside the biregular class exactly.
 """
 import sys, os, math, time, random
 import numpy as np, sympy as sp
+import os as _os, sys as _sys
+_sys.path.insert(0, _os.path.dirname(_os.path.abspath(__file__))
+                 if '__file__' in globals() else 'code')   # jensen_sweep exec()s some of
+                 # these, and __file__ is undefined there
+import quickmode
 x = sp.Symbol('x')
-CKPT='private/biregular_anneal_ckpt.txt'
-
+CKPT = quickmode.ckpt('private/biregular_anneal_ckpt.txt')
 def counts(nA,nB,adjA):
     size=1<<nB
     dp=np.zeros(size,dtype=np.int64); dp[0]=1
@@ -70,9 +74,9 @@ def main():
     rng=random.Random(4242)
     print(f"{'a':>3}{'b':>3}{'k':>3}{'n':>4}{'threshold':>11}{'start':>10}{'best':>10}"
           f"{'ratio':>8}{'steps':>7}", flush=True)
-    for (a,b) in [(3,4),(4,5),(3,5),(4,6),(5,6)]:
+    for (a,b) in quickmode.few([(3,4),(4,5),(3,5),(4,6),(5,6)]):
         thr=abs(math.sqrt(a-1)-math.sqrt(b-1))
-        for k in (3,4,5):
+        for k in quickmode.few((3,4,5)):
             nA,nB=b*k,a*k
             if nB>14 or nA+nB>40: continue
             g=init(a,b,k,rng)

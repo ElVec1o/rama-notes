@@ -74,11 +74,12 @@ import scipy.sparse as spr
 import scipy.sparse.linalg as sla
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import quickmode
 from biregular import matching_counts
 
-QUICK = '--quick' in sys.argv
+QUICK = quickmode.QUICK
 BUDGET_S = 25.0 if QUICK else 900.0
-BALL_CAP = 20_000 if QUICK else 400_000        # vertices, not radius: memory is the constraint
+BALL_CAP = 4_000 if QUICK else 400_000        # vertices, not radius: memory is the constraint
 
 
 # ------------------------------------------------------------------ route A: the definition
@@ -268,9 +269,13 @@ def main():
     # agreement on any case at all; the symbolic determinant costs one variable per hyperedge and
     # is the only expensive thing here, so the witnesses are kept to n <= 8, q <= 6. The identity
     # is then USED at Fano and AG(2,3) scale below, where only the matching route runs.
-    cases = [("C_6 (b=2)", 6, [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 0]]),
-             ("2-reg 3-unif", 6, [[0, 1, 2], [2, 3, 4], [4, 5, 0], [1, 3, 5]]),
+    # The symbolic determinant costs one variable per hyperedge, so the quick witnesses are the
+    # two with q = 4; the full run adds the six-variable C_6 case, which is the b = 2 check.
+    cases = [("2-reg 3-unif", 6, [[0, 1, 2], [2, 3, 4], [4, 5, 0], [1, 3, 5]]),
              ("K_4 triples", 4, [[0, 1, 2], [0, 1, 3], [0, 2, 3], [1, 2, 3]])]
+    if not QUICK:
+        cases.insert(0, ("C_6 (b=2)", 6,
+                         [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 0]]))
     if not QUICK:
         cases.append(("2-reg 4-unif", 8, [[0, 1, 2, 3], [2, 3, 4, 5], [4, 5, 6, 7], [6, 7, 0, 1]]))
     for (nm, n, lines) in cases:
@@ -283,22 +288,34 @@ def main():
         print(f"{nm:>16}{n:>4}{len(lines):>4}{len(lines[0]):>3}{sa:>34}{sb:>34}"
               f"{('yes' if same else 'NO'):>7}")
 
-    # ---------------------------------------------------------- CONTROL B: it must fail off-coordinate
-    rng = np.random.default_rng(20260826)
-    n, b, q = 6, 3, 5
-    Ps = []
-    for _ in range(q):
-        Q = np.linalg.qr(rng.standard_normal((n, b)))[0]
-        Ps.append(Q @ Q.T)
-    pa = mss_mu([sp.Matrix(P) for P in Ps], n)
-    coords = [[0, 1, 2], [1, 2, 3], [2, 3, 4], [3, 4, 5], [4, 5, 0]]
+    # ---------------------------------------------------------- CONTROL B: off-coordinate
+    # The bridge must FAIL off the coordinate locus, and the check is run in exact arithmetic:
+    # a symbolic determinant over floats swells and costs more than the rest of the script
+    # together, while a rational rotation keeps it exact and cheap. The 3-4-5 rotation in the
+    # (0,2) plane turns one coordinate projection into a non-commuting one with entries in
+    # (1/25)Z, and the family is no longer simultaneously diagonalisable.
+    n, b = 4, 2
+    coords = [[0, 1], [2, 3], [0, 2], [1, 3]]
+    Ps = [sp.Matrix(P.tolist()) for P in coordinate_projs(n, coords)]
+    R = sp.eye(n)
+    # The plane must MIX the two hyperedges being compared. Rotating in (0,2) maps e0 inside
+    # span{e0,e2}, which is a range of the family, so the rotated family still commutes and the
+    # bridge would then fail only because the coordinates changed. Rotating in (1,2) does not.
+    R[1, 1] = sp.Rational(3, 5); R[1, 2] = sp.Rational(-4, 5)
+    R[2, 1] = sp.Rational(4, 5); R[2, 2] = sp.Rational(3, 5)
+    assert (R * R.T - sp.eye(n)) == sp.zeros(n, n)
+    Ps[0] = sp.expand(R * Ps[0] * R.T)
+    noncomm = any(sp.expand(Ps[0] * Ps[j] - Ps[j] * Ps[0]) != sp.zeros(n, n)
+                  for j in range(1, len(Ps)))
+    pa = mss_mu(Ps, n)
     pb = mu_from_incidence(n, coords)
     off = sp.expand(pa.as_expr() - pb.as_expr()) != 0
     print(f"  bridge holds on coordinate families: {ok}/{ok + bad}."
-          f"  Off-coordinate rank-{b} family differs: {'yes' if off else 'NO'}"
-          + ("  <-- control B failed" if not off else ""))
-    print("  That difference is the point: the coordinate case reduces to a matching polynomial,")
-    print("  and everything Xu's conjecture asserts beyond it lives off the coordinate locus.\n")
+          f"  Rotated rank-{b} family noncommuting: {'yes' if noncomm else 'NO'},"
+          f" bridge differs: {'yes' if off else 'NO'}"
+          + ("  <-- control B failed" if not (off and noncomm) else ""))
+    print("  That difference is the point: the commuting case reduces to a matching polynomial,")
+    print("  and everything Xu's conjecture asserts beyond it lives off the commuting locus.\n")
 
     # ---------------------------------------------------------- the girth ladder, by balls
     print("THE LADDER -- lambda_max(B_r)^2 / rho^2 for the ball of radius r in the (a,b)-biregular")
@@ -313,7 +330,7 @@ def main():
     for (a, b) in ((3, 2), (4, 3), (5, 4), (4, 4), (6, 3)):
         rho2 = (math.sqrt(a - 1) + math.sqrt(b - 1)) ** 2
         vals, sizes = [], []
-        for r in (2, 4, 6, 8, 10, 12):
+        for r in quickmode.few((2, 4, 6, 8, 10, 12), 4 if QUICK else 6):
             if time.time() - t0 > BUDGET_S:
                 break
             A, nn = biregular_ball(a, b, r)

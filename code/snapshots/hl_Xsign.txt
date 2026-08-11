@@ -1,0 +1,15 @@
+================================================================================================
+PART 1.  max over unit e of X_e(2 sqrt a).   X_e <= 0 closes the induction.
+================================================================================================
+  graph  m= 4 q=  6 a= 3.00   max_e X_e =   4.3521e-14   (F_A=75)   X<=0
+  graph  m= 5 q= 10 a= 4.00   max_e X_e =   4.3343e-13   (F_A=444)   X<=0
+  graph  m= 6 q= 15 a= 5.00   max_e X_e =   4.1283e-12   (F_A=2885)   X<=0
+  proj   m= 4 q=  6 a= 3.00   max_e X_e =     -0.04761   (F_A=75.54)   X<=0
+  proj   m= 6 q=  9 a= 3.00   max_e X_e =       -5.129   (F_A=654.1)   X<=0
+  plane  m= 4 q= 12 a= 3.00   max_e X_e =    -0.068193   (F_A=75.78)   X<=0
+================================================================================================
+PART 2.  min over unit e of the summed leading cross term C_2.  C_2 >= 0 is
+         necessary for X_e <= 0 at large x, and is false termwise.
+================================================================================================
+no direction with X_e(2 sqrt a) > 0 found : True
+no direction with C_2 < 0 found           : True

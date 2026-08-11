@@ -1,0 +1,38 @@
+========================================================================================
+PART 1.  C_r = sum_{|S|=r-2} [ Q_S - ||W_S||^2 ]
+========================================================================================
+family                  r     C_r direct   sum(Q_S-|W_S|^2)    rel err
+K_6                     2   -4.82947e-15        3.47107e-16   5.18e-15
+K_6                     3    1.30532e-15       -2.92512e-15   4.23e-15
+cube                    2         1.1332             1.1332   1.96e-16
+cube                    3         4.2558             4.2558   1.46e-15
+Petersen                2       0.945612           0.945612   3.33e-16
+Petersen                3        5.67367            5.67367   6.26e-16
+========================================================================================
+PART 2.  ||W_S||^2 against Q_S at level r = 3
+========================================================================================
+For ODD r we need C_r = sum_S (Q_S - ||W_S||^2) SMALL, so we want ||W_S||^2
+close to Q_S.  It is not: the ratio decays, so C_3 is essentially sum_S Q_S,
+an undamped sum of Schur squares.
+graph                    m   Q_0=C_2    sum Q_n  sum|W_n|^2       C_3  |W|^2/Q
+cube                     8     1.268     5.5067      1.1412     4.365   0.2072
+Petersen                10     1.624     12.032      2.2885     9.744   0.1902
+Franklin                12     1.713     17.651      2.7114     14.94   0.1536
+Heawood                 14     2.007      26.51      3.1497     23.36   0.1188
+Mobius-Kantor           16     2.139     34.546      3.4948     31.05   0.1012
+========================================================================================
+PART 3.  the two-term criterion 4a C_2 >= C_3, and the partial sums of (*)
+========================================================================================
+graph                      m   4aC2/C3   Sigma_2, Sigma_3, ...
+cube (8,cubic)             8     3.487      1.268,   0.9046,   0.9261
+                                         |terms|:    1.268,   0.3638,  0.02151
+Petersen                  10         2      1.624,    0.812,   0.8909,   0.8909
+                                         |terms|:    1.624,    0.812,  0.07894, 1.006e-18
+Franklin (12,cubic)       12     1.376      1.713,   0.4682,   0.7304,   0.7126,   0.7129
+                                         |terms|:    1.713,    1.245,   0.2622,  0.01785, 0.000298
+Heawood (14,cubic)        14     1.031      2.007,  0.06043,   0.6791,   0.6034
+                                         |terms|:    2.007,    1.947,   0.6187,  0.07569
+The ratio crosses below 1 at m = 16, so C_3 <= 4a C_2 is false in general.
+The terms peak at r = 3 and then decay geometrically, but the number needed
+grows with m: three nearly suffice at m = 14, four at m = 16, and at m = 20
+five have not settled.  So the criterion is not a bounded-length statement.

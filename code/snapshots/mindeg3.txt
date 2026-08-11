@@ -1,0 +1,18 @@
+D3 (frozen): minimum degree >= 3 suffices for Conjecture 10.
+Testing the case C2 cannot see: delta >= 3 WITH a separating pair.
+self-check of the 2-cut identity on multi-anchor branches:
+    ladder L=2 p=2 n= 10: OK
+    ladder L=2 p=3 n= 14: OK
+          K3,4 p=2 n= 16: OK
+          K3,4 p=3 n= 23: OK
+     prism L=4 p=2 n= 18: OK
+     prism L=4 p=3 n= 26: OK
+   ladderM L=4 p=2 n= 18: OK
+   ladderM L=4 p=3 n= 26: OK
+      branch  p    n dmin dmax kappa #gaps  maxgap    verdict
+  ladder L=2  2   10    3    4     2     0   0.000     no gap
+  ladder L=2  3   14    3    6     2     1   0.280      clean
+  ladder L=2  4   18    3    8     2     1   0.680      clean
+  ladder L=2  5   22    3   10     2     2   1.020      clean
+4 graphs with delta>=3, of which 3 have a gap of width >= 0.05.  26s
+D3 survives.  The 2-cut engine that killed C1 does NOT fire once the branches have minimum degree three, so minimum degree, not connectivity, is what the evidence is really about.

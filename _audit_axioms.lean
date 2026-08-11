@@ -222,3 +222,6 @@ import RamaLean
 #print axioms XuAdditiveProduct.xu_conj24_false
 #print axioms XuAdditiveProduct.xu_dichotomy_second_branch
 #print axioms XuBound.xu_lt_note_target
+#print axioms XuSharp.bridge_roots
+#print axioms XuSharp.no_smaller_constant
+#print axioms XuSharp.sharp_of_ladder

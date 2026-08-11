@@ -45,6 +45,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from mixed_char_poly import mixed_char_poly, band
 from tff import build_tff, build_psd_family, restore, random_biregular, graph_to_projections
 from adversarial import hill_climb
+import quickmode
 
 BUDGET_S = float(__import__('sys').argv[1]) if len(__import__('sys').argv) > 1 else 2100.0
 
@@ -65,7 +66,7 @@ def main():
     ALL = [(6, 9, 3, 2), (8, 12, 3, 2), (10, 15, 3, 2), (8, 16, 4, 2)]
     # optional: rl_push.py <budget_seconds> [case_index ...]
     sel = [int(x) for x in sys.argv[2:]] if len(sys.argv) > 2 else list(range(len(ALL)))
-    CASES = [ALL[i] for i in sel]
+    CASES = quickmode.few([ALL[i] for i in sel])
 
     print(f"{'p':>4}{'q':>4}{'a':>3}{'b':>3}{'edge':>11}{'class':>13}"
           f"{'best max root':>15}{'margin':>12}{'approach':>10}{'verdict':>11}")

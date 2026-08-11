@@ -27,11 +27,12 @@ import cmath
 import time
 import itertools
 import numpy as np
+import quickmode
 
 sys.path.insert(0, 'code')
 exec(open('code/inertia_split.py').read().split('GRAPHS = {')[0].split('"""', 2)[2])
 
-CKPT = 'private/jensen_sweep_ckpt.txt'
+CKPT = quickmode.ckpt('private/jensen_sweep_ckpt.txt')
 BMAX = 4
 # Rule 8: the full family is 17187 graphs at 2.3 s each, which is 224 minutes. The question
 # is whether the margin ever fails and how it varies with b, and a stride-sample answers both
@@ -107,7 +108,7 @@ def examine(n, edges, W, b, ns):
     grid = [2 * math.pi * k / st for k in range(st)]
     R = 5.0
     got = None
-    for eta in (1e-4, 1e-3, 1e-2):
+    for eta in quickmode.few((1e-4, 1e-3, 1e-2)):
         es, ds, _ = scan(n, edges, -R, R, 800, eta=eta)
         if abs(kappa_above(es, ds, 1, -R) - 1.0) <= 0.03:
             got = (es, ds); break

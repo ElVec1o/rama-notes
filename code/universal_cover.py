@@ -45,9 +45,14 @@ functions at the cost of blurring band edges.
 import sys
 import cmath
 import math
+import os as _os, sys as _sys
+_sys.path.insert(0, _os.path.dirname(_os.path.abspath(__file__))
+                 if '__file__' in globals() else 'code')   # jensen_sweep exec()s some of
+                 # these, and __file__ is undefined there
+import quickmode
 
 ETA = 1e-6
-MAXIT = 4000
+MAXIT = quickmode.budget(4000, 300)
 TOL = 1e-12
 
 
@@ -198,7 +203,7 @@ def main():
         roots = matching_roots(n, edges)
         R = max(4.0, 1.2 * max(abs(r) for r in roots) + 1.0)
         chosen = None
-        for eta in (1e-6, 1e-4, 1e-3, 1e-2, 5e-2):
+        for eta in quickmode.few((1e-6, 1e-4, 1e-3, 1e-2, 5e-2)):
             Es, ds, bad = scan(n, edges, -R, R, 4000, eta=eta)
             mass = kappa_above(Es, ds, 1, -R)
             if abs(mass - 1.0) <= MASS_TOL:

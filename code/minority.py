@@ -42,11 +42,12 @@ import cmath
 import time
 import itertools
 import numpy as np
+import quickmode
 
 sys.path.insert(0, 'code')
 exec(open('code/inertia_split.py').read().split('GRAPHS = {')[0].split('"""', 2)[2])
 
-CKPT = 'private/minority_ckpt.txt'
+CKPT = quickmode.ckpt('private/minority_ckpt.txt')
 STRIDE = int(os.environ.get('STRIDE', '250'))
 BMAX = int(os.environ.get('BMAX', '3'))
 GRID = {2: 96, 3: 28}
@@ -127,7 +128,7 @@ def main():
     def run(n, edges, b):
         tree, cot = spanning_tree(n, edges)
         got = None
-        for eta in (1e-4, 1e-3, 1e-2):
+        for eta in quickmode.few((1e-4, 1e-3, 1e-2)):
             es, ds, _ = scan(n, edges, -5.5, 5.5, 800, eta=eta)
             if abs(kappa_above(es, ds, 1, -5.5) - 1.0) <= 0.03:
                 got = (es, ds); break
@@ -142,7 +143,7 @@ def main():
         lamcache = spectra(n, edges, cot, GRID[b], b)
         out = []
         for lo, hi in internal:
-            for f in (0.05, 0.2, 0.35, 0.5, 0.65, 0.8, 0.95):
+            for f in quickmode.few((0.05, 0.2, 0.35, 0.5, 0.65, 0.8, 0.95), 2):
                 x = lo + f * (hi - lo)
                 m, kap, r, al = at(lamcache, x)
                 if kap == 0:

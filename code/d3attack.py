@@ -57,11 +57,10 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from twocut import branch_data, mu_of, x
 from gapscale import setup, rho_at, gap_profile, connectivity
 from mindeg3 import br_ladder, br_K3q, br_prism, br_ladder_mid
+import quickmode
 
-BUDGET = 1400.0
-CKPT = 'private/d3attack_ckpt.txt'
-
-
+BUDGET = quickmode.budget(1400.0, 25.0)
+CKPT = quickmode.ckpt('private/d3attack_ckpt.txt')
 # ------------------------------------------------------------------ A: the analytic probe
 def partA():
     print("A. K_{3,q}: smallest positive root against the gap edge sqrt(q-1)-sqrt(2)\n")

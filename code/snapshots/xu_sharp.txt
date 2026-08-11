@@ -2,32 +2,38 @@ P33 (frozen): the ratio maxroot mu / rho^2 climbs to 1 along a girth ladder at b
 and b = 4; the plateau near 0.73 is an artefact of sampling generic subspaces.
 CONTROL A -- the bridge mu(t^2) = t^{n-q} mu_I(t), two routes sharing no code.
       hypergraph   n   q  b                    MSS definition               from I(H) matchings  agree
-       C_6 (b=2)   6   6  2  x**6 - 12*x**5 + 54*x**4 - 112*x  x**6 - 12*x**5 + 54*x**4 - 112*x    yes
     2-reg 3-unif   6   4  3  x**6 - 12*x**5 + 48*x**4 - 72*x*  x**6 - 12*x**5 + 48*x**4 - 72*x*    yes
      K_4 triples   4   4  3  x**4 - 12*x**3 + 42*x**2 - 44*x   x**4 - 12*x**3 + 42*x**2 - 44*x     yes
-  bridge holds on coordinate families: 3/3.  Off-coordinate rank-3 family differs: yes
-  That difference is the point: the coordinate case reduces to a matching polynomial,
-  and everything Xu's conjecture asserts beyond it lives off the coordinate locus.
+  bridge holds on coordinate families: 2/2.  Rotated rank-2 family noncommuting: yes, bridge differs: yes
+  That difference is the point: the commuting case reduces to a matching polynomial,
+  and everything Xu's conjecture asserts beyond it lives off the commuting locus.
 THE LADDER -- lambda_max(B_r)^2 / rho^2 for the ball of radius r in the (a,b)-biregular
 tree. Any biregular graph of girth > 2r contains B_r, and the greatest root of a
 matching polynomial is monotone under subgraphs, so its ratio is at least this.
    (a,b)    rho^2       r=2       r=4       r=6       r=8      r=10      r=12        trend
-  A ball truncated at the 20000 vertex cap is a proper subtree of the true ball,
+  A ball truncated at the 4000 vertex cap is a proper subtree of the true ball,
   hence still a subgraph of any graph of girth > 2r: the floor stays valid, and only
   the radius label overstates what was built. Sizes are printed under each row.
-   (3,2)   5.8284       rising
-            |B_r|
-   (4,3)   9.8990       rising
-            |B_r|
-   (5,4)  13.9282       rising
-            |B_r|
-   (4,4)  12.0000       rising
-            |B_r|
-   (6,3)  13.3246       rising
-            |B_r|
+   (3,2)   5.8284    0.6863    0.8579    0.9167    0.9443       rising
+            |B_r|         7        19        43        91
+   (4,3)   9.8990    0.6061    0.8082    0.8854    0.9234       rising
+            |B_r|        13        85       517      3109
+   (5,4)  13.9282    0.5744    0.7898    0.8747    0.8792       rising
+            |B_r|        21       261      3141      4000
+   (4,4)  12.0000    0.5833    0.7951    0.8777    0.8992       rising
+            |B_r|        17       161      1457      4000
+   (6,3)  13.3246    0.6004    0.8031    0.8826    0.8965       rising
+            |B_r|        19       199      1999      4000
 EXACT GRAPHS -- maxroot mu computed from the matching polynomial of I(H), girth by BFS.
            graph   (a,b)   n+q  girth  maxroot mu    rho^2   ratio  ball floor  >= floor
-  Ball ratios at the deepest radius reached: (3,2) nan, (4,3) nan, (5,4) nan.
+         K_{3,3}   (3,3)     6      4     6.28995   8.0000  0.7862      0.3750       yes
+         Heawood   (3,3)    14      6     7.19606   8.0000  0.8995      0.6250       yes
+          Pappus   (3,3)    18      6     7.33704   8.0000  0.9171      0.6250       yes
+   Tutte-Coxeter   (3,3)    30      8     7.56224   8.0000  0.9453      0.7500       yes
+   K_{4,3}-cover   (4,3)     7      4     7.75877   9.8990  0.7838      0.4041       yes
+         AG(2,3)   (4,3)    21      6     9.00584   9.8990  0.9098      0.6061       yes
+         PG(2,3)   (4,4)    26      6    10.91698  12.0000  0.9097      0.5833       yes
+  Ball ratios at the deepest radius reached: (3,2) 0.9443, (4,3) 0.9234, (5,4) 0.8792.
   P33 holds. The ratio is bounded below by a quantity increasing to 1 at every
   (a,b) tested, b >= 3 included, so Xu's constant is attained in the limit and is
   sharp for every b. The 0.739 and 0.726 plateaus measured earlier record the

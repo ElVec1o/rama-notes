@@ -41,12 +41,15 @@ import functools
 import numpy as np
 import sympy as sp
 from scipy.sparse import csr_matrix
+import os as _os, sys as _sys
+_sys.path.insert(0, _os.path.dirname(_os.path.abspath(__file__))
+                 if '__file__' in globals() else 'code')   # jensen_sweep exec()s some of
+                 # these, and __file__ is undefined there
+import quickmode
 
 x = sp.Symbol('x')
-BUDGET = 1500.0          # wall-clock seconds; Rule on long searches
-CKPT = 'private/twocut_ckpt.txt'
-
-
+BUDGET = quickmode.budget(1500.0, 25.0)  # wall-clock seconds; Rule on long searches
+CKPT = quickmode.ckpt('private/twocut_ckpt.txt')
 # ------------------------------------------------------------------ matching polynomial
 def mu_of(adj, S):
     """mu of the induced subgraph on S, by memoised vertex deletion."""

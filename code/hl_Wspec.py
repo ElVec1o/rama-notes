@@ -25,6 +25,11 @@ from itertools import combinations
 import numpy as np
 
 import hl_planes as hp
+import os as _os, sys as _sys
+_sys.path.insert(0, _os.path.dirname(_os.path.abspath(__file__))
+                 if '__file__' in globals() else 'code')   # jensen_sweep exec()s some of
+                 # these, and __file__ is undefined there
+import quickmode
 
 SEEDS = (0, 1, 2, 3, 4)
 
@@ -129,7 +134,7 @@ def main():
     ok_all, mom_ok = True, []
 
     # weighted K_p: the family that approaches 2 sqrt a from below -- the regression
-    for p in (4, 5, 6):
+    for p in quickmode.few((4, 5, 6)):
         edges = hp.Kn_edges(p)
         lam = 1.0                     # Adj = lam (p-1) I for unit-weight K_p blocks
         Bs = hp.graph_blocks(edges, p, weights=[lam] * len(edges))

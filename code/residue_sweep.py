@@ -32,11 +32,12 @@ import cmath
 import time
 import itertools
 import numpy as np
+import quickmode
 
 sys.path.insert(0, 'code')
 exec(open('code/inertia_split.py').read().split('GRAPHS = {')[0].split('"""', 2)[2])
 
-CKPT = 'private/residue_sweep_ckpt.txt'
+CKPT = quickmode.ckpt('private/residue_sweep_ckpt.txt')
 STRIDE = int(os.environ.get('STRIDE', '40'))
 BMAX = int(os.environ.get('BMAX', '3'))
 SMAX = {2: 512, 3: 96}
@@ -141,7 +142,7 @@ def examine(n, edges, b, ns):
     scan, kappa_above, bands = ns['scan'], ns['kappa_above'], ns['bands']
     tree, cot = spanning_tree(n, edges)
     got = None
-    for eta in (1e-4, 1e-3, 1e-2):
+    for eta in quickmode.few((1e-4, 1e-3, 1e-2)):
         es, ds, _ = scan(n, edges, -5.5, 5.5, 800, eta=eta)
         if abs(kappa_above(es, ds, 1, -5.5) - 1.0) <= 0.03:
             got = (es, ds); break

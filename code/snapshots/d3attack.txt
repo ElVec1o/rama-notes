@@ -1,0 +1,31 @@
+A. K_{3,q}: smallest positive root against the gap edge sqrt(q-1)-sqrt(2)
+     q       x_min   gap edge g     margin  x_min-sqrt(q)
+     4    0.967379     0.317837   0.649542      -1.032621
+     6    1.463290     0.821854   0.641435      -0.986200
+     9    2.043590     1.414214   0.629377      -0.956410
+    12    2.523127     1.902411   0.620716      -0.940974
+    20    3.551305     2.944685   0.606620      -0.920831
+    40    5.421759     4.830784   0.590975      -0.902796
+    80    8.053125     7.473981   0.579144      -0.891147
+   200   13.260675    12.692522   0.568152      -0.881461
+   500   21.485062    20.924094   0.560968      -0.875617
+  2000   43.850608    43.295964   0.554644      -0.870751
+ 20000  140.553851   140.003607   0.550244      -0.867505
+  predicted limits: x_min - sqrt(q) -> -sqrt(3)/2 = -0.866025, margin -> sqrt(2)-sqrt(3)/2 = 0.548188
+  smallest margin seen: 0.550244 at q=20000
+  => a refutation from this direction must move the smallest root by that much.
+B. genuine (3,q)-biregular graphs, from balanced 3-uniform designs
+  r  t    n    q kappa  gap edge      x_min    margin    verdict
+  4  2   12    6     3   0.82185   1.351939   0.53008      clean
+  4  3   16    9     3   1.41421   1.938153   0.52394      clean
+  5  1   15    6     3   0.82185   1.278600   0.45675      clean
+  5  2   25   12     3   1.90241   2.353039   0.45063      clean
+  5  3   35   18     3   2.70889   3.153927   0.44503      clean
+  6  1   26   10     3   1.58579   1.988738   0.40295      clean
+  7  1   42   15     3   2.32744   2.690170   0.36273      clean
+C. two hubs, TWO branch types: tuning the branches instead of the count
+  mixed-branch expansion self-check (n=20): OK
+           types p1 p2    n dmin kappa #gaps  maxgap    verdict
+39s
+D3 survives both attacks.  The K_{3,q} margin is 0.5502 and does not close;
+  no biregular design and no mixed-branch resonator reaches into a gap.

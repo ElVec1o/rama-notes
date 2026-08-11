@@ -27,6 +27,7 @@ import cmath
 import time
 import itertools
 import numpy as np
+import quickmode
 
 sys.path.insert(0, 'code')
 g = {}
@@ -34,7 +35,7 @@ exec(open('code/torus_gg.py').read().split("def main():")[0], g)
 coeffs, spanning_tree = g['coeffs'], g['spanning_tree']
 magnetic = g['magnetic']
 
-CKPT = 'private/residue_b3_ckpt.txt'
+CKPT = quickmode.ckpt('private/residue_b3_ckpt.txt')
 STRIDE = int(os.environ.get('STRIDE', '400'))
 
 
@@ -120,7 +121,7 @@ def main():
     def run(n, edges):
         tree, cot = spanning_tree(n, edges)
         got = None
-        for eta in (1e-4, 1e-3, 1e-2):
+        for eta in quickmode.few((1e-4, 1e-3, 1e-2)):
             es, ds, _ = scan(n, edges, -5.5, 5.5, 800, eta=eta)
             if abs(kappa_above(es, ds, 1, -5.5) - 1.0) <= 0.03:
                 got = (es, ds); break

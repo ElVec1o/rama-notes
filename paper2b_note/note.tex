@@ -1896,7 +1896,25 @@ radius $\rho=\sqrt{a-1}+\sqrt{b-1}$. Godsil's bound \cite{Go} puts every root of
 $[-\rho,\rho]$, and Proposition~\ref{prop:bridge} squares them.
 \end{proof}
 
-So the inequality Xu conjectures is a theorem on the coordinate locus, at every rank, and not only
+The coordinate hypothesis is basis-dependent as stated and is not meant to be. It says exactly
+that the family commutes.
+
+\begin{corollary}\label{cor:commuting}
+Let $P_1,\dots,P_q$ be pairwise commuting rank-$b$ orthogonal projections on $\mathbb R^n$ with
+$\sum_kP_k=aI$. Then $\operatorname{maxroot}\mu\le(\sqrt{a-1}+\sqrt{b-1})^2$, and the constant is
+attained in the limit over this class.
+\end{corollary}
+
+\begin{proof}
+Commuting orthogonal projections are simultaneously diagonalisable, and in a common eigenbasis
+each $P_k$ is a $0/1$ diagonal matrix with exactly $b$ ones, that is a hyperedge $e_k$ on $n$
+vertices; $\sum_kP_k=aI$ says every vertex lies in exactly $a$ of them. So the family is the
+coordinate family of an $a$-regular $b$-uniform hypergraph, and Corollary~\ref{cor:xucoord} and
+Proposition~\ref{prop:xusharp} apply. Both statements are invariant under a common orthogonal
+change of basis, so nothing is lost in choosing one.
+\end{proof}
+
+So the inequality Xu conjectures is a theorem on the commuting locus, at every rank, and not only
 at $b=2$ where it is Heilmann--Lieb. The question that matters for the conjecture is whether the
 constant is the right one there, and it is.
 
@@ -1958,9 +1976,24 @@ $b\ge3$, and the reading that suggested one is closed.
 Second, the constant is now fixed. Any proof of Xu's conjecture in general must produce exactly
 $(\sqrt{a-1}+\sqrt{b-1})^2$; any attempted improvement of it is false, by
 Proposition~\ref{prop:xusharp}, before it is attempted. Equally, the whole content of the
-conjecture lies off the coordinate locus: the bridge of Proposition~\ref{prop:bridge} fails for
+conjecture lies off the commuting locus: the bridge of Proposition~\ref{prop:bridge} fails for
 non-coordinate rank-$b$ projections, which is checked as a control rather than asserted, and it is
 that failure which leaves the general statement open.
+
+Whether that leaves the general statement hard or merely unreduced turns on one further
+question, which is measurable: is the coordinate locus \emph{extremal}? Deform a coordinate family
+by rotating each block independently, $U_e=\exp(tX_e)$ with $X_e$ skew, and restore tightness
+exactly by $A_e=a\,S^{-1/2}U_eP_eU_e^{\mathsf T}S^{-1/2}$ with $S=\sum_eU_eP_eU_e^{\mathsf T}$; the
+$A_e$ stay positive semidefinite of rank exactly $b$, so the path leaves the coordinate locus and
+nothing else. Along it the ratio falls monotonically at every hypergraph tried, and an ascent
+started at the coordinate point accepted none of $400$ steps at any of four starting points
+(\texttt{code/offcoord.py}). On that evidence the coordinate families are strict local maxima,
+and Conjecture~1.4 would follow from the case settled above together with the statement that no
+deformation off the coordinate locus increases the greatest root. That is a reduction worth
+recording, since it replaces a conjecture about all tight rank-$b$ families with a monotonicity
+statement over a theorem. It is not proved here, and the evidence is local: the ascent probed
+step sizes from $0.25$ down to $0.034$, and below that scale it is the sweep that carries the
+weight, which already loses $2\times10^{-4}$ at $t=0.02$.
 
 The identification in Proposition~\ref{prop:bridge} is elementary and we make no claim of novelty
 for it; we have not found it stated, but the search caveats of \S\ref{sec:must} apply verbatim.

@@ -37,8 +37,13 @@ import os
 import math
 import time
 import sympy as sp
+import os as _os, sys as _sys
+_sys.path.insert(0, _os.path.dirname(_os.path.abspath(__file__))
+                 if '__file__' in globals() else 'code')   # jensen_sweep exec()s some of
+                 # these, and __file__ is undefined there
+import quickmode
 
-CKPT = 'private/mindeg2_ckpt.txt'
+CKPT = quickmode.ckpt('private/mindeg2_ckpt.txt')
 x = sp.Symbol('x')
 
 

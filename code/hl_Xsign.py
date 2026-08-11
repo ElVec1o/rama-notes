@@ -51,8 +51,13 @@ import numpy as np
 from scipy.optimize import minimize
 
 import hl_planes as hp
+import os as _os, sys as _sys
+_sys.path.insert(0, _os.path.dirname(_os.path.abspath(__file__))
+                 if '__file__' in globals() else 'code')   # jensen_sweep exec()s some of
+                 # these, and __file__ is undefined there
+import quickmode
 
-BUDGET_S = 420.0          # hard wall clock for the whole script
+BUDGET_S = quickmode.budget(420.0, 25.0)  # hard wall clock for the whole script
 _T0 = time.monotonic()
 
 

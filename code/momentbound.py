@@ -15,6 +15,11 @@ import os, sys, math, itertools
 for _v in ('OMP_NUM_THREADS','OPENBLAS_NUM_THREADS','MKL_NUM_THREADS'): os.environ[_v]='2'
 import numpy as np
 from scipy.optimize import nnls
+import os as _os, sys as _sys
+_sys.path.insert(0, _os.path.dirname(_os.path.abspath(__file__))
+                 if '__file__' in globals() else 'code')   # jensen_sweep exec()s some of
+                 # these, and __file__ is undefined there
+import quickmode
 rng=np.random.default_rng(7)
 
 def tree_walks(a, kmax):
@@ -71,11 +76,11 @@ print("P16 (frozen): p_k <= (m/2) W_2k for every weighted 2-plane family with Ad
 print(f"{'kind':>11}{'m':>4}{'a':>4}" + "".join(f"{f'k={k}':>10}" for k in (1,2,3,4,5))
       + f"{'worst':>9}")
 worst_all=0.0
-for a in (3,4):
+for a in quickmode.few((3,4)):
     W=tree_walks(a,6)
     # coordinate: random a-regular graphs
     import networkx as nx
-    for m in (8,10,12):
+    for m in quickmode.few((8,10,12)):
         if (a*m)%2: continue
         G=nx.random_regular_graph(a,m,seed=int(rng.integers(1<<30)))
         frames=[]
@@ -88,7 +93,7 @@ for a in (3,4):
         print(f"{'coordinate':>11}{m:>4}{a:>4}"
               + "".join(f"{(rat[k-1] if k<=kk else float('nan')):>10.4f}" for k in (1,2,3,4,5))
               + f"{max(rat):>9.4f}")
-    for m in (6,8):
+    for m in quickmode.few((6,8)):
         got=None
         for q in (3*m*(m+1)//2, 5*m*(m+1)//2):
             for _ in range(6):

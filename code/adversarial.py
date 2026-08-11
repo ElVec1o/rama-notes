@@ -8,6 +8,11 @@ from mixed_char_poly import mixed_char_poly, band
 from tff import (build_tff, build_psd_family, rand_projections, restore,
                  tff_residual, random_biregular, graph_to_projections,
                  commutativity, proj_rank_b)
+import os as _os, sys as _sys
+_sys.path.insert(0, _os.path.dirname(_os.path.abspath(__file__))
+                 if '__file__' in globals() else 'code')   # jensen_sweep exec()s some of
+                 # these, and __file__ is undefined there
+import quickmode
 
 
 def obj(A, mode):
@@ -68,7 +73,7 @@ def hill_climb(p, q, a, b, rng, mode='lo', n_restart=10, n_step=500,
     return best_val, best_A
 
 
-PARAMS = [
+PARAMS = quickmode.few([
     (4, 6, 3, 2),
     (3, 6, 4, 2),
     (6, 9, 3, 2),
@@ -79,7 +84,7 @@ PARAMS = [
     (8, 10, 5, 4),
     (8, 12, 3, 2),
     (4, 10, 5, 2),
-]
+])
 
 if __name__ == '__main__':
     sel = [int(x) for x in sys.argv[1:]] or list(range(len(PARAMS)))

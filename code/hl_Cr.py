@@ -23,8 +23,13 @@ import time
 import numpy as np
 
 import hl_planes as hp
+import os as _os, sys as _sys
+_sys.path.insert(0, _os.path.dirname(_os.path.abspath(__file__))
+                 if '__file__' in globals() else 'code')   # jensen_sweep exec()s some of
+                 # these, and __file__ is undefined there
+import quickmode
 
-BUDGET_S = 900.0
+BUDGET_S = quickmode.budget(900.0, 25.0)
 _T0 = time.monotonic()
 
 

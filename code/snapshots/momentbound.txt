@@ -1,0 +1,6 @@
+P16 (frozen): p_k <= (m/2) W_2k for every weighted 2-plane family with Adj(A) <= aI.
+       kind   m   a       k=1       k=2       k=3       k=4       k=5    worst
+ coordinate   8   3    1.0000    1.0000    0.9828    0.9521       nan   1.0000
+    general   6   3    1.0000    0.9528    0.8915       nan       nan   1.0000
+  worst ratio over everything tested: 1.0000
+  P16 SURVIVES so far

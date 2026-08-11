@@ -15,6 +15,7 @@ mu_G by the same rooted pair recursion, with the cycle supplying
 (A, B) = (mu_{C_m}, mu_{P_{m-1}}) at its attachment vertex.
 """
 import sys, math, time, sympy as sp
+import quickmode
 sys.path.insert(0, 'code')
 x = sp.Symbol('x')
 
@@ -89,7 +90,7 @@ def main():
     print(f"{'m':>3}{'arity':>6}{'d':>3}{'n':>5}{'Dmax':>6}{'Dmin':>6}"
           f"{'root':>10}{'DOS/eta':>24}{'verdict':>10}", flush=True)
     hits=[]
-    for m in (3,4,5,6,7,8):
+    for m in quickmode.few((3,4,5,6,7,8), 2):
         for arity in (2,3):
             for depth in (2,3,4):
                 A,B,n,edges = build(m,arity,depth)

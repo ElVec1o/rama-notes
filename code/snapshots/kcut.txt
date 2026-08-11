@@ -1,0 +1,10 @@
+does the k-cut engine keep working as connectivity rises?
+self-check of the k-cut expansion against brute force:
+  k=2 nb=5 p=3 n=17: OK
+  k=3 nb=8 p=3 n=27: OK
+  k=3 nb=4 p=3 n=15: OK
+ k      branch  p    n kappa       root     defect    width  verdict
+26s
+smallest violation at each true vertex connectivity kappa:
+ kappa      branch  k  p    n       root     defect
+no violation above connectivity 2 in this range.

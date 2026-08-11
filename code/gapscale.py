@@ -39,10 +39,13 @@ import math
 import time
 import numpy as np
 from scipy.sparse import csr_matrix
+import os as _os, sys as _sys
+_sys.path.insert(0, _os.path.dirname(_os.path.abspath(__file__))
+                 if '__file__' in globals() else 'code')   # jensen_sweep exec()s some of
+                 # these, and __file__ is undefined there
+import quickmode
 
-CKPT = 'private/gapscale_ckpt.txt'
-
-
+CKPT = quickmode.ckpt('private/gapscale_ckpt.txt')
 # ------------------------------------------------------------------ spec(T)
 def setup(n, edges):
     adj = {i: set() for i in range(n)}
@@ -283,13 +286,13 @@ def theta_chain(p, L):
 
 def zoo():
     G = []
-    for T in (0, 2, 3):
+    for T in quickmode.few((0, 2, 3)):
         for k in (1, 2, 3):
             for p in (4, 6):
                 n, e = chain_hubs(k, p, 4, T)
                 if n <= 52:
                     G.append((f"hub k={k} p={p} T={T}", n, e))
-    for s_ in (1, 3):
+    for s_ in quickmode.few((1, 3)):
         for m in (6, 8):
             n, e = subdivided_regular(4, m, s_)
             if n <= 52:
