@@ -2014,6 +2014,26 @@ order-two equation holds entrywise by the same coefficient $1-2(P_k)_{jj}$, the 
 entries of both sides being zero; and $\sum_kX_k$ is diagonal with entries $Q_j(D)=0$.
 \end{proof}
 
+The second-order behaviour of the top root over that cone can now be examined, and it is better
+than the cone alone would suggest. At a critical point the second derivative of $\lambda_{\max}$
+along a curve in $V$ depends only on the curve's velocity, so it defines a quadratic form $\Lambda$
+on the admissible directions; and since the $2$-jet $P_k+\varepsilon D_k+\varepsilon^2X_k$ agrees
+with a curve on $V$ to $O(\varepsilon^3)$, $\Lambda$ may be read off that jet without constructing
+the curve. Computed this way on the Fano family, by fitting the coefficients of $\mu$ as
+polynomials in $\varepsilon$ rather than differencing them, $\Lambda$ is negative semidefinite on
+the whole linearised kernel, with $42$ negative eigenvalues, $21$ zero and none positive, and its
+null space is exactly the tangent space to the orthogonal conjugation orbit
+(\texttt{code/hessian.py}). The value on a cross direction agrees to eight digits with the exact
+rational $-C/4$ of Proposition~\ref{prop:rigid}'s computation.
+
+Two things follow. First, no argument restricted to the cone is needed for the second-order test:
+$\Lambda\preceq0$ already on the kernel, so it is negative on the cone a fortiori, strictly away
+from the conjugation directions along which $\mu$ does not change at all. Second, the commuting
+family is a strict local maximum of $\lambda_{\max}$ to second order, transverse to its own orbit.
+This is computational evidence and is labelled as such: the form was built numerically, and
+upgrading it would mean recomputing the $63\times63$ matrix in exact arithmetic, which the
+machinery of \texttt{code/curvature.py} does for one direction at a time.
+
 Whether every direction of that cone is the velocity of a genuine curve is not settled here. It
 holds wherever it has been looked at: over the $42$ cross basis directions of the Fano family and
 over directions obtained by projecting random kernel elements onto $\{Q=0\}$, the nearest point of
