@@ -88,6 +88,12 @@ def run(name, record=False):
         # --quick is honoured by the long searches: it shrinks their budget so a
         # deterministic baseline can be taken. Scripts that do not know the flag ignore it,
         # argparse not being used anywhere here.
+        # PYTHONHASHSEED is randomised per process, and several of these scripts build
+        # adjacency as {v: set()} and iterate it, so their output depends on it: softedge2 gave
+        # two distinct results over six runs unpinned and one over six pinned. Without this the
+        # checker reports drift that is nothing but the hash seed, and worse, hides real drift
+        # underneath it.
+        env = dict(env, PYTHONHASHSEED='0')
         p = subprocess.run([sys.executable, path, '--quick'], cwd=ROOT,
                            capture_output=True, text=True, timeout=BUDGET, env=env)
     except subprocess.TimeoutExpired:

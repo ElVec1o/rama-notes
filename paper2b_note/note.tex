@@ -1981,19 +1981,27 @@ non-coordinate rank-$b$ projections, which is checked as a control rather than a
 that failure which leaves the general statement open.
 
 Whether that leaves the general statement hard or merely unreduced turns on one further
-question, which is measurable: is the coordinate locus \emph{extremal}? Deform a coordinate family
-by rotating each block independently, $U_e=\exp(tX_e)$ with $X_e$ skew, and restore tightness
-exactly by $A_e=a\,S^{-1/2}U_eP_eU_e^{\mathsf T}S^{-1/2}$ with $S=\sum_eU_eP_eU_e^{\mathsf T}$; the
-$A_e$ stay positive semidefinite of rank exactly $b$, so the path leaves the coordinate locus and
-nothing else. Along it the ratio falls monotonically at every hypergraph tried, and an ascent
-started at the coordinate point accepted none of $400$ steps at any of four starting points
-(\texttt{code/offcoord.py}). On that evidence the coordinate families are strict local maxima,
-and Conjecture~1.4 would follow from the case settled above together with the statement that no
-deformation off the coordinate locus increases the greatest root. That is a reduction worth
-recording, since it replaces a conjecture about all tight rank-$b$ families with a monotonicity
-statement over a theorem. It is not proved here, and the evidence is local: the ascent probed
-step sizes from $0.25$ down to $0.034$, and below that scale it is the sweep that carries the
-weight, which already loses $2\times10^{-4}$ at $t=0.02$.
+question, which is measurable: is the commuting locus \emph{extremal}? Deform a commuting family
+by rotating each block independently, $U_e=\exp(tX_e)$ with $X_e$ skew, and return to the tight
+projection class by alternating projections onto $\{$rank-$b$ projections$\}$ and
+$\{\sum_kA_k=aI\}$. Along such a path the ratio falls at every hypergraph tried; an ascent
+started at the commuting point accepted none of $400$ steps at any of four starting points; and,
+which is the part that bears on a global statement, no random start in the tight projection class
+beat its commuting counterpart at the same $(n,q,a,b)$, over fifteen starts each, the best random
+family falling short by between $0.0038$ and $0.0107$ (\texttt{code/offcoord.py}). On that
+evidence Conjecture~1.4 would follow from Corollary~\ref{cor:commuting} together with the
+statement that the commuting locus is extremal, which replaces a conjecture about all tight
+rank-$b$ families by a monotonicity statement over a theorem.
+
+That reduction is specific to projections, and the specificity is the point rather than a
+caveat. Relaxing idempotency to positive semidefiniteness of rank $b$ destroys it immediately:
+random tight PSD families reach ratio $1.03$ at Fano and $1.01$ at Pappus, above the band
+outright. That is not evidence against Xu's conjecture, which is about projections; it is the
+obstruction recorded in \S\ref{sec:leaves} for $A_k=(b/p)I_p$, appearing again. It does mean any
+argument for the monotonicity must use idempotency and not only the rank, the trace and
+$\sum_kA_k=aI$, and it is why the search above enforces $\|A_k^2-A_k\|$ rather than assuming it:
+without that check the retraction leaves the projection class silently, and the numbers it then
+produces are about the wrong class.
 
 The identification in Proposition~\ref{prop:bridge} is elementary and we make no claim of novelty
 for it; we have not found it stated, but the search caveats of \S\ref{sec:must} apply verbatim.

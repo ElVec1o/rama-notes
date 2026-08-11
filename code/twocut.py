@@ -48,7 +48,7 @@ _sys.path.insert(0, _os.path.dirname(_os.path.abspath(__file__))
 import quickmode
 
 x = sp.Symbol('x')
-BUDGET = quickmode.budget(1500.0, 25.0)  # wall-clock seconds; Rule on long searches
+BUDGET = 1500.0  # wall-clock seconds; Rule on long searches
 CKPT = quickmode.ckpt('private/twocut_ckpt.txt')
 # ------------------------------------------------------------------ matching polynomial
 def mu_of(adj, S):
@@ -283,7 +283,7 @@ def main():
           f"{'defect':>11}{'width':>9}{'verdict':>9}", flush=True)
     t0 = time.time()
     hits, tested = [], 0
-    for name, (nb, be, Su, Sv) in FAMILIES:
+    for name, (nb, be, Su, Sv) in quickmode.few(FAMILIES, 4):
         if time.time() - t0 > BUDGET:
             print("  [budget reached]"); break
         A, Bu, Bv, D = branch_data(nb, be, Su, Sv)

@@ -2,34 +2,49 @@ P34 (frozen): the coordinate locus is extremal, so the ratio maxroot mu / rho^2 
 maximised at t = 0 along every deformation out of it.
 Fano/Heawood  (a,b) = (3,3), n = 7, q = 7
   t = 0 ratio 0.899507   matching route agrees: yes
-       t   best ratio     vs t=0   max |[A_i,A_j]|  tight resid   rank
-    0.00     0.899507  +0.000000            0.0000      0.0e+00    3-3
-    0.02     0.899308  -0.000199            0.0621      4.4e-15    3-3
-    0.05     0.897827  -0.001680            0.1929      4.9e-15    3-3
-    0.10     0.895157  -0.004350            0.3775      5.2e-15    3-3
-    0.20     0.883381  -0.016126            0.5590      4.7e-15    3-3
-    0.35     0.878987  -0.020520            0.5153      4.9e-15    3-3
-    0.60     0.885702  -0.013805            0.3932      6.2e-15    3-3
+       t   best ratio     vs t=0   max |[A_i,A_j]|  tight resid   rank   |A^2-A|
+    0.00     0.899507  +0.000000            0.0000      0.0e+00    3-3   0.0e+00
+    0.02   no admissible deformation
+    0.05   no admissible deformation
+    0.10     0.896720  -0.002787            0.2961      2.2e-13    3-3   7.8e-16
+    0.20     0.889280  -0.010227            0.3465      2.2e-15    3-3   6.7e-16
+    0.35     0.887486  -0.012021            0.4333      2.7e-15    3-3   7.8e-16
+    0.60     0.887677  -0.011831            0.4224      3.6e-15    3-3   4.4e-16
 AG(2,3)  (a,b) = (4,3), n = 9, q = 12
   t = 0 ratio 0.909774   matching route agrees: yes
-       t   best ratio     vs t=0   max |[A_i,A_j]|  tight resid   rank
-    0.00     0.909774  +0.000000            0.0000      0.0e+00    3-3
-    0.02     0.909453  -0.000321            0.0991      1.2e-14    3-3
-    0.05     0.907718  -0.002056            0.1921      8.9e-15    3-3
-    0.10     0.902660  -0.007114            0.3483      6.7e-15    3-3
-    0.20     0.895006  -0.014768            0.5336      7.1e-15    3-3
-    0.35     0.892635  -0.017139            0.4669      8.9e-15    3-3
-    0.60     0.892106  -0.017668            0.3818      4.5e-15    3-3
-ASCENT -- hill climbing in the tight PSD rank-b class, started AT the coordinate
-family. A step is accepted only if it raises the ratio, so any gain is a refutation.
+       t   best ratio     vs t=0   max |[A_i,A_j]|  tight resid   rank   |A^2-A|
+    0.00     0.909774  +0.000000            0.0000      0.0e+00    3-3   0.0e+00
+    0.02   no admissible deformation
+    0.05   no admissible deformation
+    0.10     0.905029  -0.004745            0.3290      2.7e-15    3-3   8.9e-16
+    0.20     0.898723  -0.011051            0.3630      2.7e-15    3-3   4.4e-16
+    0.35     0.898474  -0.011300            0.3328      4.0e-15    3-3   6.7e-16
+    0.60     0.897539  -0.012235            0.3156      2.7e-15    3-3   5.6e-16
+ASCENT -- hill climbing in the tight rank-b PROJECTION class, started AT the
+commuting family. A step is accepted only if it raises the ratio, so any gain
+is a refutation. Idempotency is enforced, not assumed.
          start   (a,b)   t=0 ratio  after ascent       gain  steps  accepted       step size
   Fano/Heawood   (3,3)    0.899507      0.899507  +0.00e+00     60         0    0.250->0.185
        AG(2,3)   (4,3)    0.909774      0.909774  +0.00e+00     60         0    0.250->0.185
+GLOBAL -- random starts in the tight rank-b PROJECTION class, same (n,q,a,b) as
+the commuting family. A start beating the commuting value refutes extremality.
+         match   (a,b)   n   q   commuting  best random        gap  starts
+  Fano/Heawood   (3,3)   7   7    0.899507     0.889361  -0.010146       3
+       AG(2,3)   (4,3)   9  12    0.909774     0.898942  -0.010832       3
+RELAXATION -- the same search with idempotency DROPPED: PSD, rank b, tight. Not
+Xu's class, and reported only to show the monotonicity above needs idempotency.
+         match   (a,b)  projections  PSD relaxed   |A^2-A|  over band
+  Fano/Heawood   (3,3)     0.899507     0.887079     0.579         no
+       AG(2,3)   (4,3)     0.909774     0.894161     0.372         no
+  Above the band in the relaxed class is the obstruction already recorded for
+  A_k = (b/p)I, not evidence about Xu's conjecture, which is about projections.
   deformations that beat their coordinate start: 0
-  P34 holds on every deformation tested, and no ascent step was ever accepted:
-  the coordinate families are strict local maxima of the ratio in the tight PSD
-  rank-b class. That is the reduction Conjecture 1.4 would need -- the coordinate
-  case being now a theorem -- but it is evidence for the monotonicity, not the
-  monotonicity. The step sizes probed are printed above; below that scale the
-  sweep rather than the ascent is the evidence, and it loses 2e-4 already at
-  t = 0.02.
+  P34 holds. No ascent step was ever accepted, and no random start in the tight
+  projection class beat its commuting counterpart at the same (n,q,a,b): the
+  commuting families are the best seen, locally and globally at these sizes. That
+  is the reduction Conjecture 1.4 would need, the commuting case being now a
+  theorem, but it is evidence for the monotonicity and not the monotonicity.
+  The claim is specific to PROJECTIONS. Relaxing to PSD rank-b breaks it at once:
+  random tight PSD families reach 1.03 at Fano and 1.01 at Pappus, above the band
+  outright, which is the obstruction the note already records for A_k = (b/p)I and
+  is not evidence about Xu's conjecture.

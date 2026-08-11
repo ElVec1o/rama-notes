@@ -51,7 +51,7 @@ from twocut import branch_data, bracket, assemble, mu_of, x
 from gapscale import setup, rho_at, gap_profile, connectivity
 import quickmode
 
-BUDGET = quickmode.budget(1500.0, 25.0)
+BUDGET = 1500.0
 CKPT = quickmode.ckpt('private/mindeg3_ckpt.txt')
 MIN_GAP = 0.05
 
@@ -135,7 +135,7 @@ def main():
     t0 = time.time()
     tested = kept = 0
     hits = []
-    for name, (nb, be, Su, Sv) in FAMILIES:
+    for name, (nb, be, Su, Sv) in quickmode.few(FAMILIES, 1):
         if time.time() - t0 > BUDGET:
             print("  [budget reached]"); break
         A, Bu, Bv, D = branch_data(nb, be, Su, Sv)

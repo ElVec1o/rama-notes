@@ -43,7 +43,7 @@ _sys.path.insert(0, _os.path.dirname(_os.path.abspath(__file__))
 import quickmode
 
 y = sp.Symbol('y')
-BUDGET = quickmode.budget(1700.0, 25.0)
+BUDGET = 1700.0
 CKPT = quickmode.ckpt('private/softedge2_ckpt.txt')
 # ------------------------------------------------------------------ generation
 def biregular_base(d, q, r):
@@ -142,10 +142,11 @@ def main():
           f"{'margin_x':>11}{'samples':>9}")
     t0 = time.time()
     T = {}
-    FAM = ((3, 6), (3, 9), (3, 12), (4, 8), (4, 12), (5, 10), (5, 15), (6, 12))
+    FAM = quickmode.few(((3, 6), (3, 9), (3, 12), (4, 8), (4, 12), (5, 10),
+                         (5, 15), (6, 12)), 2)
     for (d, q) in FAM:
         g = math.sqrt(q - 1) - math.sqrt(d - 1)
-        for r in range(max(d, 5), 19):
+        for r in quickmode.few(range(max(d, 5), 19), 6):
             if time.time() - t0 > BUDGET:
                 break
             base = biregular_base(d, q, r)

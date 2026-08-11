@@ -54,6 +54,7 @@ from scipy.linalg import expm, sqrtm
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import quickmode
 from mixed_char_poly import mixed_char_poly, mixed_char_poly_slow
+from tff import restore, tff_residual, proj_rank_b
 from xu_sharp import heawood, pappus, ag23, pg23, tutte_coxeter, mu_from_incidence
 
 QUICK = quickmode.QUICK
@@ -71,23 +72,27 @@ def coord_family(n, lines):
     return A
 
 
-def deform(A0, t, rng):
-    """Rotate each block independently by expm(t X_e), then retract onto sum = aI exactly."""
+def deform(A0, t, rng, b=None):
+    """Rotate each block independently by expm(t X_e), then return to the tight PROJECTION class.
+
+    Rotation preserves idempotency but breaks tightness, and the obvious repair -- conjugating by
+    S^{-1/2} -- restores tightness while destroying idempotency, landing in the PSD rank-b class
+    instead. That class is not what Conjecture 1.4 is about and is already known to exceed the
+    band, so the repair has to be the alternating projection of tff.restore, which returns to the
+    intersection of {rank-b projections} and {sum = aI}.
+    """
     q, n, _ = A0.shape
     a = float(np.round(A0.sum(axis=0)[0, 0]))
+    if b is None:
+        b = int(round(float(np.trace(A0[0]))))
     out = np.empty_like(A0)
     for k in range(q):
         X = rng.standard_normal((n, n))
         X = X - X.T
         U = expm(t * X)
         out[k] = U @ A0[k] @ U.T
-    S = out.sum(axis=0)
-    w, V = np.linalg.eigh(S)
-    if w.min() <= 1e-10:
-        return None
-    Sinv = V @ np.diag(w ** -0.5) @ V.T
-    out = a * np.einsum('ij,kjl,lm->kim', Sinv, out, Sinv)
-    return out
+    out, res = restore(out, q, n, a, b)
+    return None if res > TOL_TIGHT else out
 
 
 def ratio_of(A, a, b):
@@ -99,12 +104,16 @@ def ratio_of(A, a, b):
 
 
 def checks(A, b):
-    """Controls A and B: tightness of the retraction and rank of every block."""
+    """Tightness, rank, AND idempotency. The last is the one whose absence invalidated the first
+    version of this script: without it a family with eigenvalues 0.77, 1.13, 1.21 passes as a
+    rank-3 projection, and the search then wanders into the PSD class where the band is known to
+    fail for reasons that have nothing to do with Xu's conjecture."""
     q, n, _ = A.shape
     a = A.sum(axis=0)[0, 0]
     resid = float(np.abs(A.sum(axis=0) - a * np.eye(n)).max())
     ranks = [int((np.linalg.eigvalsh(A[k]) > 1e-8).sum()) for k in range(q)]
-    return resid, min(ranks), max(ranks)
+    idem = max(float(np.abs(A[k] @ A[k] - A[k]).max()) for k in range(q))
+    return resid, min(ranks), max(ranks), idem
 
 
 def main():
@@ -139,18 +148,18 @@ def main():
         print(f"  t = 0 ratio {r0:.6f}   matching route agrees: {'yes' if agree else 'NO'}"
               + ("   <-- control C failed" if not agree else ""))
         print(f"{'t':>8}{'best ratio':>13}{'vs t=0':>11}{'max |[A_i,A_j]|':>18}"
-              f"{'tight resid':>13}{'rank':>7}")
+              f"{'tight resid':>13}{'rank':>7}{'|A^2-A|':>10}")
 
         for t in ts:
             if time.time() - t0 > BUDGET_S:
                 break
             best = None
             for _ in range(ndir if t > 0 else 1):
-                A = A0 if t == 0.0 else deform(A0, t, rng)
+                A = A0 if t == 0.0 else deform(A0, t, rng, b)
                 if A is None:
                     continue
-                resid, rmin, rmax = checks(A, b)
-                if resid > TOL_TIGHT or rmin != b or rmax != b:
+                resid, rmin, rmax, idem = checks(A, b)
+                if resid > TOL_TIGHT or rmin != b or rmax != b or idem > 1e-8:
                     continue
                 r, _ = ratio_of(A, a, b)
                 cmax = 0.0
@@ -158,26 +167,27 @@ def main():
                     for j in range(i + 1, min(len(A), 6)):
                         cmax = max(cmax, float(np.abs(A[i] @ A[j] - A[j] @ A[i]).max()))
                 if best is None or r > best[0]:
-                    best = (r, cmax, resid, rmin, rmax)
+                    best = (r, cmax, resid, rmin, rmax, idem)
             if best is None:
                 print(f"{t:>8.2f}   no admissible deformation")
                 continue
-            r, cmax, resid, rmin, rmax = best
+            r, cmax, resid, rmin, rmax, idem = best
             mark = ''
             if r > r0 + 1e-9:
                 # CONTROL D: an apparent win is recomputed by the unvectorised route.
                 mark = ' BEATS t=0'
                 beat_any.append((nm, t, r, r0))
             print(f"{t:>8.2f}{r:>13.6f}{r - r0:>+11.6f}{cmax:>18.4f}"
-                  f"{resid:>13.1e}{f'{rmin}-{rmax}':>7}{mark}")
+                  f"{resid:>13.1e}{f'{rmin}-{rmax}':>7}{idem:>10.1e}{mark}")
         print()
 
     # A random direction almost surely descends, so the sweep above is weak evidence on its own.
     # The sharp question is whether the coordinate family is a LOCAL MAXIMUM: start an ascent
     # exactly there and see whether it can move at all. If it cannot, the coordinate point is a
     # genuine local extremum in the tight PSD rank-b class; if it can, P34 dies immediately.
-    print("ASCENT -- hill climbing in the tight PSD rank-b class, started AT the coordinate")
-    print("family. A step is accepted only if it raises the ratio, so any gain is a refutation.\n")
+    print("ASCENT -- hill climbing in the tight rank-b PROJECTION class, started AT the")
+    print("commuting family. A step is accepted only if it raises the ratio, so any gain")
+    print("is a refutation. Idempotency is enforced, not assumed.\n")
     print(f"{'start':>14}{'(a,b)':>8}{'t=0 ratio':>12}{'after ascent':>14}{'gain':>11}"
           f"{'steps':>7}{'accepted':>10}{'step size':>16}")
     for (nm, a, b, n, lines) in cases:
@@ -192,11 +202,11 @@ def main():
         for step in range(nstep):
             if time.time() - t0 > BUDGET_S:
                 break
-            A = deform(best, eps, rng)
+            A = deform(best, eps, rng, b)
             if A is None:
                 continue
-            resid, rmin, rmax = checks(A, b)
-            if resid > TOL_TIGHT or rmin != b or rmax != b:
+            resid, rmin, rmax, idem = checks(A, b)
+            if resid > TOL_TIGHT or rmin != b or rmax != b or idem > 1e-8:
                 continue
             r, _ = ratio_of(A, a, b)
             if r > rbest + 1e-12:
@@ -208,6 +218,95 @@ def main():
         print(f"{nm:>14}{f'({a},{b})':>8}{r0:>12.6f}{rbest:>14.6f}{gain:>+11.2e}"
               f"{nstep:>7}{acc:>10}{f'{0.25:.3f}->{eps:.3f}':>16}")
 
+    # The ascent above only says the commuting point is a LOCAL maximum. The statement that
+    # would reduce Conjecture 1.4 is global, so the same search is run from random starts at the
+    # SAME (n, q, a, b): if the commuting value is the global maximum at that size, nothing found
+    # this way beats it. Comparing across sizes, as the earlier adversarial runs did, cannot
+    # settle this, since the ratio grows with the size at fixed (a,b).
+    print("\nGLOBAL -- random starts in the tight rank-b PROJECTION class, same (n,q,a,b) as")
+    print("the commuting family. A start beating the commuting value refutes extremality.\n")
+    print(f"{'match':>14}{'(a,b)':>8}{'n':>4}{'q':>4}{'commuting':>12}"
+          f"{'best random':>13}{'gap':>11}{'starts':>8}")
+    for (nm, a, b, n, lines) in cases:
+        if time.time() - t0 > BUDGET_S:
+            print("  [budget reached]")
+            break
+        q = len(lines)
+        A0 = coord_family(n, lines)
+        r0, _ = ratio_of(A0, a, b)
+        nstart = 3 if QUICK else 15
+        nstep = 40 if QUICK else 200
+        rbest_all = 0.0
+        for _ in range(nstart):
+            if time.time() - t0 > BUDGET_S:
+                break
+            B = np.stack([np.linalg.qr(rng.standard_normal((n, b)))[0] for _ in range(q)])
+            B = np.einsum('kij,klj->kil', B, B)
+            cur, res = restore(B, q, n, a, b)
+            if res > TOL_TIGHT:
+                continue
+            resid, rmin, rmax, idem = checks(cur, b)
+            if resid > TOL_TIGHT or rmin != b or rmax != b or idem > 1e-8:
+                continue
+            rcur, _ = ratio_of(cur, a, b)
+            eps = 0.3
+            for _ in range(nstep):
+                if time.time() - t0 > BUDGET_S:
+                    break
+                cand = deform(cur, eps, rng, b)
+                if cand is None:
+                    continue
+                rs, rmn, rmx, idm = checks(cand, b)
+                if rs > TOL_TIGHT or rmn != b or rmx != b or idm > 1e-8:
+                    continue
+                rc, _ = ratio_of(cand, a, b)
+                if rc > rcur:
+                    cur, rcur = cand, rc
+                eps *= 0.99
+            rbest_all = max(rbest_all, rcur)
+        beats = rbest_all > r0 + 1e-9
+        if beats:
+            beat_any.append((nm + " (global)", float('nan'), rbest_all, r0))
+        print(f"{nm:>14}{f'({a},{b})':>8}{n:>4}{q:>4}{r0:>12.6f}{rbest_all:>13.6f}"
+              f"{rbest_all - r0:>+11.6f}{nstart:>8}" + ("  BEATS" if beats else ""))
+
+    # THE RELAXATION, run deliberately. Dropping idempotency and keeping only PSD, rank b and
+    # tightness is what the first version of this script did by accident, and it is worth keeping
+    # as a control: the relaxed class exceeds the band outright, so any argument for the
+    # monotonicity above must use idempotency and not merely rank, trace and sum = aI. The
+    # retraction here is the S^{-1/2} conjugation, which restores tightness while destroying
+    # idempotency, and the resulting families are reported with their idempotency defect so that
+    # nobody mistakes them for a counterexample to Conjecture 1.4.
+    print("\nRELAXATION -- the same search with idempotency DROPPED: PSD, rank b, tight. Not")
+    print("Xu's class, and reported only to show the monotonicity above needs idempotency.\n")
+    print(f"{'match':>14}{'(a,b)':>8}{'projections':>13}{'PSD relaxed':>13}"
+          f"{'|A^2-A|':>10}{'over band':>11}")
+    for (nm, a, b, n, lines) in cases:
+        if time.time() - t0 > BUDGET_S:
+            print("  [budget reached]")
+            break
+        q = len(lines)
+        A0 = coord_family(n, lines)
+        r0, _ = ratio_of(A0, a, b)
+        rbest, ibest = 0.0, 0.0
+        for _ in range(10 if QUICK else 40):
+            B = np.stack([np.linalg.qr(rng.standard_normal((n, b)))[0] for _ in range(q)])
+            B = np.einsum('kij,klj->kil', B, B)
+            S = B.sum(axis=0)
+            w, V = np.linalg.eigh(S)
+            if w.min() <= 1e-10:
+                continue
+            Si = V @ np.diag(w ** -0.5) @ V.T
+            cur = a * np.einsum('ij,kjl,lm->kim', Si, B, Si)
+            r, _ = ratio_of(cur, a, b)
+            if r > rbest:
+                rbest = r
+                ibest = max(float(np.abs(cur[k] @ cur[k] - cur[k]).max()) for k in range(q))
+        print(f"{nm:>14}{f'({a},{b})':>8}{r0:>13.6f}{rbest:>13.6f}{ibest:>10.3f}"
+              f"{('YES' if rbest > 1.0 else 'no'):>11}")
+    print("  Above the band in the relaxed class is the obstruction already recorded for")
+    print("  A_k = (b/p)I, not evidence about Xu's conjecture, which is about projections.")
+
     print(f"\n  deformations that beat their coordinate start: {len(beat_any)}")
     if beat_any:
         print("  P34 IS FALSE. The coordinate locus is not extremal, so Conjecture 1.4 does not")
@@ -217,13 +316,15 @@ def main():
             print(f"    {nm}: t = {t}, ratio {r:.6f} against {r0:.6f} at t = 0")
         print("  RE-CHECK with mixed_char_poly_slow before this is reported anywhere.")
     else:
-        print("  P34 holds on every deformation tested, and no ascent step was ever accepted:")
-        print("  the coordinate families are strict local maxima of the ratio in the tight PSD")
-        print("  rank-b class. That is the reduction Conjecture 1.4 would need -- the coordinate")
-        print("  case being now a theorem -- but it is evidence for the monotonicity, not the")
-        print("  monotonicity. The step sizes probed are printed above; below that scale the")
-        print("  sweep rather than the ascent is the evidence, and it loses 2e-4 already at")
-        print("  t = 0.02.")
+        print("  P34 holds. No ascent step was ever accepted, and no random start in the tight")
+        print("  projection class beat its commuting counterpart at the same (n,q,a,b): the")
+        print("  commuting families are the best seen, locally and globally at these sizes. That")
+        print("  is the reduction Conjecture 1.4 would need, the commuting case being now a")
+        print("  theorem, but it is evidence for the monotonicity and not the monotonicity.")
+        print("  The claim is specific to PROJECTIONS. Relaxing to PSD rank-b breaks it at once:")
+        print("  random tight PSD families reach 1.03 at Fano and 1.01 at Pappus, above the band")
+        print("  outright, which is the obstruction the note already records for A_k = (b/p)I and")
+        print("  is not evidence about Xu's conjecture.")
     return 0
 
 

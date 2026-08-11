@@ -42,11 +42,14 @@ import itertools
 import numpy as np
 from scipy.optimize import nnls
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import quickmode
+
 rng = np.random.default_rng(20260820)
 
 TOL_TIGHT = 1e-9      # max entry of |sum c_k P_k - aI| allowed
 TOL_AGREE = 1e-6      # relative disagreement allowed between the two p_k routes
-BUDGET_S = 25.0 if '--quick' in __import__('sys').argv else 900.0      # wall clock ceiling
+BUDGET_S = 900.0      # wall clock ceiling; --quick truncates the configuration, not this
 
 
 def tree_walks(a, kmax):
@@ -179,7 +182,7 @@ def main():
     disagreements = 0
     checked = 0
 
-    for (kind, m, a) in configs:
+    for (kind, m, a) in quickmode.few(configs, 3):
         if time.time() - t0 > BUDGET_S:
             print("  [wall clock budget reached; remaining configurations skipped]")
             break
@@ -187,7 +190,7 @@ def main():
         kk = min(5, m // 2)
         best = None
         nsamp = 0
-        ntry = 40 if kind == 'general' else 12
+        ntry = (4 if quickmode.QUICK else 40) if kind == 'general' else (3 if quickmode.QUICK else 12)
         for _ in range(ntry):
             if time.time() - t0 > BUDGET_S:
                 break

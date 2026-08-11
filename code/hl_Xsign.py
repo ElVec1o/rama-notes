@@ -57,7 +57,7 @@ _sys.path.insert(0, _os.path.dirname(_os.path.abspath(__file__))
                  # these, and __file__ is undefined there
 import quickmode
 
-BUDGET_S = quickmode.budget(420.0, 25.0)  # hard wall clock for the whole script
+BUDGET_S = 420.0  # hard wall clock for the whole script
 _T0 = time.monotonic()
 
 
@@ -142,7 +142,7 @@ def main():
              ('proj', 4, 3, 0), ('proj', 6, 3, 1),
              ('plane', 4, 3.0, 0), ('plane', 4, 3.0, 1), ('plane', 5, 3.0, 0),
              ('plane', 6, 3.0, 0)]
-    for kind, m, a, s in cases:
+    for kind, m, a, s in quickmode.few(cases, 2):
         if over_budget():
             print("  [wall-clock budget reached, stopping PART 1]")
             break
