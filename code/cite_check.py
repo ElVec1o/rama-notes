@@ -166,7 +166,20 @@ def quoted_numbers():
             lo = src.rfind('.', 0, max(0, m.start() - 400))
             hi = src.find('.', m.end())
             sentence = src[lo + 1: hi if hi > 0 else m.end() + 200]
+            base = lo + 1
+            # A sentence may cite several scripts -- "(code/a.py, code/b.py, code/c.py)" -- and
+            # charging every figure to whichever name matched blamed D3fixdeg for the whole
+            # five-engine table and sharp_close for universal_close's percentages. Bind each
+            # figure to the citation NEAREST it instead, and skip the ones that belong to a
+            # different script in the same sentence.
+            cites = [(c.start() + base, c.group(1).replace('\\_', '_'))
+                     for c in SCRIPT_TT.finditer(sentence)]
             for (txt, val) in _nums(sentence):
+                if len(cites) > 1:
+                    at = sentence.find(txt) + base
+                    nearest = min(cites, key=lambda t: abs(t[0] - at))[1]
+                    if nearest != name:
+                        continue
                 tol = 0.5 * 10 ** (-len(txt.split('.')[1])) if '.' in txt else 0.5
                 if not any(abs(o - val) <= tol for o in outnums):
                     findings.append((paper, name, txt))
@@ -248,7 +261,16 @@ def main():
         print("  An uncited bibitem produces no warning anywhere in the toolchain.")
         return 1
 
+    ncited = len(scripts)
     nsnap = len(glob.glob(os.path.join(SNAPS, '*.txt')))
+    covered = sum(1 for n in scripts if os.path.exists(os.path.join(SNAPS, n + '.txt')))
+    print("\n" + "=" * 78)
+    print("COVERAGE")
+    print(f"  cited scripts: {ncited}   with a recorded baseline: {covered}"
+          f"   without: {ncited - covered}")
+    if ncited - covered:
+        print(f"  Drift in those {ncited - covered} is UNDETECTED. They exceed the {BUDGET}s")
+        print("  budget, so no baseline could be taken; that is a real gap, not a pass.")
     print(f"\n  Every cited script runs, and the {nsnap} with recorded snapshots still produce")
     print("  the same numbers. hl_Wspec.py violated the first property silently; a script that")
     print("  runs but has drifted would violate the second just as quietly.")
