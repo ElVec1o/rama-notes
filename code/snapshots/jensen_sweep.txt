@@ -1,7 +1,0 @@
-1433 graphs with fvs <= 2 and 2 <= b <= 4 (stride 12)
-resuming after 1425
-gap points tested : 3
-Jensen failures   : 0
-worst ratio       : inf
-  b=3:     2 points, min ratio       inf, median       inf
-  b=4:     1 points, min ratio       inf, median       inf

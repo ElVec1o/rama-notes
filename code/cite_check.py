@@ -94,6 +94,13 @@ def run(name, record=False):
         return 'CRASH', (tail[-1][:110] if tail else f'exit {p.returncode}')
 
     cur = normalise(p.stdout or '')
+    # Several scripts checkpoint into private/ and RESUME. Snapshotting one of those captures a
+    # nearly-complete run that tests almost nothing -- jensen_sweep recorded "gap points tested:
+    # 3" and a worst ratio of inf, against the 1475 points the paper cites. Such a baseline
+    # proves nothing, so it is refused rather than stored, and the script is reported as
+    # RESUMED so the gap is visible instead of passing silently.
+    if re.search(r'resuming after', cur, re.I):
+        return 'RESUMED', 'checkpointed run; snapshot would capture a resumed state'
     snap = os.path.join(SNAPS, name + '.txt')
     if record:
         os.makedirs(SNAPS, exist_ok=True)
@@ -121,7 +128,14 @@ SCRIPT_TT = re.compile(r'\\texttt\{code/([A-Za-z0-9_\\]+)\.py\}')
 
 
 def _nums(text):
-    """Decimal numbers in a string, LaTeX thin-space separators removed."""
+    """Decimal numbers in a string, LaTeX thin-space separators removed.
+
+    Exponent notation is stripped first. A sentence containing $10^{-15}$ otherwise
+    contributes 10 and 15 as if they were quoted figures, which produced most of the
+    false positives in the first run of this check.
+    """
+    text = re.sub(r'\d+\s*\^\s*\{[^}]*\}', ' ', text)
+    text = re.sub(r'\d+\s*\^\s*-?\d+', ' ', text)
     out = []
     for t in NUM.findall(text):
         try:

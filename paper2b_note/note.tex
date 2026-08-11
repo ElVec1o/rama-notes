@@ -600,17 +600,22 @@ the ratio system at $\sqrt5$ has decay $0.9636233789$, so it is outside $\operat
 --- and a hypothesis provable in general would be worthless, the conjecture being false. And it
 holds wherever it has been measured, over the four families of \S\ref{sec:inherit}.
 
-The strictness of the hypothesis is a reason for caution, and the caution is warranted. The
-containment is measured only for the biregular families of \S\ref{sec:inherit}. At minimum degree
-three in general it is \emph{not} established, and a search over $\delta\ge3$ graphs carrying a
-gap has produced a candidate failure --- a $12$-vertex graph with degrees in $[3,10]$ whose path
-tree appears to carry twelve eigenvalues inside a gap of $\operatorname{spec}(T)$, while no root
-of $\mu_G$ lies there (\texttt{code/pathtree\_delta3.py}). That count is not yet trusted, the
-first run having discarded the near-zero-pivot flag that makes an inertia count reliable, and it
-is being rechecked. If it survives, the containment is false exactly where the conjecture is true,
-and Proposition~\ref{prop:reform} is then a reformulation of the biregular case only and no route
-to the general one. We state it because the implication is worth having either way, and because
-the honest position is that its hypothesis may be too strong.
+The strictness of the hypothesis is decisive, and against it. At minimum degree three the
+containment is \emph{false}. Over $86$ graphs with $\delta\ge3$ carrying a gap of
+$\operatorname{spec}(T)$, all but one inherit it; the exception is a $12$-vertex graph with
+degrees $\{3,4,10\}$ whose path tree, on $3944$ vertices, carries twelve eigenvalues inside the
+gap $[2.060,2.160]$ while no root of $\mu_G$ lies there --- counted by Sylvester's law, with the
+near-zero-pivot flag honoured, so the count is trustworthy
+(\texttt{code/pathtree\_delta3.py}).
+
+So $\operatorname{spec}(P)\subseteq\operatorname{spec}(T)$ fails exactly where
+Conjecture~\ref{conj:gap} holds, and Proposition~\ref{prop:reform} cannot carry a proof of the
+minimum-degree conjecture: no argument can pass through a hypothesis that is false on the graphs
+in question. What survives is the biregular reading. There the containment is measured to hold
+(\S\ref{sec:inherit}), and there the proposition does reduce the inner end to a statement about
+one explicit finite tree. We record the negative result because it closes a route that looks
+plausible from the biregular evidence alone, and because it was the only reformulation five
+searches produced.
 
 So the sign-alternating certificate is the best of its family, and its reach is exactly
 $\lambda^2<\Delta$ --- the binding case, where the children at the minimum count are leaves of

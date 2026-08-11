@@ -144,7 +144,10 @@ GRAPHS = {
 
 
 def main():
-    print(f"{'graph':<12}{'d':>3}{'n':>4}{'(d-1)^(n/2) mu':>18}"
+    # mu itself is printed alongside the scaled identity, because that is the quantity the note
+    # quotes -- 19, 74, 76, 297, 1162 for K4, K33, prism, cube, Petersen -- and without this
+    # column a reader running the script finds only (d-1)^(n/2) mu and no way to reach them.
+    print(f"{'graph':<12}{'d':>3}{'n':>4}{'mu(2sqrt(d-1))':>16}{'(d-1)^(n/2) mu':>18}"
           f"{'pseudo-forest sum':>20}{'':>4}")
     ok = True
     for name, (d, n, edges) in GRAPHS.items():
@@ -162,7 +165,10 @@ def main():
         rhs = pseudoforest_sum(n, edges, d)
         match = (lhs == rhs)
         ok = ok and match
-        print(f"{name:<12}{d:>3}{n:>4}{lhs:>18}{rhs:>20}{'  OK' if match else '  FAIL':>4}")
+        mu_only = lhs // ((d - 1) ** (n // 2)) if isinstance(lhs, int) else \
+            lhs / float((d - 1) ** (n // 2))
+        print(f"{name:<12}{d:>3}{n:>4}{mu_only:>16}{lhs:>18}{rhs:>20}"
+              f"{'  OK' if match else '  FAIL':>4}")
     print()
     print("identity verified on all cases" if ok else "IDENTITY FAILS")
     return 0 if ok else 1
