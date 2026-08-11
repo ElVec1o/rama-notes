@@ -46,7 +46,7 @@ rng = np.random.default_rng(20260820)
 
 TOL_TIGHT = 1e-9      # max entry of |sum c_k P_k - aI| allowed
 TOL_AGREE = 1e-6      # relative disagreement allowed between the two p_k routes
-BUDGET_S = 900.0      # wall clock ceiling
+BUDGET_S = 25.0 if '--quick' in __import__('sys').argv else 900.0      # wall clock ceiling
 
 
 def tree_walks(a, kmax):

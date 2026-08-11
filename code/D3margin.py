@@ -32,7 +32,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from D1cut_adv import dos_at
 from D3broad import spread_graph, connected, has_cut_vertex, mu_roots
 
-BUDGET = 2400.0
+BUDGET = 25.0 if '--quick' in __import__('sys').argv else 2400.0
 
 
 def main():

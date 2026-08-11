@@ -51,7 +51,7 @@ rng = np.random.default_rng(20260821)
 
 TOL_TIGHT = 1e-9
 CHUNK = 150_000
-BUDGET_S = 2400.0
+BUDGET_S = 25.0 if '--quick' in __import__('sys').argv else 2400.0
 
 
 def tree_walks(a, kmax):

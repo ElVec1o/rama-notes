@@ -32,7 +32,7 @@ from gapscale import gap_profile
 from D3broad import spread_graph, connected
 from pathtree_inertia import inertia
 
-BUDGET = 2100.0
+BUDGET = 25.0 if '--quick' in __import__('sys').argv else 2100.0
 
 
 def main():

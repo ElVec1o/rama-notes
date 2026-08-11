@@ -1,0 +1,18 @@
+P16 was frozen before the data as
+Re-testing under three controls: two independent p_k routes, exact tightness,
+and many samples per configuration.
+       kind   m  a   n |supp|    resid      k=1      k=2      k=3      k=4      k=5   worst  ymax/4a
+ coordinate   8  3  12     12  0.0e+00   1.0000   1.0000   0.9914   0.9724      nan  1.0000   0.5507
+ coordinate  10  3  12     15  0.0e+00   1.0000   1.0000   0.9931   0.9794   0.9591  1.0000   0.5693
+ coordinate  12  3  12     18  0.0e+00   1.0000   1.0000   0.9943   0.9804   0.9591  1.0000   0.5780
+    general   6  3  40     21  6.4e-16   1.0000   1.0079   1.0011      nan      nan  1.0079   0.5227
+    general   8  3  25     36  8.9e-16   1.0000   1.0431   1.0920   1.1336      nan  1.1336   0.5767
+  families checked: 101   route A / route B disagreements: 0
+  worst p_k / ((m/2)W_2k): 1.1336   (witness: general, m=8, a=3)
+  worst y_max / (4a):      0.5881
+  P16 IS FALSE, confirmed under all three controls. The tree walk count is not
+  an upper bound for the plane class, so it cannot serve as the a-priori input
+  that removes the dimension restriction.
+  The band is untouched: every family stayed at 0.5881 of the
+  threshold. Exceeding the tree moment bound is not the same as exceeding the
+  band, the moment bound being sufficient and not necessary.

@@ -53,7 +53,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from twocut import mu_of, x
 from gapscale import setup, rho_at
 
-BUDGET_S = 2700.0
+BUDGET_S = 25.0 if '--quick' in __import__('sys').argv else 2700.0
 AMBIG = 5e-3          # |rho - 1| below this is not trusted either way
 
 

@@ -1,0 +1,8 @@
+P30 (frozen): the minimum DOS at a root does not decay with n.
+   n  graphs   roots   min DOS at a root      median     degrees
+  10      57     285        8.137491e-02  1.4223e-01        3..9
+  12   no graphs
+  14   no graphs
+  16   no graphs
+  18   no graphs
+  20   no graphs

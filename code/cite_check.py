@@ -85,7 +85,10 @@ def run(name, record=False):
         # (private/<name>_ckpt.txt for checkpoints, code/<other>.py when one reads another), so
         # running them from code/ makes every one of them fail on a path that is actually fine.
         # The first version of this checker did exactly that and reported twenty false crashes.
-        p = subprocess.run([sys.executable, path], cwd=ROOT,
+        # --quick is honoured by the long searches: it shrinks their budget so a
+        # deterministic baseline can be taken. Scripts that do not know the flag ignore it,
+        # argparse not being used anywhere here.
+        p = subprocess.run([sys.executable, path, '--quick'], cwd=ROOT,
                            capture_output=True, text=True, timeout=BUDGET, env=env)
     except subprocess.TimeoutExpired:
         return 'RUNNING', ''
