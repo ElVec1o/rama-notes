@@ -2043,6 +2043,15 @@ pivot $3.7\times10^{-2}$, against an evaluation error of order $10^{-55}$ at the
 (\texttt{code/curvform.py}). The margin exceeds the error by some $10^{53}$, so the definiteness
 is a certificate and not a reading.
 
+The extra null directions that appear at $b=2$ are not a failure of maximality. Beyond the
+conjugation orbit the form has $2$ further null directions for $C_4$, $6$ for $K_4$ and $9$ for
+$C_6$, all exact, and none at $(2,3)$, $(3,3)$ or the family of triples in $K_4$; so the trigger is
+$b=2$ and not $a=b=2$, $K_4$ and $K_{3,3}$ being $(3,2)$. Along those directions
+$\lambda_{\max}$ still decreases, at fourth order rather than second, with the same sign for both
+signs of the parameter: the fourth-order coefficients measured are $-0.0038$ and $-0.0005$ for
+$C_4$ and between $-0.60$ and $-0.14$ for $K_4$. At $b=2$ the second-order test is blind and the
+fourth order does the work.
+
 It is not a statement about all commuting families, and the qualification is not idle. The same
 computation on four further families gives no positive eigenvalue anywhere, so $\Lambda\preceq0$
 throughout; but the strictness transverse to the orbit fails at $(a,b)=(2,2)$, where for $C_6$ the
@@ -2053,13 +2062,20 @@ $(2,2)$ case is the one whose universal cover is a line, with no spectral gaps a
 degeneracy is not surprising; but on the evidence the correct statement is $\Lambda\preceq0$ in
 general with strictness away from $a=b=2$, and that is what is claimed here.
 
-One order beyond the obstruction, nothing further is imposed. The order-three equation reads
-$Y_k-P_kY_k-Y_kP_k=D_kX_k+X_kD_k$, and its diagonal entries are
-$2(D_k)_{jj}(X_k)_{jj}$ since $X_k$ is diagonal; but $D_k$ is supported on pairs with exactly one
-endpoint in $e_k$, so its diagonal vanishes and the right side has no diagonal at all. The
-order-three obstruction is therefore identically zero, for every direction and not only for those
-on the cone, and $Y$ is left free in its off-diagonal blocks. Whether that freedom absorbs the
-order-four condition is what a proof of the next statement would have to settle.
+One order beyond the obstruction, nothing further is imposed, and for a reason of supports. The
+order-three equation reads $Y_k-P_kY_k-Y_kP_k=D_kX_k+X_kD_k$. Its off-diagonal blocks give the
+condition $(D_kX_k+X_kD_k)_{12}=0$, which holds identically: with $X_{11}=-(D^2)_{11}$ and
+$X_{22}=(D^2)_{22}$ from order two, that block is
+$D_{12}D_{21}D_{12}-D_{12}D_{21}D_{12}=0$. Its diagonal entries vanish too. Here $D_k$ is
+supported on pairs with exactly one endpoint in $e_k$, by the order-one equation, while $X_k$ is
+supported on pairs with both endpoints on the same side, its two diagonal blocks being fixed by
+order two and the canonical solution taking the off-diagonal blocks to zero; the supports are
+complementary, so every term of $(D_kX_k+X_kD_k)_{jj}$ has a vanishing factor. Note that $X_k$ is
+not a diagonal matrix, the block $X_{11}=-(D^2)_{11}$ being $b\times b$; it is the complementarity
+of supports and not diagonality that the argument uses. The order-three obstruction is therefore
+identically zero, for every direction and not only for those on the cone, and $Y$ is left free in
+its off-diagonal blocks. This step is machine-checked as
+\texttt{OrderThree.order\_three\_unobstructed}.
 
 Whether every direction of that cone is the velocity of a genuine curve is not settled here. It
 holds wherever it has been looked at: over the $42$ cross basis directions of the Fano family and
