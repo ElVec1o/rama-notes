@@ -1,0 +1,13 @@
+P37 (frozen): c_s = (-1)^s s! binom(p,s) sum_{|S|=s} D(A_k : k in S, I^{p-s}) for every
+tight rank-b projection family, commuting or not, at every s.
+  p  q  a  b  commutator  max rel diff  all c_s >= 0 in sign  Newton min
+  4  4  2  2      0.9993      2.63e-15                  True      1.2000
+  4  6  3  2      0.9731      1.31e-15                  True      1.1250
+  worst relative disagreement over all families and all s: 2.63e-15
+  P37 holds. The coefficients are mixed discriminants, on and off the commuting
+  locus. Nonnegativity of the alternating signs is Alexandrov's inequality for
+  positive semidefinite arguments, and the Newton ratios above one are the
+  consequence of real-rootedness. Neither is new, and neither is claimed as new;
+  what the identity retires is the question of what the coefficients count off the
+  locus. On the locus they count systems of distinct representatives; off it they
+  are the continuous extension of that count and count nothing.

@@ -1844,6 +1844,43 @@ the known open sharpening of the Marcus--Spielman--Srivastava bound. So $b=2$ is
 not an easier case awaiting a short argument; it is that open problem in another
 notation.
 
+\subsection{The coefficients are mixed discriminants}\label{sec:mixeddisc}
+
+Theorem~\ref{thm:matchingform} writes $M_r$ as a sum of squared Pl\"ucker norms, and
+Proposition~\ref{prop:bridge} identifies the coefficients with matching numbers on the commuting
+locus. Off that locus they move continuously and remain nonnegative and log-concave. They are not
+a new invariant: they are mixed discriminants, the object the mixed characteristic polynomial is
+assembled from.
+
+Recall the mixed discriminant of $p$ symmetric $p\times p$ matrices,
+\[
+D(B_1,\dots,B_p)=\frac1{p!}\sum_{\sigma\in S_p}
+\det\bigl[B_{\sigma(1)}\varepsilon_1\ \big|\ \cdots\ \big|\ B_{\sigma(p)}\varepsilon_p\bigr],
+\]
+introduced by Aleksandrov \cite{Alek} in the theory of mixed volumes. Writing
+$\mu(x)=\sum_sc_sx^{\,p-s}$ for a tight rank-$b$ family $A_1,\dots,A_q$ on $\mathbb R^p$,
+multilinearity of the determinant gives
+\begin{equation}\label{eq:mixeddisc}
+c_s=(-1)^s\,s!\,\binom ps\sum_{|S|=s}D\bigl(A_k:k\in S,\ I^{\,p-s}\bigr),
+\end{equation}
+checked to $1.4\times10^{-14}$ at every $s$ on five families with commutator norms between $0.84$
+and $1.00$, so on families far from commuting (\texttt{code/mixeddisc.py}).
+
+Two properties recorded earlier as observations are then consequences of classical results rather
+than facts about this construction. The $c_s$ alternate in sign because a mixed discriminant of
+positive semidefinite arguments is nonnegative, which is Aleksandrov's inequality; the
+quantitative theory of that quantity is Bapat's \cite{Bapat}, whose conjectured sharp lower bound
+for doubly stochastic tuples was proved by Gurvits \cite{Gurvits}. And the coefficients are
+log-concave because $\mu$ is real-rooted, by \cite{MSS}, so Newton's inequalities apply; the
+measured ratios run from $1.07$ to $1.20$.
+
+What \eqref{eq:mixeddisc} settles is the question of what the coefficients count away from the
+commuting locus. On the locus, the mixed discriminant of coordinate projections is a count, of
+systems of distinct representatives, which is Proposition~\ref{prop:bridge}. Off it, it is the
+multilinear extension of that count and is not itself a count. No novelty is claimed for
+\eqref{eq:mixeddisc}; it is recorded because the alternative was to keep describing a classical
+object in ad hoc terms.
+
 \subsection{The coordinate case at rank \texorpdfstring{$b$}{b}, and the sharpness of Xu's
 constant}\label{sec:xusharp}
 
@@ -3754,6 +3791,12 @@ evaluation of Corollary~\ref{cor:fib}, and the formalization are new.
 
 
 \begin{thebibliography}{9}
+\bibitem{Alek} A.~D.~Aleksandrov, \emph{On the theory of mixed volumes of convex bodies IV.
+Mixed discriminants and mixed volumes}, Mat.\ Sb.\ (N.S.) \textbf{3} (1938), 227--251.
+\bibitem{Bapat} R.~B.~Bapat, \emph{Mixed discriminants of positive semidefinite matrices},
+Linear Algebra Appl.\ \textbf{126} (1989), 107--124.
+\bibitem{Gurvits} L.~Gurvits, \emph{The van der Waerden conjecture for mixed discriminants},
+Adv.\ Math.\ \textbf{200} (2006), 435--454.
 \bibitem{Zhang} J.-C.~Wan, Y.~Wang, Y.-Z.~Fan, \emph{A hypergraph Heilmann--Lieb
 theorem}, arXiv:2206.09558 (2022).
 \bibitem{XXZ} Z.~Xu, Z.~Xu, Z.~Zhu, \emph{Improved bounds in Weaver's
