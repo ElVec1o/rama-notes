@@ -1573,7 +1573,7 @@ $|a|<2\sqrt{B_1}$ with $B_1=\Delta-1$ for unit edge weights \cite[Thm.~4.3]{HL},
 but at the max-degree radius, which for $a\ne b$ exceeds $s+t$; strictness at the
 biregular radius therefore has to be argued separately. Every root of $\mu_G$ is
 bounded by the spectral
-radius of a path tree $T_u(G)$ \cite{God81}, and $T_u(G)$ is finite and embeds
+radius of a path tree $T_u(G)$ \cite{Go}, and $T_u(G)$ is finite and embeds
 in the universal cover of $G$, the $(a,b)$-biregular tree $T_{a,b}$, with
 degrees bounded by those of $T_{a,b}$. Now $\rho(T_{a,b})=s+t$ is the supremum
 of $\rho$ over finite subtrees of $T_{a,b}$, and that supremum is not attained:
@@ -1844,6 +1844,140 @@ the known open sharpening of the Marcus--Spielman--Srivastava bound. So $b=2$ is
 not an easier case awaiting a short argument; it is that open problem in another
 notation.
 
+\subsection{The coordinate case at rank \texorpdfstring{$b$}{b}, and the sharpness of Xu's
+constant}\label{sec:xusharp}
+
+Theorem~\ref{thm:matchingform} identifies the recentred mixed characteristic polynomial with the
+matching polynomial in the commuting case at $b=2$. That identification survives to every rank,
+and the object it produces is again an ordinary matching polynomial, on a different graph. The
+consequence is that Xu's constant is not merely an upper bound at $b\ge3$: it is exactly the
+truth, and the class attains it.
+
+Let $H$ be an $a$-regular $b$-uniform hypergraph on $n$ vertices with $q$ hyperedges, and let
+$P_e$ be the coordinate projection onto $\operatorname{span}\{e_v:v\in e\}$. These have rank $b$
+and satisfy $\sum_eP_e=aI$ exactly, so they are an admissible tight family. Write $I(H)$ for the
+incidence bipartite graph, with one side the $n$ vertices and the other the $q$ hyperedges; it is
+$(a,b)$-biregular.
+
+\begin{proposition}\label{prop:bridge}
+With $\mu$ the mixed characteristic polynomial of $\{P_e\}$,
+\[
+\mu(x)=\sum_{k\ge0}(-1)^k\,m_k\bigl(I(H)\bigr)\,x^{\,n-k},
+\qquad\text{equivalently}\qquad
+\mu(t^2)=t^{\,n-q}\,\mu_{I(H)}(t),
+\]
+where $m_k$ is the number of $k$-matchings. In particular the positive roots of $\mu$ are exactly
+the squares of the positive roots of $\mu_{I(H)}$.
+\end{proposition}
+
+\begin{proof}
+The matrix $xI+\sum_ez_eP_e$ is diagonal, with $v$-th entry $x+\sum_{e\ni v}z_e$, so
+$\det=\prod_v\bigl(x+\sum_{e\ni v}z_e\bigr)$. Each factor is affine in every $z_e$, so for
+$S\subseteq[q]$ the derivative $\partial_S\det$ evaluated at $z=0$ is obtained by choosing, for
+each $e\in S$, one factor to differentiate, that is one vertex $v\in e$; two hyperedges choosing
+the same vertex differentiate one affine factor twice and contribute $0$. Hence $\partial_S\det$
+at $z=0$ counts the injective maps $S\to V$ with $e\mapsto v\in e$, each contributing
+$x^{\,n-|S|}$. Applying $\prod_e(1-\partial_{z_e})$ and grouping by $|S|=k$, the coefficient is
+the number of systems of distinct representatives of $k$ hyperedges, which is the number of
+$k$-matchings of $I(H)$ saturating $k$ hyperedge-nodes. The second display follows from
+$\mu_{I(H)}(t)=\sum_k(-1)^km_kt^{\,n+q-2k}$ on substituting $x=t^2$.
+\end{proof}
+
+\begin{corollary}\label{cor:xucoord}
+For every coordinate family as above, at every $b\ge2$,
+\[
+\operatorname{maxroot}\mu\ \le\ \bigl(\sqrt{a-1}+\sqrt{b-1}\bigr)^2 .
+\]
+\end{corollary}
+
+\begin{proof}
+$I(H)$ is $(a,b)$-biregular, so its universal cover is the $(a,b)$-biregular tree, of spectral
+radius $\rho=\sqrt{a-1}+\sqrt{b-1}$. Godsil's bound \cite{Go} puts every root of $\mu_{I(H)}$ in
+$[-\rho,\rho]$, and Proposition~\ref{prop:bridge} squares them.
+\end{proof}
+
+So the inequality Xu conjectures is a theorem on the coordinate locus, at every rank, and not only
+at $b=2$ where it is Heilmann--Lieb. The question that matters for the conjecture is whether the
+constant is the right one there, and it is.
+
+\begin{proposition}\label{prop:xusharp}
+Fix $a,b\ge2$. Over coordinate families with parameters $(a,b)$,
+\[
+\sup\ \frac{\operatorname{maxroot}\mu}{\bigl(\sqrt{a-1}+\sqrt{b-1}\bigr)^2}\ =\ 1 .
+\]
+\end{proposition}
+
+\begin{proof}
+At most $1$ by Corollary~\ref{cor:xucoord}. For the other direction, let $B_r$ be the ball of
+radius $r$ in the $(a,b)$-biregular tree. If $\operatorname{girth}I(H)>2r$ then the $r$-ball of
+$I(H)$ about any $a$-side vertex is acyclic and, by biregularity, isomorphic to $B_r$, so
+$B_r\subseteq I(H)$ as a subgraph. The greatest root of a matching polynomial is monotone under
+subgraphs \cite{HL,Go}, and $B_r$ is a tree, where the matching polynomial is the characteristic
+polynomial; hence
+$\operatorname{maxroot}\mu_{I(H)}\ge\lambda_{\max}(B_r)$, and squaring,
+$\operatorname{maxroot}\mu\ge\lambda_{\max}(B_r)^2$. The balls exhaust the tree and
+$\lambda_{\max}(B_r)\uparrow\rho$. Finally $(a,b)$-biregular bipartite graphs of arbitrarily large
+girth exist: random $N$-lifts of any one of them preserve biregularity and have girth tending to
+infinity in probability. Taking $r\to\infty$ gives the claim.
+\end{proof}
+
+The ladder is measured rather than assumed, and it also supplies an explicit floor for any graph
+whose girth is known. Writing the ratio in the $\mu$ variable,
+$\lambda_{\max}(B_r)^2/\rho^2$ is
+\begin{center}
+\begin{tabular}{lcccccc}
+$(a,b)$ & $r=2$ & $4$ & $6$ & $8$ & $10$ & $12$\\
+\hline
+$(3,2)$ & $0.6863$ & $0.8579$ & $0.9167$ & $0.9443$ & $0.9596$ & $0.9692$\\
+$(4,3)$ & $0.6061$ & $0.8082$ & $0.8854$ & $0.9234$ & $0.9450$ & $0.9585$\\
+$(5,4)$ & $0.5744$ & $0.7898$ & $0.8747$ & $0.9168$ & $0.9396$ & \\
+$(4,4)$ & $0.5833$ & $0.7951$ & $0.8777$ & $0.9186$ & $0.9418$ & $0.9505$\\
+$(6,3)$ & $0.6004$ & $0.8031$ & $0.8826$ & $0.9219$ & $0.9442$ & $0.9489$\\
+\hline
+\end{tabular}
+\end{center}
+increasing in $r$ at every pair, $b\ge3$ included; the missing entry is where the ball passed the
+$400{,}000$ vertex cap, and a truncated ball is a proper subtree of the true one, hence still a
+subgraph of any graph of girth $>2r$, so the floor it gives remains valid. On named incidence
+graphs, with girth recomputed by breadth-first search rather than quoted, the realized ratios are
+$0.8995$ for Heawood, $0.9171$ for Pappus and $0.9453$ for Tutte--Coxeter at $(3,3)$; $0.9098$ for
+$\mathrm{AG}(2,3)$ at $(4,3)$; and $0.9097$ for $\mathrm{PG}(2,3)$ at $(4,4)$. Every one exceeds
+its ball floor, which is the containment argument of Proposition~\ref{prop:xusharp} checked
+against the object it is about (\texttt{code/xu\_sharp.py}).
+
+Two things follow, and the second is the reason for the subsection.
+
+First, the plateaus found by the adversarial search of \texttt{code/adversarial.py} and
+\texttt{code/rl\_push.py} --- $0.739$ at $(4,3)$ and $0.726$ at $(5,4)$, against $0.939$ at
+$(3,2)$, none of them a violation --- are an artefact of that search, not a property of the
+class. It sampled generic subspaces, and generic subspaces behave like short
+girth. The coordinate construction reaches $0.9098$ at $(4,3)$ on twenty-one vertices and is
+bounded below by $0.9585$ at girth $26$, well past where the search stalled. There is no evidence of a smaller true constant at
+$b\ge3$, and the reading that suggested one is closed.
+
+Second, the constant is now fixed. Any proof of Xu's conjecture in general must produce exactly
+$(\sqrt{a-1}+\sqrt{b-1})^2$; any attempted improvement of it is false, by
+Proposition~\ref{prop:xusharp}, before it is attempted. Equally, the whole content of the
+conjecture lies off the coordinate locus: the bridge of Proposition~\ref{prop:bridge} fails for
+non-coordinate rank-$b$ projections, which is checked as a control rather than asserted, and it is
+that failure which leaves the general statement open.
+
+The identification in Proposition~\ref{prop:bridge} is elementary and we make no claim of novelty
+for it; we have not found it stated, but the search caveats of \S\ref{sec:must} apply verbatim.
+It should not be confused with the hypergraph Heilmann--Lieb theorem of Wan, Wang and Fan
+\cite{Zhang}, which concerns a different polynomial --- the matching polynomial of the adjacency
+hypermatrix, whose extreme root scales as $\Delta^{1/k}$ --- and neither implies the other. Both
+routes of Proposition~\ref{prop:bridge} are computed in \texttt{code/xu\_sharp.py}, the mixed
+characteristic polynomial from the definition
+$\prod_e(1-\partial_{z_e})\det(xI+\sum_ez_eP_e)$ and the matching counts by subset dynamic
+programming, sharing no code and agreeing coefficient by coefficient in exact arithmetic on four
+hypergraphs at $b=2,3,4$. The skeleton of the argument is machine-checked: the root
+identification of Proposition~\ref{prop:bridge} as \texttt{XuSharp.bridge\_roots}, the passage
+from a ceiling and a converging ladder to the supremum as \texttt{XuSharp.sharp\_of\_ladder},
+and the consequence that no smaller constant can hold as
+\texttt{XuSharp.no\_smaller\_constant}. Godsil's bound and subgraph monotonicity enter there as
+hypotheses, being classical.
+
 \subsection{The plane class, and two unconditional bounds}
 
 This subsection is the longest in the note, so its outcome is stated first. It delivers an exact
@@ -1899,7 +2033,9 @@ $\bigl(\sqrt{a-1}+\sqrt{b-1}\bigr)^2$ on $\operatorname{maxroot}\mu$ conjectured
 Xu\footnote{Personal communication, August 2026, deriving it from a generalisation of
 \cite[Conjecture 1]{RL}.}, which is exactly the upper edge of the $(a,b)$-biregular tree band.
 So $2\sqrt a$ is the ceiling of the cavity argument used here, not the truth, and an argument of
-this kind cannot be sharp.
+this kind cannot be sharp. That the sharp value is $(\sqrt{a-1}+\sqrt{b-1})^2$ and not something
+smaller is no longer conjectural on the coordinate locus: it is
+Proposition~\ref{prop:xusharp}, at every $b$.
 
 In that language the vertex step has an exact form. Setting
 $\Theta^{(r)}:=\sum_{|T|=r}M_{\omega_T}\succeq0$ and
@@ -2981,8 +3117,19 @@ route that looks open from outside.
   case.
 \end{itemize}
 
-What survives all three is the ratio recursion, which bounds ratios of matching polynomials rather
-than Rayleigh quotients, and that is where we would put further effort. The remaining gap is
+One question the paper does close, rather than obstruct, is the value of the constant. On the
+coordinate locus the mixed characteristic polynomial of a tight rank-$b$ family is the matching
+polynomial of an $(a,b)$-biregular incidence graph in the squared variable
+(Proposition~\ref{prop:bridge}), so Xu's inequality is a theorem there at every $b$ and, by
+Proposition~\ref{prop:xusharp}, the constant $(\sqrt{a-1}+\sqrt{b-1})^2$ is attained and cannot
+be lowered. That removes a possibility the numerics had left open --- that the constant is honest
+at $b=2$ and slack at $b\ge3$, the adversarial search having stalled at $0.739$ and $0.726$ there
+--- and it fixes what any proof of the general statement has to deliver. It also locates the
+difficulty: the bridge fails off the coordinate locus, and that is where the whole content of the
+conjecture now sits.
+
+What survives all three obstructions is the ratio recursion, which bounds ratios of matching
+polynomials rather than Rayleigh quotients, and that is where we would put further effort. The remaining gap is
 stated plainly: the certificate closes for six of the seven families tested, and the defect in the
 seventh is a right vertex whose child ratio sits well below the interval a uniform certificate can
 express. Closing that is the concrete open problem this paper ends on.
@@ -3288,7 +3435,8 @@ evaluation of Corollary~\ref{cor:fib}, and the formalization are new.
 
 
 \begin{thebibliography}{9}
-\bibitem{Zhang} A hypergraph Heilmann--Lieb theorem, arXiv:2206.09558 (2022).
+\bibitem{Zhang} J.-C.~Wan, Y.~Wang, Y.-Z.~Fan, \emph{A hypergraph Heilmann--Lieb
+theorem}, arXiv:2206.09558 (2022).
 \bibitem{XXZ} Z.~Xu, Z.~Xu, Z.~Zhu, \emph{Improved bounds in Weaver's
 $\mathrm{KS}_r$ conjecture for high rank positive semidefinite matrices},
 arXiv:2106.09205 (2021).
@@ -3326,9 +3474,6 @@ computationally intractable}, J. Statist. Phys. \textbf{48} (1987) 121--134.
 \bibitem{WF} Y.~Watanabe, K.~Fukumizu, \emph{New graph polynomials from the Bethe
 approximation of the Ising partition function}, Combin. Probab. Comput.
 \textbf{20} (2011) 299--320.
-
-\bibitem{God81} C.~D. Godsil, \emph{Matchings and walks in graphs},
-J. Graph Theory \textbf{5} (1981), 285--297.
 
 \bibitem{BC} C.~Bordenave, B.~Collins, \emph{Eigenvalues of random lifts and
 polynomials of random permutation matrices}, Ann.\ of Math.\ \textbf{190}
