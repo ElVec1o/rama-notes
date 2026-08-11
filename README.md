@@ -117,6 +117,46 @@ modes.
   the `vperm` engine for $v_2(N_0(2^k+1))$ beyond Ryser.
 - `paper*/`, `methodology_note/` — LaTeX sources and compiled PDFs.
 
+## For a reviewer
+
+The fastest route to checking this rather than reading it.
+
+**Label conventions.** Every mathematical statement carries exactly one:
+
+| Label | Meaning |
+|---|---|
+| VERIFIED | Formalized in Lean 4. `lake build` clean, zero `sorry`, axioms checked. |
+| PROVED | Complete proof written out, not yet formalized. |
+| HEURISTIC | Supported by computation only. |
+| CONJECTURE | Believed, no proof. |
+| FALSE | Counterexample in hand. |
+
+A result is only as strong as the weakest label it depends on, and the notes say so where it
+matters. Section headings and Lean file docstrings both carry the label of what they contain.
+
+**Three checks, in increasing cost.**
+
+1. `lake build` then `#print axioms` on any theorem. Nothing in `RamaLean/` contains a `sorry`;
+   axioms should be `[propext, Classical.choice, Quot.sound]` throughout, and any file that needs
+   more says so in its docstring.
+2. `python3 code/lean_map.py` prints every Lean name the papers cite and where it lives, plus
+   anything cited and missing. It should report no dangling names.
+3. `python3 code/cite_check.py` re-runs every script the papers cite and diffs the output against
+   the recorded snapshots in `code/snapshots/`. Long searches honour `--quick`, which shrinks
+   their configuration, not their time budget, so a short run is a prefix of the same work and is
+   reproducible. Sixteen scripts still exceed the checker's budget and are named by it rather than
+   passed over.
+
+**Dependencies.** Python 3.12 with `numpy`, `scipy`, `sympy`, `networkx`, `mpmath`. Lean 4 with
+Mathlib, pinned by `lean-toolchain` and `lake-manifest.json`.
+
+**What is not proved, and is the honest state of the main line.** Xu's Conjecture 1.4 is a theorem
+on the commuting locus at every rank, and the constant there is attained; both are in Paper 2b.
+Everything the conjecture still asserts lies off that locus. The commuting locus is a singular
+point of the tight-projection variety, its tangent cone is an explicit intersection of quadrics,
+and the curvature of the top root is negative there; whether the locus is extremal, which would
+close the general conjecture, is a CONJECTURE and is labelled as one.
+
 ## Reproducing
 - Lean: `lake build` (needs Lean 4 + a Mathlib cache; see `LEAN_README.md`).
 - Data: the Python in `code/` is self-contained (`python3 code/paper3_gcd_permanent.py`, etc.).

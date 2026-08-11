@@ -66,4 +66,23 @@ theorem order_four_sum_zero {κ : Type*} [Fintype κ] (M : κ → Matrix m n R) 
   rw [← trace_sq_comm (M k)]
   ring
 
+/-- **The image lies in the trace-zero hyperplane.**  For `M` and `N` the corners of two matrices
+off-diagonal for the splitting, `tr(M Nᵀ) = tr(Mᵀ N)`, so the two halves of
+`tr((I - 2P) D Y)` cancel and the order-four map sends everything into `{∑ⱼ uⱼ = 0}`.  Together
+with `order_four_sum_zero`, which puts the obstruction in the same hyperplane, this is why order
+four is solvable whenever the map is onto that hyperplane. -/
+theorem trace_corner_comm (M N : Matrix m n R) :
+    trace (M * Nᵀ) = trace (Mᵀ * N) := by
+  rw [Matrix.trace_mul_comm]
+  rw [← Matrix.trace_transpose (Mᵀ * N)]
+  simp
+
+/-- The consequence, summed over the blocks: the order-four map lands in the trace-zero
+hyperplane whatever the direction and whatever the correction. -/
+theorem image_in_trace_zero {κ : Type*} [Fintype κ] (M N : κ → Matrix m n R) :
+    ∑ k, (trace ((M k) * (N k)ᵀ) - trace ((M k)ᵀ * (N k))) = 0 := by
+  refine Finset.sum_eq_zero fun k _ => ?_
+  rw [trace_corner_comm]
+  ring
+
 end OrderFour

@@ -2080,8 +2080,14 @@ its off-diagonal blocks. This step is machine-checked as
 Order four is then satisfied as well, and the freedom in $Y$ is what absorbs it. The condition is
 $\sum_k\sigma_k(j)\bigl[2(D_kY_k)_{jj}+(X_k^2)_{jj}\bigr]=0$ at each vertex, linear in $Y$, so it
 holds exactly when the $X^2$ vector lies in the image of $L_D:Y\mapsto
-\bigl(2\sum_k\sigma_k(j)(D_kY_k)_{jj}\bigr)_j$. That image is measured to be the trace-zero
-hyperplane, of rank $n-1$: $6$ of $7$ for Fano and $8$ of $9$ for $\mathrm{AG}(2,3)$. And the
+\bigl(2\sum_k\sigma_k(j)(D_kY_k)_{jj}\bigr)_j$. That image always lies in the trace-zero hyperplane, and for the same
+kind of reason: writing the corners of $D_k$ and $Y_k$ as $M$ and $N$, the two halves of
+$\operatorname{tr}\bigl((I-2P_k)D_kY_k\bigr)$ are $\operatorname{tr}(MN^{\mathsf T})$ and
+$\operatorname{tr}(M^{\mathsf T}N)$, which are equal, so the sum over $j$ of the image vanishes
+identically (\texttt{OrderFour.image\_in\_trace\_zero}). That it fills that hyperplane, rank
+exactly $n-1$, is measured rather than proved: over $39$ directions across two families the rank
+is $n-1$ except at the cross basis directions, where it drops to $1$ and the obstruction vanishes
+outright. And the
 $X^2$ vector lies in it for a reason. Summing over the vertices,
 \[
 \sum_j\sum_k\sigma_k(j)(X_k^2)_{jj}
