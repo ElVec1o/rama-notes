@@ -1993,6 +1993,73 @@ evidence Conjecture~1.4 would follow from Corollary~\ref{cor:commuting} together
 statement that the commuting locus is extremal, which replaces a conjecture about all tight
 rank-$b$ families by a monotonicity statement over a theorem.
 
+Proposition~\ref{prop:singular} says which directions are excluded; the same computation says
+which are admitted, and the answer is an explicit cone.
+
+\begin{proposition}\label{prop:cone}
+For $D$ in the kernel of the linearised constraints, a second-order correction $X$ exists if and
+only if
+\[
+Q_j(D):=\sum_k\sigma_k(j)\,(D_k^2)_{jj}=0\qquad\text{for every vertex }j,
+\]
+with $\sigma_k(j)$ as in Proposition~\ref{prop:singular}. Hence the directions admitting a
+second-order correction form the kernel of the linearisation cut by $n$ quadrics.
+\end{proposition}
+
+\begin{proof}
+Necessity is the computation in Proposition~\ref{prop:singular}: the diagonal of each $X_k$ is
+forced and summing it over $k$ gives $Q_j(D)$, which $\sum_kX_k=0$ requires to vanish. For
+sufficiency take $(X_k)_{jj}=\sigma_k(j)(D_k^2)_{jj}$ and every off-diagonal block zero. The
+order-two equation holds entrywise by the same coefficient $1-2(P_k)_{jj}$, the off-diagonal
+entries of both sides being zero; and $\sum_kX_k$ is diagonal with entries $Q_j(D)=0$.
+\end{proof}
+
+Whether every direction of that cone is the velocity of a genuine curve is not settled here. It
+holds wherever it has been looked at: over the $42$ cross basis directions of the Fano family and
+over directions obtained by projecting random kernel elements onto $\{Q=0\}$, the nearest point of
+the variety to $A_0+\varepsilon D$ lies at distance $O(\varepsilon^2)$, and at $O(\varepsilon)$ for
+every direction with $Q(D)\neq0$ (\texttt{code/tangentcone.py}); the general relation is
+$\operatorname{dist}(A_0+\varepsilon D,V)=\varepsilon\operatorname{dist}(D,T)+O(\varepsilon^2)$,
+which is what the two exponents measure. The consequence worth recording is that second-order
+optimisation over the commuting locus is a constrained problem with $n$ quadratic constraints
+rather than an unavailable one.
+
+The deformation is also far more rigid than the tangent cone alone suggests.
+
+\begin{proposition}\label{prop:rigid}
+Along the rotation of Proposition~\ref{prop:cone}'s cross configuration, the coefficients of
+$y^{n},y^{n-1},y^{n-2},y^{n-3}$ in $\mu$ are independent of $\theta$, so the $\theta$-dependent
+part of $\mu$ has degree at most $n-4$ in $y$.
+\end{proposition}
+
+\begin{proof}
+Only subsets containing exactly one of $e,f$ carry $\theta$, and they pair as $S\cup\{e\}$ with
+$S\cup\{f\}$. Write $N_e=P_{e\setminus v}+M_S$ and $N_f=P_{f\setminus w}+M_S$, both diagonal since
+every block other than $e,f$ is a coordinate projection, and put $u=\cos\theta\,\varepsilon_v+
+\sin\theta\,\varepsilon_w$, $u^{\perp}=-\sin\theta\,\varepsilon_v+\cos\theta\,\varepsilon_w$, so
+that $A_e+M_S=N_e+P_u$ and $A_f+M_S=N_f+P_{u^\perp}$. From
+$\det(xI+N+P_u)=\det(xI+N)+u^{\mathsf T}\operatorname{adj}(xI+N)u$ and the diagonality of $N$,
+whose adjugate has $(i,i)$ entry $\prod_{l\neq i}(x+d_l)$,
+\[
+\det(xI+A_e+M_S)+\det(xI+A_f+M_S)=\bigl[\theta\text{-free}\bigr]
++\sin^2\theta\,\Delta(x),
+\]
+\[
+\Delta(x)=(d_v-d_w)\Bigl[\prod_{l\neq v,w}(x+d_l)-\prod_{l\neq v,w}(x+d'_l)\Bigr],
+\]
+where $d=\operatorname{diag}N_e$, $d'=\operatorname{diag}N_f$, using $d_v=d'_v$ and $d_w=d'_w$,
+both of which hold because $v\notin f$ and $w\notin e$. The two products are monic of degree
+$n-2$, and $\sum_ld_l=\operatorname{tr}N_e=(b-1)+\operatorname{tr}M_S=\operatorname{tr}N_f=
+\sum_ld'_l$, so they agree in their coefficients of $x^{n-2}$ and $x^{n-3}$. Their difference
+therefore has degree at most $n-4$, and so does $\Delta$.
+\end{proof}
+
+The bound is attained: the $\theta^2$ part of $\mu$ has degree exactly $n-4$ for the Fano family,
+where it is $2y(y-1)(y-4)$, and for $\mathrm{PG}(2,3)$, where it has degree $9$
+(\texttt{code/curvature.py}). The step of the proof carrying the exponent, that two monic
+polynomials with equal root sums differ in degree at most $n-4$, is machine-checked as
+\texttt{CoefficientRigidity.prod\_diff\_natDegree\_le}.
+
 The second-order behaviour can be computed exactly rather than sampled, along curves that stay on
 the variety identically. Take hyperedges $e,f$ and coordinates $v\in e\setminus f$,
 $w\in f\setminus e$, let $R(\theta)$ rotate the plane $\operatorname{span}\{\varepsilon_v,

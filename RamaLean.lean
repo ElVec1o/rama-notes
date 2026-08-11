@@ -96,4 +96,5 @@ import RamaLean.XuSharp
 import RamaLean.SDRMatching
 import RamaLean.MatchingRecursion
 import RamaLean.TangentObstruction
+import RamaLean.CoefficientRigidity
 import RamaLean.PathTreeRoute

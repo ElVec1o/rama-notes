@@ -62,6 +62,10 @@ theorem forced_of_mem (x g : ℝ) (h : x - 1 * x - x * 1 = g) : x = -g := by
 /-- The sign attached to a vertex by a hyperedge: `+1` outside it, `-1` inside. -/
 noncomputable def sgn (p : ℝ) : ℝ := if p = 0 then 1 else -1
 
+@[simp] theorem sgn_zero : sgn (0 : ℝ) = 1 := by simp [sgn]
+
+@[simp] theorem sgn_one : sgn (1 : ℝ) = -1 := by simp [sgn]
+
 /-- **The diagonal entry is determined.**  With `p` the indicator of membership, `x = sgn p * g`. -/
 theorem forced (p x g : ℝ) (hp : p = 0 ∨ p = 1) (h : x - p * x - x * p = g) :
     x = sgn p * g := by
@@ -98,5 +102,28 @@ theorem obstruction_two_blocks (p g : Fin 2 → ℝ)
     ¬ ∃ x : Fin 2 → ℝ, (∀ k, x k - p k * x k - x k * p k = g k) ∧ ∑ k, x k = 0 := by
   refine no_second_order p g (fun k => Or.inl (hp k)) ?_
   simp [sgn, hp, hg]
+
+/-- **The converse, at second order.**  If the signed sum vanishes there IS a correction, and an
+explicit one: take the value the equation forces at each index and nothing else.  Together with
+`no_second_order` this makes `∑ sgn(p k) * g k = 0` exactly the condition for solvability, so the
+tangent cone is the kernel of the linearisation cut by these quadrics rather than an unknown
+subset of it. -/
+theorem second_order_exists {ι : Type*} [Fintype ι] (p g : ι → ℝ)
+    (hp : ∀ k, p k = 0 ∨ p k = 1) (h0 : ∑ k, sgn (p k) * g k = 0) :
+    ∃ x : ι → ℝ, (∀ k, x k - p k * x k - x k * p k = g k) ∧ ∑ k, x k = 0 := by
+  refine ⟨fun k => sgn (p k) * g k, fun k => ?_, h0⟩
+  show sgn (p k) * g k - p k * (sgn (p k) * g k) - (sgn (p k) * g k) * p k = g k
+  rcases hp k with hk | hk <;> rw [hk] <;> simp <;> ring
+
+/-- Solvability at second order is exactly the vanishing of the signed sum.  Stated as an
+equivalence because that is how it is used: one direction rules directions out of the cone, the
+other puts them in. -/
+theorem second_order_iff {ι : Type*} [Fintype ι] (p g : ι → ℝ) (hp : ∀ k, p k = 0 ∨ p k = 1) :
+    (∃ x : ι → ℝ, (∀ k, x k - p k * x k - x k * p k = g k) ∧ ∑ k, x k = 0)
+      ↔ ∑ k, sgn (p k) * g k = 0 := by
+  constructor
+  · rintro ⟨x, heq, hsum⟩
+    exact sum_forced p x g hp heq hsum
+  · exact second_order_exists p g hp
 
 end TangentObstruction
