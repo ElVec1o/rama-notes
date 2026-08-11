@@ -1,0 +1,19 @@
+Non-bipartite, minimum degree three: do the path-tree ratios have a sign structure?
+     graph   n  dmin   bip  #gaps        widest gap
+       W_4   5     3 False      0                 -
+       W_5   6     3 False      1     (2.020,2.080)
+       W_6   7     3 False      1     (2.020,2.300)
+       W_7   8     3 False      1     (2.020,2.500)
+Re-rooted at a LOW-degree vertex, so high-degree endpoints occur many times.
+=== W_5, n=6, root deg 3, lam=2.0500 in gap (2.020,2.080), 62 path-tree vertices
+    positive 57  negative 5  min|F| 0.2993
+    by  endpoint degree:         no   3:mixed  5:mixed
+    by     depth parity:         no   0:mixed  1:mixed
+    by      child count:         no   0:+  1:+  2:mixed  3:mixed  4:-
+    positive range [0.7698, 7.2148]   negative range [-1.6108, -0.2993]
+=== W_6, n=7, root deg 3, lam=2.1600 in gap (2.020,2.300), 107 path-tree vertices
+    positive 102  negative 5  min|F| 0.0764
+    by  endpoint degree:         no   3:mixed  6:mixed
+    by     depth parity:         no   0:mixed  1:mixed
+    by      child count:         no   0:+  1:+  2:mixed  3:+  4:-  5:-
+    positive range [0.0764, 3.2558]   negative range [-19.1108, -0.9583]

@@ -2084,10 +2084,21 @@ holds exactly when the $X^2$ vector lies in the image of $L_D:Y\mapsto
 kind of reason: writing the corners of $D_k$ and $Y_k$ as $M$ and $N$, the two halves of
 $\operatorname{tr}\bigl((I-2P_k)D_kY_k\bigr)$ are $\operatorname{tr}(MN^{\mathsf T})$ and
 $\operatorname{tr}(M^{\mathsf T}N)$, which are equal, so the sum over $j$ of the image vanishes
-identically (\texttt{OrderFour.image\_in\_trace\_zero}). That it fills that hyperplane, rank
-exactly $n-1$, is measured rather than proved: over $39$ directions across two families the rank
-is $n-1$ except at the cross basis directions, where it drops to $1$ and the obstruction vanishes
-outright. And the
+identically (\texttt{OrderFour.image\_in\_trace\_zero}). That it fills that hyperplane has a criterion. A vector $w$
+annihilates the image exactly when $(w_i-w_j)\bigl(\sigma_k(i)D_k(i,j)-\sigma_l(i)D_l(i,j)\bigr)=0$
+for every pair $i,j$ and every pair of blocks $k,l$ separating them, so $w_i=w_j$ as soon as two
+separating blocks disagree at $(i,j)$. Joining $i$ to $j$ whenever they do, $w$ is constant on each
+component and
+\[
+\operatorname{rank}L_D=n-c(G_D),
+\]
+with $c$ the number of components. The cokernel is therefore spanned by $(1,\dots,1)$, and order
+four is solvable, exactly when $G_D$ is connected. Checked against the computed rank on $32$
+directions across two families, agreeing in every case, the cross basis directions being precisely
+those where $G_D$ is empty and the rank collapses to $1$; there the obstruction vanishes outright
+and order four is solvable regardless. The scalar step and the passage from edges to components are
+machine-checked as \texttt{CokernelRank.sep\_forces\_eq} and
+\texttt{CokernelRank.const\_of\_adj\_eq}. And the
 $X^2$ vector lies in it for a reason. Summing over the vertices,
 \[
 \sum_j\sum_k\sigma_k(j)(X_k^2)_{jj}
@@ -2652,6 +2663,9 @@ is \emph{exactly} $2$, and everything collapses:
 $\dfrac{1}{G(2\sqrt a)}\Big/\sqrt a=\dfrac{\sqrt a+2}{\sqrt a+1}=1+\dfrac1{1+\sqrt a}$.
 \end{proposition}
 
+The identity is proved below by the finite and effective route described next; it is not
+formalized.
+
 The passage from a finite graph to that value is usually made by citing convergence of the
 matching measure. It need not be: the evaluation point lies strictly outside the support,
 so the whole step can be made finite and effective, with an explicit rate. We are grateful
@@ -2674,6 +2688,9 @@ $K_4$, $K_5$, $K_{3,3}$, $K_{4,4}$, the cube, Petersen and Heawood, the first di
 moment is exactly $2g$ whenever one exists at all
 \textup{(}\texttt{code/moment\_girth.py}, exact arithmetic\textup{)}.
 \end{proposition}
+
+The agreement of moments below $2g$ is proved, by the tree-like walk count of \cite{Go}. The
+sharpness of the threshold is measured on the seven graphs named, not proved.
 
 Because Heilmann--Lieb confines the roots to $[-\rho,\rho]$ with $\rho=2\sqrt{a-1}$, while
 the evaluation point is $x=2\sqrt a$, the ratio $\rho/x=\sqrt{1-1/a}$ is strictly below
@@ -2816,6 +2833,9 @@ X_e\ \le\ \frac{2F_{A^{(e)}}}{x}\sum_k\frac{\theta_k\,g_k}{a+g_k},
 and the estimate is lossless: the two sides of the resulting comparison are identically
 equal.
 \end{proposition}
+
+Proposition~\ref{prop:defstep} is proved below and is not formalized; the margins quoted for it
+afterwards are measured.
 
 The right-hand side is \emph{strictly positive}, since $g_k\ge\theta_k>0$. So the
 strengthened induction does not require $X_e\le0$; it requires $X_e$ below an explicit

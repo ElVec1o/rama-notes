@@ -56,7 +56,7 @@ def path_ratios(n, edges, root, lam, maxp=600000):
 print("Non-bipartite, minimum degree three: do the path-tree ratios have a sign structure?\n")
 print(f"{'graph':>10}{'n':>4}{'dmin':>6}{'bip':>6}{'#gaps':>7}{'widest gap':>18}")
 cands=[]
-for L in range(4,11):
+for L in quickmode.few(range(4,11), 4):
     n,e = wheel(L)
     deg=[0]*n
     for a,b in e: deg[a]+=1; deg[b]+=1
@@ -69,7 +69,7 @@ for L in range(4,11):
 
 print()
 print("Re-rooted at a LOW-degree vertex, so high-degree endpoints occur many times.\n")
-for name,n,e,(lo,hi) in cands[:4]:
+for name,n,e,(lo,hi) in cands[:(2 if quickmode.QUICK else 4)]:
     lam=0.5*(lo+hi)
     deg={i:0 for i in range(n)}
     for a,b in e: deg[a]+=1; deg[b]+=1
