@@ -17,7 +17,7 @@ are labeled as such.
 ## Papers
 
 ### Paper 2a — Roots of $d$-matching polynomials and the spectrum of the universal cover
-`paper2a_note/` · [note.pdf](paper2a_note/note.pdf) · 20pp
+`paper2a_note/` · [note.pdf](paper2a_note/note.pdf) · 22pp
 
 Hall–Puder–Sawin place the roots of $\mu_{d,G}$ in $[-\rho,\rho]$. We conjectured they lie in
 $\operatorname{spec}(T)$ itself — a proper subset whenever the universal cover has a spectral gap.
@@ -44,7 +44,7 @@ $\operatorname{spec}(T)$ itself — a proper subset whenever the universal cover
   correctness is itself formalized (`SpectralAtom`).
 
 ### Paper 2b — The biregular case: the weighted plane class and its obstructions
-`paper2b_note/` · [note.pdf](paper2b_note/note.pdf) · 52pp
+`paper2b_note/` · [note.pdf](paper2b_note/note.pdf) · 60pp
 
 The biregular case survives the refutation and contains Problem 1 of Song–Fan–Miao. At $b=2$ the
 object is the *weighted plane class*: families $\{(c_k,V_k)\}$ with $\sum_k c_kP_{V_k}\preceq aI$,
