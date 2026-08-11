@@ -3,8 +3,7 @@ No construction: random graphs at delta >= 3 with spread degree sequences, no cu
 vertex, tested pointwise with the DOS gate.
    n  |E|               degrees  cutv  roots  min AFH rho     verdict
   10   31                  3..9 False      5          nan       clean
-  10   27                  4..8 False      5          nan       clean
-  10   20                  3..9 False      5          nan       clean
-  graphs tested: 32   violations: 0   ambiguous: 0
+  12   39                 3..11 False      6          nan       clean
+  graphs tested: 20   violations: 0   ambiguous: 0
   P22 holds. D3 survives a search that assumes no separator at all, which is the
   case both cut engines structurally could not reach.

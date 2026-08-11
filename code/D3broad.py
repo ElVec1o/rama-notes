@@ -51,7 +51,7 @@ from gapscale import setup, rho_at
 from D1cut_adv import dos_at, outside_spectrum
 import quickmode
 
-BUDGET_S = 25.0 if quickmode.QUICK else 2700.0
+BUDGET_S = 2700.0
 
 
 def spread_graph(n, rng, nhub, hubdeg):
@@ -140,8 +140,8 @@ def main():
           f"{'verdict':>12}")
 
     viol, amb, tested = [], [], 0
-    for n in (10, 12, 14, 16, 18):
-        for trial in range(60):
+    for n in quickmode.few((10, 12, 14, 16, 18), 2):
+        for trial in range(10 if quickmode.QUICK else 60):
             if time.time() - t0 > BUDGET_S:
                 break
             nhub = int(rng.integers(1, 4))
