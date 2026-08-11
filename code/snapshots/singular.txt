@@ -1,0 +1,36 @@
+The second-order equation, solved symbolically for a general symmetric X.
+  X - P X - X P = D^2 has (X - PX - XP)_{ij} = X_ij (1 - P_ii - P_jj), so a diagonal
+  entry has coefficient 1 - 2 P_jj, which is -1 inside the support and +1 outside.
+  vertex   in support                 forced X_jj
+       0         True                       -g0_0
+       0        False                        g0_0
+       1         True                       -g1_1
+       1        False                        g1_1
+  So the diagonal of X is determined by D^2 with a sign, and the off-diagonal blocks,
+  which are the only freedom, never touch a diagonal entry.
+The two configurations, with the forced entries at v and w.
+      config  block  vertex  in edge   forced X_jj
+  same-group      e       v    False             1
+  same-group      e       w     True            -1
+  same-group      f       v    False             1
+  same-group      f       w     True            -1
+       cross      e       v     True            -1
+       cross      e       w    False             1
+       cross      f       v    False             1
+       cross      f       w     True            -1
+      config  vertex   sum over blocks   tightness needs 0
+       cross       v                 0          consistent
+       cross       w                 0          consistent
+  same-group       v                 2       CONTRADICTION
+  same-group       w                -2       CONTRADICTION
+The same conclusion from the full system on real families, by rank.
+      family      config  unknowns  rank A  rank [A|b]  solvable
+        Fano  same-group       196     133         134        NO
+        Fano       cross       196     133         133       yes
+  A system whose augmented rank exceeds its coefficient rank has no solution, so no
+  curve on the variety has that velocity: the direction is in the kernel of the
+  linearisation and not in the tangent cone. The cross directions are in the cone, by
+  the explicit rotations of code/curvature.py, and they span the kernel, so the cone
+  is a proper subset of it and is not closed under subtraction. The commuting point is
+  a singular point of the tight projection variety, for every commuting tight family
+  containing two hyperedges through a common vertex and a vertex outside both.

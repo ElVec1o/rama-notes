@@ -2048,10 +2048,51 @@ The same is true at $\mathrm{AG}(2,3)$, where the linearised space has dimension
 conjugation orbit of $36$: the $131$ cross directions give $\mathrm{dist}/\varepsilon^2$ equal to
 $1.963$ and $1.998$ at $\varepsilon=0.08$ and $0.02$, and the $49$ same-group directions give
 $\mathrm{dist}/\varepsilon$ equal to $1.4128$ and $1.4107$. The exponents agree with the Fano
-family and only the constant differs. The obstructed configuration asks only for two hyperedges
-sharing $w$ and both missing $v$, which exists in any commuting tight family with $a\ge2$ and
-enough vertices; that says when the direction exists, not that it is always obstructed, and two
-families measured is what is in hand.
+family and only the constant differs.
+
+Neither measurement is needed, as it turns out: the obstruction is algebraic and two blocks wide.
+
+\begin{proposition}\label{prop:singular}
+Let $\{P_k\}$ be a commuting tight family of rank-$b$ projections with hyperedges $\{e_k\}$, and
+suppose there are $e,f$ and vertices $v,w$ with $w\in e\cap f$ and $v\notin e\cup f$. Then the
+direction $D$ with $D_e=E_{vw}+E_{wv}$, $D_f=-(E_{vw}+E_{wv})$ and $D_k=0$ otherwise lies in the
+kernel of the linearised constraints but is not tangent to the variety. Consequently the family is
+a singular point of it, and the tangent cone is not a linear subspace.
+\end{proposition}
+
+\begin{proof}
+Write $A_k=P_k+\varepsilon D_k+\varepsilon^2X_k+O(\varepsilon^3)$. Idempotency at order two is
+$X_k-P_kX_k-X_kP_k=D_k^2$, whose $(i,j)$ entry for a coordinate projection is
+$X_{ij}\bigl(1-(P_k)_{ii}-(P_k)_{jj}\bigr)$. At a diagonal entry $j$ the coefficient is
+$1-2(P_k)_{jj}$, which is $-1$ when $j\in e_k$ and $+1$ when $j\notin e_k$ and is never zero, so
+\[
+(X_k)_{jj}=\sigma_k(j)\,(D_k^2)_{jj},\qquad
+\sigma_k(j)=\begin{cases}-1,& j\in e_k,\\ +1,& j\notin e_k.\end{cases}
+\]
+The diagonal of $X_k$ is therefore determined; the freedom the equation leaves lies in the
+off-diagonal blocks, which never meet a diagonal entry. Now $D_e^2=D_f^2=E_{vv}+E_{ww}$, the sign
+squaring away, and $D_k^2=0$ for every other $k$. Since $v$ lies in neither $e$ nor $f$,
+$\sigma_e(v)=\sigma_f(v)=+1$, so
+\[
+\sum_k(X_k)_{vv}=1+1+0+\cdots+0=2,
+\]
+contradicting $\sum_kX_k=0$; at $w$, which lies in both, the same computation gives $-2$. Hence no
+$X$ exists, so no curve on the variety has velocity $D$. That $D$ lies in the kernel of the
+linearisation is the order-one identity $P_kD_k+D_kP_k=D_k$, immediate from $w\in e$, $v\notin e$
+and the corresponding statement for $f$, together with $D_e+D_f=0$. Finally the cross directions
+are tangent, by the explicit rotations above, and they span the kernel, so the cone is a proper
+subset of the kernel and is not closed under subtraction.
+\end{proof}
+
+The hypothesis asks only that some vertex lie in two hyperedges with a further vertex outside
+both, which holds in every commuting tight family with $a\ge2$ and $n>|e\cup f|$; so the
+singularity is not a feature of the two families measured. For the cross configuration the same
+computation gives $\sigma_e(v)=-1$ and $\sigma_f(v)=+1$, which cancel, and that difference of sign
+is the whole difference between the two kinds. Both the local computation and the full linear
+system for $X$ are checked in \texttt{code/singular.py}, the latter by comparing the rank of the
+coefficient matrix with that of the augmented matrix: $133$ against $134$ at Fano and $360$
+against $361$ at $\mathrm{AG}(2,3)$ for the same-group direction, with equality in both for the
+cross one. The scalar core is machine-checked as \texttt{TangentObstruction.no\_second\_order}.
 
 That reduction is specific to projections, and the specificity is the point rather than a
 caveat. Relaxing idempotency to positive semidefiniteness of rank $b$ destroys it immediately, since

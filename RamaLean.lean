@@ -95,4 +95,5 @@ import RamaLean.XuAdditiveProduct
 import RamaLean.XuSharp
 import RamaLean.SDRMatching
 import RamaLean.MatchingRecursion
+import RamaLean.TangentObstruction
 import RamaLean.PathTreeRoute
