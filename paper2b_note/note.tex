@@ -2077,6 +2077,25 @@ identically zero, for every direction and not only for those on the cone, and $Y
 its off-diagonal blocks. This step is machine-checked as
 \texttt{OrderThree.order\_three\_unobstructed}.
 
+Order four is then satisfied as well, and the freedom in $Y$ is what absorbs it. The condition is
+$\sum_k\sigma_k(j)\bigl[2(D_kY_k)_{jj}+(X_k^2)_{jj}\bigr]=0$ at each vertex, linear in $Y$, so it
+holds exactly when the $X^2$ vector lies in the image of $L_D:Y\mapsto
+\bigl(2\sum_k\sigma_k(j)(D_kY_k)_{jj}\bigr)_j$. That image is measured to be the trace-zero
+hyperplane, of rank $n-1$: $6$ of $7$ for Fano and $8$ of $9$ for $\mathrm{AG}(2,3)$. And the
+$X^2$ vector lies in it for a reason. Summing over the vertices,
+\[
+\sum_j\sum_k\sigma_k(j)(X_k^2)_{jj}
+=\sum_k\Bigl[\operatorname{tr}\bigl((D_k^2)_{22}^2\bigr)-\operatorname{tr}\bigl((D_k^2)_{11}^2\bigr)\Bigr],
+\]
+the contributions of the free block $X_{12}$ cancelling through
+$\operatorname{tr}(X_{21}X_{12})=\operatorname{tr}(X_{12}X_{21})$. Since $D_k$ is off-diagonal for
+the splitting, writing its corner as $M$ gives $(D_k^2)_{11}=MM^{\mathsf T}$ and
+$(D_k^2)_{22}=M^{\mathsf T}M$, whose squares have equal trace by cyclicity, so every term vanishes.
+The identity is machine-checked as \texttt{OrderFour.order\_four\_sum\_zero}, and the residuals of
+the order-four solve are $10^{-18}$ on the directions tested (\texttt{code/tangentcone.py}).
+Orders two, three and four are therefore all satisfiable on the cone; passing from every finite
+order to an actual curve is a further step, and is not taken here.
+
 Whether every direction of that cone is the velocity of a genuine curve is not settled here. It
 holds wherever it has been looked at: over the $42$ cross basis directions of the Fano family and
 over directions obtained by projecting random kernel elements onto $\{Q=0\}$, the nearest point of

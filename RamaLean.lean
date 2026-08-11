@@ -98,4 +98,5 @@ import RamaLean.MatchingRecursion
 import RamaLean.TangentObstruction
 import RamaLean.CoefficientRigidity
 import RamaLean.OrderThree
+import RamaLean.OrderFour
 import RamaLean.PathTreeRoute
