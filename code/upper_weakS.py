@@ -12,6 +12,9 @@ from upper_inv import N_coeffs_fast, polyvals
 from upper_adv import feasible_border
 from frac_naimark import graph_kernel
 from tff import random_biregular
+import os as _os, tempfile as _tempfile
+SCRATCH = _os.environ.get('RAMA_SCRATCH', _tempfile.gettempdir())
+_os.makedirs(SCRATCH, exist_ok=True)
 
 def S_of(c, v, M, blocks, a, ys):
     Md = M - np.outer(v, v) / c
@@ -82,9 +85,9 @@ def attack(a, b, qprime, y_off, rng, nstart=10, nstep=700, graph_starts=True):
     sys.stdout.flush()
     if best[1] is not None:
         M, v, c = best[1]
-        np.savez(f'/private/tmp/claude-501/-Users-vico-Documents-elvec1o-RAMA-'
-                 f'NOTEBOOK/0d522a0e-ade5-4120-8948-e5567f4829cb/scratchpad/'
-                 f'weakS_a{a}b{b}q{qprime}_off{y_off}.npz', M=M, v=v, c=c, y=y)
+        np.savez(os.path.join(SCRATCH,
+                              f'weakS_a{a}b{b}q{qprime}_off{y_off}.npz'),
+                 M=M, v=v, c=c, y=y)
     return Smax
 
 if __name__ == '__main__':

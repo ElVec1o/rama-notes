@@ -9,8 +9,8 @@ authors:
     # orcid: "https://orcid.org/0000-0000-0000-0000"   # add if you have one
 repository-code: "https://github.com/ElVec1o/rama-notes"
 license: Apache-2.0
-version: "v2.0"
-date-released: "2026-08-01"
+version: "v3.0"
+date-released: "2026-08-11"
 # Concept DOI: cite this one, it always resolves to the newest release.
 doi: "10.5281/zenodo.21433867"
 identifiers:

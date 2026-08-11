@@ -24,8 +24,9 @@ import numpy as np
 sys.path.insert(0, '/Users/vico/Documents/elvec1o/RAMA-NOTEBOOK/code')
 from frac_naimark import det_frac
 
-SCRATCH = ('/private/tmp/claude-501/-Users-vico-Documents-elvec1o-RAMA-'
-           'NOTEBOOK/0d522a0e-ade5-4120-8948-e5567f4829cb/scratchpad')
+import os as _os, tempfile as _tempfile
+SCRATCH = _os.environ.get('RAMA_SCRATCH', _tempfile.gettempdir())
+_os.makedirs(SCRATCH, exist_ok=True)
 
 
 # ------------------------------------------------------- exact linear algebra

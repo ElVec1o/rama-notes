@@ -13,6 +13,9 @@ _sys.path.insert(0, _os.path.dirname(_os.path.abspath(__file__))
                  if '__file__' in globals() else 'code')   # jensen_sweep exec()s some of
                  # these, and __file__ is undefined there
 import quickmode
+import os as _os, tempfile as _tempfile
+SCRATCH = _os.environ.get('RAMA_SCRATCH', _tempfile.gettempdir())
+_os.makedirs(SCRATCH, exist_ok=True)
 
 
 def obj(A, mode):
@@ -114,6 +117,7 @@ if __name__ == '__main__':
                   f"max r_max={-v_hi:.9f} (margin {hi+v_hi:+.9f})", flush=True)
             print(f"      commutator norm at optimum: lo-family {commutativity(A_lo):.3e}"
                   f"   hi-family {commutativity(A_hi):.3e}", flush=True)
-            np.save(f"/private/tmp/claude-501/adv_{p}_{q}_{a}_{b}_{cls.strip()[:4]}_lo.npy", A_lo)
-            np.save(f"/private/tmp/claude-501/adv_{p}_{q}_{a}_{b}_{cls.strip()[:4]}_hi.npy", A_hi)
+            _stem = f"adv_{p}_{q}_{a}_{b}_{cls.strip()[:4]}"
+            np.save(os.path.join(SCRATCH, _stem + "_lo.npy"), A_lo)
+            np.save(os.path.join(SCRATCH, _stem + "_hi.npy"), A_hi)
         print(f"  ({time.time()-t0:.0f}s)", flush=True)
