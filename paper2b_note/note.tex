@@ -1993,6 +1993,36 @@ evidence Conjecture~1.4 would follow from Corollary~\ref{cor:commuting} together
 statement that the commuting locus is extremal, which replaces a conjecture about all tight
 rank-$b$ families by a monotonicity statement over a theorem.
 
+The second-order behaviour can be computed exactly rather than sampled, along curves that stay on
+the variety identically. Take hyperedges $e,f$ and coordinates $v\in e\setminus f$,
+$w\in f\setminus e$, let $R(\theta)$ rotate the plane $\operatorname{span}\{\varepsilon_v,
+\varepsilon_w\}$, and apply it to $P_e$ and $P_f$ alone. Since $P_v+P_w$ is the identity on that
+plane, $R(P_e+P_f)R^{\mathsf T}=P_e+P_f$ identically in $\theta$, so tightness is preserved
+exactly and not merely to leading order, while each rotated block stays an orthogonal projection
+of rank $b$ and the family genuinely decommutes. For the Fano family the mixed characteristic
+polynomial is then computed in exact rational arithmetic, its odd part vanishes as the symmetry
+$\theta\mapsto-\theta$ requires, and
+\[
+\lambda_{\max}(\theta)=y_0-C\theta^2+O(\theta^4),\qquad
+y_0=7.19605818500856\ldots,\quad C=0.03717851401295\ldots,
+\]
+with $y_0$ a root of $y^7-21y^6+168y^5-644y^4+1218y^3-1050y^2+336y-24$ and $C$ algebraic of the
+same degree. All $168$ curves of this shape give the same $C$, as the $2$-transitivity of the Fano
+plane requires (\texttt{code/curvature.py}).
+
+That is one diagonal entry of a second-order form, not definiteness, and the natural next step is
+unavailable for a reason worth recording. Linearising idempotency and tightness at the commuting
+point gives a space of dimension $63$, spanned by differences $m^k_{ij}-m^l_{ij}$ over hyperedges
+containing exactly one of $i,j$. The variety does not fill it. Locating the nearest point of the
+variety to $A_0+\varepsilon D$, the $42$ directions whose two hyperedges lie on opposite sides of
+the pair --- exactly the tangents of the curves above --- sit at distance $O(\varepsilon^2)$ and
+are tangent, while the remaining $21$ sit at distance $O(\varepsilon)$ and are not
+(\texttt{code/hessian.py}). Since the cross differences span the linearised space, the tangent
+directions are not closed under subtraction: the commuting point is a \emph{singular} point of the
+variety, its tangent cone is not a linear subspace, and a Hessian on the linearised space is the
+wrong object. Local maximality therefore remains open, and what it needs is a second-order theory
+on that cone.
+
 That reduction is specific to projections, and the specificity is the point rather than a
 caveat. Relaxing idempotency to positive semidefiniteness of rank $b$ destroys it immediately, since
 $A_k=(b/p)I_p$ is PSD of the right trace with $\sum_kA_k=aI$ and exceeds the band already at

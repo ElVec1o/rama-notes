@@ -1,0 +1,17 @@
+Which linearised tangent directions are actually tangent to the variety?
+The idempotency and tightness constraints linearise to a space of dimension
+sum over vertex pairs of (|K_ij| - 1). Whether the variety fills it is a different
+question, and the answer decides what a second-order test even means.
+Fano/Heawood: n = 7, q = 7, (a,b) = (3,3)
+  linearised tangent dimension 63 (rank 63), conjugation orbit dim 21
+    kind  count     eps   max dist  dist/eps  dist/eps^2     verdict
+   cross     42   0.080   0.012565    0.1571       1.963     TANGENT
+    same     21   0.080   0.080127    1.0016      12.520 not tangent
+  A direction is tangent when the nearest point of the variety to A0 + eps D sits at
+  distance O(eps^2); at distance O(eps) it is not. If the cross directions are tangent
+  and the same-group ones are not, the variety does not fill the linearised space and
+  the commuting point is a SINGULAR point of it. Since cross differences span the
+  linearised space, the set of tangent directions is then not closed under
+  subtraction: the tangent cone is not a linear subspace, and a Hessian on the
+  linearised space is the wrong object. That is why code/curvature.py computes the
+  second-order coefficient along explicit curves instead.
