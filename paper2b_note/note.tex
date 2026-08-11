@@ -1874,6 +1874,16 @@ for doubly stochastic tuples was proved by Gurvits \cite{Gurvits}. And the coeff
 log-concave because $\mu$ is real-rooted, by \cite{MSS}, so Newton's inequalities apply; the
 measured ratios run from $1.07$ to $1.20$.
 
+The same identification places the note's own obstruction in classical territory. A tight family
+with $q=p$ and $a=b$, scaled by $1/a$, has $\sum_kA_k=I$ and $\operatorname{tr}A_k=1$, so it is a
+doubly stochastic tuple in the sense of \cite{Gurvits}, and its mixed discriminant is at least
+$p!/p^p$ with equality only at $A_k=I/p$. That tuple is exactly the one recorded in
+\S\ref{sec:leaves} as satisfying rank, trace and $\sum_kA_k=aI$ while exceeding the band: its
+greatest root is $4.698$ at $p=4$ against a band edge of $4$, and it grows with $p$. The example
+that blocks every argument reading only those three data is therefore the van der Waerden extremal,
+not an ad hoc construction. Both halves are checked in \texttt{code/mixeddisc.py}, in the
+normalisation with $D(I,\dots,I)=p!$.
+
 What \eqref{eq:mixeddisc} settles is the question of what the coefficients count away from the
 commuting locus. On the locus, the mixed discriminant of coordinate projections is a count, of
 systems of distinct representatives, which is Proposition~\ref{prop:bridge}. Off it, it is the

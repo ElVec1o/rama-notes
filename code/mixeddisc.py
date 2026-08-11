@@ -94,6 +94,41 @@ def newton_ratios(c):
     return out
 
 
+def gurvits_check():
+    """A tight family with q = p and a = b, scaled by 1/a, is a doubly stochastic tuple.
+
+    Gurvits' theorem then bounds its mixed discriminant below by p!/p^p, with equality only at
+    A_k = I/p. That tuple is exactly the one the note records as exceeding the tree band, so the
+    obstruction it names is the van der Waerden extremal rather than an ad hoc example. Both
+    halves are checked, in the normalisation where D(I,...,I) = p!, which is Gurvits' and is p!
+    times the permutation average used above.
+    """
+    rng = np.random.default_rng(20260904)
+    print("\nGurvits' bound on the tight families with q = p and a = b, and its extremal.")
+    print(f"{'p':>3}{'commutator':>12}{'D_std':>12}{'p!/p^p':>12}{'ratio':>9}{'>= bound':>10}")
+    for p in (3, 4):
+        A, res = build_tff(p, p, 2, 2, rng)
+        if res > 1e-9:
+            print(f"{p:>3}   no tight family"); continue
+        S = [Ak / 2.0 for Ak in A]
+        d = math.factorial(p) * mixed_discriminant(S)
+        bd = math.factorial(p) / p ** p
+        print(f"{p:>3}{commutativity(A):>12.4f}{d:>12.8f}{bd:>12.8f}{d / bd:>9.4f}"
+              f"{str(d >= bd - 1e-12):>10}")
+    print(f"{'p':>3}{'D_std at I/p':>16}{'p!/p^p':>12}{'equality':>10}{'max root':>11}"
+          f"{'band edge':>11}{'exceeds':>9}")
+    for p in (3, 4, 5):
+        d = math.factorial(p) * mixed_discriminant([np.eye(p) / p] * p)
+        bd = math.factorial(p) / p ** p
+        A = np.stack([np.eye(p) * (2.0 / p) for _ in range(p)])
+        r = np.roots(mixed_char_poly(A))
+        ymax = max(z.real for z in r if abs(z.imag) < 1e-9)
+        print(f"{p:>3}{d:>16.10f}{bd:>12.10f}{str(abs(d - bd) < 1e-12):>10}{ymax:>11.6f}"
+              f"{4.0:>11.1f}{str(ymax > 4.0):>9}")
+    print("  The unique minimiser of the mixed discriminant among doubly stochastic tuples is the")
+    print("  family that violates the band. The obstruction is classical, not ad hoc.")
+
+
 def main():
     t0 = time.time()
     print("P37 (frozen): c_s = (-1)^s s! binom(p,s) sum_{|S|=s} D(A_k : k in S, I^{p-s}) for every")
@@ -139,6 +174,7 @@ def main():
     else:
         print("  P37 IS FALSE. The coefficients are not mixed discriminants, and the question of")
         print("  what they are stands open again.")
+    gurvits_check()
     return 0
 
 

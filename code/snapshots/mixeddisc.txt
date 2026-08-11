@@ -11,3 +11,13 @@ tight rank-b projection family, commuting or not, at every s.
   what the identity retires is the question of what the coefficients count off the
   locus. On the locus they count systems of distinct representatives; off it they
   are the continuous extension of that count and count nothing.
+Gurvits' bound on the tight families with q = p and a = b, and its extremal.
+  p  commutator       D_std      p!/p^p    ratio  >= bound
+  3      0.0000  0.25000000  0.22222222   1.1250      True
+  4      0.9906  0.17711729  0.09375000   1.8893      True
+  p    D_std at I/p      p!/p^p  equality   max root  band edge  exceeds
+  3    0.22222222220.2222222222      True   4.193297        4.0     True
+  4    0.09375000000.0937500000      True   4.697535        4.0     True
+  5    0.03840000000.0384000000      True   5.056320        4.0     True
+  The unique minimiser of the mixed discriminant among doubly stochastic tuples is the
+  family that violates the band. The obstruction is classical, not ad hoc.
