@@ -125,7 +125,11 @@ def run(name, record=False):
         open(snap, 'w').write(cur + '\n')
         return 'OK', 'snapshot written'
     if not os.path.exists(snap):
-        return 'OK', 'no snapshot yet'
+        # NOT 'OK'. A script with no baseline has not been checked against anything, and calling
+        # that OK conflates "matches its baseline" with "never had one", which is exactly how a
+        # coverage gap stays invisible inside a headline count. Found by an external auditor
+        # reading the tool rather than running it.
+        return 'NOBASE', 'no snapshot recorded; nothing was compared'
     want = open(snap).read().strip()
     if cur.strip() == want:
         return 'OK', ''
@@ -236,7 +240,10 @@ def main():
     for name, papers in scripts.items():
         st, detail = run(name, record)
         counts[st] = counts.get(st, 0) + 1
-        if st in ('CRASH', 'MISSING', 'DRIFT'):
+        # NOBASE belongs here: a script with no baseline was compared against nothing,
+        # which is a Rule 9 gap, not a pass. RUNNING is reported separately, being a
+        # limitation of this tool's budget rather than a property of the script.
+        if st in ('CRASH', 'MISSING', 'DRIFT', 'NOBASE'):
             bad.append((name, st, detail, papers))
         note = detail if detail else ','.join(p.replace('_note', '') for p in papers)
         print(f"{name:>26}{st:>10}   {note}")

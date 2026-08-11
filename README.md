@@ -10,9 +10,11 @@ are labeled as such.
 > mathematical theorem depends only on Lean's three standard axioms (`propext`, `Classical.choice`,
 > `Quot.sound`). `native_decide`, which additionally uses `Lean.ofReduceBool`, appears only where the
 > kernel provably cannot evaluate: Paper 1's partition *values* (the `Decidable` instance for
-> `Fintype.card (Nat.Partition n)` does not reduce) and two bounded checks in Paper 2. In Paper 1 the
-> inferences drawn from those values are separated out and kernel-checked, so nothing mathematical rests
-> on the compiled step.
+> `Fintype.card (Nat.Partition n)` does not reduce) and bounded checks in the superseded merged Paper 2.
+> In Paper 1 the inferences drawn from those values are separated out and kernel-checked, so nothing
+> mathematical rests on the compiled step. **Papers 2a and 2b cite no declaration that uses
+> `native_decide`**: every Lean name they reference depends on the three standard axioms or a strict
+> subset, so their formal surface is entirely kernel-checked.
 
 ## Papers
 
