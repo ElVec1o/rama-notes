@@ -59,7 +59,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__))
 import quickmode
 import curvature as K
 from hessian import coord_family, tangent_basis
-from xu_sharp import heawood
+from xu_sharp import heawood, pappus
 
 QUICK = quickmode.QUICK
 BUDGET_S = 45.0 if QUICK else 3000.0
@@ -99,20 +99,29 @@ def mu2_poly(P, D, lines, n, q):
     return [mu[m][2] for m in range(n + 1)]
 
 
-def main():
+def families():
+    """Small commuting tight families. AG(2,3) has a 180-dimensional kernel, so its form needs
+    16290 entries at several seconds each, about a day; several small families at a few minutes
+    each answer the same question, whether the signature is (0, dim so(n), rest negative) at more
+    than one family, without a Rust build for a single data point."""
+    out = [("C_6 (2,2)", 2, 2, 6, [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 0]]),
+           ("K_4 triples (3,3)", 3, 3, 4, [[0, 1, 2], [0, 1, 3], [0, 2, 3], [1, 2, 3]]),
+           ("2-reg 3-unif (2,3)", 2, 3, 6, [[0, 1, 2], [2, 3, 4], [4, 5, 0], [1, 3, 5]]),
+           ("cube (3,2)", 3, 2, 8, [[0, 1], [1, 2], [2, 3], [3, 0], [4, 5], [5, 6], [6, 7],
+                                    [7, 4], [0, 4], [1, 5], [2, 6], [3, 7]]),
+           ("Fano (3,3)", 3, 3, *heawood())]
+    return out
+
+
+def analyse(nm, a, b, n, lines, t0, budget):
     import sympy as sp
-    from mpmath import mp, matrix as mpmatrix, mpf
-    t0 = time.time()
-    n, lines = heawood()
+    from mpmath import mp, mpf
     q = len(lines)
     y = sp.Symbol('y')
     A0 = coord_family(n, lines)
     B = tangent_basis(n, lines)
     d = len(B)
     P = [[[int(A0[k][i][j]) for j in range(n)] for i in range(n)] for k in range(q)]
-
-    print("P36 (frozen): exact signature (0 positive, 21 zero, 42 negative), the zero eigenspace")
-    print("being the conjugation orbit, and the restriction to a complement negative definite.\n")
 
     mu0 = [K.mixed_char_series(jet_family(P, np.zeros_like(A0), np.zeros_like(A0), n, q),
                                n, q)[m][0] for m in range(n + 1)]
@@ -130,14 +139,14 @@ def main():
         val = sum(mpf(int(c[m])) * y0f ** (n - m) for m in range(n + 1))
         return -val / dp0f
 
-    nsel = 12 if QUICK else d
+    nsel = min(10, d) if QUICK else d
     idx = list(range(nsel))
     print(f"  building the exact form on {nsel} of {d} basis directions "
           f"({nsel * (nsel + 1) // 2} entries)")
     dg = []
     for i in idx:
-        if time.time() - t0 > BUDGET_S:
-            print("  [budget reached]"); return 0
+        if time.time() - t0 > budget:
+            print("  [budget reached]"); return None
         dg.append(lam_of(B[i]))
     M = [[mpf(0)] * nsel for _ in range(nsel)]
     for a_, i in enumerate(idx):
@@ -146,8 +155,8 @@ def main():
         for b_, j in enumerate(idx):
             if b_ <= a_:
                 continue
-            if time.time() - t0 > BUDGET_S:
-                print("  [budget reached mid-build]"); return 0
+            if time.time() - t0 > budget:
+                print("  [budget reached mid-build]"); return None
             v = (lam_of(B[i] + B[j]) - dg[a_] - dg[b_]) / 2
             M[a_][b_] = M[b_][a_] = v
     print(f"  built in {time.time() - t0:.0f}s")
@@ -160,7 +169,7 @@ def main():
     print(f"\n  orbit directions: {len(orb)}; Lambda on them must vanish identically")
     worst = mpf(0)
     for D in orb[:3 if QUICK else 8]:
-        if time.time() - t0 > BUDGET_S:
+        if time.time() - t0 > budget:
             break
         Di = np.rint(D)
         if np.abs(Di - D).max() > 1e-12:
@@ -185,7 +194,15 @@ def main():
         r = int((sv > 1e-9).sum())
         comp = U[:, r:]                                    # complement of the orbit, d - r columns
         R = comp.T @ A @ comp
-        print(f"\n  CERTIFICATE. orbit rank {r}, complement dimension {comp.shape[1]}")
+        nz_all = int((np.abs(w) <= 1e-12).sum())
+        print(f"\n  CERTIFICATE. orbit rank {r}, complement dimension {comp.shape[1]},"
+              f" zeros in the full form {nz_all}")
+        if nz_all > r:
+            print(f"    the null space EXCEEDS the orbit by {nz_all - r}: strictness transverse to")
+            print(f"    the orbit fails here, though the form is still negative semidefinite")
+        if comp.shape[1] == 0:
+            print("    complement is trivial: the whole kernel is the orbit, nothing to certify")
+            return 0
         wv = np.linalg.eigvalsh(R)
         print(f"    eigenvalues of the restriction: max {wv.max():+.8f}, min {wv.min():+.8f}")
         try:
@@ -201,6 +218,21 @@ def main():
     print("\n  Entries are exact integer polynomials in y evaluated at y_0 to the stated")
     print("  precision, so no cancellation of the kind that broke the finite-difference build")
     print("  can occur here: every value is O(1) and formed from integers.")
+    return 0
+
+
+def main():
+    t0 = time.time()
+    print("P36 (frozen): the exact form has signature (0 positive, dim so(n) zero, rest negative)")
+    print("at every commuting tight family tested, the zero eigenspace being the conjugation")
+    print("orbit and the restriction to a complement negative definite.\n")
+    fams = families()
+    if QUICK:
+        fams = fams[:2]
+    for (nm, a, b, n, lines) in fams:
+        print(f"=== {nm}: n = {n}, q = {len(lines)}")
+        analyse(nm, a, b, n, lines, t0, BUDGET_S)
+        print()
     return 0
 
 

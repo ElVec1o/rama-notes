@@ -2041,8 +2041,17 @@ the computation returns exactly $0$ there. On a complement of the orbit the rest
 eigenvalues in $[-0.1269,-0.0218]$ and its negative admits a Cholesky factorisation with smallest
 pivot $3.7\times10^{-2}$, against an evaluation error of order $10^{-55}$ at the working precision
 (\texttt{code/curvform.py}). The margin exceeds the error by some $10^{53}$, so the definiteness
-is a certificate and not a reading. What it is not is a statement about all commuting families:
-this is the Fano family, and the general case is open.
+is a certificate and not a reading.
+
+It is not a statement about all commuting families, and the qualification is not idle. The same
+computation on four further families gives no positive eigenvalue anywhere, so $\Lambda\preceq0$
+throughout; but the strictness transverse to the orbit fails at $(a,b)=(2,2)$, where for $C_6$ the
+null space has dimension $24$ against an orbit of rank $15$, nine directions carrying no curvature
+without being conjugations. It holds at $(2,3)$ with smallest pivot $8.7\times10^{-2}$ and at
+$(3,3)$, and is vacuous for the family of triples in $K_4$, whose whole kernel is the orbit. The
+$(2,2)$ case is the one whose universal cover is a line, with no spectral gaps at all, so its
+degeneracy is not surprising; but on the evidence the correct statement is $\Lambda\preceq0$ in
+general with strictness away from $a=b=2$, and that is what is claimed here.
 
 One order beyond the obstruction, nothing further is imposed. The order-three equation reads
 $Y_k-P_kY_k-Y_kP_k=D_kX_k+X_kD_k$, and its diagonal entries are
