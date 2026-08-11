@@ -54,7 +54,7 @@ from twocut import mu_of, x
 from gapscale import setup, rho_at
 import quickmode
 
-BUDGET_S = 25.0 if quickmode.QUICK else 2700.0
+BUDGET_S = 2700.0
 AMBIG = 5e-3          # |rho - 1| below this is not trusted either way
 
 
@@ -252,14 +252,14 @@ def main():
           f"{'roots<rho':>10}{'min |rho_AFH - 1|':>19}{'verdict':>12}")
 
     violations, ambiguous, tested = [], [], 0
-    for (name, n, e, v) in lib:
+    for (name, n, e, v) in quickmode.few(lib, 6):
         if time.time() - t0 > BUDGET_S:
             print("  [budget reached]")
             break
         roots = mu_roots(n, e)
         if not roots:
             continue
-        for p in (3, 4, 5, 6, 8):
+        for p in quickmode.few((3, 4, 5, 6, 8), 3):
             if time.time() - t0 > BUDGET_S:
                 break
             N, E = glue(n, e, v, p)

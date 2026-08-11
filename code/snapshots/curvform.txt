@@ -1,14 +1,28 @@
-P36 (frozen): exact signature (0 positive, 21 zero, 42 negative), the zero eigenspace
-being the conjugation orbit, and the restriction to a complement negative definite.
-  y_0 = 7.196058185008562404182707   mu_0'(y_0) = 7665.89381008
+P36 (frozen): the exact form has signature (0 positive, dim so(n) zero, rest negative)
+at every commuting tight family tested, the zero eigenspace being the conjugation
+orbit and the restriction to a complement negative definite.
+=== C_6 (2,2): n = 6, q = 6
+  y_0 = 3.931851652578136573499486   mu_0'(y_0) = 23.1822198309
   working precision: 60 decimal digits
-  building the exact form on 12 of 63 basis directions (78 entries)
+  building the exact form on 10 of 33 basis directions (55 entries)
   built in <t>
-  orbit directions: 21; Lambda on them must vanish identically
+  orbit directions: 15; Lambda on them must vanish identically
   max |Lambda| over the orbit directions tested: 0.0
   (exactly zero is what conjugation invariance of mu forces)
-  spectrum of the exact form on the 12 sampled directions:
-    8 negative, 4 zero, 0 positive | max +1.686e-17
+  spectrum of the exact form on the 10 sampled directions:
+    3 negative, 7 zero, 0 positive | max +0.000e+00
   Entries are exact integer polynomials in y evaluated at y_0 to the stated
   precision, so no cancellation of the kind that broke the finite-difference build
   can occur here: every value is O(1) and formed from integers.
+=== K_4 triples (3,3): n = 4, q = 4
+  y_0 = 6.645751311064590590501616   mu_0'(y_0) = 98.3320209770
+  working precision: 60 decimal digits
+  building the exact form on 6 of 6 basis directions (21 entries)
+  built in <t>
+  orbit directions: 6; Lambda on them must vanish identically
+  max |Lambda| over the orbit directions tested: 0.0
+  (exactly zero is what conjugation invariance of mu forces)
+  spectrum of the exact form on the 6 sampled directions:
+    0 negative, 6 zero, 0 positive | max +0.000e+00
+  CERTIFICATE. orbit rank 6, complement dimension 0, zeros in the full form 6
+    complement is trivial: the whole kernel is the orbit, nothing to certify

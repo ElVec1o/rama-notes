@@ -42,6 +42,7 @@ import RamaLean
 #print axioms CavityThreshold.remainder_upper
 #print axioms CavityThreshold.threshold_iff
 #print axioms CavityThreshold.trace_le_of_rayleigh
+#print axioms CoefficientRigidity.prod_diff_natDegree_le
 #print axioms CompleteBipartiteMargin.abs_eigenvalue_le_max_rowsum
 #print axioms CompleteBipartiteMargin.margin_pos_of_rowsum
 #print axioms CompleteBipartiteMargin.no_root_below_gap_edge
@@ -107,6 +108,9 @@ import RamaLean
 #print axioms MomentTransfer.inv_close
 #print axioms MomentTransfer.remainder_le
 #print axioms MomentTransfer.stieltjes_close
+#print axioms OrderFour.image_in_trace_zero
+#print axioms OrderFour.order_four_sum_zero
+#print axioms OrderThree.order_three_unobstructed
 #print axioms Paper2.cG_factored
 #print axioms Paper2.expFormula
 #print axioms Paper2.quotient_parity
@@ -196,6 +200,7 @@ import RamaLean
 #print axioms SubcubicCounterexample.degree_A3
 #print axioms SubcubicCounterexample.quartic_dvd_A3
 #print axioms SubcubicCounterexample.quartic_factor
+#print axioms TangentObstruction.no_second_order
 #print axioms Tightness.adj_compressed
 #print axioms Tightness.crossTerm_nonneg_of_tight
 #print axioms Tightness.iota_antisymm

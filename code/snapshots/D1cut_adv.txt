@@ -5,43 +5,22 @@ Roots tested pointwise by the AFH ratio system; no grid, so no resolution artefa
       K2,6+match    8  3   25     3   4.8990         4                nan       clean
       K2,6+match    8  4   33     3   4.8990         4                nan       clean
       K2,6+match    8  5   41     3   4.8990         4                nan       clean
-      K2,6+match    8  6   49     3   4.8990         4                nan       clean
-      K2,6+match    8  8   65     3   5.2915         4                nan       clean
       K2,6+cycle    8  3   25     3   4.8990         4                nan       clean
       K2,6+cycle    8  4   33     4   4.8990         4                nan       clean
       K2,6+cycle    8  5   41     4   4.8990         4                nan       clean
-      K2,6+cycle    8  6   49     4   4.8990         4                nan       clean
-      K2,6+cycle    8  8   65     4   5.2915         4                nan       clean
        K2,6+path    8  3   25     3   4.8990         4                nan       clean
        K2,6+path    8  4   33     3   4.8990         4                nan       clean
        K2,6+path    8  5   41     3   4.8990         4                nan       clean
-       K2,6+path    8  6   49     3   4.8990         4                nan       clean
-       K2,6+path    8  8   65     3   5.2915         4                nan       clean
        K2,6+star    8  3   25     3   4.8990         3                nan       clean
        K2,6+star    8  4   33     3   4.8990         3                nan       clean
        K2,6+star    8  5   41     3   4.8990         3                nan       clean
-       K2,6+star    8  6   49     3   4.8990         3                nan       clean
-       K2,6+star    8  8   65     3   5.2915         3                nan       clean
 K2,6+cycle+chord    8  3   25     3   4.8990         4                nan       clean
 K2,6+cycle+chord    8  4   33     4   4.8990         4                nan       clean
 K2,6+cycle+chord    8  5   41     4   4.8990         4                nan       clean
-K2,6+cycle+chord    8  6   49     4   4.8990         4                nan       clean
-K2,6+cycle+chord    8  8   65     4   5.2915         4                nan       clean
       K2,6+rand0    8  3   25     3   4.8990         4                nan       clean
       K2,6+rand0    8  4   33     3   4.8990         4                nan       clean
       K2,6+rand0    8  5   41     3   4.8990         4                nan       clean
-      K2,6+rand0    8  6   49     3   4.8990         4                nan       clean
-      K2,6+rand0    8  8   65     3   5.2915         4                nan       clean
-      K2,6+rand1    8  3   25     3   4.8990         4                nan       clean
-      K2,6+rand1    8  4   33     3   4.8990         4                nan       clean
-      K2,6+rand1    8  5   41     3   4.8990         4                nan       clean
-      K2,6+rand1    8  6   49     3   4.8990         4                nan       clean
-      K2,6+rand1    8  8   65     3   5.2915         4                nan       clean
-      K2,6+rand2    8  3   25     3   4.8990         4                nan       clean
-      K2,6+rand2    8  4   33     3   4.8990         4                nan       clean
-      K2,6+rand2    8  5   41     3   4.8990         4                nan       clean
-      K2,6+rand2    8  6   49     3   4.8990         4                nan       clean
-  configurations tested: 39
+  configurations tested: 18
   P21 holds. Every root is strictly inside the spectrum, decided pointwise.
   Hall's mechanism, with blocks built to its own design, does not reach a gap at
   minimum degree three.
