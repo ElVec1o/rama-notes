@@ -1,0 +1,14 @@
+P36 (frozen): exact signature (0 positive, 21 zero, 42 negative), the zero eigenspace
+being the conjugation orbit, and the restriction to a complement negative definite.
+  y_0 = 7.196058185008562404182707   mu_0'(y_0) = 7665.89381008
+  working precision: 60 decimal digits
+  building the exact form on 12 of 63 basis directions (78 entries)
+  built in <t>
+  orbit directions: 21; Lambda on them must vanish identically
+  max |Lambda| over the orbit directions tested: 0.0
+  (exactly zero is what conjugation invariance of mu forces)
+  spectrum of the exact form on the 12 sampled directions:
+    8 negative, 4 zero, 0 positive | max +1.686e-17
+  Entries are exact integer polynomials in y evaluated at y_0 to the stated
+  precision, so no cancellation of the kind that broke the finite-difference build
+  can occur here: every value is O(1) and formed from integers.

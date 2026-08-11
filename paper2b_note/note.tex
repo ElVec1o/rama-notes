@@ -2030,9 +2030,27 @@ Two things follow. First, no argument restricted to the cone is needed for the s
 $\Lambda\preceq0$ already on the kernel, so it is negative on the cone a fortiori, strictly away
 from the conjugation directions along which $\mu$ does not change at all. Second, the commuting
 family is a strict local maximum of $\lambda_{\max}$ to second order, transverse to its own orbit.
-This is computational evidence and is labelled as such: the form was built numerically, and
-upgrading it would mean recomputing the $63\times63$ matrix in exact arithmetic, which the
-machinery of \texttt{code/curvature.py} does for one direction at a time.
+
+The signature is certified rather than observed. Each entry of the form is an exact integer
+polynomial in $y$: the jet has integer entries when $D$ does, which the basis arranges, so the
+coefficients of $\mu$ are integer polynomials in $\varepsilon$ and the $\varepsilon^2$ part is
+extracted by truncated series arithmetic over $\mathbb Z$. The vanishing on the orbit needs no
+arithmetic at all, since $\mu$ is invariant under simultaneous orthogonal conjugation and
+$\lambda_{\max}$ is therefore constant along $\exp(\varepsilon\Omega)P_k\exp(-\varepsilon\Omega)$;
+the computation returns exactly $0$ there. On a complement of the orbit the restricted form has
+eigenvalues in $[-0.1269,-0.0218]$ and its negative admits a Cholesky factorisation with smallest
+pivot $3.7\times10^{-2}$, against an evaluation error of order $10^{-55}$ at the working precision
+(\texttt{code/curvform.py}). The margin exceeds the error by some $10^{53}$, so the definiteness
+is a certificate and not a reading. What it is not is a statement about all commuting families:
+this is the Fano family, and the general case is open.
+
+One order beyond the obstruction, nothing further is imposed. The order-three equation reads
+$Y_k-P_kY_k-Y_kP_k=D_kX_k+X_kD_k$, and its diagonal entries are
+$2(D_k)_{jj}(X_k)_{jj}$ since $X_k$ is diagonal; but $D_k$ is supported on pairs with exactly one
+endpoint in $e_k$, so its diagonal vanishes and the right side has no diagonal at all. The
+order-three obstruction is therefore identically zero, for every direction and not only for those
+on the cone, and $Y$ is left free in its off-diagonal blocks. Whether that freedom absorbs the
+order-four condition is what a proof of the next statement would have to settle.
 
 Whether every direction of that cone is the velocity of a genuine curve is not settled here. It
 holds wherever it has been looked at: over the $42$ cross basis directions of the Fano family and
