@@ -1,0 +1,52 @@
+1. discriminant inside the gap and at its edge (k0 = q-1)
+   (d,q)        g    lam=0.25g     lam=0.5g     lam=0.9g    lam=0.99g     lam=1.0g
+   (3,6)   0.8219    8.411e+00    6.664e+00    1.640e+00    1.702e-01    1.776e-15
+   (3,9)   1.4142    3.352e+01    2.625e+01    6.224e+00    6.384e-01   -1.421e-14
+   (4,8)   0.9137    1.496e+01    1.187e+01    2.933e+00    3.048e-01   -1.066e-14
+  (5,15)   1.7417    9.321e+01    7.327e+01    1.758e+01    1.811e+00   -2.842e-14
+  (3,18)   2.7089    2.078e+02    1.587e+02    3.446e+01    3.427e+00    5.684e-14
+  Positive throughout the open gap and exactly zero at the edge in every family:
+  the certificate degenerates precisely where the gap closes, which is the correct
+  behaviour and not something imposed.
+2. does the smaller root B equal the tree cavity fixed point F_d?
+   (d,q)      lam   B from quadratic    tree F_d    rel err
+   (3,6)   0.2055           0.345762    0.345762   7.39e-15
+   (3,6)   0.4109           0.714604    0.714604   5.75e-15
+   (3,6)   0.6164           1.155208    1.155208   6.54e-15
+   (3,9)   0.3536           0.474797    0.474797   1.40e-15
+   (3,9)   0.7071           0.973350    0.973350   1.71e-15
+   (3,9)   1.0607           1.547335    1.547335   2.01e-15
+   (4,8)   0.2284           0.403788    0.403788   8.25e-15
+   (4,8)   0.4569           0.835640    0.835640   7.17e-15
+   (4,8)   0.6853           1.354540    1.354540   8.20e-15
+  (5,15)   0.4354           0.614367    0.614367   3.98e-15
+  (5,15)   0.8708           1.262174    1.262174   1.58e-15
+  (5,15)   1.3062           2.015451    2.015451   1.98e-15
+3. the per-vertex requirement is k > lambda*B, NOT the quadratic's root condition.
+   Near the gap edge B -> sqrt(q-1), so the requirement tends to
+   (q-1) - sqrt((d-1)(q-1)).  Measuring how often real path trees meet it.
+    (d,q,r)    n     lam    lam*B  need k >  min k seen  frac failing
+    (3,6,4)   12  0.4109   0.2937    0.2937           2        0.0000
+    (3,6,4)   12  0.8136   1.6247    1.6247           2        0.0000
+    (3,6,5)   15  0.4109   0.2937    0.2937           1        0.0000
+    (3,6,5)   15  0.8136   1.6247    1.6247           1        0.0021
+    (3,9,4)   16  0.7071   0.6883    0.6883           5        0.0000
+    (3,9,4)   16  1.4001   3.5806    3.5806           5        0.0000
+  Where the fraction is zero the uniform certificate closes at that lambda.
+  Where it is not, the certificate as stated does NOT close: a right vertex with few
+  children is only safe because its child's ratio sits well below B, which a uniform
+  interval cannot express.  That is the precise defect, and it is the remaining work.
+P26 (frozen): the sharper bound closes at strictly more parameter points.
+     (d,q,r)   frac      lam        c  Delta    old  sharp  gained
+     (3,9,4)   0.50   0.7071   2.8284      5   True   True
+    (3,12,6)   0.50   0.9512   2.4314      6   True   True
+   (3,20,19)   0.99   2.9152  -0.8204      1  False  False
+   (3,20,10)   0.50   1.4723   3.3672     10   True   True
+   (4,20,10)   0.50   1.3134   3.0241     10   True   True
+   (3,30,29)   0.99   3.9312  -0.5501      1  False  False
+   (3,30,15)   0.50   1.9855   4.0708     15   True   True
+  parameter points tested : 55
+  closes with child_count_drop alone : 44  (80.0%)
+  closes with the sharper bound      : 44  (80.0%)
+  gained by the sharper bound        : 0
+  P26 IS FALSE: the sharper bound gains nothing at these parameters.

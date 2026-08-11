@@ -572,6 +572,46 @@ three families at six gap fractions each, including $0.99$, the number of vertic
 have mixed signs is \emph{zero} in every case, out of $865$, $4185$ and $3220$ parents
 (\texttt{code/signmix.py}).
 
+\subsection{The same measurement reformulates the conjecture}\label{sec:reform}
+
+The inheritance of \S\ref{sec:inherit} says more than that the ratio route's target is true. It
+turns the conjecture into a statement about a finite tree.
+
+Godsil gives $\mu_G\mid\mu_P$, and $P$ is a tree, where the matching polynomial \emph{is} the
+characteristic polynomial. So every root of $\mu_G$ is an eigenvalue of $P$, and
+
+\begin{proposition}\label{prop:reform}
+$\operatorname{spec}(P)\subseteq\operatorname{spec}(T)$ implies
+$\operatorname{Zeros}(\mu_G)\subseteq\operatorname{spec}(T)$. Conversely a root outside
+$\operatorname{spec}(T)$ is an eigenvalue of $P$ outside it, so the containment fails exactly
+where the conjecture does.
+\end{proposition}
+
+\begin{proof}
+Immediate from $\mu_G\mid\mu_P$ in both directions
+(\texttt{PathTreeRoute.conj\_of\_pathtree}, \texttt{pathtree\_fails\_of\_violation}).
+\end{proof}
+
+The hypothesis is strictly stronger than the conclusion, since $\mu_P$ carries its own roots as
+well, and that is the point rather than a defect: it is a statement about the spectrum of one
+explicit finite tree with no matchings in it. It is also not vacuous in either direction. It fails
+for Hall's graph, necessarily --- $\sqrt5$ is a root of $\mu_G$, hence an eigenvalue of $P$, and
+the ratio system at $\sqrt5$ has decay $0.9636233789$, so it is outside $\operatorname{spec}(T)$
+--- and a hypothesis provable in general would be worthless, the conjecture being false. And it
+holds wherever it has been measured, over the four families of \S\ref{sec:inherit}.
+
+The strictness of the hypothesis is a reason for caution, and the caution is warranted. The
+containment is measured only for the biregular families of \S\ref{sec:inherit}. At minimum degree
+three in general it is \emph{not} established, and a search over $\delta\ge3$ graphs carrying a
+gap has produced a candidate failure --- a $12$-vertex graph with degrees in $[3,10]$ whose path
+tree appears to carry twelve eigenvalues inside a gap of $\operatorname{spec}(T)$, while no root
+of $\mu_G$ lies there (\texttt{code/pathtree\_delta3.py}). That count is not yet trusted, the
+first run having discarded the near-zero-pivot flag that makes an inertia count reliable, and it
+is being rechecked. If it survives, the containment is false exactly where the conjecture is true,
+and Proposition~\ref{prop:reform} is then a reformulation of the biregular case only and no route
+to the general one. We state it because the implication is worth having either way, and because
+the honest position is that its hypothesis may be too strong.
+
 So the sign-alternating certificate is the best of its family, and its reach is exactly
 $\lambda^2<\Delta$ --- the binding case, where the children at the minimum count are leaves of
 ratio $\lambda$ and the parent is $\lambda-\Delta/\lambda$. \textbf{That boundary is sharp rather

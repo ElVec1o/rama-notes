@@ -1149,6 +1149,18 @@ $4.19\times10^{-2}$ against the $4.04\times10^{-2}$ that sample size predicts
 (\texttt{code/D3margin.py}). So Conjecture~\ref{conj:mindeg3} is not surviving these tests by a
 hair.
 
+There is one reformulation, and it comes from the same measurements rather than from a new idea.
+Godsil gives $\mu_G\mid\mu_P$ for the path tree $P$, and $P$ is a tree, where the matching
+polynomial is the characteristic polynomial; so every root of $\mu_G$ is an eigenvalue of $P$, and
+$\operatorname{spec}(P)\subseteq\operatorname{spec}(T)$ implies the conjecture
+(\texttt{PathTreeRoute.conj\_of\_pathtree}). The hypothesis is strictly stronger --- $\mu_P$
+carries its own roots too --- and it fails for Hall's graph exactly where the conjecture does. The
+containment is measured for biregular families, but at minimum degree three in general it is not
+established and a candidate failure has been found, so it may well be false exactly where
+Conjecture~\ref{conj:mindeg3} is true; the companion paper \cite{PartII} records the state. We
+mention the reduction because the implication holds regardless, not because it is a route we can
+presently recommend.
+
 What none of it supplies is an argument. Each engine was built against the previous failure mode
 and each came back clean, which raises confidence and yields nothing proof-shaped. Every
 counterexample known has a separation, and the evidence is strongest exactly where separations are
