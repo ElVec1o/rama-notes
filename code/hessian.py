@@ -27,9 +27,9 @@ least squares instead.
 
 The directions split by whether the two blocks lie on opposite sides of the vertex pair. The
 CROSS ones, which are exactly the tangents of the curves in code/curvature.py, are tangent. The
-SAME-group ones are not. Since cross differences span the linearised space, the tangent directions
-are then not closed under subtraction, so the tangent cone is not a linear subspace and the
-commuting point is a singular point of the variety. A Hessian on the linearised space is therefore
+SAME-group ones are not, so the variety does not fill the linearised space and the commuting point
+is a singular point of it. The cone is also not a linear subspace, for the direct reason that Q is
+quadratic and does not vanish on sums. A Hessian on the linearised space is therefore
 the wrong object, which is why the second-order coefficient is computed along explicit curves.
 
 THIS IS NUMERICAL, and it is a statement about exponents rather than about a value: the ratios
@@ -184,7 +184,7 @@ def main():
     print("  A direction is tangent when the nearest point of the variety to A0 + eps D sits at")
     print("  distance O(eps^2); at distance O(eps) it is not. If the cross directions are tangent")
     print("  and the same-group ones are not, the variety does not fill the linearised space and")
-    print("  the commuting point is a SINGULAR point of it. Since cross differences span the")
+    print("  the commuting point is a SINGULAR point of it. The cone is also not a linear")
     print("  linearised space, the set of tangent directions is then not closed under")
     print("  subtraction: the tangent cone is not a linear subspace, and a Hessian on the")
     print("  linearised space is the wrong object. That is why code/curvature.py computes the")

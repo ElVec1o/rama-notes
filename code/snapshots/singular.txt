@@ -30,7 +30,8 @@ The same conclusion from the full system on real families, by rank.
   A system whose augmented rank exceeds its coefficient rank has no solution, so no
   curve on the variety has that velocity: the direction is in the kernel of the
   linearisation and not in the tangent cone. The cross directions are in the cone, by
-  the explicit rotations of code/curvature.py, and they span the kernel, so the cone
-  is a proper subset of it and is not closed under subtraction. The commuting point is
+  the explicit rotations of code/curvature.py, so the cone omits D while the kernel
+  contains it, and Q being quadratic it is not closed under addition either. The
+  commuting point is
   a singular point of the tight projection variety, for every commuting tight family
   containing two hyperedges through a common vertex and a vertex outside both.

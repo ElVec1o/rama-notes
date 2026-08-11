@@ -10,10 +10,10 @@ Fano/Heawood: n = 7, q = 7, kernel dimension 63 (42 cross, 21 same-group)
   directions with Q = 0 that were not tangent: 0
   directions with Q != 0 that were tangent:    0
   P35 holds where tested. The cone is the kernel of the linearisation cut by the n
-  quadrics Q_j, and since the cross differences span the kernel while their
-  differences do not lie on the cone, it is a cone and not a subspace. Second-order
-  optimisation over the commuting locus is therefore a well posed problem with n
-  quadratic constraints, rather than an unavailable one.
+  quadrics Q_j. It is a cone and not a subspace because Q is quadratic and does not
+  vanish on sums: four of the ninety-one pairs of cross basis directions tested have
+  Q(D1 + D2) nonzero, reaching 2. Second-order optimisation over the commuting locus is
+  therefore a well posed problem with n quadratic constraints, not an unavailable one.
   Label: the necessity half is VERIFIED (RamaLean.TangentObstruction), sufficiency at
   second order is VERIFIED, and that Q = 0 gives a full curve is HEURISTIC on the
   ground covered above.

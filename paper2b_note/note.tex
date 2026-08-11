@@ -2105,10 +2105,11 @@ containing exactly one of $i,j$. The variety does not fill it. Locating the near
 variety to $A_0+\varepsilon D$, the $42$ directions whose two hyperedges lie on opposite sides of
 the pair --- exactly the tangents of the curves above --- sit at distance $O(\varepsilon^2)$ and
 are tangent, while the remaining $21$ sit at distance $O(\varepsilon)$ and are not
-(\texttt{code/hessian.py}). Since the cross differences span the linearised space, the tangent
-directions are not closed under subtraction: the commuting point is a \emph{singular} point of the
-variety, its tangent cone is not a linear subspace, and a Hessian on the linearised space is the
-wrong object. Local maximality therefore remains open, and what it needs is a second-order theory
+(\texttt{code/hessian.py}). The commuting point is therefore a \emph{singular} point of the
+variety. Its tangent cone is moreover not a linear subspace: $Q$ is quadratic, so it does not
+vanish on sums, and four of the ninety-one pairs of cross basis directions tested have
+$Q(D_1+D_2)\neq0$, reaching $2$. A Hessian on the linearised space is therefore the wrong
+object. Local maximality therefore remains open, and what it needs is a second-order theory
 on that cone.
 
 The same is true at $\mathrm{AG}(2,3)$, where the linearised space has dimension $180$ against a
@@ -2147,8 +2148,9 @@ contradicting $\sum_kX_k=0$; at $w$, which lies in both, the same computation gi
 $X$ exists, so no curve on the variety has velocity $D$. That $D$ lies in the kernel of the
 linearisation is the order-one identity $P_kD_k+D_kP_k=D_k$, immediate from $w\in e$, $v\notin e$
 and the corresponding statement for $f$, together with $D_e+D_f=0$. Finally the cross directions
-are tangent, by the explicit rotations above, and they span the kernel, so the cone is a proper
-subset of the kernel and is not closed under subtraction.
+are tangent, by the explicit rotations above, so the cone meets the kernel in more than the
+origin while omitting $D$; and it is not closed under addition, since $Q$ is quadratic and does not
+vanish on sums.
 \end{proof}
 
 The hypothesis asks only that some vertex lie in two hyperedges with a further vertex outside

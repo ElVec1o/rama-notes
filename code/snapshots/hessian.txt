@@ -14,7 +14,7 @@ Fano/Heawood: n = 7, q = 7, (a,b) = (3,3)
   A direction is tangent when the nearest point of the variety to A0 + eps D sits at
   distance O(eps^2); at distance O(eps) it is not. If the cross directions are tangent
   and the same-group ones are not, the variety does not fill the linearised space and
-  the commuting point is a SINGULAR point of it. Since cross differences span the
+  the commuting point is a SINGULAR point of it. The cone is also not a linear
   linearised space, the set of tangent directions is then not closed under
   subtraction: the tangent cone is not a linear subspace, and a Hessian on the
   linearised space is the wrong object. That is why code/curvature.py computes the

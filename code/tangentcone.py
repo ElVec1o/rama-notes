@@ -20,8 +20,9 @@ off-diagonal blocks to zero, and both requirements hold. So
 
   T = { D : P_k D_k + D_k P_k = D_k, sum_k D_k = 0, Q_j(D) = 0 for all j }
 
-is the kernel of the linearisation cut by n quadrics. It is a cone and not a subspace, which is
-the same statement as the point being singular.
+is the kernel of the linearisation cut by n quadrics. It is a cone and not a subspace for the
+direct reason that Q is quadratic and does not vanish on sums; the cross directions span only 42 of
+the 63 kernel dimensions at Fano, so no spanning argument is available or needed.
 
 FROZEN BEFORE THE DATA:
   P35. Q(D) = 0 characterises tangency. Every direction with Q(D) = 0 has the nearest point of
@@ -160,10 +161,10 @@ def main():
         print(f"  directions with Q != 0 that were tangent:    {offT_bad}\n")
 
     print("  P35 holds where tested. The cone is the kernel of the linearisation cut by the n")
-    print("  quadrics Q_j, and since the cross differences span the kernel while their")
-    print("  differences do not lie on the cone, it is a cone and not a subspace. Second-order")
-    print("  optimisation over the commuting locus is therefore a well posed problem with n")
-    print("  quadratic constraints, rather than an unavailable one.")
+    print("  quadrics Q_j. It is a cone and not a subspace because Q is quadratic and does not")
+    print("  vanish on sums: four of the ninety-one pairs of cross basis directions tested have")
+    print("  Q(D1 + D2) nonzero, reaching 2. Second-order optimisation over the commuting locus is")
+    print("  therefore a well posed problem with n quadratic constraints, not an unavailable one.")
     print("  Label: the necessity half is VERIFIED (RamaLean.TangentObstruction), sufficiency at")
     print("  second order is VERIFIED, and that Q = 0 gives a full curve is HEURISTIC on the")
     print("  ground covered above.")

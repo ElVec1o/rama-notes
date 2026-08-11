@@ -41,7 +41,8 @@ is not. `obstruction_two_blocks` below is the same-group case with the numbers i
 
 `forced_of_notMem`, `forced_of_mem`, `sum_forced`, `no_second_order` and
 `obstruction_two_blocks` are `VERIFIED`. That the configuration exists in a given family, and that
-the cross directions span the kernel, are checked in `code/singular.py` and `code/curvature.py`
+the cone fails to be closed under addition, are checked in `code/singular.py` and
+`code/tangentcone.py`
 respectively and are not proved here.
 -/
 

@@ -43,10 +43,11 @@ two kinds, and it is a difference of sign and nothing else.
 WHAT IT PROVES. A curve on the variety with velocity D would have X = A''(0)/2 solving that
 system, so no such curve exists and D is not in the tangent cone, although it is in the kernel of
 the linearisation. The cross directions are in the cone, by the explicit rotations of
-code/curvature.py, and they span the kernel. So the cone is a proper subset of the kernel and is
-not closed under subtraction: the commuting point is a SINGULAR point of the tight projection
-variety, and it is singular for any commuting tight family containing the configuration, which is
-any with a >= 2 and a vertex outside two hyperedges through a common vertex.
+code/curvature.py, so the cone contains directions the kernel does and omits D: the commuting point
+is a SINGULAR point of the tight projection variety, and it is singular for any commuting tight
+family containing the configuration, which is any with a >= 2 and a vertex outside two hyperedges
+through a common vertex. The cone is moreover not a linear subspace, since Q is quadratic and does
+not vanish on sums (code/tangentcone.py).
 
 This script checks all of that symbolically, and then checks the full linear system for X on the
 actual families, so the local argument and the global system are compared rather than one being
@@ -209,8 +210,9 @@ def main():
     print("\n  A system whose augmented rank exceeds its coefficient rank has no solution, so no")
     print("  curve on the variety has that velocity: the direction is in the kernel of the")
     print("  linearisation and not in the tangent cone. The cross directions are in the cone, by")
-    print("  the explicit rotations of code/curvature.py, and they span the kernel, so the cone")
-    print("  is a proper subset of it and is not closed under subtraction. The commuting point is")
+    print("  the explicit rotations of code/curvature.py, so the cone omits D while the kernel")
+    print("  contains it, and Q being quadratic it is not closed under addition either. The")
+    print("  commuting point is")
     print("  a singular point of the tight projection variety, for every commuting tight family")
     print("  containing two hyperedges through a common vertex and a vertex outside both.")
     return 0
