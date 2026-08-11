@@ -1,0 +1,16 @@
+The no-go first: are the block spectra identical across the projection class?
+  commuting block spectrum [0. 0. 0. 0. 1. 1.]
+  random    block spectrum [0. 0. 0. 0. 1. 1.]
+  identical: True
+  So any bound reading only spectra is constant on the class, and cannot separate the
+  commuting family from any other. The variance is such a functional and is likewise
+  constant here, at (b/a)(1 - 1/a) = 0.5000.
+P41 (frozen): maxroot decreases with the total commutator norm and is maximised at
+zero, the commuting locus.
+  family  families      commutator range         maxroot range  correlation  max at 0
+     C_4        10           [0.00,4.86]       [3.7024,3.8478]      -0.5850      True
+     C_6        13           [0.00,8.37]       [3.8771,3.9319]      -0.8052      True
+  P41 holds where tested. The commutator is a joint invariant, so it is not blocked
+  by the no-go, and it is maximised exactly where the conjecture says the maximum
+  is. That makes it the shape a proof would need. It is a correlation on random
+  families, not a theorem, and the search is not adversarial.

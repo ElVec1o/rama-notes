@@ -3481,6 +3481,17 @@ The obstructions are the part we would most want a reader to take away, because 
 route that looks open from outside.
 
 \begin{itemize}
+\item No bound of the form $\operatorname{maxroot}\mu\le F(a,b,p,q,\operatorname{spec}A_1,\dots,
+  \operatorname{spec}A_q)$ can reduce the problem. Every $A_k$ in a tight rank-$b$ projection
+  family has spectrum $\{1^{(b)},0^{(p-b)}\}$, so any such $F$ is constant on the class; the class
+  contains commuting families whose greatest root tends to the band edge, so $F$ is at best that
+  edge, which is the statement to be proved. This is why the barrier route yields no reduction, and
+  it applies equally to the Poisson-binomial variance of \S\ref{sec:rank}, which is a spectral
+  functional and is constant at $(b/a)(1-1/a)$ on the class. A proof must read a joint invariant of
+  the family. The commutator is one: over random tight projection families the greatest root
+  correlates with $\sum_{i<j}\|[A_i,A_j]\|_F^2$ at $-0.33$, $-0.50$ and $-0.73$ for $C_4$, $C_6$
+  and $C_8$, and is largest at zero, which is the commuting locus
+  (\texttt{code/jointinv.py}). That is a correlation on random families and not a theorem.
 \item A barrier argument that sees only the trace and $\sum_kP_k=aI$ is reading the
   Marchenko--Pastur law, and $A_k=(b/p)I_p$ satisfies both while exceeding the tree band
   already at $p=4$. No such argument can reach either edge.
