@@ -1866,6 +1866,17 @@ c_s=(-1)^s\,s!\,\binom ps\sum_{|S|=s}D\bigl(A_k:k\in S,\ I^{\,p-s}\bigr),
 checked to $1.4\times10^{-14}$ at every $s$ on five families with commutator norms between $0.84$
 and $1.00$, so on families far from commuting (\texttt{code/mixeddisc.py}).
 
+Two properties of $D$ have to hold before \eqref{eq:mixeddisc} even parses, and both are now
+machine-checked rather than carried as prose. The sum on the right is over \emph{sets} $S$, which is
+legitimate only because $D$ is symmetric in its arguments
+(\texttt{MixedDiscriminant.mixedDisc\_comp\_perm}); and calling $D$ the multilinear extension of the
+determinant is a claim whose two halves are $D(B,\dots,B)=\det B$
+(\texttt{mixedDisc\_const}) and additivity in each argument separately
+(\texttt{mixedDisc\_update\_add}), the latter holding because in the term indexed by $\sigma$ the
+matrix $B_k$ occupies exactly one column, the one numbered $\sigma^{-1}(k)$. Aleksandrov's
+inequality, Bapat's theorem and Gurvits' theorem are cited and not formalised, and neither is
+\eqref{eq:mixeddisc} itself.
+
 Two properties recorded earlier as observations are then consequences of classical results rather
 than facts about this construction. The $c_s$ alternate in sign because a mixed discriminant of
 positive semidefinite arguments is nonnegative, which is Aleksandrov's inequality; the
@@ -2156,9 +2167,16 @@ $\operatorname{tr}(X_{21}X_{12})=\operatorname{tr}(X_{12}X_{21})$. Since $D_k$ i
 the splitting, writing its corner as $M$ gives $(D_k^2)_{11}=MM^{\mathsf T}$ and
 $(D_k^2)_{22}=M^{\mathsf T}M$, whose squares have equal trace by cyclicity, so every term vanishes.
 The identity is machine-checked as \texttt{OrderFour.order\_four\_sum\_zero}, and the residuals of
-the order-four solve are $10^{-18}$ on the directions tested (\texttt{code/tangentcone.py}).
-Orders two, three and four are therefore all satisfiable on the cone; passing from every finite
-order to an actual curve is a further step, and is not taken here.
+the order-four solve are $10^{-18}$ on the directions tested (\texttt{code/tangentcone.py}). Those
+two facts, that the obstruction sums to zero and that the cokernel is the constants, do not by
+themselves put the obstruction in the image, and the step that does is
+\texttt{OrderFourSolvable.order\_four\_solvable}: in finite dimension a subspace whose orthogonal
+complement is the line of constants is the hyperplane of vectors summing to zero. It had been left
+unstated between two files that each proved half of it.
+
+Orders two, three and four are therefore all satisfiable on the cone. The passage from every finite
+order to an actual curve was the remaining gap, and it can be closed rather than climbed, because
+the variety is in the scope of a classical criterion.
 
 Beyond the second order, the extremality itself has been searched for directly. At four
 commuting families the commuting point is the largest value found over between $32$ and $40$
@@ -2169,8 +2187,59 @@ other side: within the projection class the commuting families are the largest, 
 rank-$n$ interpolation the projections are the smallest. Neither observation is a proof, and the
 conjunction of the two is what Conjecture~1.4 would need.
 
-Whether every direction of that cone is the velocity of a genuine curve is not settled here. It
-holds wherever it has been looked at: over the $42$ cross basis directions of the Fano family and
+\begin{proposition}[the curve, by 2-regularity]\label{prop:tworeg}
+Let $D$ lie in the kernel of the linearisation with $Q(D)=0$, and suppose the linear map
+$E\mapsto\mathrm dQ(D)[E]$ carries that kernel onto the span of $Q_1,\dots,Q_n$. Then there is a
+curve $t\mapsto A(t)$ in the tight projection variety with $A(0)=A_0$ and $A(t)=A_0+tD+O(t^2)$. In
+particular $D$ lies in the tangent cone.
+\end{proposition}
+
+\begin{proof}
+Work upstairs, on frames $U_k\in\mathbb R^{n\times b}$ with $U_k^{\mathsf T}U_k=I_b$ and
+$A_k=U_kU_k^{\mathsf T}$, so that idempotency is free and the only equation is
+$\Psi(U)=\sum_kU_kU_k^{\mathsf T}-aI=0$. The Stiefel constraint makes the $e_k$-block of a
+first-order frame variation antisymmetric, and a diagonal entry of $\mathrm d\Psi$ is a diagonal
+entry of that block, so $\mathrm d\Psi$ has vanishing diagonal; and it is onto the zero-diagonal
+symmetric matrices, of rank $21$ against $28$ at the Fano family. Split $\Psi$ accordingly. Its
+off-diagonal part is a submersion, so $W=\{\Psi_{\mathrm{off}}=0\}$ is a smooth manifold near the
+point, and on $W$ the remaining map $F=\Psi_{\mathrm{diag}}$ satisfies $F=0$ and $\mathrm dF=0$
+there, with Hessian $Q$.
+
+Write $F=Q+C+\cdots$ with $Q(x)=B(x,x)$ quadratic and $C$ cubic. Since $Q(D)=0$, the polynomial
+$t\mapsto F(tD+t^2w)$ vanishes to order three, so $F(tD+t^2w)=t^3G(t,w)$ with $G$ polynomial and
+$G(0,w)=2B(D,w)+C(D,D,D)$, affine in $w$ with surjective linear part by hypothesis. Pick $w_0$ with
+$G(0,w_0)=0$ and apply the implicit function theorem in $w$ at $(0,w_0)$; the resulting
+$x(t)=tD+t^2w(t)$ satisfies $F(x(t))=0$ and $x(t)/t\to D$.
+\end{proof}
+
+This is Avakov's 2-regularity condition \cite{Avakov,Arutyunov} in the fully degenerate case, and
+no novelty is claimed for it. What is new here is only that the tight projection variety is in its
+scope, which is what the frame reduction supplies.
+
+The span in the hypothesis is not all of $\mathbb R^n$, and the reason is an identity that holds for
+each block separately,
+\[
+\sum_j\sigma_k(j)(D_k^2)_{jj}=0 ,
+\]
+since $(D_k^2)_{jj}=\sum_lD_k(j,l)^2$ by symmetry, so that exchanging the two indices in the double
+sum pairs every surviving term with one of opposite sign, $D_k$ being supported on pairs with
+exactly one endpoint in $e_k$. So $Q$ lands in the trace-zero diagonals, and the span can be smaller
+still: it is $n-1$ at $C_6$, $K_{3,3}$ and the Fano family, and $2$ at $C_4$, which carries the extra
+pair $Q_0+Q_2=Q_1+Q_3=0$, one for each side of its bipartition. The identity is machine-checked as
+\texttt{ArcTangent.sum\_sgn\_diag\_sq\_eq\_zero}, and the passage from a curve to membership of the
+tangent cone as \texttt{ArcTangent.mem\_tangentCone\_of\_arc}; the implicit function theorem step is
+not formalised.
+
+The hypothesis is a rank condition on $D$ alone, and it holds where it has been checked: at every
+cone direction tested at $C_4$, $K_{3,3}$ and the Fano family, four directions each, the rank of
+$\mathrm dQ(D)$ on the kernel equals the span. The curve has also been exhibited rather than
+inferred, by continuation upstairs: the residual stays at $10^{-14}$ or below and
+$\|(A(t)-A_0)/t-D\|$ falls with exponent $0.96$ to $1.00$ over $t\in[0.01,0.05]$, while a direction
+with $Q(D)\neq0$ has the same quantity flat at exponent $0$ (\texttt{code/arc.py}).
+
+The earlier evidence, which measured distances rather than curves, is consistent and is recorded
+because it covers directions the rank condition was not tested on. Over the $42$ cross basis
+directions of the Fano family and
 over directions obtained by projecting random kernel elements onto $\{Q=0\}$, the nearest point of
 the variety to $A_0+\varepsilon D$ lies at distance $O(\varepsilon^2)$, and at $O(\varepsilon)$ for
 every direction with $Q(D)\neq0$ (\texttt{code/tangentcone.py}); the general relation is
@@ -2345,6 +2414,21 @@ from a ceiling and a converging ladder to the supremum as \texttt{XuSharp.sharp\
 and the consequence that no smaller constant can hold as
 \texttt{XuSharp.no\_smaller\_constant}. Godsil's bound and subgraph monotonicity enter there as
 hypotheses, being classical.
+
+Four further files carry the material of this subsection and of \S\ref{sec:mixeddisc}, all with no
+\texttt{sorry} and on the three standard axioms. \texttt{RamaLean/SpectralNoGo.lean} is the
+obstruction of \S\ref{sec:obstructions} in two halves that do not lean on each other:
+\texttt{const\_of\_factors\_through\_traces}, that any functional reading only the power traces of
+the blocks agrees on any two families of idempotents with equal block traces, which follows from
+$A^{j+1}=A$ and nothing else; and \texttt{spectral\_bound\_is\_the\_target}, that a bound both valid
+on the class and strong enough to give the target coincides with the target, with
+\texttt{target\_gives\_spectral\_bound} for the converse. \texttt{RamaLean/ArcTangent.lean} carries
+the identity $\sum_j\sigma_k(j)(D_k^2)_{jj}=0$ and the passage from a curve to Mathlib's
+\texttt{tangentConeAt}. \texttt{RamaLean/OrderFourSolvable.lean} is the step joining
+\texttt{OrderFour.order\_four\_sum\_zero} to \texttt{CokernelRank.cokernel\_const}.
+\texttt{RamaLean/MixedDiscriminant.lean} carries the symmetry, diagonal value and additivity of the
+mixed discriminant. What is cited and not formalised is stated in each file: the implicit function
+theorem step of Proposition~\ref{prop:tworeg}, and Aleksandrov's, Bapat's and Gurvits' theorems.
 
 \subsection{The plane class, and two unconditional bounds}
 
@@ -3477,6 +3561,7 @@ proves the complete bipartite case: any argument yielding a bound independent of
 in advance to be insufficient. What is needed is a Friedman-type edge theorem, in which the roots
 fill out $\operatorname{spec}(T)$ without escaping it, at the soft-edge scale.
 
+\label{sec:obstructions}
 The obstructions are the part we would most want a reader to take away, because each one closes a
 route that looks open from outside.
 
@@ -3485,13 +3570,28 @@ route that looks open from outside.
   \operatorname{spec}A_q)$ can reduce the problem. Every $A_k$ in a tight rank-$b$ projection
   family has spectrum $\{1^{(b)},0^{(p-b)}\}$, so any such $F$ is constant on the class; the class
   contains commuting families whose greatest root tends to the band edge, so $F$ is at best that
-  edge, which is the statement to be proved. This is why the barrier route yields no reduction, and
+  edge, which is the statement to be proved. Both halves are machine-checked in
+  \texttt{RamaLean/SpectralNoGo.lean}: that every functional factoring through the power traces of
+  the blocks agrees on any two families of idempotents with equal block traces
+  (\texttt{const\_of\_factors\_through\_traces}, from $A^{j+1}=A$ and nothing else), and that an $F$
+  which is both valid on the class and strong enough to give the target satisfies $F=L$ exactly, so
+  that the bound it yields is the target verbatim (\texttt{spectral\_bound\_is\_the\_target}). This
+  is why the barrier route yields no reduction, and
   it applies equally to the Poisson-binomial variance of \S\ref{sec:rank}, which is a spectral
-  functional and is constant at $(b/a)(1-1/a)$ on the class. A proof must read a joint invariant of
+  functional and is constant at $(b/a)(1-1/a)$ on the class
+  (\texttt{variance\_of\_idem}). A proof must read a joint invariant of
   the family. The commutator is one: over random tight projection families the greatest root
   correlates with $\sum_{i<j}\|[A_i,A_j]\|_F^2$ at $-0.33$, $-0.50$ and $-0.73$ for $C_4$, $C_6$
   and $C_8$, and is largest at zero, which is the commuting locus
-  (\texttt{code/jointinv.py}). That is a correlation on random families and not a theorem.
+  (\texttt{code/jointinv.py}). That correlation has since been tested adversarially rather than on
+  random families: hill climbing inside the projection class to \emph{maximise} the greatest root,
+  each block rotated by the exponential of a random antisymmetric generator so that idempotency
+  stays exact, from $76$ random starts across $C_4$, $C_6$, $K_{3,3}$ and the cube at $600$ steps
+  each. It accepted $7661$ uphill steps and never reached the commuting value, falling short by
+  $0.000031$, $0.000857$, $0.002763$ and $0.010813$ respectively, with the commutator at the best
+  point below its starting value in every family (\texttt{code/jointinv.py}, full configuration;
+  \texttt{-{}-quick} truncates it to two families and $120$ steps). It is still not a theorem, and
+  the functional it names is the one a proof would have to read.
 \item A barrier argument that sees only the trace and $\sum_kP_k=aI$ is reading the
   Marchenko--Pastur law, and $A_k=(b/p)I_p$ satisfies both while exceeding the tree band
   already at $p=4$. No such argument can reach either edge.
@@ -3894,6 +3994,12 @@ Theory \textbf{5} (1981), 285--297.
 \bibitem{HallCE} C.~Hall, \emph{A simple bipartite counterexample to Conjecture 10:
   spectral localization of the ordinary matching polynomial}, verification note, personal
   communication, August 2026.
+\bibitem{Avakov} E.~R.~Avakov, \emph{Extremum conditions for smooth problems with
+equality-type constraints}, USSR Comput.\ Math.\ Math.\ Phys.\ \textbf{25} (1985), 24--32.
+
+\bibitem{Arutyunov} A.~V.~Arutyunov, \emph{Optimality Conditions: Abnormal and Degenerate
+Problems}, Kluwer, 2000.
+
 \bibitem{RL} M.~Ravichandran, J.~Leake, \emph{Mixed determinants and the Kadison--Singer
   problem}, Math. Ann. \textbf{377} (2020), 511--541.
 \bibitem{AFH} O.~Angel, J.~Friedman, S.~Hoory, \emph{The non-backtracking spectrum of the

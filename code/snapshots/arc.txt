@@ -1,0 +1,30 @@
+P42: (a) sum_j Q_j = 0 identically, frozen; (b) dQ(D) onto the span of the quadrics at
+cone directions, REVISED after C_4 falsified the frozen form 'rank n-1'; (c) the curve
+exists, with tangent error O(t), frozen.
+(a) The identity sum_j Q_j(D) = 0, and the span of the quadrics.
+    family   n   q  directions   max |sum_j Q_j|     max |Q|   span   n-1
+       C_4   4   4          20          1.78e-15     14.0007      2     3
+   K_{3,3}   6   9          20          7.11e-15     22.3143      5     5
+      Fano   7   7          20          1.07e-14     37.6125      6     6
+  worst: 1.07e-14. The all-ones relation is universal; C_4 carries a second pair,
+  Q_0 + Q_2 = Q_1 + Q_3 = 0, one per side of its bipartition. Surjectivity is asked
+  against the span, not against n-1.
+(b) 2-regularity at cone directions: rank of E -> dQ(D)[E] on ker(dPhi).
+    family   n  dim ker  max |Q(D)|    ranks seen   span   2-regular
+       C_4   4       10     8.8e-05           2-2      2         4/4
+   K_{3,3}   6       57     3.1e-05           5-5      5         4/4
+      Fano   7       63     5.7e-05           6-6      6         4/4
+  2-regular at every direction tested, every family: True
+(c) The curve, by continuation upstairs. Control: a direction with Q(D) != 0.
+    family   direction  max residual  err at t_min  exponent     verdict
+       C_4        cone       1.9e-14      4.27e-03      0.98   tangent D
+       C_4     control       4.1e-14      1.99e-01      0.01 not tangent
+   K_{3,3}        cone       4.4e-16      2.32e-03      0.96   tangent D
+   K_{3,3}     control       4.4e-16      2.26e-01      0.00 not tangent
+      Fano        cone       4.4e-16      2.18e-03      1.00   tangent D
+      Fano     control       2.0e-14      1.78e-01     -0.00 not tangent
+  P42 HOLDS. The quadrics satisfy the all-ones identity, cone directions are
+  2-regular onto the span, and the curve promised by the lemma is exhibited with the
+  tangent it is supposed to have, while a direction off the cone does not acquire
+  one. A6 is no longer a passage from finite orders to a curve: the curve comes from
+  2-regularity in one step, and the hypothesis is a rank checkable on D alone.

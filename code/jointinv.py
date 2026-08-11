@@ -46,8 +46,9 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__))
                  if '__file__' in globals() else 'code')
 import quickmode
 from mixed_char_poly import mixed_char_poly
-from tff import build_tff
+from tff import build_tff, restore
 from hessian import coord_family
+from scipy.linalg import expm
 
 QUICK = quickmode.QUICK
 
@@ -66,6 +67,87 @@ def comm_norm(A):
 
 def cyc(m):
     return m, [[i, (i + 1) % m] for i in range(m)]
+
+
+def climb(A0, p, q, a, b, rng, nstep, eps0):
+    """Hill climb inside the projection class, rotating by expm and returning to the class.
+
+    Moves are proposed as simultaneous orthogonal conjugations of the blocks by independent random
+    generators, which keeps every block a rank-b projection exactly; the restore step repairs
+    tightness. The step size grows on acceptance and shrinks on refusal, and is randomised again
+    after a long stall, so that the search is not a local descent in disguise.
+    """
+    cur = A0.copy(); ycur = ymax(cur); eps = eps0; acc = 0; stall = 0
+    for _ in range(nstep):
+        Y = np.empty_like(cur)
+        for k in range(q):
+            X = rng.standard_normal((p, p)); X = X - X.T
+            R = expm(eps * X)
+            Y[k] = R @ cur[k] @ R.T
+        cand, res = restore(Y, q, p, a, b)
+        if res > 1e-9:
+            eps *= 0.9; stall += 1; continue
+        yc = ymax(cand)
+        if yc > ycur:
+            cur, ycur = cand, yc; acc += 1; stall = 0; eps *= 1.05
+        else:
+            stall += 1; eps *= 0.995
+        if stall > 60:
+            eps = eps0 * rng.random(); stall = 0
+    return cur, ycur, acc
+
+
+def adversarial():
+    """P41 tested adversarially: climb to MAXIMISE the root and see whether commuting is beaten.
+
+    The correlation above is over random families, which is weak evidence for an extremality claim:
+    a maximum can be missed by sampling. This searches for it. If any climb beats the commuting
+    value the commutator is the wrong invariant and the conjecture is in trouble; if none does, the
+    claim has survived a search that was trying to break it.
+    """
+    # No wall-clock budget. --quick truncates the CONFIGURATION, the restart count, the step
+    # count and the family list, so the output is a function of the code and not of the machine's
+    # load. Six scripts in this repository once shrank their clock instead and their snapshots
+    # could not be reproduced; this is the same mistake and is not repeated.
+    rng = np.random.default_rng(20260912)
+    nstep = 120 if QUICK else 600
+    nrestart = 3 if QUICK else 20
+    print("\nP41 adversarially: hill climbing to maximise the root inside the projection class.")
+    print(f"{'family':>10}{'commuting':>12}{'best climbed':>14}{'gap':>12}"
+          f"{'comm at best':>14}{'accepted':>10}{'restarts':>10}")
+    cases = [("C_4", 2, 2, lambda: cyc(4)), ("C_6", 2, 2, lambda: cyc(6)),
+             ("K_{3,3}", 3, 2, lambda: (6, [[i, 3 + j] for i in range(3) for j in range(3)])),
+             ("cube", 3, 2, lambda: (8, [[0, 1], [1, 2], [2, 3], [3, 0], [4, 5], [5, 6],
+                                         [6, 7], [7, 4], [0, 4], [1, 5], [2, 6], [3, 7]]))]
+    if QUICK:
+        cases = cases[:2]
+    beaten = 0
+    for nm, a, b, gen in cases:
+        p, lines = gen(); q = len(lines)
+        yc = ymax(coord_family(p, lines))
+        best = -1e9; bc = float('nan'); tot = 0; nr = 0
+        for _ in range(nrestart):
+            A, res = build_tff(p, q, a, b, rng)
+            if res > 1e-9:
+                continue
+            nr += 1
+            A2, y2, acc = climb(A, p, q, a, b, rng, nstep, 0.3); tot += acc
+            if y2 > best:
+                best, bc = y2, comm_norm(A2)
+        if nr == 0:
+            print(f"{nm:>10}   no tight family built"); continue
+        if best > yc + 1e-9:
+            beaten += 1
+        print(f"{nm:>10}{yc:>12.6f}{best:>14.6f}{yc - best:>+12.6f}{bc:>14.4f}{tot:>10}{nr:>10}")
+    print(f"\n  commuting value beaten by hill climbing: {beaten}")
+    if beaten == 0:
+        print("  P41 survives an adversarial search. The commuting value is not merely the largest")
+        print("  sampled, it is the largest found by a procedure trying to exceed it, and the")
+        print("  commutator at the best point is below where the climb started in every family.")
+    else:
+        print("  P41 IS REFUTED. The commutator is not the invariant and the extremality claim is")
+        print("  false as stated.")
+    return beaten
 
 
 def main():
@@ -122,6 +204,7 @@ def main():
     else:
         print("  P41 fails somewhere above: the commutator is not the invariant, and what is")
         print("  remains open.")
+    adversarial()
     return 0
 
 

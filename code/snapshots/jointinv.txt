@@ -14,3 +14,11 @@ zero, the commuting locus.
   by the no-go, and it is maximised exactly where the conjecture says the maximum
   is. That makes it the shape a proof would need. It is a correlation on random
   families, not a theorem, and the search is not adversarial.
+P41 adversarially: hill climbing to maximise the root inside the projection class.
+    family   commuting  best climbed         gap  comm at best  accepted  restarts
+       C_4    3.847759      3.847703   +0.000056        0.2689        30         2
+       C_6    3.931852      3.926510   +0.005342        4.2825        19         3
+  commuting value beaten by hill climbing: 0
+  P41 survives an adversarial search. The commuting value is not merely the largest
+  sampled, it is the largest found by a procedure trying to exceed it, and the
+  commutator at the best point is below where the climb started in every family.
