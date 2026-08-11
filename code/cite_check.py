@@ -60,7 +60,10 @@ VOLATILE = re.compile(r'elapsed|budget|\bs of \b|^\s*\[|seconds|wall clock|ETA',
 # An elapsed time embedded in an otherwise stable line ("93 configurations, 25s") made two
 # scripts report drift for no reason but the machine's load. Dropping the whole line would lose
 # the configuration count with it, so the duration alone is masked.
-DURATION = re.compile(r'(?<![\w.])\d+(?:\.\d+)?\s*(?:s|sec|secs|ms|min)(?![\w.])')
+# No whitespace between the number and the unit: allowing it made the mask eat the path
+# count in "paths=  3457  min|F|=...", turning a real number into <t>. Durations in this output
+# are always written closed up, "25s" and "1.5ms".
+DURATION = re.compile(r'(?<![\w.])\d+(?:\.\d+)?(?:s|sec|secs|ms|min)(?![\w.])')
 
 
 def normalise(text):

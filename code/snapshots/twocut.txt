@@ -38,5 +38,5 @@ self-check of the 2-cut identity:
         K2,5  6   44     0          -          -        -  in spec
         K2,5  7   51     0          -          -        -  in spec
         K2,5  8   58     0          -          -        -  in spec
-34 configurations, 8s
+34 configurations, <t>
 no gap root anywhere in the 2-cut family. C1 survives the attack most likely to break it.

@@ -1,8 +1,8 @@
 P30 (frozen): the minimum DOS at a root does not decay with n.
    n  graphs   roots   min DOS at a root      median     degrees
-  10      57     285        8.137491e-02  1.4223e-01        3..9
-  12   no graphs
-  14   no graphs
-  16   no graphs
-  18   no graphs
-  20   no graphs
+  10      12      60        8.137491e-02  1.4007e-01        3..9
+  12      12      72        7.540070e-02  1.4440e-01       3..11
+  14      12      84        5.939484e-02  1.4459e-01       3..13
+  log-log slope against n:  minimum -0.920   1% quantile -0.920   median +0.096
+  P30 IS FALSE: the DISTRIBUTION shifts down with n, not merely its extreme,
+  so the class approaches a violation as the graphs grow.
