@@ -100,7 +100,7 @@ constant term counts triangles, $c_3(0)=-\#\triangle(G)$; for $k\ge4$ it is a ge
 cover counts $M=|E|d$, $p_2=Pd$ (`CoverCounts`).
 
 ### Paper 1 — Integers $n$ with $n\mid p(n)-1$
-`paper1_partition_self_divisibility.md` — a minor note. The sequence is OEIS
+`paper1_note/note.md` — a minor note. The sequence is OEIS
 [A128836](https://oeis.org/A128836) (the shifts $S_0=\{n\mid p(n)\}$ and $S_{-1}=\{n\mid p(n)+1\}$ are
 [A051177](https://oeis.org/A051177) and [A203023](https://oeis.org/A203023)); 13 terms to $10^6$;
 elementary explanation of a Ramanujan-prime appearance. The value is the Lean formalization plus the

@@ -1,7 +1,7 @@
 # Lean 4 formalization — Papers 1 & 2
 
 Machine-checked Lean 4 / Mathlib formalization of the verifiable content of
-`proof1_partition_self_divisibility.md` and `proof2_cycle_graph_lift.md`.
+`paper1_note/proof.md` and `proof2_cycle_graph_lift.md`.
 
 - Toolchain: `leanprover/lean4:v4.30.0`, Mathlib `v4.30.0` (see `lean-toolchain`, `lakefile.toml`).
 - Build: `lake exe cache get && lake build` (full build ≈ 2 min once Mathlib cache is present).
