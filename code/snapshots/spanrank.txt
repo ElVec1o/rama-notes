@@ -1,0 +1,37 @@
+P43 (frozen): (a) span = n - c(G_Q); (b) rank dQ(D) = n - c(G_D); (c) generic cone
+directions are 2-regular, cross basis directions are not and lie in the cone.
+(a) The span of the quadrics against n - c(G_Q).
+    family   n   q  |E(G_Q)|  c(G_Q)  predicted  computed  agree
+       C_4   4   4         2       2          2         2   True
+       C_6   6   6         9       1          5         5   True
+   K_{2,4}   6   8        15       1          5         5   True
+   K_{3,3}   6   9        15       1          5         5   True
+      cube   8  12        28       1          7         7   True
+  (a) holds at every family: True
+(b) The rank of dQ(D) against n - c(G_D), over kernel and cone directions.
+    family      kind  directions  predicted  computed  agree
+       C_4    kernel           3        2-2       2-2   True
+       C_4      cone           3        2-2       2-2   True
+       C_6    kernel           3        5-5       5-5   True
+       C_6      cone           3        5-5       5-5   True
+   K_{2,4}    kernel           3        5-5       5-5   True
+   K_{2,4}      cone           3        5-5       5-5   True
+   K_{3,3}    kernel           3        5-5       5-5   True
+   K_{3,3}      cone           3        5-5       5-5   True
+      cube    kernel           3        7-7       7-7   True
+      cube      cone           3        7-7       7-7   True
+  (b) holds at every family and both kinds: True
+(c) Cross basis directions: in the cone, and not 2-regular.
+    family  crosses   max |Q|   ranks  |K| = 2  span  2-regular  generic cone
+       C_4       12   0.0e+00     0-1        2     2      False           3/3
+       C_6       42   0.0e+00     0-1        1     5      False           3/3
+   K_{2,4}       64   0.0e+00       1        0     5      False           3/3
+   K_{3,3}       90   0.0e+00       1        0     5      False           3/3
+      cube      192   0.0e+00       1        0     7      False           3/3
+  P43 HOLDS in all three parts. The span and the rank are combinatorial, both of the
+  form n minus a component count, and 2-regularity at D is the statement that the two
+  graphs have the same components. The answer to whether A6 follows from 2-regularity
+  at EVERY cone direction is NO: cross basis directions satisfy Q = 0 exactly and have
+  rank at most 1. What saves them is not the criterion but an explicit curve, that of
+  the cross configuration, so A6 stands at every direction tested by one route or the
+  other, with no single route covering all of them.

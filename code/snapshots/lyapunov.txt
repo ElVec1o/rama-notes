@@ -1,0 +1,26 @@
+P44 (frozen): (a) null(Lambda) is contained in null(Gamma); (b) hence
+Lambda <= -c Gamma with c > 0, so the commutator is a Lyapunov functional at
+second order.
+              family  dim ker  orbit  null L  excess  null G  contained     max L/G
+           C_4 (2,2)       10      6       8       2       6      False   -0.000000
+           C_6 (2,2)       33     15      24       9      15      False    0.000000
+P45 (derived from the refutation, not frozen before it): the root falls at order four
+where the commutator grows at order two, so the shape is y_0 - maxroot >= c C^2.
+      family       t      y_0 - y            C   (y_0-y)/t^4     C/t^2   (y_0-y)/C^2
+   C_4 (2,2)   0.200    1.542e-09    2.311e-03     9.636e-07    0.0578      0.000289
+   C_4 (2,2)   0.100    9.142e-11    5.603e-04     9.142e-07    0.0560      0.000291
+   C_4 (2,2)   0.050    5.358e-12    1.373e-04     8.573e-07    0.0549      0.000284
+   C_4 (2,2)   0.020    1.501e-13    2.220e-05     9.381e-07    0.0555      0.000305
+  A constant last column across a decade in t is the corrected statement; a constant
+  fourth column is the exponent that produces it. Both are read off rather than fitted.
+  P44 IS REFUTED. There are directions ON THE CONE with Lambda = 0 and Gamma > 0,
+  so the top root does not move at second order where the commutator does, and NO
+  inequality Lambda <= -c Gamma can hold. The LINEAR shape is dead.
+  What replaces it is not nothing. Along such a direction the root falls at order
+  four while the commutator grows at order two, and the table above shows the two
+  exponents pairing into a constant ratio (y_0 - y)/C^2 across a decade in t. So the
+  commutator is still the right functional and the wrong power was assumed: the
+  shape a proof should target is maxroot <= y_0 - c C^2, quadratic and not linear.
+  The degenerate directions, which made the second-order test blind, are exactly
+  where that distinction is visible, so they are the evidence rather than the
+  obstacle.

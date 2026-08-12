@@ -2237,6 +2237,43 @@ inferred, by continuation upstairs: the residual stays at $10^{-14}$ or below an
 $\|(A(t)-A_0)/t-D\|$ falls with exponent $0.96$ to $1.00$ over $t\in[0.01,0.05]$, while a direction
 with $Q(D)\neq0$ has the same quantity flat at exponent $0$ (\texttt{code/arc.py}).
 
+Both quantities in that hypothesis are combinatorial, and saying so answers the question of when it
+holds. Write $K(i,j)$ for the blocks separating $i$ from $j$. A kernel direction has $D_k$ supported
+on separated pairs and tightness reads $\sum_{k\in K(i,j)}D_k(i,j)=0$ pair by pair, with distinct
+pairs independent; and since $(D_k^2)_{jj}=\sum_lD_k(j,l)^2$ and $\sigma_k(i)=-\sigma_k(j)$ for
+separating $k$,
+\[
+\sum_jw_jQ_j(D)=\sum_{i<j}(w_j-w_i)\!\!\sum_{k\in K(i,j)}\!\!\sigma_k(j)D_k(i,j)^2,\qquad
+\sum_jw_j\,\mathrm dQ_j(D)[E]=2\sum_{i<j}(w_j-w_i)\!\!\sum_{k\in K(i,j)}\!\!\sigma_k(j)D_k(i,j)E_k(i,j).
+\]
+So in each case $w$ annihilates exactly when, pair by pair, either $w_i=w_j$ or a form vanishes
+identically on the hyperplane $\{\sum t=0\}$. A linear functional vanishes there exactly when its
+coefficients are constant; a diagonal quadratic form $\sum\varepsilon_kt_k^2$ vanishes there exactly
+when $\varepsilon_a+\varepsilon_b=0$ for every pair, which for signs $\pm1$ means
+$|K(i,j)|\le1$, or $|K(i,j)|=2$ with the two separating blocks on opposite sides. Writing $G_Q$ for
+the graph on the vertices joining $i$ to $j$ when the quadratic form does \emph{not} vanish, and
+$G_D$ for the graph joining them when $(\sigma_k(j)D_k(i,j))_{k\in K(i,j)}$ is not constant,
+\[
+\operatorname{span}\{Q_1,\dots,Q_n\}=n-c(G_Q),\qquad
+\operatorname{rank}\mathrm dQ(D)=n-c(G_D),
+\]
+with $c$ the component count. $G_Q$ depends on the hypergraph alone, $G_D$ on the direction; $G_D$ is
+always a subgraph of $G_Q$, so the rank never exceeds the span, and 2-regularity at $D$ says exactly
+that the two graphs have the same components. Both formulas agree with the computed values at seven
+families (\texttt{code/spanrank.py}), and the scalar steps are machine-checked in
+\texttt{RamaLean/SpanRank.lean}. This explains the $C_4$ exception recorded above: there the pairs
+$\{0,1\}$ and their rotations have exactly two separating blocks on opposite sides, so $G_Q$ reduces
+to the two edges $\{0,2\}$ and $\{1,3\}$ and $c(G_Q)=2$.
+
+It also settles, in the negative, whether every cone direction is 2-regular. A cross basis direction
+is supported on a single pair with two separating blocks of opposite sign; the vanishing criterion
+above is exactly why it satisfies $Q=0$, so it lies on the cone, and the constancy criterion makes
+$\operatorname{rank}\mathrm dQ(D)$ equal to $0$ when $|K(i,j)|=2$ and to $1$ otherwise, against a span
+of at least $2$. Checked at seven families, where the number of such directions runs from $12$ at
+$C_4$ to $324$ at $\mathrm{AG}(2,3)$. Those directions are not lost: Proposition~\ref{prop:rigid}'s
+rotation is an explicit curve with exactly that velocity. What is lost is a single uniform route,
+and the two routes together cover every direction tested.
+
 The earlier evidence, which measured distances rather than curves, is consistent and is recorded
 because it covers directions the rank condition was not tested on. Over the $42$ cross basis
 directions of the Fano family and
@@ -2424,11 +2461,19 @@ $A^{j+1}=A$ and nothing else; and \texttt{spectral\_bound\_is\_the\_target}, tha
 on the class and strong enough to give the target coincides with the target, with
 \texttt{target\_gives\_spectral\_bound} for the converse. \texttt{RamaLean/ArcTangent.lean} carries
 the identity $\sum_j\sigma_k(j)(D_k^2)_{jj}=0$ and the passage from a curve to Mathlib's
-\texttt{tangentConeAt}. \texttt{RamaLean/OrderFourSolvable.lean} is the step joining
+Mathlib's own tangent cone. \texttt{RamaLean/OrderFourSolvable.lean} is the step joining
 \texttt{OrderFour.order\_four\_sum\_zero} to \texttt{CokernelRank.cokernel\_const}.
 \texttt{RamaLean/MixedDiscriminant.lean} carries the symmetry, diagonal value and additivity of the
-mixed discriminant. What is cited and not formalised is stated in each file: the implicit function
-theorem step of Proposition~\ref{prop:tworeg}, and Aleksandrov's, Bapat's and Gurvits' theorems.
+mixed discriminant. \texttt{RamaLean/SpanRank.lean} carries the two scalar criteria behind the span
+and rank formulas, that a linear functional vanishes on $\{\sum t=0\}$ exactly when its coefficients
+agree and that a diagonal quadratic form vanishes there exactly when every pair of coefficients
+cancels, with the pigeonhole that makes $|K(i,j)|\ge3$ always an edge.
+\texttt{RamaLean/TwoRegular.lean} carries the two steps of Proposition~\ref{prop:tworeg} that are not
+classical: that an affine map with surjective linear part has a zero, which is the only place the
+rank hypothesis is used, and that a family of points of the set of the form $x_0+tD+t^2w$ with
+$t\,w\to0$ puts $D$ in the tangent cone, which is where the second-order shape does its work. What is
+cited and not formalised is stated in each file: the divisibility step and the implicit function
+theorem of Proposition~\ref{prop:tworeg}, and Aleksandrov's, Bapat's and Gurvits' theorems.
 
 \subsection{The plane class, and two unconditional bounds}
 
@@ -3592,6 +3637,23 @@ route that looks open from outside.
   point below its starting value in every family (\texttt{code/jointinv.py}, full configuration;
   \texttt{-{}-quick} truncates it to two families and $120$ steps). It is still not a theorem, and
   the functional it names is the one a proof would have to read.
+
+  The obvious local form of that statement is false, and its failure gives the right one. Both
+  quantities are quadratic forms on the kernel at a commuting family: the greatest root has the
+  curvature form $\Lambda$, and since $[A_i,A_j]=\varepsilon([P_i,D_j]+[D_i,P_j])+O(\varepsilon^2)$
+  the commutator has $\Gamma(D)=\sum_{i<j}\|[P_i,D_j]+[D_i,P_j]\|_F^2$, a sum of squares. A Lyapunov
+  statement would read $\Lambda\le-c\,\Gamma$ with $c>0$, and that forces
+  $\ker\Lambda\subseteq\ker\Gamma$. It fails: $\ker\Gamma$ is exactly the conjugation orbit, of
+  dimension $\binom n2$, while $\ker\Lambda$ is strictly larger at $b=2$, of dimension $8$ against
+  $6$ at $C_4$ and $24$ against $15$ at $C_6$, and directions on the cone with $Q=0$, $\Lambda=0$ and
+  $\Gamma>0$ are exhibited at both. So no inequality of that shape holds.
+  What replaces it is visible along those same directions: the root falls at order four where the
+  commutator grows at order two, and the two exponents pair into a constant. At $C_4$ the ratio
+  $(y_0-\lambda_{\max})/C^2$ holds at $2.9\times10^{-4}$ to two digits over
+  $t\in[0.02,0.20]$ while $(y_0-\lambda_{\max})/t^4$ holds near $9\times10^{-7}$
+  (\texttt{code/lyapunov.py}). The shape to aim at is therefore
+  $\lambda_{\max}\le y_0-c\,C^2$, quadratic in the commutator rather than linear, and the degenerate
+  directions that make the second-order test blind are what distinguishes the two.
 \item A barrier argument that sees only the trace and $\sum_kP_k=aI$ is reading the
   Marchenko--Pastur law, and $A_k=(b/p)I_p$ satisfies both while exceeding the tree band
   already at $p=4$. No such argument can reach either edge.

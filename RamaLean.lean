@@ -89,6 +89,7 @@ import RamaLean.ShellBound
 import RamaLean.SignReflection
 import RamaLean.SmithDeterminant
 import RamaLean.SoftEdge
+import RamaLean.SpanRank
 import RamaLean.SpectralAtom
 import RamaLean.SpectralNoGo
 import RamaLean.SubcubicCounterexample
@@ -99,6 +100,7 @@ import RamaLean.TorusGodsilGutman
 import RamaLean.TracePSD
 import RamaLean.TreeSubstitution
 import RamaLean.TwoGroupFactorial
+import RamaLean.TwoRegular
 import RamaLean.VertexSplit
 import RamaLean.WeightBound
 import RamaLean.XuAdditiveProduct
