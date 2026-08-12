@@ -40,10 +40,16 @@ algebra, and show his example is the smallest member of a two-parameter family i
 pendant leaves are essential.
 
 We prove the conjecture for every connected $G$ of first Betti number one and every $d$, by
-giving $\mu_{d,G}$ in closed form, and we locate the repair. Minimum degree two fails, bounded
-maximum degree fails, and $2$-connectivity fails, so connectivity is a confound and the mechanism
-is a separation; minimum degree three is the surviving hypothesis, and three is the exact
-threshold. Everything asserted is machine-checked in Lean~4/Mathlib unless labelled otherwise.
+giving $\mu_{d,G}$ in closed form, and we chart the repair. Minimum degree two fails, bounded
+maximum degree fails, and $2$-connectivity fails. Minimum degree three fails as well, and we give
+the counterexample: a bipartite graph on $14$ vertices, a third the size of Hall's, with
+$\mu_G=x^4(x^2-3)(x^8-24x^6+171x^4-396x^2+270)$ and $\sqrt3$ outside
+$\operatorname{spec}(T)$. Its divisor is the star $K_{1,3}$, and that is the point: Hall's own
+violating root $\sqrt5$ is the top matching root of $K_{1,5}$, so the engine is a star divisor,
+whose leaves have degree one in the divisor however large their degree is in $G$. No hypothesis
+on the minimum degree of $G$ can reach it. What survives is the connectivity statement, since
+every counterexample known to us has a separating pair. Everything asserted is machine-checked in
+Lean~4/Mathlib unless labelled otherwise.
 The biregular case, which is where the conjecture survives, is the subject of the companion
 paper \cite{PartII}.
 \end{abstract}
@@ -173,11 +179,14 @@ Chris Hall, which shows the conjecture is false: we verify his certificate, mach
 algebra, and extend his graph to a two-parameter family in which the pendant leaves turn out to be
 essential.
 
-The rest of \S\ref{sec:hallce} is the repair. The mechanism behind the counterexample is a
-\emph{separation}, not low connectivity as the examples first suggest, and the sharp hypothesis is
-a local one: minimum degree three, with two failing and three therefore exact. That conjecture,
-$\mathrm{D}3$, is where the subject now stands. The biregular case, which survives the refutation
-and is where the phenomenon actually lives, is the companion paper \cite{PartII}.
+The rest of \S\ref{sec:hallce} charts the repair. The mechanism behind the counterexample is a
+\emph{separation}, not low connectivity as the examples first suggest. A local hypothesis,
+minimum degree three, survives every search we ran against it and is stated as
+Conjecture~\ref{conj:mindeg3}; \S\ref{sec:mindeg3} then refutes it
+(Proposition~\ref{prop:d3false}), on $14$ vertices, by a star divisor. Since a star's leaves have
+degree one in the divisor whatever their degree in $G$, no lower bound on $\delta(G)$ touches the
+engine, and the live statement is the connectivity one. The biregular case, which survives the
+refutation and is where the phenomenon actually lives, is the companion paper \cite{PartII}.
 
 \section{Proof}
 
@@ -1088,19 +1097,83 @@ prisms, and $K_{3,q}$ blocks with two of the three degree-$q$ vertices anchored.
 $102$ graphs of minimum degree three whose vertex connectivity is \emph{two}, so each retains the
 separating pair the engine needs, and $77$ of them have a gap of width at least $0.05$, several
 wider than $2.9$, against the $0.066$ to $0.148$ that the counterexamples of
-Proposition~\ref{prop:twoconn} occupy. None has a root in a gap (\texttt{code/mindeg3.py}).
+Proposition~\ref{prop:twoconn} occupy. None has a root of the bracket in a gap
+(\texttt{code/mindeg3.py}); that sweep did not test the roots of $A$, which is where the
+counterexample below lives.
 
 \begin{conjecture}[D3]\label{conj:mindeg3}
 Every finite graph of minimum degree at least three satisfies
 $\operatorname{Zeros}(\mu_G)\subseteq\operatorname{spec}(T_G)$.
 \end{conjecture}
 
-Conjecture~\ref{conj:mindeg3} implies the corresponding statement for $3$-connected graphs
-(\texttt{MinimumDegreeThreshold.C2\_of\_D3}), and it is sharp: minimum degree two is refuted by
-Proposition~\ref{prop:mindeg2}, so three is the \emph{least} sufficient bound
-(\texttt{threshold\_is\_three}).
+\textbf{Conjecture~\ref{conj:mindeg3} is false.} We record the counterexample, which is smaller
+than Hall's by a factor of three.
 
-Three remarks fix how much this claims. First, the regular case is trivial and worth separating
+\begin{proposition}[D3 fails on $14$ vertices]\label{prop:d3false}
+Let $G$ have two hubs $u,v$, three copies of the star $K_{1,3}$ with centre $c_i$ and leaves
+$\ell_{i,1},\ell_{i,2},\ell_{i,3}$, and every leaf joined to both hubs. Then $G$ is simple,
+connected and bipartite on $14$ vertices and $27$ edges, with
+$\deg c_i=\deg\ell_{i,j}=3$ and $\deg u=\deg v=9$, so $\delta(G)=3$; and
+\[
+  \mu_G=x^4\,(x^2-3)\,(x^8-24x^6+171x^4-396x^2+270),
+\]
+so $\sqrt3$ is a root of $\mu_G$, while $\sqrt3\notin\operatorname{spec}(T_G)$.
+\end{proposition}
+
+The two halves of Proposition~\ref{prop:d3false} are certified to different standards, and we
+label them rather than average them. That $\mu_G$ factors as displayed, and hence that $\sqrt3$ is
+a root, is exact: $\mu_G$ is computed from the graph by the deletion recursion and $(x^2-3)$ is
+divided out over $\mathbb{Q}$. That $\sqrt3\notin\operatorname{spec}(T_G)$ rests on the
+density-of-states ladder described below, which is numerical, validated against the covers whose
+spectrum is known in closed form, and carries an internal control on this same graph; it is not
+machine-checked. An exact certificate is owed, and the obstruction is stated below: the ratio
+system, which is what an exact certificate would use, degenerates at precisely this point.
+
+The mechanism is Hall's verbatim. His violating root $\sqrt5$ is the top matching root of the
+star $K_{1,5}$, whose matching polynomial is $x^4(x^2-5)$; the divisor is a star. A star's leaves
+have degree one \emph{in the divisor} however large their degree is \emph{in $G$}, so a hypothesis
+on $\delta(G)$ constrains the ambient graph and not the divisor. Here the branch is $K_{1,3}$,
+$A=\mu_{K_{1,3}}=x^2(x^2-3)$, and the two-cut identity
+$\mu_G=A^{p-2}\bigl(x^2A^2-px(B_u+B_v)A+pDA+p(p-1)B_uB_v\bigr)$ makes every root of $A$ a root of
+$\mu_G$ once $p\ge3$. Three branches are needed and two do not suffice, since $A^0=1$ carries no
+root.
+
+This is exactly what the searches above could not see, and the reason is worth stating because it
+is not a matter of scale. Each of them lifted the block's degrees to three by adding edges
+\emph{inside} the block, which changes $A$ and moves its roots; the counterexample lifts them from
+\emph{outside}, by attaching each leaf to both hubs, which leaves $A$ untouched. The five clean
+searches were therefore all run on blocks whose matching polynomial had already been perturbed
+away from the star. Separately, \texttt{code/mindeg3.py} iterated over the roots of the bracket
+and never over the roots of $A$, so the divisibility that is the whole engine went untested; that
+is repaired in \texttt{code/mindeg3adv.py}, which reports a signed margin rather than a verdict.
+
+Certifying $\sqrt3\notin\operatorname{spec}(T_G)$ needs the density-of-states ladder and not the
+ratio system, and the reason is instructive. The Angel--Friedman--Hoory system
+$\lambda=1/r_e+\sum_{e\to f}r_f$ has four orbits here under $\operatorname{Aut}(G)$, and
+eliminating gives a quadratic whose two real branches both have decay above one, which reads as
+$\sqrt3\in\operatorname{spec}(T_G)$. That is wrong: a hair either side of $\sqrt3$ there are
+\emph{three} real branches and the third has decay about $0.87$. Its $r(\ell\to u)$ crosses zero
+exactly at $\sqrt3$, so the elimination multiplies by it and drops the branch, and a pointwise
+solver returns nothing there for the same reason. The ratio parametrisation has a coordinate
+singularity at the point in question. The resolvent has none: with
+$g_e=1/(z-\sum_{e\to f}g_f)$ at $z=\lambda+i\eta$, the quantity $|\operatorname{Im}\sum_w G_w|$
+decays linearly in $\eta$ outside the spectrum, tends to a positive constant inside a band, and
+diverges like $\eta^{-1}$ at an atom. The distinction between the first and the third is not a
+formality here, since $\operatorname{spec}(T)$ is closed and the biregular cover already carries
+an isolated $\{0\}$; showing every point near $\sqrt3$ is outside would not show $\sqrt3$ is. On
+this graph the ladder reports an atom at $0$, a band at $1.68$, a band at $2.40$, and linear decay
+at $\sqrt3$, the atom at the origin serving as the internal control
+(\texttt{code/d3\_counterexample.py}).
+
+What survives is the connectivity statement, which Proposition~\ref{prop:d3false} does not touch:
+$G$ there has vertex connectivity two, the two hubs being a separating pair. So the implication
+D3~$\Rightarrow$~C2 (\texttt{MinimumDegreeThreshold.C2\_of\_D3}) and the sharpness statement
+(\texttt{threshold\_is\_three}) remain valid as implications but are now vacuous, their hypothesis
+being false, and the $3$-connected statement C2 stands on its own rather than as a corollary.
+
+The evidence that made Conjecture~\ref{conj:mindeg3} plausible is recorded below rather than
+deleted, because a false conjecture that survives five independent searches is worth a note on
+how it managed it. First, the regular case is trivial and worth separating
 off: for $d$-regular $G$ the universal cover is the $d$-regular tree, whose spectrum is exactly
 the interval $[-2\sqrt{d-1},2\sqrt{d-1}]$ in which Heilmann and Lieb confine every root, so there
 is nothing to violate (\texttt{conj10\_of\_regular}). The content lies in irregular graphs.
@@ -1118,9 +1191,11 @@ edge: for $W_{10}$ through $W_{20}$ the largest root below $2$ has density of st
 four significant figures across four decades of $\eta$, so it lies in the spectrum
 (\texttt{code/wheels.py}).
 
-Fourth, and this is what the evidence now amounts to. Five searches have been run against
-Conjecture~\ref{conj:mindeg3}, each designed against the failure mode of the last, and all are
-clean. Two reproduce Hall's own mechanism at minimum degree three --- $p$ copies of a block glued
+Fourth, and this is what the evidence amounted to. Five searches were run against
+Conjecture~\ref{conj:mindeg3}, each designed against the failure mode of the last, and all came
+back clean; Proposition~\ref{prop:d3false} shows they were all clean for one reason, that each
+raised the block's degrees by adding edges inside it. Two reproduce Hall's own mechanism at
+minimum degree three --- $p$ copies of a block glued
 at a new centre, so that the branch factorization makes every root of $\mu_H$ a root of $\mu_G$
 --- first with off-the-shelf blocks and then with blocks built to the shape of his, $K_{2,q}$ with
 a graph on the $q$-side lifting those degrees to three. A third abandons the construction
