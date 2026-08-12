@@ -47,10 +47,12 @@ $\mu_G=x^4(x^2-3)(x^8-24x^6+171x^4-396x^2+270)$ and $\sqrt3$ outside
 $\operatorname{spec}(T)$. Its divisor is the star $K_{1,3}$, and that is the point: Hall's own
 violating root $\sqrt5$ is the top matching root of $K_{1,5}$, so the engine is a star divisor,
 whose leaves have degree one in the divisor however large their degree is in $G$. Joining those
-leaves to $k$ hubs instead of two leaves the divisor untouched while raising the connectivity, and
+leaves to three hubs instead of two leaves the divisor untouched while raising the connectivity, and
 gives a $3$-connected counterexample on $23$ vertices, so the $3$-connected form fails as well. Both
-hypotheses constrain the ambient graph; the engine belongs to the divisor, and that is what a repair
-must constrain. Everything asserted is machine-checked in Lean~4/Mathlib unless labelled otherwise.
+of the hypotheses proposed as repairs constrain the ambient graph, while the engine belongs to the
+divisor. We stop there rather than generalising: the construction does not scale past $k=3$ in our
+hands, so $4$-connectivity is open. Everything asserted is machine-checked in Lean~4/Mathlib unless
+labelled otherwise.
 The biregular case, which is where the conjecture survives, is the subject of the companion
 paper \cite{PartII}.
 \end{abstract}
@@ -1215,12 +1217,20 @@ vertices, minimum degree three and vertex connectivity \emph{three}, and $\sqrt3
 $\mu_G$ lying outside $\operatorname{spec}(T_G)$ (\texttt{code/c2\_attack.py}).
 \end{proposition}
 
-So neither hypothesis survives, and they fail for one reason rather than two. Minimum degree and
-connectivity are both constraints on the ambient graph, and the engine is a property of the divisor:
-a star's leaves have degree one in $H$ whatever their degree in $G$, and enlarging the separator
-leaves $A$ untouched while raising $\kappa$. Any hypothesis of the form ``$G$ is locally or globally
-well connected'' can be met by attaching the leaves to more hubs, at the cost only of requiring
-$p\ge k+1$ branches. What a repair must constrain is the divisor, not its surroundings.
+So neither stated hypothesis survives, and they fail for one reason rather than two: both constrain
+the ambient graph, while the engine is a property of the divisor. A star's leaves have degree one in
+$H$ whatever their degree in $G$, and enlarging the separator leaves $A$ untouched while raising
+$\kappa$.
+
+That reading should not be pushed further than the data carries it, and the data stops short. The
+construction does \emph{not} simply scale with $k$: raising the divisibility to $A^{p-k}$ costs
+$p\ge k+1$ branches, but it also raises every leaf's degree and fills the gap in. Of the cases run,
+$k=3$, $m=3$ violates at $p=5$ and $p=6$ but not at $p=4$, where $\sqrt3$ sits in a band; and both
+$k=4$ attempts fail, $(k,m,p)=(4,3,5)$ on $24$ vertices and $(4,4,5)$ on $29$ vertices with
+$\kappa=4$, the root lying in a band in each. So $4$-connectivity is untouched by this construction,
+and we do not claim it fails. What is established is that the two hypotheses actually proposed as
+repairs, minimum degree three and $3$-connectivity, are both false, and that raising an ambient
+hypothesis is not by itself a way to escape a star divisor.
 
 The implication D3~$\Rightarrow$~C2 (\texttt{MinimumDegreeThreshold.C2\_of\_D3}) and the sharpness
 statement (\texttt{threshold\_is\_three}) remain valid as implications, but both are now vacuous,

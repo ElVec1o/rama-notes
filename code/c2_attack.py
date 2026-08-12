@@ -39,6 +39,14 @@ repair actually lives.
 FALSIFICATION. If (a) fails there is no divisor and the construction is pointless. If (c) fails at
 every k = 3 instance, C2 survives this attack.
 
+OUTCOME, recorded against the frozen text rather than folded into it. (a) and (b) hold. The first
+clause of (c) holds: C2 is false, at k=3, m=3, p=5 on 23 vertices. The SECOND clause of (c), that
+the repair programme by ambient hypotheses is dead in general, is NOT supported and was an
+overreach. The construction does not scale in k: k=3, m=3 violates at p=5 and p=6 but not at p=4,
+and both k=4 attempts land in a band, (4,3,5) on 24 vertices and (4,4,5) on 29 vertices at
+kappa=4. Raising k raises every leaf's degree too, which fills the gap in. 4-connectivity is
+untouched by this construction and is not claimed to fail.
+
 The spectral verdict uses the density-of-states ladder of code/d3_counterexample.py, whose three
 signatures are validated there against covers with known spectrum, and which is run here with the
 same internal control: the atom at the origin must still register.
@@ -126,7 +134,12 @@ def main():
             print(f"    k={k} m={m} p={p}: n={n}, minimum degree {dm}, connectivity {kap}, "
                   f"root sqrt{m} = {lam:.6f} outside spec(T_G)")
         print("  Connectivity constrains G and not the divisor, exactly as minimum degree did.")
-        print("  No hypothesis on the ambient graph alone can reach a star divisor.")
+        print("  But the construction does NOT simply scale in k, and the negative rows above are")
+        print("  the reason to say so: raising k also raises every leaf's degree and fills the gap")
+        print("  in. k=3,m=3 violates at p=5 and p=6 and not at p=4, and both k=4 attempts land in")
+        print("  a band, including (4,4,5) at kappa=4. So 4-connectivity is untouched here and is")
+        print("  NOT claimed to fail. What is shown is that the two hypotheses actually proposed as")
+        print("  repairs, minimum degree three and 3-connectivity, are both false.")
     else:
         print("\n  P65(c) FAILS on this sweep: no 3-connected violation found. C2 separates from")
         print("  D3, the extra hub is doing real work, and connectivity is where the repair lives.")
