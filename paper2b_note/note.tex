@@ -2261,9 +2261,31 @@ with $c$ the component count. $G_Q$ depends on the hypergraph alone, $G_D$ on th
 always a subgraph of $G_Q$, so the rank never exceeds the span, and 2-regularity at $D$ says exactly
 that the two graphs have the same components. Both formulas agree with the computed values at seven
 families (\texttt{code/spanrank.py}), and the scalar steps are machine-checked in
-\texttt{RamaLean/SpanRank.lean}. This explains the $C_4$ exception recorded above: there the pairs
-$\{0,1\}$ and their rotations have exactly two separating blocks on opposite sides, so $G_Q$ reduces
-to the two edges $\{0,2\}$ and $\{1,3\}$ and $c(G_Q)=2$.
+\texttt{RamaLean/SpanRank.lean}.
+
+On a tight family the criterion collapses further, and the collapse says exactly when the span drops.
+Writing $\lambda_{ij}$ for the number of blocks containing both $i$ and $j$,
+\[
+|K(i,j)|=\deg(i)+\deg(j)-2\lambda_{ij}=2(a-\lambda_{ij}),
+\]
+every degree being $a$. So $|K(i,j)|$ is even and the two sides of a separated pair carry
+$a-\lambda_{ij}$ blocks each; the case $|K|=2$ with both blocks on the same side cannot arise, and
+$|K|=2$ always means the cross configuration. The whole criterion becomes a codegree condition,
+\[
+G_Q:\quad i\sim j\iff\lambda_{ij}\le a-2,
+\]
+so $G_Q$ is the complement of the graph joining pairs of codegree at least $a-1$, and
+\begin{center}
+the span drops below $n-1$ $\iff$ the codegree-at-least-$(a-1)$ graph is a complete join,
+\end{center}
+a graph being a join exactly when its complement is disconnected. Over a sweep of tight families
+this happens four times (\texttt{code/spanrank.py}): at $C_3$, whose codegree graph is $K_3$; at
+$C_4$, whose codegree graph is $C_4=K_{2,2}$, giving the complement $2K_2$ and $c(G_Q)=2$, which is
+the exception recorded above; at the four triples of $K_4$, where every pair lies in two of them, so
+the codegree graph is $K_4$, the quadrics vanish identically and the tangent cone is the whole
+kernel; and at the $2$-regular $3$-uniform family on six vertices, whose codegree graph is the
+cocktail party graph $K_{2,2,2}$. For $a=b=2$ the codegree graph is the cycle itself, and among
+cycles only $C_3$ and $C_4$ are joins, which is why every longer cycle has span exactly $n-1$.
 
 It also settles, in the negative, whether every cone direction is 2-regular. A cross basis direction
 is supported on a single pair with two separating blocks of opposite sign; the vanishing criterion
@@ -2468,12 +2490,14 @@ mixed discriminant. \texttt{RamaLean/SpanRank.lean} carries the two scalar crite
 and rank formulas, that a linear functional vanishes on $\{\sum t=0\}$ exactly when its coefficients
 agree and that a diagonal quadratic form vanishes there exactly when every pair of coefficients
 cancels, with the pigeonhole that makes $|K(i,j)|\ge3$ always an edge.
-\texttt{RamaLean/TwoRegular.lean} carries the two steps of Proposition~\ref{prop:tworeg} that are not
-classical: that an affine map with surjective linear part has a zero, which is the only place the
-rank hypothesis is used, and that a family of points of the set of the form $x_0+tD+t^2w$ with
-$t\,w\to0$ puts $D$ in the tangent cone, which is where the second-order shape does its work. What is
-cited and not formalised is stated in each file: the divisibility step and the implicit function
-theorem of Proposition~\ref{prop:tworeg}, and Aleksandrov's, Bapat's and Gurvits' theorems.
+\texttt{RamaLean/TwoRegular.lean} carries every step of Proposition~\ref{prop:tworeg} except the
+implicit function theorem itself: the divisibility, as the expansions of the quadratic and cubic
+pieces at the jet $tD+t^2w$, where \texttt{quadratic\_expand} is the one place $Q(D)=0$ is consumed
+and is what removes the $t^2$ term; that an affine map with surjective linear part has a zero, which
+is the only place the rank hypothesis is used; and that a family of points of the set of the form
+$x_0+tD+t^2w$ with $t\,w\to0$ puts $D$ in the tangent cone, which is where the second-order shape
+does its work. What is cited and not formalised is stated in each file: the implicit function theorem
+step of Proposition~\ref{prop:tworeg}, and Aleksandrov's, Bapat's and Gurvits' theorems.
 
 \subsection{The plane class, and two unconditional bounds}
 
@@ -3654,6 +3678,23 @@ route that looks open from outside.
   (\texttt{code/lyapunov.py}). The shape to aim at is therefore
   $\lambda_{\max}\le y_0-c\,C^2$, quadratic in the commutator rather than linear, and the degenerate
   directions that make the second-order test blind are what distinguishes the two.
+
+  Those directions also carry the sharpest local test the extremality claim has been put to, and it
+  passes. On $\ker\Lambda$ the curvature form says nothing, so whether the commuting family is even a
+  local maximum there is decided at order four; a direction with $c_4\le0$ would refute the claim
+  outright. Over $20$ directions of $\ker\Lambda$ on the cone at each of $C_4$ and $C_6$, found by
+  solving $Q=0$ and $\Gamma=1$ inside $\ker\Lambda$ from random starts, the root falls at every
+  direction and every step size, with $\ker\Lambda$ of dimension $8$ against an orbit of $6$ at
+  $C_4$ and $24$ against $15$ at $C_6$. The resolvable fourth-order constants run from
+  $7.7\times10^{-5}$ to $1.73$ at $C_4$ and from $2.8\times10^{-2}$ to $3.16$ at $C_6$; three
+  directions at $C_4$ are reported as unresolved rather than quoted, their $y_0-\lambda_{\max}$
+  falling to about $4\times10^{-12}$, which is the precision floor of the root solve. A direction
+  does not determine a curve, order two leaving the off-diagonal blocks of the correction free, so
+  the sign is also checked along curves whose second-order term is perturbed inside the kernel, and
+  it survives (\texttt{code/quartic.py}). Since $\Gamma$ is normalised to $1$ on these directions the
+  same constants are $c_4/\Gamma^2$, which is the constant in the quadratic shape.
+  The shape is local of necessity and not by caution: $y_0-\lambda_{\max}$ is bounded on the class
+  while $C^2$ is not, so the ratio falls as the commutator grows and no global constant can work.
 \item A barrier argument that sees only the trace and $\sum_kP_k=aI$ is reading the
   Marchenko--Pastur law, and $A_k=(b/p)I_p$ satisfies both while exceeding the tree band
   already at $p=4$. No such argument can reach either edge.

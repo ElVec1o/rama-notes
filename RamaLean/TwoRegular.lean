@@ -9,18 +9,27 @@ The lemma that closes A6 says: if `F` is polynomial with `F 0 = 0` and `F' 0 = 0
 in `F⁻¹(0)`. The proof is three steps.
 
 1. **Divisibility.** `F(tD + t²w) = t³ G(t,w)` with `G` polynomial, because the coefficients of
-   `t⁰`, `t¹` and `t²` are `F 0`, `F' 0 [D]` and `Q D`, all zero.
+   `t⁰`, `t¹` and `t²` are `F 0`, `F' 0 [D]` and `Q D`, all zero.  This is `quadratic_expand` and
+   `cubic_expand` below: each homogeneous piece of `F` is expanded at `tD + t²w` and the divisibility
+   is read off.  The quadratic piece is the only one where `Q D = 0` is used, and it is used exactly
+   once, to kill the `t²` term.
 2. **A zero of the leading term.** `G(0,w) = 2B(D,w) + C(D,D,D)` is affine in `w` with onto linear
    part, so it has a zero `w₀`.
 3. **Implicit function theorem** in `w` at `(0,w₀)`, giving `w(t)` with `G(t,w(t)) = 0`, hence
    `x(t) = tD + t²w(t)` in `F⁻¹(0)` with `x(t)/t → D`.
 
-Step 2 is `exists_zero_of_affine`. Step 3's *output*, once it is granted, is turned into the
-tangent-cone conclusion by `tangent_of_second_order_arc`, which is the part worth having machine-
-checked because it is where the second-order shape `tD + t²w` does its work: the `t²` term is what
-makes the difference quotient converge to `D` rather than to something else. Step 1 and the
-invocation of the implicit function theorem are classical and are not formalised; they appear here
-as the hypotheses `hmem` and `hw`, which is exactly what the theorem below consumes.
+Step 1 is `quadratic_expand` and `cubic_expand`, and `leading_zero_of_surjective` assembles their
+`t³` coefficients into the statement that the leading term has a zero.  Step 2 is
+`exists_zero_of_affine`.  Step 3's *output*, once it is granted, is turned into the tangent-cone
+conclusion by `tangent_of_second_order_arc`, which is where the second-order shape `tD + t²w` does
+its work: the `t²` term is what makes the difference quotient converge to `D` rather than to
+something else.  Only the invocation of the implicit function theorem is classical and unformalised;
+it appears as the hypotheses `hmem` and `hw` of the last theorem, which is exactly what it supplies.
+
+The expansions are stated for the homogeneous pieces as multilinear maps rather than for a general
+`F`, because that is what the tight projection variety hands over: `Ψ` is a quadratic map, its
+diagonal part restricted to the frame manifold is a polynomial of low degree, and the pieces are
+available individually.  Nothing is lost and no Taylor-series machinery is needed.
 
 Stating it this way makes the division of labour explicit. What the classical input supplies is a
 family of points of the set of the form `x₀ + tD + t²w`, with `t·w` going to zero. What is proved
@@ -31,9 +40,11 @@ supplies the family instead.
 
 ## Status
 
-`exists_zero_of_affine` and `tangent_of_second_order_arc` are `VERIFIED`. Avakov's theorem itself is
-cited (Avakov 1985; Arutyunov 2000) and is not formalised; the elementary proof of its fully
-degenerate case is written out in `code/arc.py` and in the note.
+`quadratic_expand`, `cubic_expand`, `leading_zero_of_surjective`, `exists_zero_of_affine` and
+`tangent_of_second_order_arc` are `VERIFIED`. What remains cited rather than proved is the implicit
+function theorem step alone; Avakov's theorem (Avakov 1985; Arutyunov 2000) is the reference for the
+whole, and the elementary proof of its fully degenerate case is written out in `code/arc.py` and in
+the note.
 -/
 
 namespace TwoRegular
@@ -48,6 +59,45 @@ theorem exists_zero_of_affine {W V : Type*} [AddCommGroup W] [Module ℝ W]
     ∃ w, L w + c = 0 := by
   obtain ⟨w, hw⟩ := hL (-c)
   exact ⟨w, by rw [hw, neg_add_cancel]⟩
+
+section Expansion
+
+variable {E V : Type*} [AddCommGroup E] [Module ℝ E] [AddCommGroup V] [Module ℝ V]
+
+/-- **Step 1, the quadratic piece.**  With `Q x = B x x` symmetric and `Q D = 0`, the value at the
+second-order jet is divisible by `t³`, and the `t³` coefficient is `2 B D w`, linear in `w`.  This is
+the only place the hypothesis `Q D = 0` is consumed, and it is what removes the `t²` term that would
+otherwise obstruct everything. -/
+theorem quadratic_expand (B : E →ₗ[ℝ] E →ₗ[ℝ] V) (hsymm : ∀ x y, B x y = B y x)
+    (D w : E) (hD : B D D = 0) (t : ℝ) :
+    B (t • D + t ^ 2 • w) (t • D + t ^ 2 • w) = t ^ 3 • ((2 : ℝ) • B D w + t • B w w) := by
+  simp only [map_add, map_smul, LinearMap.add_apply, LinearMap.smul_apply, hD, smul_zero]
+  rw [hsymm w D]
+  module
+
+/-- **Step 1, the cubic piece.**  A trilinear term at the same jet is divisible by `t³` with leading
+coefficient `C D D D`, which is a constant in `w`.  Together with the previous lemma the `t³`
+coefficient of `F` is `2 B D w + C D D D`, affine in `w`. -/
+theorem cubic_expand (C : E →ₗ[ℝ] E →ₗ[ℝ] E →ₗ[ℝ] V) (D w : E) (t : ℝ) :
+    C (t • D + t ^ 2 • w) (t • D + t ^ 2 • w) (t • D + t ^ 2 • w)
+      = t ^ 3 • (C D D D
+          + t • (C D D w + C D w D + C w D D)
+          + t ^ 2 • (C D w w + C w D w + C w w D)
+          + t ^ 3 • C w w w) := by
+  simp only [map_add, map_smul, LinearMap.add_apply, LinearMap.smul_apply]
+  module
+
+/-- **Steps 1 and 2 together.**  If `w ↦ 2 B D w` is onto, the `t³` coefficient of the expansion has
+a zero, which is the leading term the implicit function theorem is then applied at.  The surjectivity
+hypothesis is 2-regularity, and this is the only statement that uses it. -/
+theorem leading_zero_of_surjective (B : E →ₗ[ℝ] E →ₗ[ℝ] V) (C : E →ₗ[ℝ] E →ₗ[ℝ] E →ₗ[ℝ] V) (D : E)
+    (hB : Function.Surjective (fun w => (2 : ℝ) • B D w)) :
+    ∃ w : E, (2 : ℝ) • B D w + C D D D = 0 := by
+  obtain ⟨w, hw⟩ := hB (-(C D D D))
+  refine ⟨w, ?_⟩
+  rw [show (2 : ℝ) • B D w = -(C D D D) from hw, neg_add_cancel]
+
+end Expansion
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 

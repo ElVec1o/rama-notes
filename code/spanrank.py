@@ -57,11 +57,48 @@ it has more, and the reason is visible in the formula: the vector (sigma_l(j) D_
 (sigma_k(j), sigma_k(j), 0, ..., 0), constant only when there are no unused blocks to supply the
 zeros. So the C_4 pairs with two separating blocks give 0 and every other cross gives 1.
 
+THE CRITERION COLLAPSES ON TIGHT FAMILIES, which is the answer to when the span drops below n-1.
+Writing lambda_ij for the number of blocks containing BOTH i and j,
+
+    |K(i,j)| = deg(i) + deg(j) - 2 lambda_ij ,
+
+and a tight family has every degree equal to a, so |K(i,j)| = 2(a - lambda_ij) is EVEN and the two
+sides of a separated pair carry a - lambda_ij blocks each. So the case "|K| = 2 with both blocks on
+the same side" cannot occur, |K| = 2 always means the cross configuration, and the whole criterion
+reduces to a codegree condition:
+
+    G_Q :  i ~ j  <=>  lambda_ij <= a - 2 .
+
+G_Q is therefore the COMPLEMENT of the graph joining pairs with codegree at least a - 1, and
+
+    the span drops below n - 1  <=>  the codegree-at-least-(a-1) graph is a COMPLETE JOIN,
+
+a graph being a join exactly when its complement is disconnected. That is the whole answer, and it
+is checkable on the hypergraph without computing anything.
+
+Four families in the zoo below satisfy it, and each is a join for a visible reason:
+  C_3            codegree graph K_3, a join; complement empty, c = 3, span 0
+  C_4            codegree graph C_4 = K_{2,2}, a join; complement 2K_2, c = 2, span 2
+  K_4 triples    every pair lies in 2 of the 4 triples, so the codegree graph is K_4; the quadrics
+                 VANISH IDENTICALLY there and the tangent cone is the whole kernel
+  2-reg 3-unif   codegree graph is K_6 minus a perfect matching, the cocktail party graph
+                 K_{2,2,2}, a join; complement is 3K_2, c = 3, span 3
+For a = b = 2 the codegree graph is the cycle itself, and among cycles only C_3 and C_4 are joins,
+which is why every longer cycle has span n - 1.
+
 FROZEN BEFORE THE DATA:
   P43. (a) span{Q_j} = n - c(G_Q), at every family, with G_Q as defined above.
        (b) rank dQ(D) = n - c(G_D) for every kernel direction D, cone or not.
        (c) A generic cone direction has G_D = G_Q, hence is 2-regular; a cross basis direction has
            G_D empty and rank 0, hence is NOT, while lying in the cone.
+       (d) On tight families the codegree form of G_Q agrees with the definition at every pair, and
+           c(G_Q) > 1 happens only at C_3 and C_4 across the zoo swept below.
+
+(d)'s SECOND HALF AS FROZEN IS FALSE, and is reported as measured. "Only C_3 and C_4" came from the
+a = b = 2 case and does not survive contact with larger block sizes: K_4 triples and the 2-regular
+3-uniform family on six vertices also drop, with spans 0 and 3 against n - 1 of 3 and 5. The first
+half, that the codegree form agrees with the definition, holds at every family and every pair. What
+replaces the guess is the join criterion above, which covers all four.
 
 (c) AS FROZEN IS WRONG IN ITS NUMBER, and the number is reported as measured. The rank at a cross
 basis direction is 1, not 0, at every family, because a pair with more than two separating blocks
@@ -163,6 +200,41 @@ def cross_basis(n, lines):
     return out
 
 
+def GQ_edges_codegree(n, lines):
+    """The codegree form: i ~ j iff the two share at most a - 2 blocks. Tight families only."""
+    deg = [sum(1 for e in lines if v in e) for v in range(n)]
+    a = deg[0]
+    if any(d != a for d in deg):
+        return None
+    out = []
+    for i, j in itertools.combinations(range(n), 2):
+        lam = sum(1 for e in lines if i in e and j in e)
+        if lam <= a - 2:
+            out.append((i, j))
+    return out
+
+
+def zoo():
+    """Tight families, that is every vertex in the same number of blocks."""
+    out = []
+    for m in range(3, 11):
+        out.append((f"C_{m}", m, [[i, (i + 1) % m] for i in range(m)]))
+    out.append(("2C_3", 6, [[0, 1], [1, 2], [2, 0], [3, 4], [4, 5], [5, 3]]))
+    out.append(("2C_4", 8, [[0, 1], [1, 2], [2, 3], [3, 0], [4, 5], [5, 6], [6, 7], [7, 4]]))
+    out.append(("C_3 + C_4", 7, [[0, 1], [1, 2], [2, 0], [3, 4], [4, 5], [5, 6], [6, 3]]))
+    out.append(("K_{3,3}", 6, [[i, 3 + j] for i in range(3) for j in range(3)]))
+    out.append(("K_{4,4}", 8, [[i, 4 + j] for i in range(4) for j in range(4)]))
+    out.append(("cube", 8, [[0, 1], [1, 2], [2, 3], [3, 0], [4, 5], [5, 6], [6, 7], [7, 4],
+                            [0, 4], [1, 5], [2, 6], [3, 7]]))
+    out.append(("K_4 triples", 4, [[0, 1, 2], [0, 1, 3], [0, 2, 3], [1, 2, 3]]))
+    out.append(("2-reg 3-unif", 6, [[0, 1, 2], [2, 3, 4], [4, 5, 0], [1, 3, 5]]))
+    out.append(("Fano", 7, [[0, 1, 2], [0, 3, 4], [0, 5, 6], [1, 3, 5], [1, 4, 6],
+                            [2, 3, 6], [2, 4, 5]]))
+    out.append(("AG(2,3)", 9, [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8],
+                               [0, 4, 8], [1, 5, 6], [2, 3, 7], [0, 5, 7], [1, 3, 8], [2, 4, 6]]))
+    return out
+
+
 FAMILIES = [
     ("C_4", 4, [[0, 1], [1, 2], [2, 3], [3, 0]]),
     ("C_6", 6, [[i, (i + 1) % 6] for i in range(6)]),
@@ -258,8 +330,32 @@ def main():
         print(f"{nm:>10}{len(cb):>9}{qmax:>10.1e}{rs:>8}{ntwo:>9}{sp:>6}{str(rmax == sp):>11}"
               f"{f'{g[0]}/{g[1]}':>14}")
 
+    print("(d) The codegree form of G_Q on tight families, and where c(G_Q) exceeds 1.")
+    print(f"{'family':>14}{'n':>4}{'q':>4}{'a':>4}{'agrees':>8}{'c(G_Q)':>8}{'span':>6}"
+          f"{'n-1':>6}{'drops':>7}")
+    ok_d = True; exceptions = []
+    for (nm, n, lines) in zoo():
+        E1 = GQ_edges(n, lines)
+        E2 = GQ_edges_codegree(n, lines)
+        if E2 is None:
+            print(f"{nm:>14}{n:>4}{len(lines):>4}   not tight, skipped"); continue
+        a = sum(1 for e in lines if 0 in e)
+        agree = set(E1) == set(E2)
+        ok_d = ok_d and agree
+        c = components(n, E1)
+        if c > 1:
+            exceptions.append(nm)
+        print(f"{nm:>14}{n:>4}{len(lines):>4}{a:>4}{str(agree):>8}{c:>8}{n - c:>6}{n - 1:>6}"
+              f"{str(c > 1):>7}")
+    print(f"  codegree form agrees with the definition everywhere: {ok_d}")
+    print(f"  span drops below n-1 at: {exceptions if exceptions else 'none'}")
+    print("  Each is a family whose codegree-at-least-(a-1) graph is a complete join, which is the")
+    print("  criterion; 'only C_3 and C_4' was the frozen guess and it is false at larger block")
+    print("  sizes. K_4 triples is the extreme case: every pair lies in two of the four triples, so")
+    print("  the quadrics vanish identically and the tangent cone is the whole kernel.\n")
+
     print()
-    if ok_a and ok_b and ok_c:
+    if ok_a and ok_b and ok_c and ok_d:
         print("  P43 HOLDS in all three parts. The span and the rank are combinatorial, both of the")
         print("  form n minus a component count, and 2-regularity at D is the statement that the two")
         print("  graphs have the same components. The answer to whether A6 follows from 2-regularity")

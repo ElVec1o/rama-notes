@@ -1,0 +1,25 @@
+P46 (frozen): (a) c_4 > 0 on ker(Lambda) at the cone, so the commuting point is a strict
+local maximum where the second order is blind; (b) inf c_4/Gamma^2 > 0, giving the
+constant in maxroot <= y_0 - c C^2; (c) the bound is local, not global.
+(a) and (b): the fourth-order constant over ker(Lambda), Gamma normalised to 1.
+      family  dim ker L  orbit  dirs  no tangent  unresolved     min c_4     max c_4  root falls
+   C_4 (2,2)          8      6     2           0           0   4.208e-04   1.601e-03        True
+  'root falls' is the sign of y_0 - y at every direction and every step size, read
+  directly; it is claim (a) and does not depend on an exponent. Gamma is normalised to 1,
+  so c_4 is already c_4/Gamma^2 and the minimum column is claim (b)'s constant, taken
+  over the directions where the fourth order is resolvable above the precision floor.
+(a') The same, over curves whose second-order term is perturbed inside the kernel: a
+direction does not determine a curve, and a local maximum needs the sign for all of them.
+      family  directions  corrections     min c_4  still > 0
+   C_4 (2,2)           2            2   7.216e-04       True
+(c) The same ratio over random tight families, which are not near the locus.
+      family  families               C range   min ratio      at C  falls with C
+   C_4 (2,2)         8           [1.04,5.26]   7.532e-04      1.04          True
+  The ratio is compared between the third of families with the smallest commutator and
+  the third with the largest; falling means no global constant can work.
+  P46 (a) HOLDS. Every direction the curvature form cannot see still decreases, at
+  order four, so the commuting family is a strict local maximum on ker(Lambda) too
+  and A15 survives its sharpest local test.
+  (b) The constant is the minimum column above: C_4 (2,2) 4.208e-04.
+  (c) HOLDS: the ratio falls as the commutator grows, so the bound is local by
+  necessity and any global statement needs a different right-hand side.
