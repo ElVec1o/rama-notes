@@ -1866,6 +1866,91 @@ c_s=(-1)^s\,s!\,\binom ps\sum_{|S|=s}D\bigl(A_k:k\in S,\ I^{\,p-s}\bigr),
 checked to $1.4\times10^{-14}$ at every $s$ on five families with commutator norms between $0.84$
 and $1.00$, so on families far from commuting (\texttt{code/mixeddisc.py}).
 
+Identity~\eqref{eq:mixeddisc} says how to compute the coefficients, not what they are. The following
+says what they are, and it needs no new object either.
+
+\begin{proposition}[the coefficients are weighted partial transversals]\label{prop:transversal}
+Let $A_1,\dots,A_q$ be rank-$b$ orthogonal projections on $\mathbb R^p$ and let
+$u_{k,1},\dots,u_{k,b}$ be an orthonormal basis of $\operatorname{ran}A_k$. Writing
+$\mu(y)=\sum_sm_sy^{\,p-s}$,
+\begin{equation}\label{eq:transversal}
+m_s=(-1)^s\sum_{|S|=s}\ \sum_{r:S\to[b]}\det\operatorname{Gram}\bigl(u_{k,r(k)}:k\in S\bigr).
+\end{equation}
+\end{proposition}
+
+\begin{proof}
+Expanding a determinant perturbed by rank ones,
+$\det(yI+\sum_{k,r}w_{k,r}u_{k,r}u_{k,r}^{\mathsf T})
+=\sum_Ty^{\,p-|T|}\bigl(\prod_{(k,r)\in T}w_{k,r}\bigr)\det\operatorname{Gram}(T)$,
+the sum being over sets $T$ of pairs. Put $w_{k,r}=z_k$, so that the monomial attached to $T$ is
+$\prod_kz_k^{t_k}$ with $t_k$ the number of pairs of $T$ in block $k$. Now
+$(1-\partial_z)z^t$ evaluated at $z=0$ is $1$ for $t=0$, $-1$ for $t=1$ and $0$ for $t\ge2$, so
+applying $\prod_k(1-\partial_{z_k})$ and setting $z=0$ kills every $T$ using two or more vectors from
+one block and leaves \eqref{eq:transversal}.
+\end{proof}
+
+The inner object is a partial transversal of the block system, one representative chosen from each of
+$s$ blocks, weighted by the squared volume they span. On the commuting locus the ranges are
+coordinate subspaces, the representatives are standard basis vectors, and the squared volume is $1$
+when they are distinct and $0$ when two coincide: the count of partial systems of distinct
+representatives, which by Proposition~\ref{prop:bridge} is the matching number of the incidence graph.
+Off the locus the weight is the continuous measure of how independent the representatives are. So the
+object being weighted off the locus is exactly the object being counted on it. Verified against $\mu$
+coefficient by coefficient up to $s=6$ at $C_4$, $K_{3,3}$ and the Fano family, commuting and
+deformed (\texttt{code/transversal.py}); no novelty is claimed, the rank-one case being the standard
+multi-affine picture of \cite{MSS}. The step the proof turns on, that $(1-\partial_z)z^t$ vanishes at
+the origin from $t=2$ on, is machine-checked as
+\texttt{Transversal.one\_sub\_deriv\_eval\_zero}, and the two trace identities of
+Proposition~\ref{prop:leadrigid} as \texttt{Transversal.sum\_trace\_pairs} and
+\texttt{sum\_trace\_triples}, with \texttt{trace\_three\_symm} for the fact that every ordering of a
+triple of symmetric blocks carries the same trace. Neither proposition is formalised whole, Mathlib
+carrying no mixed characteristic polynomial.
+
+Expanding the Gram determinant makes the rigidity of the leading coefficients a computation rather
+than an observation, and in a stronger form than Proposition~\ref{prop:rigid}, which moves along one
+rotation.
+
+\begin{proposition}[the four leading coefficients are class-wide constants]\label{prop:leadrigid}
+For every tight rank-$b$ projection family at fixed $(n,q,a,b)$,
+\[
+m_0=1,\quad m_1=-qb,\quad m_2=\binom q2b^2-\tfrac{a^2n-qb}2,\quad
+m_3=-\Bigl[\binom q3b^3-\tfrac{b(q-2)(a^2n-qb)}2+\tfrac{a^3n-3a^2n+2qb}3\Bigr].
+\]
+\end{proposition}
+
+\begin{proof}
+The Gram determinant of $s$ unit vectors is $1$ for $s=1$; $1-\langle u,v\rangle^2$ for $s=2$; and
+$1-\langle u,v\rangle^2-\langle u,w\rangle^2-\langle v,w\rangle^2
++2\langle u,v\rangle\langle v,w\rangle\langle w,u\rangle$ for $s=3$. Summing over $r$ turns each
+closed walk of inner products into a trace, so $m_2$ involves only $\sum_{k<l}\operatorname{tr}A_kA_l$
+and $m_3$ only that together with $\sum_{k<l<m}\operatorname{tr}A_kA_lA_m$. Both are fixed by the
+hypotheses: from $\sum_kA_k=aI$, $\operatorname{tr}A_k=b$ and $A_k^2=A_k$,
+$\operatorname{tr}\bigl((\sum_kA_k)^2\bigr)=a^2n$ gives $\sum_{k<l}\operatorname{tr}A_kA_l
+=(a^2n-qb)/2$, and $\operatorname{tr}\bigl((\sum_kA_k)^3\bigr)=a^3n$ gives
+$\sum_{k<l<m}\operatorname{tr}A_kA_lA_m=(a^3n-3a^2n+2qb)/6$, every ordered triple of distinct indices
+contributing the same value because the blocks are symmetric, so that
+$\operatorname{tr}A_kA_mA_l=\operatorname{tr}A_kA_lA_m$.
+\end{proof}
+
+At $s=4$ the Gram determinant carries the four-cycle
+$\langle u_1,u_2\rangle\langle u_2,u_3\rangle\langle u_3,u_4\rangle\langle u_4,u_1\rangle$, whose sum
+over $r$ is $\operatorname{tr}A_kA_lA_mA_r$ with four distinct indices, and the single relation from
+$\operatorname{tr}\bigl((\sum_kA_k)^4\bigr)=a^4n$ cannot pin the three independent cyclic classes. So
+$m_4$ is the first coefficient carrying a genuine joint invariant, which is why the cut falls at four.
+It does move: at the Fano family $m_4$ ranges over an interval of length $6.03$ across random tight
+families against the commuting value $1218$, and at $\mathrm{PG}(2,3)$ the four leading coefficients
+sit at $1,-52,1170,-14976$ for commuting and deformed families alike while $m_4$, $m_5$ and $m_6$
+move from $120627$, $-638820$, $2258100$ (\texttt{code/transversal.py}).
+
+One reading is excluded outright. A weighted matching polynomial would have the transversal weight
+factor through pairwise data, and it does not, for a reason visible on the commuting locus with no
+deformation. In the Fano plane any two lines meet in one point, so every triple of blocks carries the
+same pairwise traces; but three lines are either concurrent or form a triangle, and
+$\operatorname{tr}P_kP_lP_m$ is $1$ or $0$ accordingly. Two triples with identical pairwise weights
+and different transversal weights is exactly the failure of pairwise factorisation, and the same
+happens at $\mathrm{PG}(2,3)$. The weight is irreducibly higher than pairwise, and no edge-weighted
+graph carries it.
+
 Two properties of $D$ have to hold before \eqref{eq:mixeddisc} even parses, and both are now
 machine-checked rather than carried as prose. The sum on the right is over \emph{sets} $S$, which is
 legitimate only because $D$ is symmetric in its arguments

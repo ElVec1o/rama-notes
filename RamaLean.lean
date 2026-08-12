@@ -98,6 +98,7 @@ import RamaLean.TieBreak
 import RamaLean.Tightness
 import RamaLean.TorusGodsilGutman
 import RamaLean.TracePSD
+import RamaLean.Transversal
 import RamaLean.TreeSubstitution
 import RamaLean.TwoGroupFactorial
 import RamaLean.TwoRegular

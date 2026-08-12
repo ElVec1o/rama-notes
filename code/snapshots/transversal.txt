@@ -1,0 +1,61 @@
+P47 (frozen): (a) m_0..m_3 are class-wide constants with closed forms; (b) m_4, m_5, m_6
+are not; (c) mu's coefficients are volume-weighted partial-transversal sums.
+(a) The four leading coefficients, over the coordinate family and random tight families.
+    family     (n,q,a,b)  families    commutator range  m_0..m_3 constant  match closed form
+       C_4     (4,4,2,2)         6         [0.00,0.90]               True               True
+   K_{3,3}     (6,9,3,2)         7         [0.00,0.99]               True               True
+      Fano     (7,7,3,3)         7         [0.00,1.16]               True               True
+  closed forms: C_4 [1, -8, 20, -16], K_{3,3} [1, -18, 126, -432], Fano [1, -21, 168, -644]
+(b) m_4 over the same families: it has to move, or the cut at four is wrong.
+    family         min m_4         max m_4        spread   moves
+       C_4        2.000000        3.153293      1.153293    True
+   K_{3,3}      747.000000      748.513481      1.513481    True
+      Fano     1218.000000     1224.028543      6.028543    True
+(c) The transversal formula against mu, coefficient by coefficient.
+    family  commutator  s up to  max abs diff  agrees
+C_4 coordinate       0.000        4      0.00e+00    True
+C_4 deformed       0.699        4      1.47e-14    True
+K_{3,3} coordinate       0.000        4      0.00e+00    True
+K_{3,3} deformed       0.995        4      6.82e-13    True
+Fano coordinate       0.000        4      0.00e+00    True
+Fano deformed       1.070        4      6.82e-13    True
+(d) PG(2,3): the four rigid coefficients, and m_4, m_5, m_6 moving.
+      family  commutator            m_0            m_1            m_2            m_3            m_4            m_5            m_6
+  coordinate       0.000         1.0000       -52.0000      1170.0000    -14976.0000    120627.0000   -638820.0000   2258100.0000
+    deformed       1.209         1.0000       -52.0000      1170.0000    -14976.0000    120650.2848   -639471.9742   2265379.7677
+  predicted m_0..m_3 = [1, -52, 1170, -14976], matched: True
+(e) Is it a WEIGHTED MATCHING POLYNOMIAL? That needs the transversal weight to factor
+through pairwise data. The s=3 weight is b^3 - b(t_kl+t_km+t_lm) + 2 tr(A_k A_l A_m), so
+the question is whether the triple trace is a function of the three pairwise traces.
+A row has POWER only where two triples share pairwise data; on a generic deformed family
+every triple has its own class, all groups are singletons, and the test can see nothing.
+A first version judged those rows as confirming factorisation, which they cannot do.
+          family  triples  classes  collided  worst spread           verdict
+  C_4 coordinate        4        1         4        0.0000        consistent
+    C_4 deformed        4        1         4        0.0000        consistent
+K_{3,3} coordinate       84        4        84        0.0000        consistent
+K_{3,3} deformed       84       84         0             -          no power
+ Fano coordinate       35        1        35        1.0000           REFUTES
+   Fano deformed       35       35         0             -          no power
+PG(2,3) coordinate      286        1       286        1.0000           REFUTES
+PG(2,3) deformed      286      286         0             -          no power
+  A refuting row is two triples with identical pairwise weights and different transversal
+  weights, which is exactly the failure of pairwise factorisation. One such row is enough;
+  rows marked consistent do not support factorisation, they merely fail to break it.
+  P47 HOLDS in all four parts. The deformed polynomial is the generating function of
+  PARTIAL TRANSVERSALS OF THE BLOCK SYSTEM WEIGHTED BY SQUARED VOLUME: choose at most
+  one representative from each block's range, weight by the squared volume they span,
+  sum with alternating sign. On the commuting locus the weight is the indicator that
+  the representatives are distinct, which is the SDR count and the matching number of
+  the incidence graph; off it the weight is the continuous measure of how independent
+  they are. The first four coefficients are then class-wide constants, because the
+  Gram determinant only produces closed walks of length at most three there and those
+  are fixed by tightness and idempotency; the four-cycle enters at m_4, which is the
+  first genuine joint invariant and the reason the cut is at four.
+  It is NOT a weighted matching polynomial, and the obstruction is already visible on
+  the commuting locus. In the Fano plane any two lines meet in one point, so every
+  triple of blocks has the same pairwise data; but three lines are either concurrent
+  or form a triangle, and the triple trace is 1 or 0 accordingly. Two triples with
+  identical pairwise weights and different transversal weights is exactly the failure
+  of pairwise factorisation, in integers, with no deformation needed. So the weight
+  is irreducibly higher than pairwise and no edge-weighted graph carries it.
