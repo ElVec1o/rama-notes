@@ -1,0 +1,16 @@
+P53 (frozen): (a) the variations factor through the per-pair quadratic data; (b) the
+relations exceed the two power-sum ones; (c) the (I1) functional lies in the cokernel,
+so (I1) is exact at each family.
+    family  pairs  triples  z coords  rank on cone  RELATIONS  (I1) residual  exact
+       C_6     15       20       108            13         22       1.28e-15   True
+   K_{3,3}     36       84       216            55         65       4.26e-14   True
+  The relation count is the cokernel dimension, computed exactly. Sampling inflates it:
+  project_to_cone leaves Q near 3e-5 and the off-cone component raises the apparent rank
+  from 13 to 18 at C_6, which would have understated the relations by five.
+  P53 HOLDS. The second-order variations of the pair and triple traces factor through
+  the per-pair quadratic data z, exactly; the accessible z is cut by tightness and the
+  cone condition, both linear in z; and the relations among the variations are the
+  cokernel of that map, far more numerous than the two power-sum relations. Against
+  that cokernel the (I1) functional vanishes, so (I1) is an exact identity at every
+  family here rather than a numerical observation. It is still not a proof for
+  general (a, b, q): the certificate is finite and per family.
