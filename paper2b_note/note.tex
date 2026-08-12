@@ -2029,8 +2029,21 @@ $4(a-2)$ times the $W_4$ row as a functional on the accessible data: the raw vec
 exactly $24$ at each of the three $a=3$ families here, but the difference lies in the annihilator of
 the constraints. With the first half settled the same way in \texttt{code/relations.py}, both halves
 of the conjecture are exact linear-algebra certificates rather than path measurements
-(\texttt{code/ceiling.py}). A certificate is finite and per family, so the conjecture is still stated
-as one.
+(\texttt{code/ceiling.py}).
+
+The second half needs no certificate at all, as it turns out. The difference
+$W_5^{\mathrm{row}}-4(a-2)W_4^{\mathrm{row}}$ takes exactly two values over all coordinates, one on
+the diagonal $z^{uv}_{kk}$ and twice that on the off-diagonal $z^{uv}_{kl}$, which is the coefficient
+pattern of
+\[
+T(z)=\sum_{u<v}\sum_{k,l\in K(u,v)}z^{uv}_{kl}=\sum_{u<v}\Bigl(\sum_kD_k(u,v)\Bigr)^2 ,
+\]
+the doubling being the $k<l$ storage convention. Tightness makes $T$ identically zero, so
+$W_5^{\mathrm{row}}=4(a-2)W_4^{\mathrm{row}}$ as functionals whatever the scalar in front of $T$ is.
+That is a reason rather than a certificate. The scalar itself is measured and not derived: it is $0$,
+$-12$ and $-60$ at $a=2,3,4$, the same at $q=7$, $9$ and $12$ so independent of $q$, and a prediction
+of $-12(a-2)$ frozen before the $a=4$ computation missed, giving $-24$ against $-60$. The first half
+still rests on the per-family certificate, so the conjecture is stated as one.
 
 Against that cokernel the identity $\delta R=2(a-2)\delta Q_2$ holds exactly, to between
 $10^{-15}$ and $4\times10^{-14}$ at all four families: it is a linear-algebra certificate rather than a

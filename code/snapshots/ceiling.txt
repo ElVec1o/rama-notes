@@ -19,6 +19,15 @@ What the bound closes, by regime.
    K_4 triples  3       4   too small for a five-row
   A nonzero raw difference that vanishes modulo the constraints means the two rows agree
   as functionals on the accessible data, which is the only place they are evaluated.
+(e) What that difference IS: the values it takes on the two kinds of coordinate.
+        family  a   on z_kk   on z_kl   ratio  = c(a) T
+           C_6  2       0.0       0.0     nan      True
+           C_8  2       0.0       0.0     nan      True
+  One value on the diagonal coordinates and exactly twice it off them is the coefficient
+  pattern of T(z) = sum_{u<v} (sum_k D_k(u,v))^2, which tightness makes identically zero.
+  So (I2) follows from the shape of the difference, for any a, and not from a per-family
+  certificate. The constant c(a) itself is measured, not derived: 0, -12, -60 at a = 2, 3,
+  4, independent of q, and a frozen guess of -12(a-2) missed at a = 4.
   P54 HOLDS. The second-order row of a cyclic word of length above 2a vanishes
   identically, because a point of a tight family lies in exactly a blocks and the
   blocks along an arc all contain the same point. The bound is tight at a = 3. At

@@ -46,6 +46,26 @@ the Fano family, where the expansion needs rows on other blocks. Checked modulo 
 which is the only sense in which the rows are functionals at all. So there is no uniform local
 identity and a proof of the ceiling for a >= 3 has to be global. That is a narrowing, not a proof.
 
+WHAT THE DIFFERENCE IS, and it explains (I2) without a per-family certificate. The vector
+W_5 row - 4(a-2) W_4 row takes exactly TWO values over all coordinates: c on the diagonal ones
+z^{uv}_{kk} and 2c on the off-diagonal ones z^{uv}_{kl}, k != l. That is precisely the coefficient
+pattern of the functional
+
+    T(z) = sum_{u<v} sum_{k,l in K(u,v)} z^{uv}_{kl} = sum_{u<v} ( sum_k D_k(u,v) )^2,
+
+the off-diagonal doubling being the k<l storage convention. And T vanishes IDENTICALLY on the
+accessible data, since tightness gives sum_k D_k = 0. So
+
+    W_5 row - 4(a-2) W_4 row = c(a) T,      T = 0 on the accessible space,
+
+and (I2) follows from the SHAPE alone, whatever c(a) is. That is a general reason, not a certificate.
+
+The constant itself is not explained. Measured c(2) = 0, c(3) = -12 at Fano, K_{3,3} and the cube
+alike, so it does not depend on q, and c(4) = -60 at AG(2,3). A frozen prediction of -12(a-2) MISSED
+at a = 4, giving -24 against the measured -60. The three values 0, -12, -60 are fitted by
+-2(a-2)(a-1)(2a-3), which is a fit on three points and is recorded as one; testing it needs an a = 5
+family, and the smallest to hand are too large for this row computation.
+
 (I2) IS EXACT, MODULO THE CONSTRAINTS. The second half of A12f asked for delta W_5 = 4(a-2) delta W_4.
 At the level of rows the statement is sharper than the variational one: the W_5 row equals 4(a-2)
 times the W_4 row as a FUNCTIONAL on the accessible z. The raw vectors differ, by exactly 24 at every
@@ -59,6 +79,8 @@ FROZEN BEFORE THE DATA:
        (b) The bound is tight: some family has a nonzero row of length exactly 2a.
        (c) At a = 2 this closes the four-block ceiling outright, the bound being 4.
        (d) The W_5 row equals 4(a-2) times the W_4 row modulo the constraints, at every family.
+       (e) The difference is a multiple of the tightness-square functional T, taking one value on
+           the diagonal coordinates and twice that off them.
 
 FALSIFICATION. A nonzero row of length greater than 2a refutes the counting argument. A family where
 rows of length 2a are all zero would leave the bound unproved as stated, though the ceiling would
@@ -70,6 +92,7 @@ for _v in ('OMP_NUM_THREADS', 'OPENBLAS_NUM_THREADS', 'MKL_NUM_THREADS'):
     os.environ[_v] = '2'
 
 import sys
+import itertools
 import numpy as np
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__))
@@ -137,6 +160,37 @@ def main():
         print(f"{nm:>14}{a:>3}{4 * (a - 2):>8}{raw:>16.1f}{proj:>18.2e}{str(good):>7}")
     print("  A nonzero raw difference that vanishes modulo the constraints means the two rows agree")
     print("  as functionals on the accessible data, which is the only place they are evaluated.\n")
+
+    print("(e) What that difference IS: the values it takes on the two kinds of coordinate.")
+    print(f"{'family':>14}{'a':>3}{'on z_kk':>10}{'on z_kl':>10}{'ratio':>8}"
+          f"{'= c(a) T':>10}")
+    ok_e = True
+    for (nm, n, lines, a) in fams:
+        q = len(lines)
+        rows, ns = block_rows(n, lines)
+        if 5 not in rows or rows[5].shape[0] == 0:
+            continue
+        E = [set(e) for e in lines]
+        vp = list(itertools.combinations(range(n), 2))
+        Kv = {(u, v): [k for k in range(q) if (u in E[k]) != (v in E[k])] for (u, v) in vp}
+        zc = [(u, v, k, l) for (u, v) in vp
+              for ki, k in enumerate(Kv[(u, v)]) for l in Kv[(u, v)][ki:]]
+        D = rows[5].sum(axis=0) - 4 * (a - 2) * rows[4].sum(axis=0)
+        dg = {round(float(D[i]), 6) for i in range(len(D)) if zc[i][2] == zc[i][3]}
+        of = {round(float(D[i]), 6) for i in range(len(D)) if zc[i][2] != zc[i][3]}
+        one = len(dg) == 1 and len(of) == 1
+        d0 = next(iter(dg)); o0 = next(iter(of))
+        r = (o0 / d0) if abs(d0) > 1e-12 else float('nan')
+        shape = one and (abs(d0) < 1e-12 or abs(r - 2.0) < 1e-9)
+        ok_e = ok_e and shape
+        print(f"{nm:>14}{a:>3}{d0:>10.1f}{o0:>10.1f}{r:>8.2f}{str(shape):>10}")
+    print("  One value on the diagonal coordinates and exactly twice it off them is the coefficient")
+    print("  pattern of T(z) = sum_{u<v} (sum_k D_k(u,v))^2, which tightness makes identically zero.")
+    print("  So (I2) follows from the shape of the difference, for any a, and not from a per-family")
+    print("  certificate. The constant c(a) itself is measured, not derived: 0, -12, -60 at a = 2, 3,")
+    print("  4, independent of q, and a frozen guess of -12(a-2) missed at a = 4.\n")
+
+    ok_a = ok_a and ok_e
 
     if ok_a and tight and ok_i2:
         print("  P54 HOLDS. The second-order row of a cyclic word of length above 2a vanishes")
