@@ -7,6 +7,9 @@ a = 3:  ladder needs R < a/(a-1) = 1.5000
   10      55     5      1.0252      1.0380      1.0444      1.0470   1.0470       BELOW
 a = 4:  ladder needs R < a/(a-1) = 1.3333
    m  |supp|  kmax    r2^(1/2)    r3^(1/3)    r4^(1/4)    r5^(1/5)      R_m     verdict
+   6      21     3      0.9781      0.9585         nan         nan   0.9781       BELOW
+   8      36     4      0.9869      0.9757      0.9653         nan   0.9869       BELOW
+  10      55     5      1.0014      0.9991      0.9949      0.9898   1.0014       BELOW
   A rate below the threshold at every m means the refutation of P16 costs the
   ladder a constant, not the method: the reachable dimension is still unbounded in
   k, at the reduced base 4a/(R*4(a-1)). A rate crossing it closes the ladder.

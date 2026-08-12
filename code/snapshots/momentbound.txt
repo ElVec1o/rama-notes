@@ -3,4 +3,5 @@ P16 (frozen): p_k <= (m/2) W_2k for every weighted 2-plane family with Adj(A) <=
  coordinate   8   3    1.0000    1.0000    0.9828    0.9521       nan   1.0000
     general   6   3    1.0000    0.9528    0.8915       nan       nan   1.0000
   worst ratio over everything tested: 1.0000
-  P16 SURVIVES so far
+  no excess over the configurations swept here (worst 1.0000); this sweep is
+  small-m only and does not reach the refuting range. See code/p16verify.py.

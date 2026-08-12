@@ -52,7 +52,11 @@ rng = np.random.default_rng(20260821)
 
 TOL_TIGHT = 1e-9
 CHUNK = 150_000
-BUDGET_S = 25.0 if quickmode.QUICK else 2400.0
+# The wall clock is a SAFETY NET, not a knob: its value is the same in both modes, so it
+# never binds under --quick and the short run's output is a function of the code alone.
+# --quick truncates the CONFIGURATION below instead. Shrinking the clock is how a snapshot
+# becomes load-dependent, which this repository has already had to fix seven times.
+BUDGET_S = 2400.0
 
 
 def tree_walks(a, kmax):
@@ -140,13 +144,13 @@ def main():
               + "".join(f"{f'r{k}^(1/{k})':>12}" for k in (2, 3, 4, 5))
               + f"{'R_m':>9}{'verdict':>12}")
         prev = None
-        for m in (6, 8, 10, 12, 14):
+        for m in quickmode.few((6, 8, 10, 12, 14), 3):
             if time.time() - t0 > BUDGET_S:
                 print("  [budget reached]")
                 break
             kmax = min(5, m // 2)
             fam = None
-            for _ in range(25):
+            for _ in range(6 if quickmode.QUICK else 25):
                 fam = tight_family(m, 4 * m * (m + 1) // 2, a)
                 if fam is not None:
                     break

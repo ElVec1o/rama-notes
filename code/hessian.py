@@ -55,7 +55,11 @@ from tff import restore, tff_residual
 from xu_sharp import heawood, pappus, ag23
 
 QUICK = quickmode.QUICK
-BUDGET_S = 60.0 if QUICK else 1800.0
+# The wall clock is a SAFETY NET, not a knob: its value is the same in both modes, so it
+# never binds under --quick and the short run's output is a function of the code alone.
+# --quick truncates the CONFIGURATION below instead. Shrinking the clock is how a snapshot
+# becomes load-dependent, which this repository has already had to fix seven times.
+BUDGET_S = 1800.0
 TOL = 1e-9
 C_EXACT_FANO = 0.0371785140129474      # code/curvature.py, exact rational arithmetic
 

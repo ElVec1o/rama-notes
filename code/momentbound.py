@@ -111,4 +111,12 @@ for a in quickmode.few((3,4)):
               + "".join(f"{(rat[k-1] if k<=kk else float('nan')):>10.4f}" for k in (1,2,3,4,5))
               + f"{max(rat):>9.4f}")
 print(f"\n  worst ratio over everything tested: {worst_all:.4f}")
-print("  P16 " + ("SURVIVES so far" if worst_all<=1.0+1e-9 else "IS FALSE: some family exceeds the tree bound"))
+# Rule 7: the verdict may not outrun its coverage. This script sweeps small m only, where no
+# excess appears; the refutation lives at larger m and is the business of code/p16verify.py.
+# Saying "SURVIVES" without that qualification made the shipped baseline read as contradicting
+# the abstract, which reports the refutation.
+if worst_all > 1.0 + 1e-9:
+    print("  P16 IS FALSE: some family exceeds the tree bound")
+else:
+    print(f"  no excess over the configurations swept here (worst {worst_all:.4f}); this sweep is")
+    print("  small-m only and does not reach the refuting range. See code/p16verify.py.")

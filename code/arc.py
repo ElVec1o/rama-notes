@@ -87,7 +87,11 @@ from hessian import coord_family, tangent_basis
 from tangentcone import quadric, project_to_cone
 
 QUICK = quickmode.QUICK
-BUDGET_S = 60.0 if QUICK else 600.0
+# The wall clock is a SAFETY NET, not a knob: its value is the same in both modes, so it
+# never binds under --quick and the short run's output is a function of the code alone.
+# --quick truncates the CONFIGURATION below instead. Shrinking the clock is how a snapshot
+# becomes load-dependent, which this repository has already had to fix seven times.
+BUDGET_S = 600.0
 
 
 def frames(n, lines, b):

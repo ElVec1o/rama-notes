@@ -33,7 +33,11 @@ from D3broad import spread_graph, connected
 from pathtree_inertia import inertia
 import quickmode
 
-BUDGET = 25.0 if quickmode.QUICK else 2100.0
+# The wall clock is a SAFETY NET, not a knob: its value is the same in both modes, so it
+# never binds under --quick and the short run's output is a function of the code alone.
+# --quick truncates the CONFIGURATION below instead. Shrinking the clock is how a snapshot
+# becomes load-dependent, which this repository has already had to fix seven times.
+BUDGET = 2100.0
 
 
 def main():
@@ -45,8 +49,8 @@ def main():
     tested = 0
     fails = []
     untrusted = []
-    for n in (8, 10, 12):
-        for trial in range(60):
+    for n in quickmode.few((8, 10, 12), 1):
+        for trial in range(2 if quickmode.QUICK else 60):
             if time.time() - t0 > BUDGET:
                 break
             E = spread_graph(n, rng, int(rng.integers(1, 3)),

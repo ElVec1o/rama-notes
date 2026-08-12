@@ -58,7 +58,11 @@ from tff import restore, tff_residual, proj_rank_b
 from xu_sharp import heawood, pappus, ag23, pg23, tutte_coxeter, mu_from_incidence
 
 QUICK = quickmode.QUICK
-BUDGET_S = 25.0 if QUICK else 1500.0
+# The wall clock is a SAFETY NET, not a knob: its value is the same in both modes, so it
+# never binds under --quick and the short run's output is a function of the code alone.
+# --quick truncates the CONFIGURATION below instead. Shrinking the clock is how a snapshot
+# becomes load-dependent, which this repository has already had to fix seven times.
+BUDGET_S = 1500.0
 TOL_TIGHT = 1e-9
 
 

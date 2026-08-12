@@ -167,10 +167,13 @@ def main():
     print("and many samples per configuration.\n")
 
     t0 = time.time()
-    configs = [('coordinate', 8, 3), ('coordinate', 10, 3), ('coordinate', 12, 3),
-               ('general', 6, 3), ('general', 8, 3), ('general', 10, 3),
-               ('coordinate', 8, 4), ('coordinate', 10, 4),
-               ('general', 6, 4), ('general', 8, 4), ('general', 10, 4)]
+    # INTERLEAVED on purpose. Grouped by kind, any prefix taken by --quick was all 'coordinate',
+    # the families that OBEY P16, and the verdict below then reported that P16 survives, which
+    # contradicts the refutation this script exists to confirm. A truncation must not be able to
+    # change which regime is covered.
+    configs = [('coordinate', 8, 3), ('general', 6, 3), ('coordinate', 10, 3), ('general', 8, 3),
+               ('coordinate', 12, 3), ('general', 10, 3), ('coordinate', 8, 4), ('general', 6, 4),
+               ('coordinate', 10, 4), ('general', 8, 4), ('general', 10, 4)]
 
     print(f"{'kind':>11}{'m':>4}{'a':>3}{'n':>4}{'|supp|':>7}{'resid':>9}"
           + "".join(f"{f'k={k}':>9}" for k in (1, 2, 3, 4, 5))
@@ -182,10 +185,12 @@ def main():
     disagreements = 0
     checked = 0
 
-    for (kind, m, a) in quickmode.few(configs, 3):
+    covered = {'coordinate': 0, 'general': 0}
+    for (kind, m, a) in quickmode.few(configs, 4):
         if time.time() - t0 > BUDGET_S:
             print("  [wall clock budget reached; remaining configurations skipped]")
             break
+        covered[kind] += 1
         W = tree_walks(a, m // 2)
         kk = min(5, m // 2)
         best = None
@@ -242,12 +247,22 @@ def main():
         print()
     print(f"  worst y_max / (4a):      {worst_band:.4f}")
     print()
+    print(f"  configurations covered: {covered['coordinate']} coordinate, "
+          f"{covered['general']} general")
     if worst_moment > 1.0 + 1e-6:
         print("  P16 IS FALSE, confirmed under all three controls. The tree walk count is not")
         print("  an upper bound for the plane class, so it cannot serve as the a-priori input")
         print("  that removes the dimension restriction.")
+    elif covered['general'] == 0:
+        # Rule 7: the verdict may not be more confident than its data. The excess lives off the
+        # coordinate case, so a run that covered no 'general' family has not tested the claim
+        # and must say so rather than report survival.
+        print("  INCONCLUSIVE: no general family was covered, and the excess lives off the")
+        print("  coordinate case. This run tested the families that obey P16 and nothing else,")
+        print("  so it is silent on the refutation. Run without --quick for the verdict.")
     else:
-        print("  No excess survives the controls. The earlier violation was an artefact.")
+        print("  No excess survives the controls, over the configurations covered above. The")
+        print("  earlier violation would then be an artefact.")
     if worst_band > 1.0:
         print("  AND THE BAND IS FALSE for the plane class.")
     else:

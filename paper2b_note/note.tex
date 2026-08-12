@@ -364,9 +364,11 @@ constant above it bounding them below (\texttt{edge\_unimprovable}). There is no
 spare, and the statement cannot be softened.
 
 Two limits on this. The fitted exponents vary with the aspect ratio $q/d$ at the sizes reachable,
-from $-0.67$ at $q=2d$ to $-0.61$ at $q=4d$, but so does the exponent of the analytic quantile,
-which is $-2/3$ by construction and reaches it only near $n=10^6$; the variation is a finite-size
-effect (\texttt{code/quantile.py}). And the observed smallest roots sit where the tree measure
+from $-0.67$ at $q=2d$ to $-0.61$ at $q=4d$, and the exponent of the analytic quantile also varies,
+being $-2/3$ by construction and reaching it only near $n=10^6$. A finite-size effect is the natural
+reading, but the check does not establish it: the analytic prediction neither reproduces the measured
+dependence nor is flat against it, the exponent gap running to $0.093$, so the script returns
+INCONCLUSIVE and the reading stays a reading (\texttt{code/quantile.py}). And the observed smallest roots sit where the tree measure
 places about $0.5$ roots, a count that drifts as $n^{+0.10}$; that departure is neither the girth,
 which is constant at $4$ throughout, nor the estimator, since the unbiased sample mean drifts
 equally, and it is unexplained (\texttt{code/nobs.py}).

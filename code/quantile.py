@@ -99,10 +99,16 @@ def quantile_from_cdf(xs, c, g, n, target=1.0):
 
 def main():
     print("Analytic quantile prediction against the measured margin.\n")
+    # data/ ships; private/ does not. This script is cited by the paper for a load-bearing
+    # sentence, so its input has to be in the repository or a clean clone cannot reproduce it.
     try:
-        D = json.load(open('private/softedge3_data.json'))
+        D = json.load(open('data/softedge3_data.json'))
     except Exception:
-        print("run code/softedge3.py first"); return 1
+        try:
+            D = json.load(open('private/softedge3_data.json'))
+        except Exception:
+            print("input missing: run code/softedge3.py, which writes data/softedge3_data.json")
+            return 1
 
     print("self-check: n * integral of rho over the positive band must equal r exactly\n")
     print(f"{'family':>9}{'r':>4}{'n':>5}{'n*int(rho)':>13}{'r':>6}{'rel err':>11}")

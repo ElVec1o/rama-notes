@@ -142,7 +142,7 @@ def main():
                 f.write(f"({d},{q}) r={r} margin={mx:.6f}\n")
             os.replace(CKPT + '.tmp', CKPT)
         print()
-    json.dump(T, open('private/softedge3_data.json', 'w'))
+    json.dump(T, open('data/softedge3_data.json', 'w'))
     print(f"{time.time()-t0:.0f}s\n")
 
     print("  local exponent between consecutive sizes, by aspect ratio:")

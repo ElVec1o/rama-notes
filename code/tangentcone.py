@@ -62,7 +62,11 @@ from hessian import coord_family, tangent_basis, nearest_on_variety, kind_of
 from xu_sharp import heawood, ag23
 
 QUICK = quickmode.QUICK
-BUDGET_S = 40.0 if QUICK else 900.0
+# The wall clock is a SAFETY NET, not a knob: its value is the same in both modes, so it
+# never binds under --quick and the short run's output is a function of the code alone.
+# --quick truncates the CONFIGURATION below instead. Shrinking the clock is how a snapshot
+# becomes load-dependent, which this repository has already had to fix seven times.
+BUDGET_S = 900.0
 
 
 def quadric(D, lines, n, q):

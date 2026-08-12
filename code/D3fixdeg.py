@@ -34,7 +34,11 @@ from gapscale import setup
 from D1cut_adv import outside_spectrum, mu_roots, glue, degrees
 import quickmode
 
-BUDGET = 25.0 if quickmode.QUICK else 2100.0
+# The wall clock is a SAFETY NET, not a knob: its value is the same in both modes, so it
+# never binds under --quick and the short run's output is a function of the code alone.
+# --quick truncates the CONFIGURATION below instead. Shrinking the clock is how a snapshot
+# becomes load-dependent, which this repository has already had to fix seven times.
+BUDGET = 2100.0
 
 
 def block(q, S_edges):
@@ -53,11 +57,12 @@ def main():
           f"{'verdict':>12}")
     viol, amb, tested = [], [], 0
     rng = np.random.default_rng(20260903)
-    for (q, s) in ((12, 1), (12, 2), (12, 3), (10, 3), (14, 3), (12, 4), (10, 2)):
+    for (q, s) in quickmode.few(((12, 1), (12, 2), (12, 3), (10, 3), (14, 3), (12, 4),
+                                 (10, 2)), 2):
         if (q * s) % 2:
             continue
         seen = set()
-        for trial in range(14):
+        for trial in range(3 if quickmode.QUICK else 14):
             if time.time() - t0 > BUDGET:
                 break
             try:

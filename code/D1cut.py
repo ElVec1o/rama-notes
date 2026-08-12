@@ -53,7 +53,11 @@ from twocut import mu_of, x
 from gapscale import gap_profile
 import quickmode
 
-BUDGET_S = 25.0 if quickmode.QUICK else 2400.0
+# The wall clock is a SAFETY NET, not a knob: its value is the same in both modes, so it
+# never binds under --quick and the short run's output is a function of the code alone.
+# --quick truncates the CONFIGURATION below instead. Shrinking the clock is how a snapshot
+# becomes load-dependent, which this repository has already had to fix seven times.
+BUDGET_S = 2400.0
 
 
 # ---------------------------------------------------------------- block library
@@ -103,7 +107,7 @@ def blocks():
     for k in (3, 4, 5):
         nn, e = moebius(k); out.append((f"moeb{k}", nn, e, 0))
     nn, e = petersen(); out.append(("petersen", nn, e, 0))
-    return out
+    return quickmode.few(out, 2)
 
 
 def degrees(n, edges):
@@ -156,7 +160,7 @@ def main():
         roots = mu_roots(n, e)
         if not roots:
             continue
-        for p in (3, 4, 5, 7):
+        for p in quickmode.few((3, 4, 5, 7), 2):
             if time.time() - t0 > BUDGET_S:
                 break
             N, E = glue(n, e, v, p)
