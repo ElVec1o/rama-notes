@@ -1,0 +1,20 @@
+P54 (frozen): (a) rows of length above 2a vanish identically; (b) the bound is tight;
+(c) at a = 2 that closes the four-block ceiling.
+        family  a  2a       nonzero sizes  first zero  bound holds  tight
+           C_4  2   4           [2, 3, 4]           -         True   True
+           C_6  2   4           [2, 3, 4]           5         True   True
+           C_8  2   4           [2, 3, 4]           5         True   True
+   K_4 triples  3   6           [2, 3, 4]           -         True  False
+  'first zero' is the smallest length whose rows all vanish; a dash means the family is
+  too small to reach one. Tightness at a = 3 is what makes the bound the right one.
+What the bound closes, by regime.
+   a  bound 2a    four-block ceiling                            status
+   2         4      follows outright      PROVED by the counting bound
+   3         6            needs morerows of length 5,6 nonzero but dependent
+  P54 HOLDS. The second-order row of a cyclic word of length above 2a vanishes
+  identically, because a point of a tight family lies in exactly a blocks and the
+  blocks along an arc all contain the same point. The bound is tight at a = 3. At
+  a = 2 it is exactly four, so the four-block ceiling is proved there and needs no
+  linear algebra. At a >= 3 the ceiling still holds numerically but by a different
+  mechanism: the rows of length five and six are nonzero and lie in the span of the
+  shorter ones, and that dependence is not explained here.

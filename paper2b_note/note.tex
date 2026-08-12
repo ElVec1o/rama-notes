@@ -1998,6 +1998,29 @@ and splits into three, which is the only new information the deformation carries
 further enters, so $\delta m_5$ and $\delta m_4$ are two functionals on the same space and can be
 proportional, while $\delta m_6$ is a third functional on it and need not be.
 
+Half of the ceiling is a counting argument rather than a computation.
+
+\begin{proposition}[long cycles do not contribute]\label{prop:arcbound}
+The second-order row of a cyclic word of length $m$ vanishes identically whenever $m>2a$.
+\end{proposition}
+
+\begin{proof}
+A nonzero coefficient at $z^{uv}_{xy}$ requires $u\in I_1$ and $v\in I_2$, or the same with $u,v$
+exchanged. Every block on the first arc then contains $u$, and $x$ and $y$ both split the pair
+$\{u,v\}$, so whichever of them contains $u$ is a further block containing $u$ and not on that arc.
+A point of a tight family lies in exactly $a$ blocks, so the first arc has at most $a-1$ of them, and
+the second at most $a-1$ likewise; if instead $x$ and $y$ both contain $u$ the first arc has at most
+$a-2$ and the second at most $a$. Either way $m=2+|\text{arc}_1|+|\text{arc}_2|\le2a$. The diagonal
+terms need every other block to contain the same point and so require $m\le a+1$.
+\end{proof}
+
+The counting step is machine-checked as \texttt{ArcBound.card\_le\_of\_mem\_all} and
+\texttt{arc\_bound}. The bound is tight: at $K_{3,3}$ and the cube, both with $a=3$, rows of length
+exactly $6=2a$ are nonzero (\texttt{code/ceiling.py}). At $a=2$ it reads $m\le4$ and closes the
+four-block ceiling outright, with no linear algebra. At $a\ge3$ it leaves rows of length five and six
+nonzero, and their dependence on the shorter ones, which the ranks above exhibit, is not explained
+here.
+
 Against that cokernel the identity $\delta R=2(a-2)\delta Q_2$ holds exactly, to between
 $10^{-15}$ and $4\times10^{-14}$ at all four families: it is a linear-algebra certificate rather than a
 path measurement. A certificate is finite and per family, so Conjecture~\ref{conj:lockstep} is not
