@@ -1120,14 +1120,46 @@ $\deg c_i=\deg\ell_{i,j}=3$ and $\deg u=\deg v=9$, so $\delta(G)=3$; and
 so $\sqrt3$ is a root of $\mu_G$, while $\sqrt3\notin\operatorname{spec}(T_G)$.
 \end{proposition}
 
-The two halves of Proposition~\ref{prop:d3false} are certified to different standards, and we
-label them rather than average them. That $\mu_G$ factors as displayed, and hence that $\sqrt3$ is
-a root, is exact: $\mu_G$ is computed from the graph by the deletion recursion and $(x^2-3)$ is
-divided out over $\mathbb{Q}$. That $\sqrt3\notin\operatorname{spec}(T_G)$ rests on the
-density-of-states ladder described below, which is numerical, validated against the covers whose
-spectrum is known in closed form, and carries an internal control on this same graph; it is not
-machine-checked. An exact certificate is owed, and the obstruction is stated below: the ratio
-system, which is what an exact certificate would use, degenerates at precisely this point.
+Both halves are exact. That $\mu_G$ factors as displayed is computed from the graph by the deletion
+recursion, with $(x^2-3)$ divided out over $\mathbb{Q}$. That
+$\sqrt3\notin\operatorname{spec}(T_G)$ is Proposition~\ref{prop:d3cert}, whose arithmetic is
+machine-checked (\texttt{RamaLean/D3Counterexample.lean}); the analytic input is the
+Angel--Friedman--Hoory criterion \cite{AFH}, which is cited and not reproved.
+
+\begin{proposition}[the certificate]\label{prop:d3cert}
+On the four directed-edge orbits of $G$, write $g_1$ for centre-to-leaf, $g_2$ for leaf-to-centre,
+$g_3$ for leaf-to-hub and $g_4$ for hub-to-leaf. At $\lambda=\sqrt3$ the cavity system
+\[
+ \lambda=\tfrac1{g_1}+2g_3,\quad \lambda=\tfrac1{g_2}+2g_1,\quad
+ \lambda=\tfrac1{g_3}+8g_4,\quad \lambda=\tfrac1{g_4}+g_2+g_3
+\]
+is solved by $g_1=1/\sqrt3$, $g_2=\sqrt3$, $g_3=0$, $g_4=\infty$, the last pair escaping along
+$g_3g_4\to-\tfrac18$. The decay quotient has characteristic polynomial $t^4-\tfrac18t^2-\tfrac12$,
+whose largest root in modulus is
+\[
+  \rho=\sqrt{\tfrac{1+\sqrt{129}}{16}}=\tfrac14\sqrt{1+\sqrt{129}}=0.878842\ldots<1,
+\]
+and the vertex Green's functions are $G_{\mathrm{hub}}=\sqrt3/3$,
+$G_{\mathrm{centre}}=-\sqrt3/6$, $G_{\mathrm{leaf}}=0$, all finite.
+\end{proposition}
+
+Three things make this work where the naive attempt fails. The pole in $g_4$ is a pole of the
+\emph{coordinate}: the decay quotient's entries diverge, but its characteristic polynomial does not,
+because a determinant collects only vertex-disjoint cycle collections and the two cycles present,
+$(g_3g_4)$ and $(g_1g_3g_4g_2)$, share vertices, so their weights $8(g_3g_4)^2=\tfrac18$ and
+$32g_1^2g_2^2(g_3g_4)^2=\tfrac12$ are finite and there is no cross term. Next, $\rho<1$ needs no
+surd: with $s=t^2$ the polynomial is $8s^2-s-4$, and $(s-1)^2\ge0$ gives $8s^2-16s+8\ge0$, which on
+substituting $8s^2=s+4$ leaves $15s\le12$, so $s\le\tfrac45$
+(\texttt{decay\_root\_lt\_one}). Last, the finiteness of every $G_w$ excludes the one remaining
+possibility, that $\sqrt3$ is an \emph{isolated point} of $\operatorname{spec}(T_G)$: an atom forces
+a pole of $G_w$ with the eigenvector weight as residue, and there is none. That step is not a
+formality, since $\operatorname{spec}(T)$ is closed and the biregular cover of \S\ref{sec:conj}
+carries exactly such an isolated $\{0\}$.
+
+As an independent check, the exact $\sum_wG_w=\sqrt3/6$ is reproduced by the numerical resolvent to
+$7.7\times10^{-10}$ at $\eta=10^{-6}$, the error falling as $\eta^2$, and the exact $\rho$ lies
+between the decays $0.892472$ and $0.867159$ computed at $\sqrt3\mp0.005$
+(\texttt{code/d3\_exact.py}).
 
 The mechanism is Hall's verbatim. His violating root $\sqrt5$ is the top matching root of the
 star $K_{1,5}$, whose matching polynomial is $x^4(x^2-5)$; the divisor is a star. A star's leaves
@@ -1147,23 +1179,23 @@ away from the star. Separately, \texttt{code/mindeg3.py} iterated over the roots
 and never over the roots of $A$, so the divisibility that is the whole engine went untested; that
 is repaired in \texttt{code/mindeg3adv.py}, which reports a signed margin rather than a verdict.
 
-Certifying $\sqrt3\notin\operatorname{spec}(T_G)$ needs the density-of-states ladder and not the
-ratio system, and the reason is instructive. The Angel--Friedman--Hoory system
+One trap on the way to Proposition~\ref{prop:d3cert} is worth recording, because it inverts the
+answer rather than blurring it, and because the same trap is what let five searches come back
+clean. Solved naively, the Angel--Friedman--Hoory system
 $\lambda=1/r_e+\sum_{e\to f}r_f$ has four orbits here under $\operatorname{Aut}(G)$, and
 eliminating gives a quadratic whose two real branches both have decay above one, which reads as
 $\sqrt3\in\operatorname{spec}(T_G)$. That is wrong: a hair either side of $\sqrt3$ there are
 \emph{three} real branches and the third has decay about $0.87$. Its $r(\ell\to u)$ crosses zero
 exactly at $\sqrt3$, so the elimination multiplies by it and drops the branch, and a pointwise
-solver returns nothing there for the same reason. The ratio parametrisation has a coordinate
-singularity at the point in question. The resolvent has none: with
-$g_e=1/(z-\sum_{e\to f}g_f)$ at $z=\lambda+i\eta$, the quantity $|\operatorname{Im}\sum_w G_w|$
-decays linearly in $\eta$ outside the spectrum, tends to a positive constant inside a band, and
-diverges like $\eta^{-1}$ at an atom. The distinction between the first and the third is not a
-formality here, since $\operatorname{spec}(T)$ is closed and the biregular cover already carries
-an isolated $\{0\}$; showing every point near $\sqrt3$ is outside would not show $\sqrt3$ is. On
-this graph the ladder reports an atom at $0$, a band at $1.68$, a band at $2.40$, and linear decay
-at $\sqrt3$, the atom at the origin serving as the internal control
-(\texttt{code/d3\_counterexample.py}).
+solver returns nothing there for the same reason. Proposition~\ref{prop:d3cert} is what the branch
+becomes once the singularity is removed rather than divided by.
+
+Independently of the algebra, the density-of-states ladder settles the same point numerically and is
+what located it in the first place: with $g_e=1/(z-\sum_{e\to f}g_f)$ at $z=\lambda+i\eta$, the
+quantity $|\operatorname{Im}\sum_w G_w|$ decays linearly in $\eta$ outside the spectrum, tends to a
+positive constant inside a band, and diverges like $\eta^{-1}$ at an atom. On this graph it reports
+an atom at $0$, a band at $1.68$, a band at $2.40$, and linear decay at $\sqrt3$, the atom at the
+origin serving as the internal control (\texttt{code/d3\_counterexample.py}).
 
 What survives is the connectivity statement, which Proposition~\ref{prop:d3false} does not touch:
 $G$ there has vertex connectivity two, the two hubs being a separating pair. So the implication
