@@ -1942,6 +1942,49 @@ families against the commuting value $1218$, and at $\mathrm{PG}(2,3)$ the four 
 sit at $1,-52,1170,-14976$ for commuting and deformed families alike while $m_4$, $m_5$ and $m_6$
 move from $120627$, $-638820$, $2258100$ (\texttt{code/transversal.py}).
 
+Among the coefficients that do move, the first two are not independent, and this is the sharpest
+statement the class supports.
+
+\begin{proposition}[the second-order variation of $m_5$]\label{prop:lockstep}
+Let $A_0$ be a commuting tight rank-$b$ projection family and $A(\varepsilon)$ a curve in the variety
+with $A(0)=A_0$. Every coefficient of $\mu$ varies to order $\varepsilon^2$, the first order
+vanishing because the blocks are diagonal and the tangent directions off-diagonal, and
+\[
+\delta m_5=-b(q-4)\,\delta m_4+2\bigl(\delta R-\delta W_5\bigr),
+\]
+with $R$ the sum over disjoint triple-and-pair of $\tau\,t$ and $W_5$ the five-cycle trace sum.
+\end{proposition}
+
+\begin{conjecture}[the first two moving coefficients are locked]\label{conj:lockstep}
+$\delta R-\delta W_5=2(a-2)\,\delta m_4$, so that $\delta m_5=c\,\delta m_4$ with
+$c=4(a-2)-b(q-4)$ an integer independent of the direction and of the curve.
+\end{conjecture}
+
+Proposition~\ref{prop:lockstep} is the derived part. Expanding the cycle formula at $s=5$ and
+summing over $5$-subsets,
+\[
+m_5=-\Bigl[\tbinom q5b^5-b^3\tbinom{q-2}3P_2+b(q-4)Q_2+2b^2\tbinom{q-3}2P_3-2R-2b(q-4)W_4+2W_5\Bigr],
+\]
+with $R$ the sum over disjoint triple-and-pair of $\tau\,t$ and $W_5$ the five-cycle trace sum. Since
+$P_2$ and $P_3$ are class-wide constants and $\delta m_4=\delta Q_2-2\delta W_4$,
+\[
+\delta m_5=-b(q-4)\,\delta m_4+2\bigl(\delta R-\delta W_5\bigr).
+\]
+which is the proposition. A universal $c$ therefore requires $\delta R-\delta W_5$ to be a universal
+multiple of $\delta m_4$, which is Conjecture~\ref{conj:lockstep} and is measured rather than proved.
+The evidence: the ratio is direction-independent to between $10^{-9}$ and $10^{-7}$ at six
+families, and unchanged when the second-order term of the curve is perturbed at scales $1$ and $3$,
+so it is a property of the variety and not of the retraction. The formula was fitted on $C_6$, $C_8$,
+$K_{3,3}$ and the Fano family, giving $-4$, $-8$, $-6$, $-5$, and then predicted $0$ for the
+$2$-regular $3$-uniform family on six vertices and $-16$ for $\mathrm{AG}(2,3)$ before those were
+computed; both were hit, at $0.00000000$ and $-15.99999999$ (\texttt{code/lockstep.py}).
+
+The lock does not extend. The ratio $\delta m_6/\delta m_4$ varies over directions by $1.6$ at $C_6$
+and $3.6$ at $K_{3,3}$, so the second-order deformation is constrained but not one-dimensional. Taken
+with Proposition~\ref{prop:leadrigid}, the second-order variation of $\mu$ lies in a subspace of
+codimension at least five in the $(n+1)$-dimensional coefficient space, for every family and every
+direction.
+
 One reading is excluded outright. A weighted matching polynomial would have the transversal weight
 factor through pairwise data, and it does not, for a reason visible on the commuting locus with no
 deformation. In the Fano plane any two lines meet in one point, so every triple of blocks carries the

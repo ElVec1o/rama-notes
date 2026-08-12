@@ -1,0 +1,34 @@
+P48 (frozen): (a) the cycle expansion is exact; (b) m_4 has the closed form above;
+(c) m_4 is not a function of W_4 alone; (d) m_5, m_6 are not functions of m_4.
+(a) The cycle expansion against the transversal sum, subset by subset.
+          family  commutator  s up to  max abs diff  agrees
+  C_4 coordinate       0.000        4      0.00e+00    True
+    C_4 deformed       0.778        4      1.42e-14    True
+K_{3,3} coordinate       0.000        4      0.00e+00    True
+K_{3,3} deformed       0.930        4      1.25e-12    True
+ Fano coordinate       0.000        4      0.00e+00    True
+   Fano deformed       1.081        4      2.27e-13    True
+(b) The closed form for m_4 against mu, and (c) the two invariants that carry it.
+    family  families  max |m_4 - closed|             W_4 range             Q_2 range  exact
+       C_4         7            1.51e-14          [-0.37,0.00]           [1.77,2.57]   True
+   K_{3,3}         7            2.05e-12          [-2.45,0.00]         [95.32,99.00]   True
+      Fano         7            7.05e-12          [-2.11,0.00]       [105.00,106.60]   True
+(c) Does W_4 alone determine m_4? Fit m_4 on W_4 only, and on (W_4, Q_2).
+    family   residual on W_4   residual on (W_4,Q_2)  needs both
+       C_4         4.388e-01               1.332e-14        True
+   K_{3,3}         1.893e-01               2.046e-12        True
+      Fano         4.148e-01               5.002e-12        True
+  A residual near zero on W_4 alone would mean the four-cycle trace determines m_4.
+  Near zero only on the pair means both invariants are needed.
+(d) Are m_5 and m_6 functions of m_4? Fit m_5 as a polynomial in m_4 and compare the
+residual against m_5's own spread. A window test on |dm_4| cannot answer this: with the
+window set to a thousandth of |m_4| it admits the whole range and reports the slope.
+    family  families    spread m_5  best residual  residual/spread  independent
+       C_4   too few families
+   K_{3,3}         7        8.9410         0.0000           0.0000        False
+      Fano         7       29.1378         0.0000           0.0000        False
+  A residual that is a substantial fraction of the spread means no low-degree function of
+  m_4 reproduces m_5, so the deformation is not one dimensional. The closed form says why:
+  m_4 sees Q_2 and the four-cycles, while m_5 also sees the five-cycles.
+  P48 FAILS somewhere above; the closed form or the independence claim is wrong and
+  the reading of m_4 needs restating.
