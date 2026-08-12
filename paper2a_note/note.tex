@@ -128,32 +128,13 @@ first refereed or machine-checked one.
 Our route is different and elementary; we make no use of matching-polynomial
 combinatorics.
 
-\begin{corollary}\label{cor:gf}
-$\displaystyle\sum_{d\ge 0}\mu_{d,C_n}(x)\,z^d=\frac{1}{1-2T_n(x/2)\,z+z^2}$,
-\quad and \quad
-$\displaystyle\sum_{r\ge 0}\Phi_{n,r}(x)\,z^r=\frac{(1-z)^2}{1-2T_n(x/2)\,z+z^2}$.
-\end{corollary}
 
-\begin{corollary}[real-rootedness]\label{cor:roots}
-All roots of $\Phi_{n,r}$ lie in $[-2,2]$: with $x=2\cos\theta$,
-$\chi_{C_n}$ vanishes at $\theta=2\pi m/n$ and
-$\Psi_r=\sin(rn\theta)/\sin(n\theta)$ vanishes at $\theta=m\pi/(rn)$ with $r\nmid m$
-(when $r\mid m$ the denominator vanishes too and $\Psi_r=\pm r\neq0$); this leaves
-exactly $n(r-1)$ roots, matching $\deg\Psi_r$.
-\end{corollary}
 
-\begin{corollary}[Fibonacci--Lucas evaluation]\label{cor:fib}
-$\Phi_{n,r}(3)=(L_{2n}-2)\,F_{2nr}/F_{2n}$, since $T_n(3/2)=L_{2n}/2$ and
-$U_{r-1}(L_{2n}/2)=F_{2nr}/F_{2n}$.
-\end{corollary}
 
-\begin{corollary}[parity]\label{cor:parity}
-$\Psi_r(-x)=(-1)^{n(r-1)}\Psi_r(x)$: the quotient is supported on exponents
-of a single parity, like a matching polynomial. (For bipartite $C_n$ it is an
-even polynomial for every $r$; at $r=2$ it is the classical matching
-polynomial $2T_n(x/2)$ of $C_n$, consistent with Godsil--Gutman
-\cite{GG}.)
-\end{corollary}
+
+
+
+
 
 \subsection*{What this paper does}
 
@@ -288,11 +269,7 @@ Since $U_d(y)=2^{d}\prod_{k=1}^{d}(y-\cos\tfrac{k\pi}{d+1})$, the theorem can
 be restated as a product,
 $\mu_{d,G}(x)=\prod_{k=1}^{d}F\bigl(x,e^{\,ik\pi/(d+1)}\bigr)$, whence:
 
-\begin{corollary}\label{cor:unirr}
-For $b_1(G)=1$, $\mu_{d,G}$ is a product of $d$ real-rooted polynomials, and its
-roots are exactly the eigenvalues of the Hermitian matrices
-$A_G\bigl(e^{\,ik\pi/(d+1)}\bigr)$, $1\le k\le d$.
-\end{corollary}
+
 
 This is the real-rootedness theorem of \cite{HPS} for this family, with the
 roots identified. The localization itself, that a vanishing $V_d$ forces
@@ -485,124 +462,17 @@ as an identity in $\mathbb Z[X]$ (\texttt{muG\_eq}, \texttt{muG\_root\_sqrt5},
 
 \subsection{The spectral exclusion}
 
-Angel, Friedman and Hoory \cite{AFH} characterise invertibility of $A_T-\lambda I$ by the
-existence of a finite nonzero \emph{ratio system}: an assignment $r_e$ to directed edges
-with $\lambda=1/r_e+\sum_{e\to f}r_f$, whose decay matrix $\mathcal R_{e,f}=|r_f|^2$ on
-non-backtracking pairs has spectral radius below one. Hall exhibits such a system at
-$\lambda=\sqrt5$ with eight edge types and ratios in $\mathbb Q(\sqrt5,\sqrt{41})$. Its
-decay matrix has $120$ states; the ten states at the leaves are transient, and the
-recurrent block of $110$ states reduces by symmetry to a $6\times6$ orbit quotient $K$ for
-which
-\[
-   x=(20,121,47,33,28,16)^{\mathsf T}\quad\text{satisfies}\quad Kx<x
-\]
-componentwise, so $\rho(K)<1$ by Perron--Frobenius. Hence $\sqrt5\notin
-\operatorname{spec}(A_T)$, and with \eqref{eq:hallmu} this proves
-Theorem~\ref{thm:hallce}. Since $G$ is bipartite the same holds at $-\sqrt5$, and
-Hall--Puder--Sawin place $\pm\sqrt5$ inside $[-\rho(T),\rho(T)]$, so these are roots in a
-genuine internal gap.
-
-The eight ratio identities, the elementary bounds $32/5<\sqrt{41}<13/2$, the strict
-positivity of all six components of $x-Kx$, and a Collatz--Wielandt lemma (a nonnegative
-matrix with a positive strictly subinvariant vector has spectral radius below one) are
-machine-checked in \texttt{RamaLean/HallCounterexample.lean}. The argument common to all three
-counterexamples of this paper is isolated once in
-\texttt{RamaLean/RatioCertificate.lean}: a ratio system with its decay matrix
-(\texttt{decay}, \texttt{decay\_nonneg}), the Collatz--Wielandt step in the strict form the
-certificate needs (\texttt{decay\_lt\_one}), and the assembly with Angel--Friedman--Hoory as an
-explicit hypothesis (\texttt{spec\_excluded}). The three instances differ only in the numbers
-supplied. A schema rather than closed-form algebra is the right level here: Hall's ratios lie
-in $\mathbb{Q}(\sqrt5,\sqrt{41})$, but that is a feature of his graph, and for the $31$-vertex
-one the ratios admit no minimal polynomial of small degree and moderate height. The theorem of \cite{AFH} is
-not in Mathlib and enters as an explicit hypothesis, in the shape it is consumed.
-
-We verified the certificate independently, reconstructing every object from the graph
-rather than copying the displayed matrices: the matching numbers
-$(1,60,1585,24260,238105,1564976,6973855,20805500,39784375,44062500,21484375)$; the ratio
-equations on all $120$ directed edges; the strongly connected components of the decay
-digraph; the orbit quotient rebuilt from follower counts; and the decay rate by two
-independent routes, the componentwise certificate and the characteristic polynomial
-$t^6-\tfrac{201+19s}{800}t^2+\tfrac{21s-241}{250}$ with $s=\sqrt{41}$. That reconstruction is
-\texttt{code/hall\_certificate.py}, which rebuilds each object from the construction and copies no
-displayed matrix: the matching numbers agree term for term and $\mu_G(\sqrt5)$ vanishes to
-$10^{-45}$; the ratio system reduces to eight unknowns by symmetry and is solved exactly in
-$\mathbb Q(\sqrt5,\sqrt{41})$, its solution satisfying all $120$ equations to $4\times10^{-16}$;
-the ten transient states are exactly the leaf-incident directed edges and the recurrent block has
-$110$; and the six components of $x-Kx$ reproduce the exact expressions carried by
-\texttt{RamaLean/HallCounterexample.lean} to $3\times10^{-14}$, with $\rho(K)=0.9636233789$. Three
-of the eight ratios are negative, which is why a positive cavity iteration does not find the
-system. As a physical check,
-the non-backtracking cavity Green function at $\sqrt5+i\eta$ converges to Hall's real
-ratios as $\eta\downarrow0$, with density of states vanishing linearly in $\eta$.
-
-\subsection{The mechanism is a separation}\label{sec:mechanism}
-
-Every counterexample is built on a separation. If a vertex $v$ separates $G$ into $p$ isomorphic
-branches $H$, the deletion recurrence gives
-\begin{equation}\label{eq:branch}
-   \mu_G=\mu_H^{\,p-1}\bigl(x\mu_H-p\,\mu_{H-v}\bigr),
-\end{equation}
-and the root is placed by tuning $p$ and $H$; this is
-\texttt{CutVertexMechanism.branch\_factor}, with \texttt{root\_of\_branch\_factor} transferring
-a root of the last factor to $\mu_G$. Hall's graph and the graphs of
-\cite{Supp} are of this shape.
-
-A cut vertex is only the smallest separation. Two hubs $u,v$ with $p$ identical branches
-attached to both leave no cut vertex, since removing either hub leaves the graph joined through
-the other, while $\{u,v\}$ separates it into $p$ pieces. Writing $A=\mu_B$ for the branch,
-$A_1,A_2$ for the branch with one anchor deleted and $A_{12}$ for both, deletion at $u$ and then
-at $v$ gives
-\begin{equation}\label{eq:twocut}
-   \mu_G=A^{\,p-2}\bigl(x^2A^2-px(A_1+A_2)A+pA_{12}A+p(p-1)A_1A_2\bigr),
-\end{equation}
-which is \texttt{SeparationOrder.two\_cut\_factor}, with \texttt{root\_of\_two\_cut}.
-
-The bracket in \eqref{eq:twocut} is \emph{quadratic} in $p$ where the bracket in
-\eqref{eq:branch} is linear. Read as polynomials in the branch count the two have degrees one and
-two, with leading coefficient $A_1A_2$ in the second case
-(\texttt{cutBracket\_natDegree}, \texttt{twoCutBracket\_natDegree}, \texttt{freedom\_grows}).
-Excluding cut vertices does not remove the engine; it upgrades it.
-
-\begin{proposition}\label{prop:twoconn}
-There are $2$-connected counterexamples to Conjecture~\ref{conj:gap}.
-\end{proposition}
-
-Let $B_{q,T}$ be $K_{2,q}$ with a path of $T$ further vertices appended to one of its two
-degree-$q$ vertices; attach the other degree-$q$ vertex to $u$ and the end of the path to $v$,
-and take $p$ copies.
-
-\begin{center}
-\begin{tabular}{lrrrrrr}
-branch & $p$ & $n$ & $\kappa(G)$ & $\theta$ & defect & gap width\\\hline
-$B_{4,2}$ & $7$ & $58$ & $2$ & $2.137920$ & $0.003574$ & $0.14758$\\
-$B_{5,2}$ & $6$ & $56$ & $2$ & $2.287307$ & $0.005624$ & $0.06636$\\
-$B_{5,3}$ & $6$ & $62$ & $2$ & $2.317609$ & $0.008332$ & $0.09876$\\
-\end{tabular}
-\end{center}
-
-All three are simple, bipartite, of minimum degree two and maximum degree at most seven, and of
-vertex connectivity exactly two, computed by Menger as a unit-capacity maximum flow over every
-non-adjacent pair. Each $\theta$ is an algebraic number of degree $12$ or $14$ isolated from the
-exact integer bracket, and \eqref{eq:twocut} is checked against a brute-force matching
-polynomial. That $\theta\notin\operatorname{spec}(T)$ is confirmed twice: the
-Angel--Friedman--Hoory decay rate at $40$ digits is $0.943$ to $0.959$, and the density of states
-of the universal cover, from the complex cavity equations, falls by a factor of ten per decade of
-$\eta$ at $\theta$ while an in-band control holds constant to four figures
-(\texttt{code/twocut.py}).
-
-Equation \eqref{eq:twocut} is the case $k=2$ of a general expansion. With $k$ hubs and $p$
-branches attached to all of them,
-\begin{equation}\label{eq:kcut}
-   \mu_G=\sum_{S\subseteq[k]}(-1)^{|S|}x^{\,k-|S|}
-        \sum_{P\vdash S}(p)_{|P|}\Bigl(\prod_{J\in P}A_J\Bigr)A^{\,p-|P|},
-\end{equation}
-with $A_J$ equal to $\mu_B$ with the anchors indexed by $J$ deleted and $(p)_m$ the falling
-factorial: $A^{p-k}$ times a bracket of degree $k$ in $p$. A $k$-cut thus needs only
-$k$-connectedness while supplying a degree-$k$ polynomial to tune. No counterexample above
-connectivity two is known: a search over thirty-eight branch families at $k=3,4,5$ with up to
-$62$ vertices, with \eqref{eq:kcut} checked against brute force at $k=3$, produced none, and it
-is not vacuous, those graphs carrying two to five gaps of total width $0.40$ to $0.75$
-(\texttt{code/kcut.py}).
+Angel, Friedman and Hoory \cite{AFH} characterise invertibility of $A_T-\lambda I$ by a finite
+nonzero \emph{ratio system}: an assignment $r_e$ to directed edges with
+$\lambda=1/r_e+\sum_{e\to f}r_f$, whose decay matrix $\mathcal R_{e,f}=|r_f|^2$ on
+non-backtracking pairs has spectral radius below one. Hall exhibits one at $\lambda=\sqrt5$ with
+ratios in $\mathbb Q(\sqrt5,\sqrt{41})$; its $120$-state decay matrix has ten transient states at
+the leaves, and the recurrent block of $110$ reduces by symmetry to a $6\times6$ orbit quotient
+$K$ with $x=(20,121,47,33,28,16)^{\mathsf T}$ satisfying $Kx<x$ componentwise, so $\rho(K)<1$ by
+Perron--Frobenius. Hence $\sqrt5\notin\operatorname{spec}(A_T)$, which with \eqref{eq:hallmu}
+proves Theorem~\ref{thm:hallce}. We rebuilt every object from the graph rather than copying the
+displayed matrices (\texttt{code/hall\_certificate.py}) and machine-checked the algebra
+(\texttt{RamaLean/HallCounterexample.lean}).
 
 \subsection{The Divisibility Lemma}\label{sec:divis}
 
@@ -642,7 +512,7 @@ Connectivity is not the right invariant, because a graph of vertex connectivity 
 minimum degree at least $\kappa$, and it is the minimum degree that the counterexamples respond
 to. Every counterexample above has minimum degree at most two: Hall's has leaves, the
 $31$-vertex graph of \cite{Supp} has degree-2 vertices, and so do all three
-graphs of Proposition~\ref{prop:twoconn}.
+graphs of \cite{Supp}.
 
 The two-hub construction separates the two conditions exactly, since it can be run with branches
 whose every vertex has degree at least three: ladders anchored at both ends of both rails,
@@ -650,7 +520,7 @@ prisms, and $K_{3,q}$ blocks with two of the three degree-$q$ vertices anchored.
 $102$ graphs of minimum degree three whose vertex connectivity is \emph{two}, so each retains the
 separating pair the engine needs, and $77$ of them have a gap of width at least $0.05$, several
 wider than $2.9$, against the $0.066$ to $0.148$ that the counterexamples of
-Proposition~\ref{prop:twoconn} occupy. None has a root of the bracket in a gap
+\cite{Supp} occupy. None has a root of the bracket in a gap
 (\texttt{code/mindeg3.py}); that sweep did not test the roots of $A$, which is where the
 counterexample below lives.
 
@@ -803,18 +673,19 @@ two effects run against each other. We looked, the picture did not resolve, and 
 in either direction.
 \section{Related work and formalization}
 
-The $d$-matching polynomial and the interval $[-\rho,\rho]$ are due to Hall, Puder and Sawin; the
-counterexample refuting the inclusion is due to Chris Hall \cite{HallCE} and is reproduced here
-with his permission, with our own independent verification of its certificate. The
-Angel--Friedman--Hoory ratio criterion \cite{AFH} is what certifies the gap.
+The $d$-matching polynomial and the interval $[-\rho,\rho]$ are due to Hall, Puder and Sawin
+\cite{HPS}, whose Question~6.3 asks for exactly the strengthening considered here; Heilmann and
+Lieb \cite{HL} give the classical interval, Godsil \cite{God81,God93} the path-tree method, and
+Angel, Friedman and Hoory \cite{AFH} the ratio criterion the certificates use. The cycle identity
+behind Theorem~\ref{thm:main} was proved combinatorially by Cochran, Groothuis, Herring, Rohatgi
+and Stucky \cite{CGHRS}; our route is independent and elementary. Song, Fan and Miao \cite{SFM}
+pose the biregular case, which is \cite{PartII}.
 
-The Lean~4/Mathlib sources are in \texttt{RamaLean/} of the accompanying repository, and carry no
-\texttt{sorry} and no custom axioms. Formalized here: the closed form at first Betti number one
-and its corollaries, the counterexample's algebra, the branch and two-cut factorizations, the
-separation mechanism, and the minimum-degree threshold, including that minimum degree two does
-not suffice and that three is therefore exact. Statements are labelled \texttt{VERIFIED},
-\texttt{HEURISTIC} or \texttt{CONJECTURE} in the sources, and the labels are used with their
-plain meaning: a \texttt{HEURISTIC} claim is supported by computation and is not proved.
+The Lean~4/Mathlib sources are in \texttt{RamaLean/} of the accompanying repository and carry no
+\texttt{sorry} and no custom axioms: the closed form at first Betti number one, the
+counterexample's algebra, and both halves of Lemma~\ref{lem:divis}. The standing gap is that
+Mathlib has no matching polynomial, so the expansion in Lemma~\ref{lem:divis} and the
+Angel--Friedman--Hoory criterion are cited rather than derived.
 
 \begin{thebibliography}{9}
 \bibitem{GG} C.~Godsil, I.~Gutman, \emph{On the matching polynomial of a

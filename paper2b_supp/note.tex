@@ -2198,6 +2198,465 @@ random graphs; Conjecture~\ref{conj:gap} is a deterministic statement about
 matching polynomial roots of every graph.
 
 
+
+\section{Mixed discriminants, the cavity recursion, and the reflection}
+
+\subsection{The coefficients are mixed discriminants}\label{sec:mixeddisc}
+
+Theorem~\ref{thm:matchingform} writes $M_r$ as a sum of squared Pl\"ucker norms, and
+Proposition~\ref{prop:bridge} identifies the coefficients with matching numbers on the commuting
+locus. Off that locus they move continuously and remain nonnegative and log-concave. They are not
+a new invariant: they are mixed discriminants, the object the mixed characteristic polynomial is
+assembled from.
+
+Recall the mixed discriminant of $p$ symmetric $p\times p$ matrices,
+\[
+D(B_1,\dots,B_p)=\frac1{p!}\sum_{\sigma\in S_p}
+\det\bigl[B_{\sigma(1)}\varepsilon_1\ \big|\ \cdots\ \big|\ B_{\sigma(p)}\varepsilon_p\bigr],
+\]
+introduced by Aleksandrov \cite{Alek} in the theory of mixed volumes. Writing
+$\mu(x)=\sum_sc_sx^{\,p-s}$ for a tight rank-$b$ family $A_1,\dots,A_q$ on $\mathbb R^p$,
+multilinearity of the determinant gives
+\begin{equation}\label{eq:mixeddisc}
+c_s=(-1)^s\,s!\,\binom ps\sum_{|S|=s}D\bigl(A_k:k\in S,\ I^{\,p-s}\bigr),
+\end{equation}
+checked to $1.4\times10^{-14}$ at every $s$ on five families with commutator norms between $0.84$
+and $1.00$, so on families far from commuting (\texttt{code/mixeddisc.py}).
+
+Identity~\eqref{eq:mixeddisc} says how to compute the coefficients, not what they are. The following
+says what they are, and it needs no new object either.
+
+\begin{proposition}[the coefficients are weighted partial transversals]\label{prop:transversal}
+Let $A_1,\dots,A_q$ be rank-$b$ orthogonal projections on $\mathbb R^p$ and let
+$u_{k,1},\dots,u_{k,b}$ be an orthonormal basis of $\operatorname{ran}A_k$. Writing
+$\mu(y)=\sum_sm_sy^{\,p-s}$,
+\begin{equation}\label{eq:transversal}
+m_s=(-1)^s\sum_{|S|=s}\ \sum_{r:S\to[b]}\det\operatorname{Gram}\bigl(u_{k,r(k)}:k\in S\bigr).
+\end{equation}
+\end{proposition}
+
+\begin{proof}
+Expanding a determinant perturbed by rank ones,
+$\det(yI+\sum_{k,r}w_{k,r}u_{k,r}u_{k,r}^{\mathsf T})
+=\sum_Ty^{\,p-|T|}\bigl(\prod_{(k,r)\in T}w_{k,r}\bigr)\det\operatorname{Gram}(T)$,
+the sum being over sets $T$ of pairs. Put $w_{k,r}=z_k$, so that the monomial attached to $T$ is
+$\prod_kz_k^{t_k}$ with $t_k$ the number of pairs of $T$ in block $k$. Now
+$(1-\partial_z)z^t$ evaluated at $z=0$ is $1$ for $t=0$, $-1$ for $t=1$ and $0$ for $t\ge2$, so
+applying $\prod_k(1-\partial_{z_k})$ and setting $z=0$ kills every $T$ using two or more vectors from
+one block and leaves \eqref{eq:transversal}.
+\end{proof}
+
+The inner object is a partial transversal of the block system, one representative chosen from each of
+$s$ blocks, weighted by the squared volume they span. On the commuting locus the ranges are
+coordinate subspaces, the representatives are standard basis vectors, and the squared volume is $1$
+when they are distinct and $0$ when two coincide: the count of partial systems of distinct
+representatives, which by Proposition~\ref{prop:bridge} is the matching number of the incidence graph.
+Off the locus the weight is the continuous measure of how independent the representatives are. So the
+object being weighted off the locus is exactly the object being counted on it. Verified against $\mu$
+coefficient by coefficient up to $s=6$ at $C_4$, $K_{3,3}$ and the Fano family, commuting and
+deformed (\texttt{code/transversal.py}); no novelty is claimed, the rank-one case being the standard
+multi-affine picture of \cite{MSS}. The step the proof turns on, that $(1-\partial_z)z^t$ vanishes at
+the origin from $t=2$ on, is machine-checked as
+\texttt{Transversal.one\_sub\_deriv\_eval\_zero}, and the two trace identities of
+Proposition~\ref{prop:leadrigid} as \texttt{Transversal.sum\_trace\_pairs} and
+\texttt{sum\_trace\_triples}, with \texttt{trace\_three\_symm} for the fact that every ordering of a
+triple of symmetric blocks carries the same trace. Neither proposition is formalised whole, Mathlib
+carrying no mixed characteristic polynomial.
+
+Expanding the Gram determinant makes the rigidity of the leading coefficients a computation rather
+than an observation, and in a stronger form than Proposition~\ref{prop:rigid}, which moves along one
+rotation.
+
+\begin{proposition}[the four leading coefficients are class-wide constants]\label{prop:leadrigid}
+For every tight rank-$b$ projection family at fixed $(n,q,a,b)$,
+\[
+m_0=1,\quad m_1=-qb,\quad m_2=\binom q2b^2-\tfrac{a^2n-qb}2,\quad
+m_3=-\Bigl[\binom q3b^3-\tfrac{b(q-2)(a^2n-qb)}2+\tfrac{a^3n-3a^2n+2qb}3\Bigr].
+\]
+\end{proposition}
+
+\begin{proof}
+The Gram determinant of $s$ unit vectors is $1$ for $s=1$; $1-\langle u,v\rangle^2$ for $s=2$; and
+$1-\langle u,v\rangle^2-\langle u,w\rangle^2-\langle v,w\rangle^2
++2\langle u,v\rangle\langle v,w\rangle\langle w,u\rangle$ for $s=3$. Summing over $r$ turns each
+closed walk of inner products into a trace, so $m_2$ involves only $\sum_{k<l}\operatorname{tr}A_kA_l$
+and $m_3$ only that together with $\sum_{k<l<m}\operatorname{tr}A_kA_lA_m$. Both are fixed by the
+hypotheses: from $\sum_kA_k=aI$, $\operatorname{tr}A_k=b$ and $A_k^2=A_k$,
+$\operatorname{tr}\bigl((\sum_kA_k)^2\bigr)=a^2n$ gives $\sum_{k<l}\operatorname{tr}A_kA_l
+=(a^2n-qb)/2$, and $\operatorname{tr}\bigl((\sum_kA_k)^3\bigr)=a^3n$ gives
+$\sum_{k<l<m}\operatorname{tr}A_kA_lA_m=(a^3n-3a^2n+2qb)/6$, every ordered triple of distinct indices
+contributing the same value because the blocks are symmetric, so that
+$\operatorname{tr}A_kA_mA_l=\operatorname{tr}A_kA_lA_m$.
+\end{proof}
+
+At $s=4$ the Gram determinant carries the four-cycle
+$\langle u_1,u_2\rangle\langle u_2,u_3\rangle\langle u_3,u_4\rangle\langle u_4,u_1\rangle$, whose sum
+over $r$ is $\operatorname{tr}A_kA_lA_mA_r$ with four distinct indices, and the single relation from
+$\operatorname{tr}\bigl((\sum_kA_k)^4\bigr)=a^4n$ cannot pin the three independent cyclic classes. So
+$m_4$ is the first coefficient carrying a genuine joint invariant, which is why the cut falls at four.
+It does move: at the Fano family $m_4$ ranges over an interval of length $6.03$ across random tight
+families against the commuting value $1218$, and at $\mathrm{PG}(2,3)$ the four leading coefficients
+sit at $1,-52,1170,-14976$ for commuting and deformed families alike while $m_4$, $m_5$ and $m_6$
+move from $120627$, $-638820$, $2258100$ (\texttt{code/transversal.py}).
+
+The cycle expansion has a combinatorial reading, and it is one substitution.
+
+\begin{proposition}[the coefficients count systems of distinct representatives]\label{prop:sdr}
+For a coordinate family, and for every $S$,
+\[
+\sum_{\sigma\in\mathrm{Sym}(S)}\mathrm{sgn}(\sigma)\prod_{\text{cycles }c}\Bigl|\bigcap_{k\in c}e_k\Bigr|
+=\#\bigl\{f:S\to V \ :\ f(k)\in e_k,\ f\text{ injective}\bigr\},
+\]
+so $|m_s|$ is the number of partial systems of distinct representatives of size $s$.
+\end{proposition}
+
+\begin{proof}
+The permutations whose cycle partition is a given $\pi$ contribute
+$\prod_{B\in\pi}(-1)^{|B|-1}(|B|-1)!=\mu(\hat0,\pi)$ in total, the M\"obius function of the
+partition lattice. The product $\prod_{B\in\pi}|\bigcap_{k\in B}e_k|$ counts the choice functions
+constant on every block of $\pi$, so the sum is the M\"obius inversion over the lattice of collisions
+and returns the choice functions with no collision.
+\end{proof}
+
+This is the classical inclusion-exclusion count of systems of distinct representatives in its
+partition-lattice form, and no novelty is claimed for it; it is recorded because of what happens
+next. Off the commuting locus the expansion is unchanged except that
+\[
+\Bigl|\bigcap_{k\in B}e_k\Bigr|\qquad\text{becomes}\qquad \mathrm{tr}\Bigl(\prod_{k\in B}A_k\Bigr).
+\]
+So $\mu$ is the same signed count for a family of \emph{subspaces}, with the number of points common
+to a set of blocks replaced by the cyclic trace of their projections. Three facts recorded separately
+above have that single source. The rigidity of $m_0,\dots,m_3$ is that blocks of size at most three
+have their cyclic traces fixed by $\sum_kA_k=aI$ and idempotency. The cut at four is that
+$\mathrm{tr}(A_iA_jA_kA_l)$ depends on the cyclic order, of which there are three on four blocks,
+where an intersection number has no order at all: at a $4$-subset the three orders give one value on
+the locus and three off it, spread $0$ against $0.24$ at $K_{3,3}$
+(\texttt{code/sdr.py}). And the weights being multi-way rather than pairwise is why no edge-weighted
+graph carries them. Verified on $530$ subsets across four families on the locus, and against $\mu$ up
+to $s=5$ off it.
+
+The second-order deformation is carried entirely by the four-block data, and that is the structural
+statement behind everything above. With $A_k=P_k+\varepsilon D_k+\varepsilon^2X_k$, every cyclic
+trace variation is built from the products $D_k(u,v)D_l(u,v)$: two $D$'s give
+$\mathrm{tr}(D_xBD_yC)=\sum_{u,v}B(v)C(u)D_x(u,v)D_y(u,v)$ with $B,C$ diagonal, and one $X$ enters
+only through its diagonal, which order two forces. So all the variations live in one space, cut by
+tightness and the cone condition, and one can ask how much of it each block size spans. The answer is
+that nothing beyond four contributes: the rank of the data from blocks of size at most four equals
+that from size at most five, six and seven, at $C_6$, $K_{3,3}$, the Fano family and the cube, with
+ranks $22$, $82$, $57$ and $189$ (\texttt{code/relations.py}). The relations among the variations are
+the cokernel of that map and number $22$, $65$, $28$ and $148$, against the two coming from $P_2$ and
+$P_3$ being constant.
+
+That settles the shape of the whole picture. Below four the cyclic traces are fixed by tightness and
+idempotency, so $m_0,\dots,m_3$ cannot move. At four the intersection number acquires a cyclic order
+and splits into three, which is the only new information the deformation carries. Above four nothing
+further enters, so $\delta m_5$ and $\delta m_4$ are two functionals on the same space and can be
+proportional, while $\delta m_6$ is a third functional on it and need not be.
+
+Half of the ceiling is a counting argument rather than a computation.
+
+\begin{proposition}[long cycles do not contribute]\label{prop:arcbound}
+The second-order row of a cyclic word of length $m$ vanishes identically whenever $m>2a$.
+\end{proposition}
+
+\begin{proof}
+A nonzero coefficient at $z^{uv}_{xy}$ requires $u\in I_1$ and $v\in I_2$, or the same with $u,v$
+exchanged. Every block on the first arc then contains $u$, and $x$ and $y$ both split the pair
+$\{u,v\}$, so whichever of them contains $u$ is a further block containing $u$ and not on that arc.
+A point of a tight family lies in exactly $a$ blocks, so the first arc has at most $a-1$ of them, and
+the second at most $a-1$ likewise; if instead $x$ and $y$ both contain $u$ the first arc has at most
+$a-2$ and the second at most $a$. Either way $m=2+|\text{arc}_1|+|\text{arc}_2|\le2a$. The diagonal
+terms need every other block to contain the same point and so require $m\le a+1$.
+\end{proof}
+
+The counting step is machine-checked as \texttt{ArcBound.card\_le\_of\_mem\_all} and
+\texttt{arc\_bound}. The bound is tight: at $K_{3,3}$ and the cube, both with $a=3$, rows of length
+exactly $6=2a$ are nonzero (\texttt{code/ceiling.py}). At $a=2$ it reads $m\le4$ and closes the
+four-block ceiling outright, with no linear algebra. At $a\ge3$ it leaves rows of length five and six
+nonzero, and their dependence on the shorter ones, which the ranks above exhibit, is not explained
+here. That dependence is not local either: a length-five row lies in the span of the rows on its own
+five blocks at $K_{3,3}$ and at the cube, and does not at the Fano family, so no single local identity
+accounts for it and a proof for $a\ge3$ has to be global.
+
+At the level of these rows the second half of Conjecture~\ref{conj:lockstep} is not conjectural. It
+follows from the shape of a single difference, and the mechanism is that the difference lies in the
+ideal of functionals that tightness makes identically zero.
+
+\begin{proposition}[the five-block row is determined by the four-block row]\label{prop:I2}
+Write $W_4^{\mathrm{row}}$ and $W_5^{\mathrm{row}}$ for the second-order rows of $W_4$ and $W_5$ in
+the coordinates $z^{uv}_{kl}=D_k(u,v)D_l(u,v)$, and suppose
+\[
+W_5^{\mathrm{row}}-4(a-2)\,W_4^{\mathrm{row}}=c\,T,\qquad
+T(z)=\sum_{u<v}\ \sum_{k,l\in K(u,v)}z^{uv}_{kl},
+\]
+for some scalar $c$. Then $\delta W_5=4(a-2)\,\delta W_4$ for every direction and every curve.
+\end{proposition}
+
+\begin{proof}
+$T$ is the vanishing functional of tightness. Indeed
+\[
+T(z)=\sum_{u<v}\ \sum_{k,l}D_k(u,v)D_l(u,v)=\sum_{u<v}\Bigl(\sum_kD_k(u,v)\Bigr)^2,
+\]
+and $\sum_kD_k=0$ is the linearisation of $\sum_kA_k=aI$, so $T$ vanishes at every admissible $z$.
+Hence $W_5^{\mathrm{row}}$ and $4(a-2)W_4^{\mathrm{row}}$ agree as functionals on the accessible data,
+which is the only place either is evaluated.
+\end{proof}
+
+The hypothesis is a statement about coefficient patterns and is checked directly: the difference takes
+exactly one value on the diagonal coordinates $z^{uv}_{kk}$ and exactly twice that on the off-diagonal
+$z^{uv}_{kl}$, the doubling being the $k<l$ storage convention, at $C_6$, $C_8$, $K_{3,3}$, the Fano
+family and the cube (\texttt{code/ceiling.py}). The scalar is not derived. It is $0$, $-12$ and $-60$
+at $a=2,3,4$, the same at $q=7$, $9$ and $12$ and so independent of $q$; a prediction of $-12(a-2)$
+frozen before the $a=4$ computation missed, giving $-24$ against $-60$. None of that matters for the
+proposition, whose conclusion holds whatever $c$ is.
+
+The first half of the conjecture, $\delta R=2(a-2)\delta Q_2$, has no such argument. It holds exactly,
+to between $10^{-15}$ and $4\times10^{-14}$ at all four families, as a certificate: the functional
+$\phi=(d_P-2(a-2)e_P;\,c_T)$ annihilates the image of the $z$-map. But its difference is not a
+multiple of $T$. That shape holds at the Fano family and $K_{3,3}$, with $c=-6$ and $-3$ respectively,
+and fails at $C_6$ and the cube, where the difference takes several values on each kind of coordinate;
+the weaker form $\sum_{u<v}\alpha_{uv}T^{uv}$, one coefficient per vertex pair, fails at the same two.
+So the first half must also engage the quadrics $Q_j$, and it rests on a per-family certificate.
+Conjecture~\ref{conj:lockstep} is therefore stated as a conjecture, with its second half proved.
+
+Among the coefficients that do move, the first two are not independent, and this is the sharpest
+statement the class supports.
+
+\begin{proposition}[the second-order variation of $m_5$]\label{prop:lockstep}
+Let $A_0$ be a commuting tight rank-$b$ projection family and $A(\varepsilon)$ a curve in the variety
+with $A(0)=A_0$. Every coefficient of $\mu$ varies to order $\varepsilon^2$, the first order
+vanishing because the blocks are diagonal and the tangent directions off-diagonal, and
+\[
+\delta m_5=-b(q-4)\,\delta m_4+2\bigl(\delta R-\delta W_5\bigr),
+\]
+with $R$ the sum over disjoint triple-and-pair of $\tau\,t$ and $W_5$ the five-cycle trace sum.
+\end{proposition}
+
+\begin{conjecture}[the first two moving coefficients are locked]\label{conj:lockstep}
+$\delta R-\delta W_5=2(a-2)\,\delta m_4$, so that $\delta m_5=c\,\delta m_4$ with
+$c=4(a-2)-b(q-4)$ an integer independent of the direction and of the curve.
+\end{conjecture}
+
+Proposition~\ref{prop:lockstep} is the derived part. Expanding the cycle formula at $s=5$ and
+summing over $5$-subsets,
+\[
+m_5=-\Bigl[\tbinom q5b^5-b^3\tbinom{q-2}3P_2+b(q-4)Q_2+2b^2\tbinom{q-3}2P_3-2R-2b(q-4)W_4+2W_5\Bigr],
+\]
+with $R$ the sum over disjoint triple-and-pair of $\tau\,t$ and $W_5$ the five-cycle trace sum. Since
+$P_2$ and $P_3$ are class-wide constants and $\delta m_4=\delta Q_2-2\delta W_4$,
+\[
+\delta m_5=-b(q-4)\,\delta m_4+2\bigl(\delta R-\delta W_5\bigr).
+\]
+which is the proposition. A universal $c$ therefore requires $\delta R-\delta W_5$ to be a universal
+multiple of $\delta m_4$, which is Conjecture~\ref{conj:lockstep} and is measured rather than proved.
+The evidence: the ratio is direction-independent to between $10^{-9}$ and $10^{-7}$ at six
+families, and unchanged when the second-order term of the curve is perturbed at scales $1$ and $3$,
+so it is a property of the variety and not of the retraction. The formula was fitted on $C_6$, $C_8$,
+$K_{3,3}$ and the Fano family, giving $-4$, $-8$, $-6$, $-5$, and then predicted $0$ for the
+$2$-regular $3$-uniform family on six vertices and $-16$ for $\mathrm{AG}(2,3)$ before those were
+computed; both were hit, at $0.00000000$ and $-15.99999999$ (\texttt{code/lockstep.py}).
+
+The lock does not extend. The ratio $\delta m_6/\delta m_4$ varies over directions by $1.6$ at $C_6$
+and $3.6$ at $K_{3,3}$, so the second-order deformation is constrained but not one-dimensional. Taken
+with Proposition~\ref{prop:leadrigid}, the second-order variation of $\mu$ lies in a subspace of
+codimension at least five in the $(n+1)$-dimensional coefficient space, for every family and every
+direction.
+
+One reading is excluded outright. A weighted matching polynomial would have the transversal weight
+factor through pairwise data, and it does not, for a reason visible on the commuting locus with no
+deformation. In the Fano plane any two lines meet in one point, so every triple of blocks carries the
+same pairwise traces; but three lines are either concurrent or form a triangle, and
+$\operatorname{tr}P_kP_lP_m$ is $1$ or $0$ accordingly. Two triples with identical pairwise weights
+and different transversal weights is exactly the failure of pairwise factorisation, and the same
+happens at $\mathrm{PG}(2,3)$. The weight is irreducibly higher than pairwise, and no edge-weighted
+graph carries it.
+
+Two properties of $D$ have to hold before \eqref{eq:mixeddisc} even parses, and both are now
+machine-checked rather than carried as prose. The sum on the right is over \emph{sets} $S$, which is
+legitimate only because $D$ is symmetric in its arguments
+(\texttt{MixedDiscriminant.mixedDisc\_comp\_perm}); and calling $D$ the multilinear extension of the
+determinant is a claim whose two halves are $D(B,\dots,B)=\det B$
+(\texttt{mixedDisc\_const}) and additivity in each argument separately
+(\texttt{mixedDisc\_update\_add}), the latter holding because in the term indexed by $\sigma$ the
+matrix $B_k$ occupies exactly one column, the one numbered $\sigma^{-1}(k)$. Aleksandrov's
+inequality, Bapat's theorem and Gurvits' theorem are cited and not formalised, and neither is
+\eqref{eq:mixeddisc} itself.
+
+Two properties recorded earlier as observations are then consequences of classical results rather
+than facts about this construction. The $c_s$ alternate in sign because a mixed discriminant of
+positive semidefinite arguments is nonnegative, which is Aleksandrov's inequality; the
+quantitative theory of that quantity is Bapat's \cite{Bapat}, whose conjectured sharp lower bound
+for doubly stochastic tuples was proved by Gurvits \cite{Gurvits}. And the coefficients are
+log-concave because $\mu$ is real-rooted, by \cite{MSS}, so Newton's inequalities apply; the
+measured ratios run from $1.07$ to $1.20$.
+
+The same identification places the note's own obstruction in classical territory. A tight family
+with $q=p$ and $a=b$, scaled by $1/a$, has $\sum_kA_k=I$ and $\operatorname{tr}A_k=1$, so it is a
+doubly stochastic tuple in the sense of \cite{Gurvits}, and its mixed discriminant is at least
+$p!/p^p$ with equality only at $A_k=I/p$. That tuple is exactly the one recorded in
+\S\ref{sec:leaves} as satisfying rank, trace and $\sum_kA_k=aI$ while exceeding the band: its
+greatest root is $4.698$ at $p=4$ against a band edge of $4$, and it grows with $p$. The example
+that blocks every argument reading only those three data is therefore the van der Waerden extremal,
+not an ad hoc construction. Both halves are checked in \texttt{code/mixeddisc.py}, in the
+normalisation with $D(I,\dots,I)=p!$.
+
+What \eqref{eq:mixeddisc} settles is the question of what the coefficients count away from the
+commuting locus. On the locus, the mixed discriminant of coordinate projections is a count, of
+systems of distinct representatives, which is Proposition~\ref{prop:bridge}. Off it, it is the
+multilinear extension of that count and is not itself a count. No novelty is claimed for
+\eqref{eq:mixeddisc}; it is recorded because the alternative was to keep describing a classical
+object in ad hoc terms.
+
+
+\section{The reflection, and why the band edges are never roots}
+
+One structural fact explains why $b=2$ is the case that closes, and it is a
+reflection. The subdivision identity
+$\mu_{S(H)}(x)=x^{|E|-|V|}\,\mathcal{LM}(H,x^2)$ is due to Yan and Yeh
+\cite{YY}, who also treat the regular and semiregular cases; see
+\cite{WWM}, Corollary 2.3, for a restatement through the multivariate matching
+polynomial. For $H$ $D$-regular it reads $f_G(y)=\mu_H(y-D)$, and
+$\mu_H(-z)=(-1)^{|V(H)|}\mu_H(z)$, so
+\begin{equation}\label{eq:reflect}
+f_G(2c-y)=(-1)^{p}f_G(y),\qquad c=(a-1)+(b-1),
+\end{equation}
+and $c$ is the midpoint of $[(s-t)^2,(s+t)^2]$ because $(s\pm t)^2=c\pm2\sqrt m$.
+The roots of $f_G$ are therefore symmetric about the centre of the band, so for
+$b=2$ the lower bound in \eqref{eq:twosided} is \emph{equivalent} to the upper
+one, and Theorem~\ref{thm:subdiv} is that equivalence. The reflection
+\eqref{eq:reflect} fails as soon as both degrees exceed $2$: it fails for
+$K_{3,4}$, $K_{3,5}$ and already for the regular $K_{3,3}$, so regularity does
+not rescue it. Since $b=2$ holds exactly when $G$ is the subdivision of an
+$a$-regular multigraph, \eqref{eq:reflect} describes the whole of the
+phenomenon, and for $b\ge3$ the lower bound is not a repackaging of the upper
+bound but carries information the upper bound does not. We note that
+\eqref{eq:reflect} has no adjacency analogue: the companion identity
+$\varphi(S(H),x)=x^{|E|-|V|}\varphi(H,x^2-D)$ holds as well, but $\varphi(H,\cdot)$
+has a parity only for bipartite $H$, whereas $\mu_H$ always does. For the
+Petersen graph the matching-side values are symmetric about $D=3$ and the
+adjacency-side values are not.
+
+A consequence of the first is that the band edges are never roots, by an
+argument of a different kind.
+
+\begin{proposition}\label{prop:galois}
+Let $G$ be $(a,b)$-biregular bipartite with $a,b\ge2$, and suppose
+$m=(a-1)(b-1)$ is not a perfect square. Then neither $(s-t)^2$ nor $(s+t)^2$ is
+a root of $f_G$.
+\end{proposition}
+
+\begin{proof}
+$f_G$ has integer coefficients and $(s\mp t)^2=(a+b-2)\mp2\sqrt m$, so for $m$
+not a square the two band edges are conjugate over $\mathbb Q$; if one is a root
+of $f_G$, so is the other. Heilmann and Lieb already give a \emph{strict} bound,
+$|a|<2\sqrt{B_1}$ with $B_1=\Delta-1$ for unit edge weights \cite[Thm.~4.3]{HL},
+but at the max-degree radius, which for $a\ne b$ exceeds $s+t$; strictness at the
+biregular radius therefore has to be argued separately. Every root of $\mu_G$ is
+bounded by the spectral
+radius of a path tree $T_u(G)$ \cite{Go}, and $T_u(G)$ is finite and embeds
+in the universal cover of $G$, the $(a,b)$-biregular tree $T_{a,b}$, with
+degrees bounded by those of $T_{a,b}$. Now $\rho(T_{a,b})=s+t$ is the supremum
+of $\rho$ over finite subtrees of $T_{a,b}$, and that supremum is not attained:
+any finite subtree is a proper subgraph of a larger connected finite subtree,
+and $\rho$ is strictly monotone under proper subgraph containment for finite
+connected graphs. Hence $\rho(T_u(G))<s+t$, so $(s+t)^2$ is not a root of
+$f_G$, and therefore neither is $(s-t)^2$.
+\end{proof}
+
+The hypothesis on $m$ is needed for the argument, not merely for convenience:
+when $m$ is a square the two band edges are rational and independent, and
+conjugacy says nothing. The smallest such case is $(a,b)=(5,2)$, where $m=4$
+and the edges are $1$ and $9$. There the conclusion nevertheless holds, but for
+a different reason, the Heilmann--Lieb bound is strict for finite graphs, so
+Theorem~\ref{thm:subdiv} already excludes the lower edge. Proposition~\ref{prop:galois}
+is the statement for the cases those methods do not reach.
+
+Evaluating $f_G$ in $\mathbb Z[\sqrt m]$ confirms this and exhibits the
+conjugacy: for $K_{3,4}$, $K_{3,5}$, $K_{3,6}$, $K_{4,5}$ the two edge values
+are $53\mp30\sqrt6$, $72\mp40\sqrt8$, $91\mp50\sqrt{10}$, $1877\mp512\sqrt{12}$.
+For $b=2$ the irrational parts vanish, as \eqref{eq:reflect} requires.
+Proposition~\ref{prop:galois} is worth isolating because it uses no induction on
+vertex deletion, and so is not subject to the obstruction of
+Section~\ref{sec:must}; it is
+the only tool we have found with that property, although it controls only the
+edges and not the interior of the gap.
+
+
+\section{The multivariate polynomial and the cavity recursion}
+
+The polynomials $g$ admit a clean description. Since a $k$-matching leaves $p-k$
+vertices of $A$ unmatched,
+\begin{equation}\label{eq:multivar}
+f_G(y)=\sum_{k}(-1)^k m_k\,y^{p-k}
+=\sum_{M}(-1)^{|M|}\prod_{v\in A\setminus V(M)}y
+=\mathcal M\bigl(G;\,x_A=y,\ x_B=1\bigr),
+\end{equation}
+the multivariate matching polynomial of Heilmann and Lieb under the asymmetric
+specialization that puts the variable on one side of the bipartition and $1$ on
+the other. So the $g$ are not exotic: they are shifts of matching polynomials in
+the multivariate sense. This is a reformulation and not an advance: for
+bipartite $G$ every edge of a matching covers one vertex of each side, so
+$\mathcal M(G;x_A=y,x_B=z)$ depends only on the product $yz$, and the asymmetric
+specialization therefore carries exactly the information of the univariate
+matching polynomial. In particular no quantitative Heilmann--Lieb theorem for
+non-uniform specializations can help here, and none is available: the
+multivariate bounds of \cite{HL} apply a single graph-wide threshold to every
+variable.
+
+Deleting a vertex now gives two different recursions, because only $A$-vertices
+carry the variable:
+\[
+v\in A:\quad f_G=y\,f_{G-v}-\!\!\sum_{u\sim v}\!f_{G-v-u},
+\qquad
+u\in B:\quad f_G=f_{G-u}-\!\!\sum_{v\sim u}\!f_{G-u-v},
+\]
+whence the cavity recursion
+$R_A=y-\sum1/R_B$, $R_B=1-\sum1/R_A$. On the $(a,b)$-biregular tree, with
+$P=a-1$, $Q=b-1$, its fixed point satisfies $R^2+(P-Q-y)R+yQ=0$, of
+discriminant
+\[
+D(y)=(P-Q-y)^2-4yQ,
+\qquad
+D(y)=0\iff y=(\sqrt P\pm\sqrt Q)^2 .
+\]
+The two roots are exactly the spectrum edges in the variable $y=x^2$, and $D<0$
+strictly between them: the fixed point is complex precisely on the spectrum and
+real precisely off it, as it must be. Both recursions and the discriminant have
+been checked exactly.
+
+Conjecture~\ref{conj:gap} for biregular $G$ is therefore the statement that the
+asymmetric recursion, started from the leaves of the path tree, never produces
+$R=0$ while $D>0$. The natural invariant region is
+\[
+R_A\le-\alpha<0,\qquad R_B\in[\,1,\ 1+Q/\alpha\,],
+\]
+for a parameter $\alpha>0$. A $B$-vertex with children in the region has
+$R_B=1+\sum1/|R_A|\in(1,1+Q/\alpha]$, and a $B$-leaf carries $R_B=1$, exactly
+the lower boundary. An $A$-vertex with its full complement of $P$ children has
+$R_A\le y-P\alpha/(\alpha+Q)$, so the region is closed precisely when
+$y\le h(\alpha)$, where $h(\alpha)=\alpha(P-Q-\alpha)/(\alpha+Q)$. The
+following is elementary and is machine-checked in Lean~4
+(\texttt{region\_closure\_bound}, \texttt{gap\_edge\_identity}):
+\begin{equation}\label{eq:square}
+(s-t)^2(\alpha+t^2)-\alpha(s^2-t^2-\alpha)=\bigl(\alpha-t(s-t)\bigr)^2 ,
+\end{equation}
+so $h(\alpha)\le(s-t)^2$ for every $\alpha$, with equality at
+$\alpha=t(s-t)=\sqrt{PQ}-Q$. The region therefore closes for every $y$ strictly
+below the gap edge and for no $y$ above it: the invariant region is calibrated
+exactly to the spectrum, and \eqref{eq:square} is the reason.
+
+
+\section{The formalization}
+
+Everything asserted in this paper is machine-checked in Lean~4/Mathlib unless labelled
+otherwise. The sources are \texttt{RamaLean/} in the \texttt{rama-notes} repository; every file
+carries its own statement of what is proved and what is assumed, and the standing blocker
+throughout is that Mathlib has no matching polynomial and no mixed characteristic polynomial, so
+the identities connecting the combinatorial and operator forms are stated rather than derived.
+The full file-by-file record, with the axiom base of each theorem, is in \cite{Supp2}.
+
+
+
 \begin{thebibliography}{9}
 \bibitem{Alek} A.~D.~Aleksandrov, \emph{On the theory of mixed volumes of convex bodies IV.
 Mixed discriminants and mixed volumes}, Mat.\ Sb.\ (N.S.) \textbf{3} (1938), 227--251.
