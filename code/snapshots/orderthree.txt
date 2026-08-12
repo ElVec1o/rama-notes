@@ -1,0 +1,20 @@
+P51 (frozen): (a) the order-three rank is n - c(G_D); (b) order three is solvable at
+every cone direction tested; (c) the superseded canonical X fails tightness everywhere.
+(a) and (b): the rank, against the graph, and solvability.
+    family   n  dirs    rank  n-c(G_D)  connected  agrees  solvable
+       C_4   4     2     [2]       [2]    [False]    True      True
+      Fano   7     2     [6]       [6]     [True]    True      True
+  'connected' False means the theorem does not apply there and solvability is measured;
+  C_4 is that case, its G_D having two components.
+(c) The superseded canonical X, with split-pair entries zero.
+    family   pairs failing tightness   of  hypothesis satisfiable
+  One failing pair suffices: the canonical X is then not an admissible correction.
+       C_4                         4    6                   False
+      Fano                        21   21                   False
+  P51 HOLDS. The order-three obstruction map has the same rank formula, the same
+  graph and the same proof as the second-order map: n - c(G_D). With the trace law
+  putting the obstruction in the sum-zero hyperplane, a connected G_D makes the image
+  that whole hyperplane and order three is unobstructed, PROVED, with every step
+  machine-checked and no measured input. Where G_D is disconnected the image is
+  smaller and solvability is measured rather than proved; C_4 is the only such family
+  here, and it is solvable.

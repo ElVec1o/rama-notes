@@ -2324,11 +2324,37 @@ absorb the forced same-side sums.
 
 The second-order correction is not unique, its split-pair entries being free, and $R$ depends on the
 choice. So order three is unobstructed exactly when some admissible $X$ makes $R=0$. Lemma
-\ref{lem:o3trace} puts $R$ in the hyperplane $\sum_jR_j=0$ for every choice; whether the free
-entries sweep that whole hyperplane is measured, not proved. At the Fano family they sweep a space of
-dimension $6$ against the hyperplane's $6$, and the linear solve returns residual
-$1.8\times10^{-14}$: order three is unobstructed there. The claim carries that measured step, so it
-is stated as such rather than as a theorem for every family.
+\ref{lem:o3trace} puts $R$ in the hyperplane $\sum_jR_j=0$ for every choice, and the image of the
+free entries is the same object that governs the second order.
+
+\begin{proposition}\label{prop:o3rank}
+Write $u$ for the free entries of $X$, which satisfy $\sum_{k\in K(i,j)}u_{k,i,j}=0$ pair by pair.
+The map $u\mapsto R$ is linear with no constant term and has rank $n-c(G_D)$, with $G_D$ the graph of
+Proposition~\ref{prop:cone}'s companion: $i\sim j$ when $(\sigma_k(j)D_k(i,j))_{k\in K(i,j)}$ is not
+constant in $k$. Consequently, if $G_D$ is connected then order three is unobstructed.
+\end{proposition}
+
+\begin{proof}
+$R$ is linear in $u$ because $D_k$ is supported exactly on the split pairs, which are exactly the
+free entries. Using $\sigma_k(i)=-\sigma_k(j)$ on a split pair,
+\[
+\sum_jw_jR_j=2\sum_{i<j}(w_j-w_i)\!\!\sum_{k\in K(i,j)}\!\!\sigma_k(j)D_k(i,j)u_{k,i,j},
+\]
+so $w$ annihilates the image exactly when, pair by pair, either $w_i=w_j$ or the linear functional
+$u\mapsto\sum_k\sigma_k(j)D_k(i,j)u_k$ vanishes on $\{\sum u=0\}$, which happens exactly when its
+coefficients are constant in $k$. That is the definition of $G_D$, and the annihilator is therefore
+the functions constant on its components, of dimension $c(G_D)$. If $G_D$ is connected the rank is
+$n-1$, which is the dimension of the hyperplane $\sum_jR_j=0$ that Lemma~\ref{lem:o3trace} confines
+$R$ to, so the image is that hyperplane and $R=0$ is attained.
+\end{proof}
+
+Every step is machine-checked: \texttt{OrderThreeLaw.trace\_order\_three} for the lemma,
+\texttt{SpanRank.linear\_vanishes\_iff\_const} for the annihilator condition,
+\texttt{CokernelRank.const\_of\_adj\_eq} for the passage from edges to components, and
+\texttt{OrderFourSolvable.mem\_of\_sum\_zero} for the conclusion. The rank formula is verified
+against the computed rank at five families and twenty cone directions, and order three is solvable at
+every one of them, including $C_4$, whose $G_D$ has two components so that the proposition does not
+apply and solvability there is measured (\texttt{code/orderthree.py}).
 
 Order four is then satisfied as well, and the freedom in $Y$ is what absorbs it. The condition is
 $\sum_k\sigma_k(j)\bigl[2(D_kY_k)_{jj}+(X_k^2)_{jj}\bigr]=0$ at each vertex, linear in $Y$, so it
