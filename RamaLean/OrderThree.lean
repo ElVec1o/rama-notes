@@ -6,26 +6,31 @@ import Mathlib
 Two steps of the second-order analysis at a commuting tight family that were written out but not
 machine-checked. Both are short. Both were load-bearing, which is the reason for checking them.
 
-## Order three
+## Order three: this file's hypothesis is satisfied by nothing, and `OrderThreeLaw` replaces it
 
 Expanding `A_k = P_k + εD_k + ε²X_k + ε³Y_k`, idempotency at order three reads
 
   `Y_k - P_k Y_k - Y_k P_k = D_k X_k + X_k D_k`,
 
 and the obstruction to solving it together with `∑ₖ Y_k = 0` is, as at order two, the diagonal of
-the right-hand side. That diagonal vanishes identically, and the reason is a support argument rather than a diagonality
-one. `D_k` is supported on pairs with exactly one endpoint in `e_k`, by the order-one equation;
-`X_k` is supported on pairs with both endpoints on the same side, the order-two equation having
-fixed its two diagonal blocks and the canonical solution taking the off-diagonal blocks to zero.
-The two supports are complementary, so every term of `(D X + X D)_{ii}` has a vanishing factor.
+the right-hand side.
 
-`X_k` is NOT diagonal: the order-two equation forces the `b × b` block `X₁₁ = -(D²)₁₁`, which is a
-full block. An earlier version of this file assumed diagonality and proved a true theorem whose
-hypothesis the actual `X` does not satisfy.
+**`diag_mul_add_mul_of_cross` is true and inapplicable, and is kept only as a record of that.** Its
+hypothesis `hX` says `X` vanishes on the pairs `e_k` splits. Those are exactly the entries the
+order-two equation leaves FREE, the coefficient `1 - (P_k)_ii - (P_k)_jj` vanishing there, so they
+are the only entries available to absorb the forced same-side sums when `∑ₖ X_k = 0` is imposed.
+Measured at the Fano family: the canonical `X` with those entries zero fails `∑ₖ X_k = 0` at all 21
+of 21 off-diagonal pairs. No second-order correction satisfies `hX`, so the theorem below never
+applies where the note applied it. This is the failure class the project's own notes record, a true
+theorem with a hypothesis nothing satisfies, recurring for the second time.
 
-The consequence is that order three imposes no condition at all, for every direction and not only
-for those on the tangent cone, and leaves `Y` free in its off-diagonal blocks. That freedom is what
-the order-four condition would have to consume.
+**What is true.** The order-three obstruction `R_j = ∑ₖ σₖ(j)(D_k X_k + X_k D_k)_jj` is *not*
+identically zero: at Fano an admissible `X` gives `max_j |R_j| = 19.7`. What vanishes identically is
+its sum, by `OrderThreeLaw.trace_order_three`, which holds per block for arbitrary `X` with no
+support hypothesis, no idempotency and no tightness. Order three is unobstructed when some
+admissible `X` makes `R = 0`; the trace law puts `R` in the hyperplane `∑ⱼ Rⱼ = 0` for every choice,
+and that the free entries sweep that whole hyperplane is measured (rank 6 against 6 at Fano), not
+proved. The conclusion therefore carries a measured step and is not a theorem here.
 
 ## The orbit
 
@@ -39,8 +44,10 @@ Mathlib does and does not carry.
 ## Status
 
 `diag_mul_add_mul_of_cross`, `order_three_unobstructed`, `curvature_zero_on_orbit` and
-`second_deriv_of_const` are `VERIFIED`. The two support hypotheses are the order-one and order-two
-equations respectively, and are hypotheses here rather than claims.
+`second_deriv_of_const` are `VERIFIED` as statements. The first two are INAPPLICABLE to the actual
+second-order correction, for the reason above, and nothing in the note now cites them; the load is
+carried by `OrderThreeLaw.trace_order_three`. `curvature_zero_on_orbit` and `second_deriv_of_const`
+are unaffected.
 -/
 
 namespace OrderThree

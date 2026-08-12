@@ -1606,7 +1606,7 @@ edges and not the interior of the gap.
 \subsection{The mixed characteristic polynomial}
 
 The multivariate object that does carry the biregular information is the mixed
-characteristic polynomial of Marcus, Spielman and Srivastava: with
+characteristic polynomial of Marcus, Spielman and Srivastava \cite{MSSII}: with
 $P_k=\operatorname{diag}(\mathbf 1_{N(k)})$ of rank $b$ and $\sum_kP_k=aI_p$, one
 has $\nu_G=\mu[P_1,\dots,P_q]$, since $\sum_kz_kP_k$ is diagonal and each
 $\partial_{z_k}$ must strike a distinct linear factor, so the surviving terms are
@@ -2086,10 +2086,15 @@ The coordinate hypothesis is basis-dependent as stated and is not meant to be. I
 that the family commutes.
 
 \begin{corollary}\label{cor:commuting}
-Let $P_1,\dots,P_q$ be pairwise commuting rank-$b$ orthogonal projections on $\mathbb R^n$ with
-$\sum_kP_k=aI$. Then $\operatorname{maxroot}\mu\le(\sqrt{a-1}+\sqrt{b-1})^2$, and the constant is
-attained in the limit over this class.
+Let $a,b\ge2$ and let $P_1,\dots,P_q$ be pairwise commuting rank-$b$ orthogonal projections on
+$\mathbb R^n$ with $\sum_kP_k=aI$. Then $\operatorname{maxroot}\mu\le(\sqrt{a-1}+\sqrt{b-1})^2$, and
+the constant is attained in the limit over this class.
 \end{corollary}
+
+The hypothesis $a,b\ge2$ is needed and not cosmetic. At $a=b=1$, $n=q=1$, $P_1=[1]$, one has
+$\mu(x)=x-1$ and $\operatorname{maxroot}\mu=1$ against a right-hand side of $0$. The bound is a
+statement about the $(a,b)$-biregular tree, and that tree is a single edge or a ray unless both
+degrees are at least two.
 
 \begin{proof}
 Commuting orthogonal projections are simultaneously diagonalisable, and in a common eigenbasis
@@ -2182,22 +2187,55 @@ rank-$b$ families by a monotonicity statement over a theorem.
 Proposition~\ref{prop:singular} says which directions are excluded; the same computation says
 which are admitted, and the answer is an explicit cone.
 
+Call $i$ and $j$ \emph{twins} when they lie in exactly the same hyperedges, and the family
+\emph{twin-free} when it has no twin pair. Twin-freeness is checkable in $O(n^2q)$ and holds for
+every family used below; the Fano family, $C_4$ and the triples of $K_4$ are all twin-free.
+
 \begin{proposition}\label{prop:cone}
-For $D$ in the kernel of the linearised constraints, a second-order correction $X$ exists if and
+Let $D$ lie in the kernel of the linearised constraints. A second-order correction $X$ exists if and
 only if
 \[
 Q_j(D):=\sum_k\sigma_k(j)\,(D_k^2)_{jj}=0\qquad\text{for every vertex }j,
 \]
-with $\sigma_k(j)$ as in Proposition~\ref{prop:singular}. Hence the directions admitting a
-second-order correction form the kernel of the linearisation cut by $n$ quadrics.
+with $\sigma_k(j)$ as in Proposition~\ref{prop:singular}, \emph{together with}
+\[
+\sum_k\sigma_k(i,j)\,(D_k^2)_{ij}=0\qquad\text{for every twin pair }\{i,j\},
+\qquad \sigma_k(i,j)=1-(P_k)_{ii}-(P_k)_{jj}.
+\]
+For a twin-free family the second family of conditions is empty, and the directions admitting a
+second-order correction are then the kernel of the linearisation cut by the $n$ quadrics $Q_j$.
 \end{proposition}
 
 \begin{proof}
+The order-two equation $X_k-P_kX_k-X_kP_k=D_k^2$ has $(i,j)$ entry
+$(X_k)_{ij}\bigl(1-(P_k)_{ii}-(P_k)_{jj}\bigr)=(D_k^2)_{ij}$, so the coefficient is $-1$ when both
+$i,j$ lie in $e_k$, $+1$ when neither does, and $0$ when $e_k$ splits the pair. Where the coefficient
+is nonzero $(X_k)_{ij}$ is forced; where it vanishes the entry is free and the equation demands
+$(D_k^2)_{ij}=0$, which holds automatically since $D_k$ is supported on split pairs and $D_k^2$
+therefore is not. Imposing $\sum_kX_k=0$ entry by entry, a pair is solvable exactly when some $e_k$
+splits it, leaving a free entry to absorb the forced sum, or else the forced values already cancel.
+No $e_k$ splits a diagonal pair, which gives the conditions $Q_j(D)=0$; and no $e_k$ splits an
+off-diagonal pair exactly when its two vertices are twins, which gives the second family.
+\end{proof}
+
+The entrywise criterion is machine-checked as \texttt{ConeFix.solvable\_iff}, together with
+\texttt{coef\_eq\_zero\_iff} for the combinatorial reading of the coefficient and
+\texttt{no\_free\_entry\_iff\_twin} for the identification of the obstructed pairs as the twin
+pairs. The twin conditions are not vacuous. On the $3$-uniform $2$-regular family with vertices
+$\{0,\dots,5\}$ and hyperedges $\{0,1,2\},\{0,1,3\},\{2,4,5\},\{3,4,5\}$, where $0$ and $1$ are
+twins, the direction $D_1=E_{04}+E_{40}+E_{14}+E_{41}$, $D_2=0$, $D_3=-(E_{04}+E_{40})$,
+$D_4=-(E_{14}+E_{41})$ lies in the kernel and satisfies $Q_j(D)=0$ at all six vertices, while the
+forced values at the twin entry $(0,1)$ sum to $-1$: no second-order correction exists. Every step of
+that witness is machine-checked in \texttt{RamaLean/ConeWitness.lean}
+(\texttt{twins}, \texttt{cross\_supported}, \texttt{sum\_D\_eq\_zero}, \texttt{Q\_eq\_zero},
+\texttt{twin\_obstruction}), so the necessity of the twin conditions rests on no arithmetic done
+outside the kernel.
+
+\begin{proof}[Proof of the twin-free case, restated]
 Necessity is the computation in Proposition~\ref{prop:singular}: the diagonal of each $X_k$ is
 forced and summing it over $k$ gives $Q_j(D)$, which $\sum_kX_k=0$ requires to vanish. For
-sufficiency take $(X_k)_{jj}=\sigma_k(j)(D_k^2)_{jj}$ and every off-diagonal block zero. The
-order-two equation holds entrywise by the same coefficient $1-2(P_k)_{jj}$, the off-diagonal
-entries of both sides being zero; and $\sum_kX_k$ is diagonal with entries $Q_j(D)=0$.
+sufficiency, every off-diagonal pair is split by some $e_k$ and the free entry there absorbs the
+forced sum, so only the diagonal conditions remain.
 \end{proof}
 
 The second-order behaviour of the top root over that cone can now be examined, and it is better
@@ -2246,22 +2284,49 @@ without being conjugations. It holds at $(2,3)$ with smallest pivot $8.7\times10
 $(3,3)$, and is vacuous for the family of triples in $K_4$, whose whole kernel is the orbit. The
 $(2,2)$ case is the one whose universal cover is a line, with no spectral gaps at all, so its
 degeneracy is not surprising; but on the evidence the correct statement is $\Lambda\preceq0$ in
-general with strictness away from $a=b=2$, and that is what is claimed here.
+general, with strictness established only at the families where it was certified. The excess is
+triggered by $b=2$ and not by $a=b=2$: $K_4$ and $K_{3,3}$ are $(3,2)$ and carry excess $6$ and $9$,
+as the table above records.
 
 One order beyond the obstruction, nothing further is imposed, and for a reason of supports. The
 order-three equation reads $Y_k-P_kY_k-Y_kP_k=D_kX_k+X_kD_k$. Its off-diagonal blocks give the
 condition $(D_kX_k+X_kD_k)_{12}=0$, which holds identically: with $X_{11}=-(D^2)_{11}$ and
 $X_{22}=(D^2)_{22}$ from order two, that block is
-$D_{12}D_{21}D_{12}-D_{12}D_{21}D_{12}=0$. Its diagonal entries vanish too. Here $D_k$ is
-supported on pairs with exactly one endpoint in $e_k$, by the order-one equation, while $X_k$ is
-supported on pairs with both endpoints on the same side, its two diagonal blocks being fixed by
-order two and the canonical solution taking the off-diagonal blocks to zero; the supports are
-complementary, so every term of $(D_kX_k+X_kD_k)_{jj}$ has a vanishing factor. Note that $X_k$ is
-not a diagonal matrix, the block $X_{11}=-(D^2)_{11}$ being $b\times b$; it is the complementarity
-of supports and not diagonality that the argument uses. The order-three obstruction is therefore
-identically zero, for every direction and not only for those on the cone, and $Y$ is left free in
-its off-diagonal blocks. This step is machine-checked as
-\texttt{OrderThree.order\_three\_unobstructed}.
+$D_{12}D_{21}D_{12}-D_{12}D_{21}D_{12}=0$. Its diagonal entries vanish too. The diagonal is where the
+content is. No $e_k$ splits a diagonal pair, so $(Y_k)_{jj}$ is forced and $\sum_kY_k=0$ requires
+\[
+R_j:=\sum_k\sigma_k(j)\,(D_kX_k+X_kD_k)_{jj}=0\qquad\text{for every }j .
+\]
+$R$ is not identically zero: at the Fano family a second-order correction satisfying $\sum_kX_k=0$
+gives $\max_j|R_j|=19.7$. What is identically zero is its \emph{sum}, and that is a two-line
+theorem holding per block, with no hypothesis on $X$ at all.
+
+\begin{lemma}[order-three trace law]\label{lem:o3trace}
+If $P_kD_k+D_kP_k=D_k$ then $\operatorname{tr}(D_kX_k+X_kD_k)=2\operatorname{tr}\bigl(P_k(D_kX_k+X_kD_k)\bigr)$
+for every $X_k$, that is $\sum_j\sigma_k(j)(D_kX_k+X_kD_k)_{jj}=0$. Summing over $k$, $\sum_jR_j=0$.
+\end{lemma}
+
+\begin{proof}
+$\operatorname{tr}(P_k(D_kX_k+X_kD_k))=\operatorname{tr}(P_kD_kX_k)+\operatorname{tr}(P_kX_kD_k)
+=\operatorname{tr}(P_kD_kX_k)+\operatorname{tr}(D_kP_kX_k)=\operatorname{tr}((P_kD_k+D_kP_k)X_k)
+=\operatorname{tr}(D_kX_k)$ by cyclicity and the order-one equation, while
+$\operatorname{tr}(D_kX_k+X_kD_k)=2\operatorname{tr}(D_kX_k)$.
+\end{proof}
+
+Machine-checked as \texttt{OrderThreeLaw.trace\_order\_three}. It needs neither idempotency, nor
+tightness, nor any support hypothesis, and it replaces a complementary-supports argument given in an
+earlier version of this note whose hypothesis on $X$ is satisfied by no second-order correction: at
+the Fano family the canonical $X$ with vanishing split-pair entries fails $\sum_kX_k=0$ at all $21$
+of $21$ off-diagonal pairs, those entries being the only free ones and hence the only ones that can
+absorb the forced same-side sums.
+
+The second-order correction is not unique, its split-pair entries being free, and $R$ depends on the
+choice. So order three is unobstructed exactly when some admissible $X$ makes $R=0$. Lemma
+\ref{lem:o3trace} puts $R$ in the hyperplane $\sum_jR_j=0$ for every choice; whether the free
+entries sweep that whole hyperplane is measured, not proved. At the Fano family they sweep a space of
+dimension $6$ against the hyperplane's $6$, and the linear solve returns residual
+$1.8\times10^{-14}$: order three is unobstructed there. The claim carries that measured step, so it
+is stated as such rather than as a theorem for every family.
 
 Order four is then satisfied as well, and the freedom in $Y$ is what absorbs it. The condition is
 $\sum_k\sigma_k(j)\bigl[2(D_kY_k)_{jj}+(X_k^2)_{jj}\bigr]=0$ at each vertex, linear in $Y$, so it
@@ -2587,7 +2652,10 @@ without that check the retraction leaves the projection class silently, and the 
 produces are about the wrong class.
 
 The identification in Proposition~\ref{prop:bridge} is elementary and we make no claim of novelty
-for it; we have not found it stated, but the search caveats of \S\ref{sec:must} apply verbatim.
+for it. For diagonal matrices it is stated without proof by Marcus, Spielman and Srivastava
+\cite[\S7]{MSSII} in the square case $q=n$, with arbitrary diagonal weights; the statement here
+covers $q\neq n$, specialises the weights to $0/1$ projections, supplies a proof, and carries the
+substitution $x=t^2$ with its degree bookkeeping.
 It should not be confused with the hypergraph Heilmann--Lieb theorem of Wan, Wang and Fan
 \cite{Zhang}, which concerns a different polynomial --- the matching polynomial of the adjacency
 hypermatrix, whose extreme root scales as $\Delta^{1/k}$ --- and neither implies the other. Both
@@ -2614,7 +2682,14 @@ the identity $\sum_j\sigma_k(j)(D_k^2)_{jj}=0$ and the passage from a curve to M
 Mathlib's own tangent cone. \texttt{RamaLean/OrderFourSolvable.lean} is the step joining
 \texttt{OrderFour.order\_four\_sum\_zero} to \texttt{CokernelRank.cokernel\_const}.
 \texttt{RamaLean/MixedDiscriminant.lean} carries the symmetry, diagonal value and additivity of the
-mixed discriminant. \texttt{RamaLean/SpanRank.lean} carries the two scalar criteria behind the span
+mixed discriminant. \texttt{RamaLean/ConeFix.lean} carries the entrywise solvability criterion behind
+Proposition~\ref{prop:cone} and the identification of the obstructed pairs as the twin pairs, and
+\texttt{RamaLean/ConeWitness.lean} the matrix level of the counterexample that makes the twin
+conditions necessary, every step by kernel computation.
+\texttt{RamaLean/OrderThreeLaw.lean} carries Lemma~\ref{lem:o3trace}.
+\texttt{RamaLean/OrderThree.lean} is retained for its orbit lemmas; its
+\texttt{diag\_mul\_add\_mul\_of\_cross} and \texttt{order\_three\_unobstructed} are true statements
+whose hypothesis no second-order correction satisfies, and nothing here cites them. \texttt{RamaLean/SpanRank.lean} carries the two scalar criteria behind the span
 and rank formulas, that a linear functional vanishes on $\{\sum t=0\}$ exactly when its coefficients
 agree and that a diagonal quadratic form vanishes there exactly when every pair of coefficients
 cancels, with the pigeonhole that makes $|K(i,j)|\ge3$ always an edge.
@@ -3122,7 +3197,7 @@ $2.2\cdot10^{-4}$, $1.7\cdot10^{-4}$, $1.2\cdot10^{-4}$, $1.2\cdot10^{-4}$ at gi
 (Heawood, M\"obius--Kantor, Pappus, Desargues). None of that slack is available to the
 argument:
 
-\begin{proposition}\label{prop:rigid}
+\begin{proposition}\label{prop:rigid2}
 Fix $a>0$ and suppose the inductive hypothesis of Proposition~\ref{prop:cross} is
 strengthened from $R\ge x/2$ to $R\ge c\,(x/2)$ for some $c>0$. At $x=2\sqrt a$ the
 recursion sustains this only for $c=1$.
@@ -4213,6 +4288,10 @@ coverings}, Discrete Math.\ \textbf{142} (1995) 295--298.
 \bibitem{DFMRS} C.~Dalf\'o, M.~A.~Fiol, M.~Miller, J.~Ryan, J.~\v{S}ir\'a\v{n},
 \emph{An algebraic approach to lifts of digraphs}, Discrete Appl.\ Math.\
 \textbf{269} (2019) 68--76.
+\bibitem{MSSII} A.~W. Marcus, D.~A. Spielman, N.~Srivastava,
+\emph{Interlacing families II: mixed characteristic polynomials and the Kadison--Singer
+problem}, Ann. of Math. (2) \textbf{182} (2015), 327--350.
+
 \bibitem{MSS} A.~Marcus, D.~Spielman, N.~Srivastava, \emph{Interlacing
 families I: Bipartite Ramanujan graphs of all degrees}, Ann.\ of Math.\
 \textbf{182} (2015), 307--325.
