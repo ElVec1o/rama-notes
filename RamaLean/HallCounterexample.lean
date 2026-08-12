@@ -36,9 +36,13 @@ connected, loopless, bipartite, `41` vertices, `60` edges, first Betti number `2
    These are classical (`μ_G = X μ_{G-v} - ∑_{u∼v} μ_{G-v-u}`) and enter Part A as the
    defining equations.
 2. That the orbit quotient `K` is the correct `6 × 6` reduction of the `120`-state decay
-   matrix, and that `ρ(K) = α(r)`.  Verified computationally in `private/`, by rebuilding the
-   decay digraph from the graph, computing its strongly connected components (one recurrent
-   block of exactly `110` states, ten transient), and reconstructing `K` from follower counts.
+   matrix, and that `ρ(K) = α(r)`.  Verified computationally in `code/hall_certificate.py`,
+   which ships: it rebuilds the decay digraph from the graph, finds the strongly connected
+   components (one recurrent block of exactly `110` states, ten transient, the transient ones
+   being exactly the leaf-incident directed edges), reconstructs `K` from follower counts, and
+   checks that the six components of `x - Kx` reproduce the exact expressions of `residual_pos`
+   below to `3e-14`, with `ρ(K) = 0.9636233789`.  This was previously done only in `private/`,
+   which never ships, and was the one step of the certificate a reader could not check.
 3. **Angel–Friedman–Hoory**, Trans. AMS 367 (2015) 4287–4318, Theorem 1.4: a finite nonzero
    ratio system with decay rate `< 1` is equivalent to `A_T - λI` having a bounded inverse.
    Not in Mathlib; enters Part E as an explicit hypothesis in the shape it is consumed.

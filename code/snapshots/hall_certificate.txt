@@ -1,0 +1,25 @@
+P50 (frozen): (a) matching numbers match and mu_G(sqrt5) = 0; (b) the ratio system
+solves at sqrt 5; (c) 10 transient and one recurrent block of 110; (d) the orbit
+quotient reproduces the Lean's six residuals and the printed characteristic polynomial.
+(1) the graph: 41 vertices, 60 edges (paper: 41, 60) -> ok
+(2) matching numbers, rebuilt from the branch:
+    printed in the paper: term-for-term agreement
+    mu_G(sqrt 5) = -1.19692e-45  -> zero
+(3) directed edges: 120 (paper: 120) -> ok
+    real branches of the eight-type ratio system: 2
+    residual of the 120 equations: 4.44e-16 -> the eight-type solution satisfies all 120
+    smallest |r_e|: 0.284016, negative types: [1, 4, 7]
+(4) transient states 10, recurrent 110
+    paper: 10 transient at the leaves, recurrent block 110 -> ok
+    the transient states are exactly the leaf-incident edges: True
+(5) orbit quotient: one orbit per surviving edge type, K is 6x6 -> ok
+(6) the certificate:
+    min component of x - Kx: 0.775354 -> strictly positive
+    rebuilt residuals : [0.77535 0.81026 0.83413 0.85101 1.04376 1.63905]
+    Lean's residuals  : [0.77535 0.81026 0.83413 0.85101 1.04376 1.63905]
+    max difference    : 2.95e-14 -> reproduces the Lean entry by entry
+    rho(K) = 0.9636233789   paper: 0.9636233789 -> ok
+  What this artifact settles: the graph, the matching numbers and the decay digraph's
+  component structure are rebuilt from the construction alone. Where a line above says
+  MISMATCH the published object is not the one this graph produces, and that is exactly
+  the step that previously lived only in private/.

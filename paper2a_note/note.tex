@@ -822,7 +822,16 @@ $(1,60,1585,24260,238105,1564976,6973855,20805500,39784375,44062500,21484375)$; 
 equations on all $120$ directed edges; the strongly connected components of the decay
 digraph; the orbit quotient rebuilt from follower counts; and the decay rate by two
 independent routes, the componentwise certificate and the characteristic polynomial
-$t^6-\tfrac{201+19s}{800}t^2+\tfrac{21s-241}{250}$ with $s=\sqrt{41}$. As a physical check,
+$t^6-\tfrac{201+19s}{800}t^2+\tfrac{21s-241}{250}$ with $s=\sqrt{41}$. That reconstruction is
+\texttt{code/hall\_certificate.py}, which rebuilds each object from the construction and copies no
+displayed matrix: the matching numbers agree term for term and $\mu_G(\sqrt5)$ vanishes to
+$10^{-45}$; the ratio system reduces to eight unknowns by symmetry and is solved exactly in
+$\mathbb Q(\sqrt5,\sqrt{41})$, its solution satisfying all $120$ equations to $4\times10^{-16}$;
+the ten transient states are exactly the leaf-incident directed edges and the recurrent block has
+$110$; and the six components of $x-Kx$ reproduce the exact expressions carried by
+\texttt{RamaLean/HallCounterexample.lean} to $3\times10^{-14}$, with $\rho(K)=0.9636233789$. Three
+of the eight ratios are negative, which is why a positive cavity iteration does not find the
+system. As a physical check,
 the non-backtracking cavity Green function at $\sqrt5+i\eta$ converges to Hall's real
 ratios as $\eta\downarrow0$, with density of states vanishing linearly in $\eta$.
 
