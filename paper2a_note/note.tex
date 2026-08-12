@@ -26,35 +26,26 @@ a closed form at first Betti number one, and a refuted conjecture}
 \begin{abstract}
 Hall, Puder and Sawin place the roots of the $d$-matching polynomial $\mu_{d,G}$ in the interval
 $[-\rho,\rho]$, $\rho$ the spectral radius of the universal cover $T$. We conjectured that they
-lie in $\operatorname{spec}(T)$ itself, a proper subset of that interval whenever $T$ has a
-spectral gap: no root ever enters a gap. This strengthens their theorem and is the
-matching-polynomial form of their Question~6.3.
+lie in $\operatorname{spec}(T)$ itself, a proper subset of that interval whenever $T$ has a spectral
+gap: no root ever enters a gap. This strengthens their theorem and is the matching-polynomial form
+of their Question~6.3.
 
-\textbf{That conjecture is false, and the counterexample is due to Chris Hall} \cite{HallCE}. His
-graph is simple, connected, loopless and bipartite on $41$ vertices: five copies of $K_{2,5}$, a
-pendant leaf on one degree-five vertex of each, and a central vertex joined to the other five.
-Its matching polynomial is $x^{21}(x^4-11x^2+25)^4(x^2-5)(x^2-11)$, and $\sqrt5$ lies in an
-internal gap of $\operatorname{spec}(T)$, certified by an exact ratio system in the sense of
-Angel--Friedman--Hoory \cite{AFH}. We verified his certificate independently, machine-checked its
-algebra, and show his example is the smallest member of a two-parameter family in which the
-pendant leaves are essential.
+We prove it for every connected $G$ of first Betti number one and every $d$, by giving $\mu_{d,G}$
+in closed form.
 
-We prove the conjecture for every connected $G$ of first Betti number one and every $d$, by
-giving $\mu_{d,G}$ in closed form, and we chart the repair. Minimum degree two fails, bounded
-maximum degree fails, and $2$-connectivity fails. Minimum degree three fails as well, and we give
-the counterexample: a bipartite graph on $14$ vertices, a third the size of Hall's, with
-$\mu_G=x^4(x^2-3)(x^8-24x^6+171x^4-396x^2+270)$ and $\sqrt3$ outside
-$\operatorname{spec}(T)$. Its divisor is the star $K_{1,3}$, and that is the point: Hall's own
-violating root $\sqrt5$ is the top matching root of $K_{1,5}$, so the engine is a star divisor,
-whose leaves have degree one in the divisor however large their degree is in $G$. Joining those
-leaves to three hubs instead of two leaves the divisor untouched while raising the connectivity, and
-gives a $3$-connected counterexample on $23$ vertices, so the $3$-connected form fails as well. Both
-of the hypotheses proposed as repairs constrain the ambient graph, while the engine belongs to the
-divisor. We stop there rather than generalising: the construction does not scale past $k=3$ in our
-hands, so $4$-connectivity is open. Everything asserted is machine-checked in Lean~4/Mathlib unless
-labelled otherwise.
-The biregular case, which is where the conjecture survives, is the subject of the companion
-paper \cite{PartII}.
+In general it is false. The counterexample is due to Chris Hall \cite{HallCE}: a bipartite graph on
+$41$ vertices with $\mu_G=x^{21}(x^4-11x^2+25)^4(x^2-5)(x^2-11)$, where $\sqrt5$ lies in an internal
+gap of $\operatorname{spec}(T)$. We give the mechanism. A separator of size $k$ met by $p$ identical
+branches forces $A^{\,p-k}\mid\mu_G$, where $A$ is the branch's own matching polynomial
+(Lemma~\ref{lem:divis}); Hall's $\sqrt5$ is the top matching root of the star $K_{1,5}$, and a
+star's leaves have degree one in the divisor however large their degree is in $G$. Hypotheses on
+$G$ therefore cannot reach the offending root. We show this is not a figure of speech by refuting
+both repairs that have been proposed: minimum degree three fails on $14$ vertices, with
+$\mu_G=x^4(x^2-3)(x^8-24x^6+171x^4-396x^2+270)$ and $\sqrt3$ outside $\operatorname{spec}(T)$, and
+$3$-connectivity fails on $23$. Any repair must constrain the divisor rather than the graph.
+
+Everything asserted is machine-checked in Lean~4/Mathlib unless labelled otherwise. Supplementary
+material is in \cite{Supp}; the biregular case, where the conjecture survives, is \cite{PartII}.
 \end{abstract}
 
 \medskip
@@ -166,31 +157,20 @@ polynomial $2T_n(x/2)$ of $C_n$, consistent with Godsil--Gutman
 
 \subsection*{What this paper does}
 
-The closed form above is the starting point rather than the subject. Read as a statement about
-where the roots of $\mu_{d,G}$ sit, it says that for the cycle they land exactly in
-$\operatorname{spec}(T)$, the spectrum of the universal cover, and not merely in the interval
-$[-\rho,\rho]$ that Hall--Puder--Sawin guarantee. Those differ whenever $T$ has a spectral gap,
-and the question of whether the stronger statement holds in general is the one this paper is
-about.
+The closed form is the starting point rather than the subject. Read as a statement about where the
+roots of $\mu_{d,G}$ sit, it says that for the cycle they land exactly in
+$\operatorname{spec}(T)$, and not merely in the interval $[-\rho,\rho]$ that Hall--Puder--Sawin
+guarantee. The two differ whenever $T$ has a spectral gap, and whether the stronger statement holds
+in general is the question here.
 
-The order is as follows. \S\ref{sec:uni} proves the stronger statement for every graph of first
-Betti number one and every $d$, by the closed form. \S\ref{sec:conj} states it as a conjecture for
-all graphs, records what it would contain --- the matching-polynomial form of Question~6.3 of
-\cite{HPS}, and Problem~1 of Song, Fan and Miao --- and proves it in two further cases, for
-subdivisions and for complete bipartite graphs. \S\ref{sec:hallce} is the counterexample, due to
-Chris Hall, which shows the conjecture is false: we verify his certificate, machine-check its
-algebra, and extend his graph to a two-parameter family in which the pendant leaves turn out to be
-essential.
-
-The rest of \S\ref{sec:hallce} charts the repair. The mechanism behind the counterexample is a
-\emph{separation}, not low connectivity as the examples first suggest. A local hypothesis,
-minimum degree three, survives every search we ran against it and is stated as
-Conjecture~\ref{conj:mindeg3}; \S\ref{sec:mindeg3} then refutes it
-(Proposition~\ref{prop:d3false}), on $14$ vertices, by a star divisor. Since a star's leaves have
-degree one in the divisor whatever their degree in $G$, no lower bound on $\delta(G)$ touches the
-engine; Proposition~\ref{prop:c2false} then closes the connectivity route too, by attaching those
-leaves to three hubs rather than two. The biregular case, which survives the
-refutation and is where the phenomenon actually lives, is the companion paper \cite{PartII}.
+\S\ref{sec:uni} proves it for every graph of first Betti number one and every $d$.
+\S\ref{sec:conj} states it as a conjecture for all graphs. \S\ref{sec:hallce} is the counterexample,
+due to Chris Hall, together with the reason no local repair of it can work: by the Divisibility
+Lemma of \S\ref{sec:divis} the branch polynomial divides $\mu_G$ across a separator, so the
+offending root belongs to the divisor, and hypotheses on $G$ cannot see it. Minimum degree three
+fails on $14$ vertices and $3$-connectivity on $23$. Supplementary material, including two families
+in which the conjecture is provable and the record of the searches that missed the counterexample,
+is in \cite{Supp}; the biregular case, which survives the refutation, is \cite{PartII}.
 
 \section{Proof}
 
@@ -478,305 +458,12 @@ whose gap is $(0,\sqrt2-1)$, the path $P_8$ is a subtree with eigenvalue
 $2\cos(4\pi/9)=0.3473$ inside that gap. So the $d=1$ case does not follow from
 the path-tree argument. It is nevertheless a theorem for an infinite family.
 
-\subsection{Subdivisions: the case of minimum degree two}
-
-\begin{theorem}\label{thm:subdiv}
-Let $H$ be $D$-regular, $D\ge2$, and let $S(H)$ be its subdivision, so that the
-universal cover of $S(H)$ is the $(D,2)$-biregular tree with spectral gap
-$\bigl(0,\sqrt{D-1}-1\bigr)$. Then every nonzero root of $\mu_{S(H)}$ has
-absolute value at least $\sqrt{D-1}-1$; that is,
-Conjecture~\ref{conj:gap} holds for $S(H)$ at $d=1$. The constant is the spectral
-gap of the universal cover; we do not claim it is attained, and by the strictness
-of Heilmann--Lieb on finite graphs it is not.
-\end{theorem}
-
-Theorem~\ref{thm:subdiv} settles the case $\min(d,r)=2$ of Problem~1 of
-\cite{SFM}.
-Their uniformity condition allows $r\ge2$, and they observe that when $H$ is a
-simple graph the incidence graph $B_H$ is exactly the subdivision $S(H)$; so
-their question at $r=2$ asks precisely whether $\mu_{S(H)}$ has no root $\mu$
-with $0<|\mu|<|\sqrt{D-1}-1|$. By their Theorem 1.8 this gives every
-$D$-regular graph, viewed as a $(D,2)$-regular hypergraph, a left-sided
-Ramanujan $2$-covering. The case $d=2$ follows as well, since $B_H$ is a
-bipartite graph and $\mu_{B_H}$ does not distinguish its two sides: a
-$(2,r)$-regular hypergraph has for incidence graph the subdivision of an
-$r$-regular graph, and the quantity $|\sqrt{d-1}-\sqrt{r-1}|$ is symmetric in
-$d$ and $r$. The case $\min(d,r)\ge3$ of their problem remains open in general, as does
-Conjecture~\ref{conj:gap} for $\min(a,b)\ge3$; Theorem~\ref{thm:kpq} below settles the
-complete bipartite graphs inside that range, $K_{3,4}$ among them.
-
-\begin{proof}
-By the subdivision identity $\mu_{S(H)}(x)=x^{|E|-|V|}\,\mu_H(x^2-D)$
-\cite{WWM}, the nonzero roots of $\mu_{S(H)}$ are the $x$ with $x^2=D+\theta$
-for $\theta$ a root of $\mu_H$. Heilmann--Lieb gives $\theta\ge-2\sqrt{D-1}$,
-so with $s=\sqrt{D-1}$ we get $x^2\ge s^2+1-2s=(s-1)^2$, whence
-$|x|\ge s-1$. Sharpness: for cubic $H$ of large girth $\theta_{\min}\to-2\sqrt2$,
-so the bound is approached.
-\end{proof}
-
-The inequality step is machine-checked in Lean~4 as \texttt{subdivision\_gap}.
-The theorem is exactly Heilmann--Lieb for $H$ transported through the
-subdivision identity, and the numbers match: for $H=K_4$, $\mu_{K_4}=x^4-6x^2+3$
-gives smallest positive root $\sqrt{3-\sqrt{3+\sqrt6}\,}=0.8158$, against the
-gap edge $0.4142$; the subdivisions of $K_{3,3}$, the prism, $Q_3$, the Wagner,
-Petersen, Heawood and M\"obius--Kantor graphs give
-$0.701,0.714,0.650,0.647,0.607,0.563,0.551$, decreasing toward the gap edge
-with the girth and never reaching it.
-
-For $K_{2,3}$ the computation was pushed to $d=6$ using
-$\mu_{d,G}=\E[\chi_H]/\chi_G$ over $(d+1)$-covers, which is polynomial time per
-cover, together with the reduction of the first free permutation to one
-representative per cycle type; the ratios continue
-$1.68$ at $d=5$ and no root in the gap at $d=6$. That last case is a caution
-worth recording: in floating point it appeared to produce roots at
-$\pm0.055$, well inside the gap, which an exact integer recomputation showed to
-be an artefact of evaluating a degree-$30$ polynomial built from $35\times35$
-characteristic polynomials in double precision.
-
- The last column decreases monotonically in $d$ in
-every case, which is what the conjecture predicts: by
-Corollary~\ref{cor:floquet} in the $b_1=1$ case the roots equidistribute on
-$\operatorname{spec}(T)$, so they should approach the gap edge without crossing
-it. The evidence is therefore not merely that the bound holds but that it is
-approached, though no computation here reaches the regime where the ratio is
-close to $1$.
-
-\subsection{Complete bipartite graphs}\label{sec:kpq}
-
-The smallest graph in the open range $\min(a,b)\ge3$ is $K_{3,4}$, which is
-$(4,3)$-biregular. The complete bipartite family is settled outright, by an exact
-computation rather than by transport from a regular graph.
-
-\begin{theorem}\label{thm:kpq}
-Let $2\le p\le q$. Every root of $\mu_{K_{p,q}}$ lies in
-\[
-\{0\}\cup\pm\bigl[\sqrt{q-1}-\sqrt{p-1},\ \sqrt{q-1}+\sqrt{p-1}\bigr],
-\]
-the spectrum of the $(q,p)$-biregular tree. So Conjecture~\ref{conj:gap} holds for
-every $K_{p,q}$ at $d=1$.
-\end{theorem}
-
-\begin{proof}
-Since $m_k(K_{p,q})=\binom pk\binom qk k!$, comparison of coefficients with
-$L_p^{(\alpha)}(t)=\sum_k(-1)^k\binom{p+\alpha}{p-k}t^k/k!$ at $\alpha=q-p$ gives
-\[
-\mu_{K_{p,q}}(x)=x^{\,q-p}(-1)^p\,p!\;L_p^{(q-p)}(x^2),
-\]
-so the nonzero roots are the square roots of the zeros of a Laguerre polynomial.
-Those zeros are the eigenvalues of the $p\times p$ symmetric tridiagonal Jacobi
-matrix $J$ with $J_{kk}=2k+\alpha+1$ and $J_{k,k+1}=J_{k+1,k}=\sqrt{(k+1)(k+\alpha+1)}$,
-$0\le k\le p-1$.
-
-Put $c=p+q-2$ and $g(u)=\sqrt{u(u+\alpha)}-u$, and apply Gershgorin to $J-cI$. The
-shifted diagonal in row $k$ is $2k-2p+3$, which is at most $-1$ for $k\le p-2$, so
-the radius of an interior row is
-\[
-(2p-3-2k)+\sqrt{k(k+\alpha)}+\sqrt{(k+1)(k+1+\alpha)}\;=\;2p-2+g(k)+g(k+1),
-\]
-the index cancelling exactly. The step inequality
-\begin{equation}\label{eq:amgm}
-\sqrt{u(u+\alpha)}+1\;\le\;\sqrt{(u+1)(u+1+\alpha)}
-\end{equation}
-reduces, on squaring, to $\sqrt{u(u+\alpha)}\le u+\alpha/2$, which is
-$\alpha^2\ge0$. It makes $g$ nondecreasing along the integers, so the radius is
-largest at $k=p-2$, where it is $1+\sqrt{(p-2)(p-2+\alpha)}+\sqrt{(p-1)(q-1)}$ and
-\eqref{eq:amgm} at $u=p-2$ bounds it by $2\sqrt{(p-1)(q-1)}$. The last row has
-shifted diagonal $1$ and the single off-diagonal entry $\sqrt{(p-1)(q-1)}$, so its
-radius lies within the same bound as soon as $(p-1)(q-1)\ge1$, which holds for
-$p\ge2$. Hence every eigenvalue $t$ of $J$ satisfies
-$|t-(p+q-2)|\le2\sqrt{(p-1)(q-1)}$; since
-$\bigl(\sqrt{q-1}\pm\sqrt{p-1}\bigr)^2=(p+q-2)\pm2\sqrt{(p-1)(q-1)}$, that disc is
-exactly the stated band for $x^2=t$. The factor $x^{q-p}$ contributes the root $0$,
-which lies in the tree spectrum.
-\end{proof}
-
-The bound is sharp: at $p=q$ every interior Gershgorin row attains it, and the
-conclusion is then the Heilmann--Lieb interval for the $p$-regular $K_{p,p}$. It
-does need $p\ge2$: at $p=1$ the only zero is $q$ while the band degenerates to
-$\{q-1\}$, the $(q,1)$-``biregular tree'' being the finite star $K_{1,q}$. For
-$K_{3,4}$ the Laguerre factor is $t^3-12t^2+36t-24$, with zeros
-$0.935,\ 3.30,\ 7.76$ against the band $[0.101,\ 9.899]$.
-
-Inequality \eqref{eq:amgm}, the two row bounds, the endpoint identity and the
-Gershgorin step are machine-checked in Lean~4 as \texttt{LaguerreBand.sqrt\_step},
-\texttt{rowRadius\_le}, \texttt{lastRow\_le}, \texttt{band\_endpoints} and
-\texttt{laguerre\_band}. The coefficient identification and the passage to the Jacobi
-matrix are classical and remain by hand.
-
-\subsection{Three further reductions}\label{sec:further}
-
-The following arose from a conversation Chris Hall conducted with a language model and
-shared with us in August 2026. We have checked them, and record them here with their
-status, which differs sharply between the three. None is used elsewhere in this paper.
-
-\paragraph{Localization in the maximal abelian cover.}
-Put a circle variable on each of the $b_1(G)$ cotree edges and let $A_G(z)$ be the
-resulting magnetic adjacency matrix. Haar integration over $\mathbb T^{b_1}$ annihilates
-every permutation cycle of length at least three, since a simple cycle must use a cotree
-edge and therefore carries a nontrivial character; fixed points and transpositions survive,
-and those are exactly the matchings. Hence
-\[
-\mu_G(x)=\int_{\mathbb T^{b_1}}\det\bigl(xI-A_G(z)\bigr)\,dz .
-\]
-For $|z|=1$ the matrix $A_G(z)$ is Hermitian, so the integrand is real for real $x$; and a
-continuous real function on a connected space whose average vanishes must vanish somewhere.
-Therefore every matching root is an eigenvalue of some $A_G(z)$, that is
-$\operatorname{Zeros}(\mu_G)\subseteq\operatorname{spec}(G^{\mathrm{ab}})$, and
-Conjecture~\ref{conj:gap} at $d=1$ becomes
-\[
-\operatorname{Zeros}(\mu_G)\cap\bigl(\operatorname{spec}(G^{\mathrm{ab}})\setminus
-\operatorname{spec}(T)\bigr)=\emptyset .
-\]
-The realness of the integrand, the vanishing-average argument and the reduction are
-machine-checked (\texttt{AbelianCover.det\_sub\_smul\_one\_im},
-\texttt{exists\_zero\_of\_integral\_zero}, \texttt{root\_mem\_of\_average},
-\texttt{reduction}). The cancellation over cycle types, left by hand above, reduces to one
-statement: a sum of nonzero vectors with pairwise disjoint supports is nonzero. The cycles of
-a permutation are vertex-disjoint, hence use disjoint edge sets, hence have homology classes
-of disjoint support, and each class is nonzero because a cycle must use a cotree edge. That
-lemma is \texttt{TorusGodsilGutman.sum\_ne\_zero\_of\_disjoint\_support}, and the sign and
-averaging steps are re-proved in the same file in the compact form
-\texttt{sign\_const\_of\_nonvanishing}, \texttt{nonvanishing\_average\_ne\_zero},
-\texttt{mu\_ne\_zero\_of\_nonvanishing}, the last being the contrapositive actually used.
-The two graph-theoretic inputs it consumes are also machine-checked. That every cycle uses at
-least one cotree edge is \texttt{CotreeCycle.exists\_cotree\_edge}: if all its edges lay in
-the tree, the walk would transfer to a cycle there, which acyclicity forbids, and no relation
-between the tree and $G$ is needed beyond acyclicity. That vertex-disjoint cycles use disjoint
-edge sets is \texttt{disjoint\_edges\_of\_disjoint\_support}. What remains informal is only
-the identification of the monomial attached to a permutation with the sum of the homology
-classes of its cycles, which is bookkeeping about how the magnetic matrix is set up rather
-than a mathematical step. The
-identity is checked numerically to $7\cdot10^{-15}$ on seven graphs with $b_1$ up to four
-(\texttt{code/torus\_gg.py}).
-
-It is worth being precise about what the connectedness of $\mathbb T^{b_1}$ contributes,
-since Godsil--Gutman average over the $2^{|E|}$ signings and obtain the same identity. A
-nonvanishing continuous function on a finite discrete set may take both signs, so no
-conclusion about the average follows; on a connected space it may not. The inclusion
-$\operatorname{Zeros}(\mu_G)\subseteq\operatorname{spec}(G^{\mathrm{ab}})$ is a consequence of
-the topology of the parameter space, not of the averaging.
-
-The localization is useful in the negative direction too: any counterexample must live in
-$\operatorname{spec}(G^{\mathrm{ab}})\setminus\operatorname{spec}(T)$.
-
-Two 2025 papers settle the companion question for the \emph{point} spectrum, in the opposite
-direction. Li, Magee, Sabri and Thomas \cite{LMST} characterise the eigenvalues of
-$G^{\mathrm{ab}}$ as the reals that are roots of $\mu_{G\setminus\Gamma}$ for every
-$2$-regular subgraph $\Gamma$, which at $\Gamma=\emptyset$ gives
-$\operatorname{pointspec}(G^{\mathrm{ab}})\subseteq\operatorname{Zeros}(\mu_G)$; Spier
-\cite{Sp} proves that $G^{\mathrm{uni}}$ and $G^{\mathrm{ab}}$ have the same eigenvalues.
-Those concern flat bands, so neither contains nor is contained in the inclusion above, which
-concerns the full spectrum. But Spier's theorem says the two covers are indistinguishable at
-the level of point spectrum, and the residue
-$\operatorname{spec}(G^{\mathrm{ab}})\setminus\operatorname{spec}(T)$ is exactly where they
-become distinguishable, so that is where a proof of Conjecture~\ref{conj:gap} has to act.
-
-\paragraph{Feedback vertex number one.}
-Suppose some vertex $v$ has $F=G-v$ a forest, so that every cycle of $G$ passes through
-$v$; the first Betti number is then unrestricted, and flowers, theta graphs and every
-$K_{2,q}$ qualify. Writing the universal cover's adjacency operator as a matrix over
-$C^*_r(F_{b_1})$ and eliminating the preimage of $F$, the Schur complement $S_v(x)$ onto
-the fibre over $v$ is a \emph{finite} sum of group elements, so it lies in the group
-algebra inside $C^*_r(F_{b_1})$ rather than merely in the von Neumann algebra
-$L(F_{b_1})$. That is the load-bearing point, since $L(F_{b_1})$ is a $\mathrm{II}_1$
-factor full of projections while $C^*_r(F_{b_1})$ is projectionless by Pimsner--Voiculescu.
-A self-adjoint invertible element of a projectionless $C^*$-algebra is definite, so its
-canonical trace cannot vanish. And that trace is
-\[
-\tau\bigl(S_v(x)\bigr)=x-\sum_{p\sim v}\frac{\mu_{F-p}(x)}{\mu_F(x)}
-=\frac{\mu_G(x)}{\mu_{G-v}(x)} ,
-\]
-the first equality because returning to the same lift of $v$ forces a walk to enter and
-leave a lifted component of $F$ at the same attachment point (two distinct attachment
-points of one component sit under distinct lifts of $v$, else the universal cover would
-contain a cycle), and the second by the matching recursion at $v$ together with the
-cofactor formula for a forest resolvent. A root of $\mu_G$ that is not a root of
-$\mu_{G-v}$ therefore makes $\tau(S_v)$ vanish, forcing $S_v$ to be non-invertible, hence
-the root lies in $\operatorname{spec}(T)$.
-
-We machine-check the pieces that can be: the combinatorial core
-(\texttt{FeedbackVertex.no\_bypass}), the resolvent diagonal
-(\texttt{resolvent\_diag}), the algebraic collapse of the trace formula
-(\texttt{matching\_ratio}), and the trace step (\texttt{trace\_ne\_zero\_of\_definite}).
-Pimsner--Voiculescu is not in Mathlib, so \texttt{feedback\_one\_of} carries it as an
-explicit hypothesis in the shape the argument consumes. We therefore state this as
-established modulo that classical input, and not as machine-checked end to end.
-
-\paragraph{Two closure operations.}
-Attaching a fixed rooted tree $R$ at every vertex sends $\mu_{d,H}$ to
-$\beta^{N}\mu_{d,H}(\alpha/\beta)$ with $\alpha=\mu_R$, $\beta=\mu_{R-o}$ and
-$N=d\,|V(H)|$, because an uncovered vertex leaves its whole copy of $R$ free while a
-covered one leaves $R-o$; the same ratio $\alpha/\beta$ is what the Schur complement of
-the universal cover produces, so the conjecture is inherited. Starting from a regular
-graph, where the conjecture is immediate, this yields graphs of arbitrarily large first
-Betti number whose universal covers have genuine gaps. Independently, the subdivision
-identity survives averaging over $d$-covers, since suppressing the degree-two fibres of a
-cover of $S(H)$ gives a cover of $H$ and a product of independent uniform permutations is
-uniform; that upgrades Theorem~\ref{thm:subdiv} from $d=1$ to every $d$, and with it the
-whole $(D,2)$-biregular family. The substitution identity and the root transfer are
-machine-checked (\texttt{TreeSubstitution.homogenize}, \texttt{star\_ratio},
-\texttt{subdivision\_root}, \texttt{subdivision\_abs}); the covering combinatorics, which
-is the same fibre bookkeeping as \texttt{CoverCounts}, is by hand. Neither operation
-touches the irreducible core: both reduce the spectral problem to a \emph{scalar} transfer
-function, and the difficulty begins where elimination leaves a matrix-valued one.
-
-\subsection{The biregular case is one interval, and we have one end of it}
-Let $G$ be $(a,b)$-biregular bipartite, $s=\sqrt{a-1}$, $t=\sqrt{b-1}$. Since
-$G$ is bipartite, $\mu_G(x)=x^{\varepsilon}f(x^2)$ for a polynomial $f$ and
-$\varepsilon\in\{0,1,2,\dots\}$. Put
-\[
-c=(a-1)+(b-1),\qquad m=(a-1)(b-1),\qquad g(z)=f(z+c).
-\]
-The universal cover has spectrum $\{0\}\cup\pm[\,|s-t|,s+t\,]$, and
-$(s\pm t)^2=c\pm2\sqrt m$, so
-\[
-x\in\operatorname{spec}(T)\ \setminus\{0\}
-\iff
-x^2-c\in\bigl[-2\sqrt m,\ 2\sqrt m\bigr].
-\]
-The change of variable therefore turns Conjecture~\ref{conj:gap}, for biregular
-$G$, into a single clean statement:
-\begin{equation}\label{eq:twosided}
-\text{every root of }g\text{ lies in }\bigl[-2\sqrt m,\,2\sqrt m\bigr],
-\end{equation}
-which is a Heilmann--Lieb interval of effective degree $m+1$.
-
-It is worth recording what this says about the matching generating polynomial
-$M_G(w)=\sum_km_kw^k$, since that, rather than $\mu_G$, is the object of
-\cite{HL}. From $f_G(y)=y^pM_G(-1/y)$ the roots correspond by $w=-1/y$, so a
-lower bound on the least positive root of $f_G$ is an upper bound on the modulus
-of the roots of $M_G$. Writing $Q_G(z)=M_G(-z)=\sum_k(-1)^km_kz^k$, the
-reciprocal-and-reflect of $f_G$:
-\begin{equation}\label{eq:annulus}
-\text{Conjecture~\ref{conj:gap} at }d=1
-\iff
-\text{every root of }Q_G\text{ lies in }\Bigl(0,\ (s-t)^{-2}\Bigr].
-\end{equation}
-Heilmann--Lieb, in the same variable, says every root of $Q_G$ is at least
-$\bigl(2\sqrt{\Delta-1}\bigr)^{-2}$ in modulus. The two statements bound the
-roots of one polynomial from the two sides, so \eqref{eq:twosided} and
-\eqref{eq:annulus} are the same dichotomy seen in reciprocal coordinates. This
-is a restatement and nothing more, but it is the coordinate in which the
-classical machinery is written, and $Q_G$ is the polynomial whose deletion
-recursion $Q_G=Q_{G-v}-z\sum_{u\sim v}Q_{G-v-u}$ is formalized in the
-accompanying Lean development. The upper end of
-\eqref{eq:twosided} is known: the path-tree argument of Godsil bounds the roots
-of $\mu_G$ by the spectral radius of the path tree, which for an
-$(a,b)$-biregular graph with $a,b\ge2$ is at most $s+t$
-\cite{God81,God93}. It is worth
-noting that \cite{HL} proved the corresponding statement only in the regular
-case; the irregular case is due to Godsil and to \cite{MSS}. The lower end is
-the conjecture. \emph{They are the two ends of one interval}, so
-what is missing is exactly half of a two-sided Heilmann--Lieb theorem for
-biregular bipartite graphs.
-
-
 \section{Hall's counterexample}\label{sec:hallce}
 
-Everything in this section except \S\ref{sec:hallfamily} is due to Chris Hall, who
+Everything in this section is due to Chris Hall, who
 constructed the graph, found the certificate, and wrote the verification note
 \cite{HallCE}. Our contribution is the independent check, the formalization of the
-algebra, and the family in \S\ref{sec:hallfamily}.
+algebra. The two-parameter family containing his graph is in \cite{Supp}.
 
 \subsection{The graph and its matching polynomial}
 
@@ -848,176 +535,6 @@ system. As a physical check,
 the non-backtracking cavity Green function at $\sqrt5+i\eta$ converges to Hall's real
 ratios as $\eta\downarrow0$, with density of states vanishing linearly in $\eta$.
 
-\subsection{A family, and the role of the leaves}\label{sec:hallfamily}
-
-Hall's graph is the case $p=q=5$ of the family $G(p,q)$ with $p$ branches, each a copy of
-$K_{2,q}$ carrying a pendant leaf. The branch arithmetic is uniform: the last factor of
-$\mu_{G(p,q)}$ is
-\[
-   x^{q}\bigl(x^4-(2q+1+p)x^2+q^2+p(q+1)\bigr).
-\]
-Whether its smaller root lies in a gap of $\operatorname{spec}(T)$ is a separate question
-from whether that root is rational, and the two are independent: over $2\le p,q\le7$ the
-discriminant is a perfect square in six cases, while nine cases give a root inside a gap,
-and the two sets overlap in only three. The counterexamples are
-\[
-   (p,q)\in\{(7,3),(6,4),(7,4),(5,5),(6,5),(7,5),(6,6),(7,6),(7,7)\},
-\]
-with $41,43,43,49,50,55,57,64,71$ vertices; Hall's $(5,5)$ is the smallest. The least $p$
-that works is $7,6,5,6,7$ for $q=3,4,5,6,7$, so the phenomenon is cheapest exactly at
-$p=q=5$.
-
-Removing the pendant leaves altogether, so that every $w_i$ has degree $q$, destroys the
-effect over the same range: for all $36$ pairs with $2\le p,q\le7$ the root lies inside
-$\operatorname{spec}(T)$, with the diagnostic separated by three orders of magnitude
-(\texttt{code/hall\_family.py}). The test throughout is the scaling of the density of states
-at the root, which vanishes linearly in $\eta$ outside the spectrum and tends to a positive
-limit inside, and which avoids the cavity mass gate that these flat-band graphs fail.
-
-That observation is real but it does not mean what it appears to mean. Neither minimum
-degree at least two nor bounded maximum degree repairs Conjecture~\ref{conj:gap}, and a
-single graph on $31$ vertices, smaller than Hall's, refutes both at once.
-
-\begin{proposition}\label{prop:subcubic}
-There is a simple connected graph on $31$ vertices, with every degree equal to two or three,
-having a root of its matching polynomial in an internal gap of $\operatorname{spec}(T)$.
-\end{proposition}
-
-Take the rooted binary tree of depth three and identify each of its eight leaves with a
-vertex of an attached triangle. Internal skeleton vertices have degree three, each attachment
-vertex has degree three, the remaining triangle vertices have degree two, and the skeleton
-root has degree two, so the degree set is exactly $\{2,3\}$ and there are $31$ vertices and
-$38$ edges. The matching polynomial has the factor $x^4-7x^2+8$, whose smaller positive root
-\[
-   \theta=\sqrt{\tfrac{7-\sqrt{17}}{2}}=1.19935282014558573\ldots
-\]
-lies in an internal gap of $\operatorname{spec}(T)$: the gap is narrow, of width about
-$0.016$, with spectrum on both sides. The factorisation was computed twice by independent
-routes, the rooted pair recursion for a tree of blocks and a memoised vertex-deletion
-recursion, and the spectral exclusion is certified as in \S\ref{sec:hallce}: Newton at $40$
-digits, seeded from the cavity fixed point, gives a real ratio system on all $76$ directed
-edges with residual $5\cdot10^{-41}$ and every ratio nonzero, with decay rate
-\[
-   \rho=0.99273509760803033\ldots<1 .
-\]
-The margin $1-\rho=0.0073$ is thinner than elsewhere in this section but is resolved far
-beyond the precision used. Verified in \texttt{code/subcubic.py}.
-
-The polynomial half is machine-checked in \texttt{RamaLean/SubcubicCounterexample.lean}. The
-quartic is not an accident of the depth: at depth two the recursion already factors as
-\[
-   X\!\cdot\!A_1-2B_1=X^2(X^2-3)(X^4-7X^2+8)
-\]
-(\texttt{quartic\_factor}), so the quartic divides $A_2$ and hence $\mu_G=A_3$
-(\texttt{quartic\_dvd\_A3}), whose degree is confirmed to be $31$
-(\texttt{degree\_A3}). What depth three supplies is not the root but the gap: at depth two the
-same root lies inside $\operatorname{spec}(T)$, and only the deeper skeleton opens a gap
-around it. That is worth stating because it separates the two halves of a counterexample
-cleanly, and says which one is the binding constraint here.
-
-The construction explains why the earlier families needed large degrees: there the number of
-branches was the degree of the central vertex, so many branches forced high degree. A tree
-skeleton separates the two, supplying arbitrarily many branches at degree three. What the
-mechanism needs is branches, not degree.
-
-\begin{proposition}\label{prop:mindeg2}
-There are simple connected bipartite graphs of minimum degree two with a root of the matching
-polynomial in an internal gap of $\operatorname{spec}(T)$.
-\end{proposition}
-
-Replace each pendant leaf of $G(p,q)$ by a pendant cycle $C_k$ attached at $w_i$. Every new
-vertex then has degree two, as do the middle vertices of $K_{2,q}$, so the graph has minimum
-degree two, and the branches still meet only at $c$, so the deletion recurrence still
-computes $\mu_G$. The effect survives, at a price in size: it needs larger $p$ and $q$ than
-the pendant-leaf version, which is why a search stopping at $p,q\le7$ sees it only for
-$k=5$. Counterexamples occur at
-\[
-   (k,p,q)\in\{(5,7,7),(4,7,8),(3,8,8),(5,7,8),(5,8,7),(4,8,8),(5,8,8)\},
-\]
-the smallest having $92$ vertices, against $41$ for Hall's. So the leaves make the
-construction cheaper without being necessary to it.
-
-For $(k,p,q)=(5,7,7)$, on $92$ vertices with $140$ edges and degrees between two and nine,
-the root is the algebraic number $\theta=2.852901286261237\ldots$, the second largest root of the
-irreducible octic $x^8-26x^6+187x^4-350x^2+91$, which divides $x\mu_H-p\mu_{H-v}$ and hence
-$\mu_G$.
-
-The spectral exclusion is certified, in a different form from \cite{HallCE} and for a
-structural reason. A ratio system exists for \emph{every} $\lambda$ outside
-$\operatorname{spec}(A_T)$, so the ratio equations impose no condition on $\lambda$ and there
-is nothing to eliminate; exact algebra in a fixed number field is therefore not available in
-the way it is for Hall's example, where the ratios happen to lie in
-$\mathbb{Q}(\sqrt5,\sqrt{41})$. Instead the certificate is a posteriori. The $280$ directed
-edges fall into $11$ orbits, listed in \texttt{code/mindeg2\_exact.py} together with their
-non-backtracking follower counts, and the orbit equations are checked against the full
-$280$-edge fixed point. Newton at $80$ digits gives ratios with residual
-$5.6\cdot10^{-81}$, all nonzero; since $\|J^{-1}\|_\infty=204.8$, the Newton--Kantorovich
-bound places an exact solution within $1.1\cdot10^{-78}$ of the computed one. The decay rate
-there is
-\[
-   \rho=0.9666941618858803717\ldots,\qquad 1-\rho=0.0333,
-\]
-while the entrywise Lipschitz constant of the orbit quotient in the ratios is $45$, so $\rho$
-can move by at most $5.7\cdot10^{-76}$ over the certified ball: the margin exceeds that by a
-factor $6\cdot10^{73}$. Hence $\rho<1$ for the exact solution, and by \cite{AFH}
-$\theta\notin\operatorname{spec}(A_T)$. A Collatz--Wielandt vector gives the same conclusion
-independently, at $0.9829$. The statement is thus rigorous modulo Newton--Kantorovich exactly
-as it is rigorous modulo \cite{AFH}, both classical. Verified in \texttt{code/mindeg2.py} and
-\texttt{code/mindeg2\_exact.py}.
-
-\subsection{Approximate localization}\label{sec:defect}
-
-The counterexamples miss by very little. Locating the gap edges sharply, by bisecting the
-Angel--Friedman--Hoory decay rate to $\rho=1$ rather than by scanning a density of states,
-gives for each of them the distance from the root to $\operatorname{spec}(T)$:
-
-\begin{center}
-\begin{tabular}{lrrr}
-family & $n$ & root & defect\\\hline
-pendant leaf $(7,3)$ & $43$ & $1.88040$ & $0.0072$\\
-pendant leaf $(5,5)$, Hall's & $41$ & $2.23607$ & $0.0118$\\
-pendant leaf $(7,6)$ & $64$ & $2.47528$ & $0.0348$\\
-pendant $C_5$ $(7,7)$ & $92$ & $2.85290$ & $0.0014$\\
-pendant $C_3$ $(8,8)$ & $97$ & $3.01489$ & $0.0021$\\
-triangles, depth $3$ & $31$ & $1.19935$ & $0.00024$\\
-\end{tabular}
-\end{center}
-
-Over thirteen counterexamples on $31$ to $97$ vertices, drawn from two unrelated families, the
-defect never exceeds $0.035$ and shows no growth in $n$. Every violated gap has width at most
-$0.22$. This suggests that Conjecture~\ref{conj:gap} is wrong in its constant rather than in
-its shape.
-
-\begin{conjecture}[D1]\label{conj:defect}
-There is an absolute constant $C$ such that for every finite graph $G$ and every root $\theta$
-of $\mu_G$, $\operatorname{dist}(\theta,\operatorname{spec}(T_G))\le C$.
-\end{conjecture}
-
-The statement was fixed before the confirming data was produced and has survived an
-out-of-sample test on ten counterexamples disjoint from the three that suggested it. The
-scaled form with $C/|V(G)|$ is not refuted but is not supported either: $\operatorname{defect}
-\cdot n$ varies by a factor of three hundred with no pattern.
-
-What D1 would buy is machine-checked in \texttt{RamaLean/DefectLocalization.lean}. It says
-exactly that the roots lie in the closed $C$-neighbourhood of $\operatorname{spec}(T)$
-(\texttt{zeros\_subset\_thickening}), so at $C=0$ it is Conjecture~\ref{conj:gap} itself
-(\texttt{thickening\_zero}); and it restores that conjecture away from the edges:
-
-\begin{proposition}\label{prop:core}
-If every root lies within $C$ of $\operatorname{spec}(T)$ and $(a,b)$ is a gap, then no root
-lies in $(a+C,\,b-C)$.
-\end{proposition}
-
-So under D1 every gap wider than $2C$ has a root-free core, and any counterexample is confined
-to a narrow gap, which is what the measured widths show. The open interval is not an artefact:
-a root may sit exactly at distance $C$ from the spectrum, and the gap edges themselves belong
-to $\operatorname{spec}(T)$ (\texttt{root\_free\_core}, \texttt{conj10\_of\_zero\_defect}).
-
-This is the form in which the question seems worth attacking. It is also the natural one: a
-root descending to a spectral edge but never passing it is the Alon--Boppana picture, and
-Conjecture~\ref{conj:gap} was the assertion that matching roots are Ramanujan in that sense
-without exception. D1 says the exceptions exist but are uniformly small.
-
 \subsection{The mechanism is a separation}\label{sec:mechanism}
 
 Every counterexample is built on a separation. If a vertex $v$ separates $G$ into $p$ isomorphic
@@ -1028,7 +545,7 @@ branches $H$, the deletion recurrence gives
 and the root is placed by tuning $p$ and $H$; this is
 \texttt{CutVertexMechanism.branch\_factor}, with \texttt{root\_of\_branch\_factor} transferring
 a root of the last factor to $\mu_G$. Hall's graph and the graphs of
-\S\ref{sec:hallfamily} are of this shape.
+\cite{Supp} are of this shape.
 
 A cut vertex is only the smallest separation. Two hubs $u,v$ with $p$ identical branches
 attached to both leave no cut vertex, since removing either hub leaves the graph joined through
@@ -1087,12 +604,44 @@ $62$ vertices, with \eqref{eq:kcut} checked against brute force at $k=3$, produc
 is not vacuous, those graphs carrying two to five gaps of total width $0.40$ to $0.75$
 (\texttt{code/kcut.py}).
 
-\subsection{The threshold is the minimum degree}\label{sec:mindeg3}
+\subsection{The Divisibility Lemma}\label{sec:divis}
+
+The counterexamples are all instances of one algebraic fact, which we state once.
+
+\begin{lemma}[Divisibility]\label{lem:divis}
+Let $G$ be a finite graph, $S\subseteq V(G)$ with $|S|=k$, and suppose $G-S$ has $p$ components,
+each inducing a copy of the same graph $B$. Write $A=\mu_B$. Then
+\[
+  A^{\,p-k}\ \big|\ \mu_G .
+\]
+\end{lemma}
+
+\begin{proof}
+Expand $\mu_G=\sum_M(-1)^{|M|}x^{n-2|M|}$ over matchings $M$ of $G$ and group the terms by
+\[
+  J(M)=\{\,i : \text{some edge of $M$ joins $S$ to the $i$-th component}\,\}.
+\]
+A matching uses each vertex of $S$ at most once, so distinct components in $J(M)$ are entered
+through distinct vertices of $S$; choosing one such vertex per component is an injection
+$J(M)\hookrightarrow S$, whence $|J(M)|\le k$. For $i\notin J(M)$ the restriction of $M$ to the
+$i$-th component is an arbitrary matching of $B$, and summing over those choices independently
+contributes a factor $A^{\,p-|J(M)|}$. Each term of the resulting sum is therefore divisible by
+$A^{\,p-k}$, and hence so is $\mu_G$.
+\end{proof}
+
+At $k=2$ this is the divisor $A^{p-2}$ of the two-cut identity. The exponent is positive exactly
+when $p>k$, which is why every construction below needs at least $k+1$ branches. The counting step
+and the algebraic step are machine-checked separately
+(\texttt{RamaLean/DivisibilityLemma.lean}: \texttt{card\_branches\_le\_sep},
+\texttt{dvd\_sum\_of\_pow\_terms}, \texttt{matching\_expansion\_dvd}); the matching expansion
+itself is not, Mathlib carrying no matching polynomial.
+
+\subsection{Neither minimum degree nor connectivity}\label{sec:mindeg3}
 
 Connectivity is not the right invariant, because a graph of vertex connectivity $\kappa$ has
 minimum degree at least $\kappa$, and it is the minimum degree that the counterexamples respond
 to. Every counterexample above has minimum degree at most two: Hall's has leaves, the
-$31$-vertex graph of Proposition~\ref{prop:mindeg2} has degree-2 vertices, and so do all three
+$31$-vertex graph of \cite{Supp} has degree-2 vertices, and so do all three
 graphs of Proposition~\ref{prop:twoconn}.
 
 The two-hub construction separates the two conditions exactly, since it can be run with branches
@@ -1222,170 +771,36 @@ the ambient graph, while the engine is a property of the divisor. A star's leave
 $H$ whatever their degree in $G$, and enlarging the separator leaves $A$ untouched while raising
 $\kappa$.
 
-That reading should not be pushed further than the data carries it, and the data stops short. The
-construction does \emph{not} simply scale with $k$: raising the divisibility to $A^{p-k}$ costs
-$p\ge k+1$ branches, but it also raises every leaf's degree and fills the gap in. Of the cases run,
-$k=3$, $m=3$ violates at $p=5$ and $p=6$ but not at $p=4$, where $\sqrt3$ sits in a band; and both
-$k=4$ attempts fail, $(k,m,p)=(4,3,5)$ on $24$ vertices and $(4,4,5)$ on $29$ vertices with
-$\kappa=4$, the root lying in a band in each. So $4$-connectivity is untouched by this construction,
-and we do not claim it fails. What is established is that the two hypotheses actually proposed as
-repairs, minimum degree three and $3$-connectivity, are both false, and that raising an ambient
-hypothesis is not by itself a way to escape a star divisor.
+We do not push the reading further, because the measurements do not support it. Raising the
+separator size $k$ raises the divisibility to $A^{p-k}$, at a cost of $p\ge k+1$ branches, but it
+also raises every branch vertex's degree, and the two effects run against each other. Our scans
+resolve neither, so we make no claim about $\kappa\ge4$ in either direction. What is established is
+that the two hypotheses actually proposed as repairs are false.
 
 The implication D3~$\Rightarrow$~C2 (\texttt{MinimumDegreeThreshold.C2\_of\_D3}) and the sharpness
 statement (\texttt{threshold\_is\_three}) remain valid as implications, but both are now vacuous,
 their hypotheses being false.
 
-The evidence that made Conjecture~\ref{conj:mindeg3} plausible is recorded below rather than
-deleted, because a false conjecture that survives five independent searches is worth a note on
-how it managed it. First, the regular case is trivial and worth separating
-off: for $d$-regular $G$ the universal cover is the $d$-regular tree, whose spectrum is exactly
-the interval $[-2\sqrt{d-1},2\sqrt{d-1}]$ in which Heilmann and Lieb confine every root, so there
-is nothing to violate (\texttt{conj10\_of\_regular}). The content lies in irregular graphs.
+\subsection{What this leaves}\label{sec:leaves}
 
-Second, minimum degree three narrows the gaps but does not remove them, so
-Conjecture~\ref{conj:mindeg3} is not true for want of anywhere to hide: over $38$ graphs the mean
-total gap width falls from $0.99$ at $\delta\le2$ to $0.09$ at $\delta\ge3$, while individual
-gaps at $\delta=3$ reach $2.9$ (\texttt{code/gapscale.py}).
+Conjecture~\ref{conj:gap} is false, and so are both hypotheses proposed to repair it. The three
+refutations are one refutation: by Lemma~\ref{lem:divis} the branch polynomial $A$ divides $\mu_G$
+whenever a separator of size $k$ is met by $p\ge k+1$ identical branches, and $A$ depends on the
+branch alone. Minimum degree and vertex connectivity are conditions on $G$. Neither can see $A$,
+and a star divisor is exactly a branch whose own degrees stay at one however large the degrees of
+$G$ become. Any repair of Conjecture~\ref{conj:gap} must constrain the divisor.
 
-Third, the evidence covers a family unlike the rest. Wheels, a hub joined to a cycle, have
-minimum degree three, are non-bipartite by construction, and carry gaps from $(2.02,2.08)$ at
-$W_5$ out to $(2.02,3.20)$ at $W_{11}$. None up to $W_{14}$ has a root in any gap, and at the
-closest approach the verdict rests on the density-of-states ladder rather than on locating a gap
-edge: for $W_{10}$ through $W_{20}$ the largest root below $2$ has density of states constant to
-four significant figures across four decades of $\eta$, so it lies in the spectrum
-(\texttt{code/wheels.py}).
+We do not know where that leaves the biregular case, which is the setting the phenomenon actually
+inhabits and is treated in \cite{PartII}. There the cover is an $(a,b)$-biregular tree, the gap is
+the single interval $(0,|s-t|)$, and no construction of the present kind has reached it.
 
-Fourth, and this is what the evidence amounted to. Five searches were run against
-Conjecture~\ref{conj:mindeg3}, each designed against the failure mode of the last, and all came
-back clean; Proposition~\ref{prop:d3false} shows they were all clean for one reason, that each
-raised the block's degrees by adding edges inside it. Two reproduce Hall's own mechanism at
-minimum degree three --- $p$ copies of a block glued
-at a new centre, so that the branch factorization makes every root of $\mu_H$ a root of $\mu_G$
---- first with off-the-shelf blocks and then with blocks built to the shape of his, $K_{2,q}$ with
-a graph on the $q$-side lifting those degrees to three. A third abandons the construction
-entirely: random graphs of minimum degree three with deliberately spread degrees and \emph{no cut
-vertex}, which is the case a cut-based engine structurally cannot reach. A fourth requires a
-separating pair. A fifth holds the degree sequence fixed, so the gap does not move, and varies
-only the block's internal structure, so the roots do.
-
-\begin{center}
-\begin{tabular}{lrl}
-\emph{engine} & \emph{scale} & \emph{outcome}\\[2pt]
-$1$-cut, off-the-shelf blocks      & $118$ & closest approach $0.169$\\
-$1$-cut, blocks of Hall's shape    & $350$ & clean\\
-separator-free random search       & $419$ & clean\\
-separating-pair random search      & $39$  & clean\\
-fixed degrees, varying structure   & $14$  & clean
-\end{tabular}
-\end{center}
-
-About twelve hundred configurations, and the two closest approaches are both cut-based
-(\texttt{code/D1cut.py}, \texttt{code/D1cut\_adv.py}, \texttt{code/D3broad.py},
-\texttt{code/D3fixdeg.py}). The nearest miss is worth stating because it is nearer than the table
-suggests: a block $K_{2,12}$ with a perfect matching on the $12$-side has
-$\mu_H=(x-1)^4(x+1)^4(x^6-26x^4+157x^2-12)$, so $1$ is a root of multiplicity four and hence a
-root of $\mu_G$, and $1$ lies well inside the central gap of half-width $\sqrt{11}-\sqrt2=1.90$.
-It is not a counterexample only because $1$ is a spectral \emph{atom} of the cover, so it lies in
-$\operatorname{spec}(T)$ after all: the density of states there reads $8.97$, $89.7$ and $897$ as
-$\eta$ falls through $10^{-2}$, $10^{-3}$, $10^{-4}$, the signature of a point mass. Breaking the
-symmetry that creates the atom moves the root off it --- and into the continuous spectrum, not
-into the gap, since the same change moves the degrees that place the gap.
-
-The separator-free class is not merely clean but comfortable, which is a different statement and
-the one worth having. Taking the density of states at a root as the margin, since a violation is
-exactly a zero there, the median over $419$ graphs is stable at $0.15$ from $n=10$ to $n=20$ and
-if anything rises; the \emph{minimum} falls like $1/n$, but the number of roots sampled doubles
-over that range and a minimum over more draws is smaller for that reason alone, the observed
-$4.19\times10^{-2}$ against the $4.04\times10^{-2}$ that sample size predicts
-(\texttt{code/D3margin.py}). So Conjecture~\ref{conj:mindeg3} is not surviving these tests by a
-hair.
-
-There is one reformulation, and it comes from the same measurements rather than from a new idea.
-Godsil gives $\mu_G\mid\mu_P$ for the path tree $P$, and $P$ is a tree, where the matching
-polynomial is the characteristic polynomial; so every root of $\mu_G$ is an eigenvalue of $P$, and
-$\operatorname{spec}(P)\subseteq\operatorname{spec}(T)$ implies the conjecture
-(\texttt{PathTreeRoute.conj\_of\_pathtree}). The hypothesis is strictly stronger --- $\mu_P$
-carries its own roots too --- and it fails for Hall's graph exactly where the conjecture does. The
-containment holds for the biregular families measured, but at minimum degree three it is
-\emph{false}: one graph in $86$ carrying a gap has a path tree with twelve eigenvalues inside it
-while no root of $\mu_G$ is there. So the hypothesis fails exactly where
-Conjecture~\ref{conj:mindeg3} holds, and the reduction cannot carry a proof of it; the companion
-paper \cite{PartII} gives the counterexample. We record it because it closes a route that the
-biregular evidence makes look plausible.
-
-What none of it supplies is an argument. Each engine was built against the previous failure mode
-and each came back clean, which raises confidence and yields nothing proof-shaped. Every
-counterexample known has a separation, and the evidence is strongest exactly where separations are
-absent; turning that observation into a theorem is the open problem, and it is not one more search.
-
-\subsection{A second conjecture falls with it}\label{sec:xu}
-
-The counterexample refutes more than the conjecture it was built for. Zili Xu \cite{Xu}
-proposes a spectral-inclusion conjecture for \emph{additive products}
-in the sense of Mohanty--O'Donnell \cite{MO}: with $A_1,\dots,A_c$ adjacency matrices on a common
-vertex set, $X=\operatorname{AddProd}(A_1,\dots,A_c)$, and
-\[
-   \alpha(A_1,\dots,A_c;x)=\mathbb E\det\Bigl(xI-\sum_{j}Q_j^{*}A_jQ_j\Bigr)
-\]
-the additive characteristic polynomial, the expectation over independent uniform $\pm1$ diagonal
-signings, he conjectures $Z(\alpha)\subseteq\operatorname{Spec}(X)$. Mohanty--O'Donnell prove the
-weaker $Z(\alpha)\subseteq[-\rho(X),\rho(X)]$, so the proposal stands to that theorem exactly as
-Conjecture~\ref{conj:gap} stands to Hall--Puder--Sawin.
-
-His own remark \cite{Xu} supplies the refutation. Taking the atoms to be the individual edge-adjacency
-matrices of a finite graph $G$ gives $\alpha=\mu_G$ and $\operatorname{AddProd}=\mathrm{UCT}(G)=T$,
-so the conjecture specialises to $Z(\mu_G)\subseteq\operatorname{Spec}(T)$, which is
-Conjecture~\ref{conj:gap} at $d=1$. Hall's graph therefore refutes it, and the accompanying
-$(k,m)$-characteristic-polynomial restatement falls with it through the identity
-$\psi_{k,m}[k\mathcal A_{\mathrm{bd}}]=\alpha$.
-
-\begin{proposition}\label{prop:xu}
-The additive-product spectral-inclusion conjecture is false, as is its $(k,m)$ restatement.
-\end{proposition}
-
-\begin{proof}
-Instantiate at the edge-atom system of the graph of Theorem~\ref{thm:hallce}. By the edge-atom
-identification $\alpha=\mu_G$, so $\alpha(\sqrt5)=0$ by \eqref{eq:hallmu}, while
-$\sqrt5\notin\operatorname{Spec}(T)$ by the certificate of \S\ref{sec:hallce}. The $(k,m)$ form
-follows by substituting the identity above.
-\end{proof}
-
-The assembly is machine-checked in \texttt{RamaLean/XuAdditiveProduct.lean} as
-\texttt{xu\_conj21\_false} and \texttt{xu\_conj24\_false}, with the edge-atom identification and
-Angel--Friedman--Hoory entering as the hypotheses they are; the root and the exclusion come from
-the verified \texttt{muG\_root\_sqrt5} and the certificate of Parts~B--D.
-
-There is a dichotomy attached to that proposal which our answer sharpens. Either the conjecture
-holds for all additive products, in which case the graph statement follows by the edge-atom
-specialisation; or it fails somewhere, in which case real-rootedness, the free-like walk moment
-identities and the spectral-radius bound are together insufficient for spectral inclusion, and
-any proof of the graph statement must use a further property of edge-atom systems. The second
-branch holds, and more sharply than that: the failure is already \emph{in} the edge-atom case
-(\texttt{xu\_dichotomy\_second\_branch}), so no additional property of edge-atom systems can
-rescue the statement, and the repair must restrict the graph class. That is what
-\S\ref{sec:mindeg3} does.
-
-\subsection{What survives}
-
-The counterexample has $b_1=20$, feedback vertex number $5$, and is neither biregular nor
-of bounded feedback vertex number, so it violates the hypotheses of every positive result
-in this paper. Theorem~\ref{thm:main} and the closed form at $b_1(G)=1$, the subdivision case,
-the complete bipartite case of the companion paper \cite{PartII}, the reductions of
-\S\ref{sec:further}, the localization
-$\operatorname{Zeros}(\mu_G)\subseteq\operatorname{spec}(G^{\mathrm{ab}})$ and the
-sufficient conditions of the companion paper \cite{PartII} are all unaffected. What changes is the
-question. The counterexample lives exactly in the residue
-$\operatorname{spec}(G^{\mathrm{ab}})\setminus\operatorname{spec}(T)$ that
-\S\ref{sec:further} identifies as the only place a counterexample could live, so the
-framework was pointed at the right region; what it lacked was any reason for that region to
-be empty. The open problem is to characterise the graphs for which
-$\operatorname{Zeros}(\mu_{d,G})\subseteq\operatorname{spec}(T)$ holds;
-Conjecture~\ref{conj:mindeg3} is our proposal, and \S\ref{sec:mindeg3} records its evidence and
-its sharpness. The content lies entirely in graphs whose universal cover has gaps, and the
-canonical such family is the $(a,b)$-biregular one, which is Problem~1 of Song, Fan and Miao.
-
-
+Two things are open and we state them as open rather than as programme. Whether some hypothesis on
+the \emph{divisor} rescues the bound is untouched here; the natural candidate compares the
+divisor's Heilmann--Lieb radius $2\sqrt{\Delta_H-1}$ with the band edge it would have to clear.
+And whether higher connectivity eventually defeats the construction is not settled by our
+measurements: raising the separator size $k$ raises every branch vertex's degree as well, and the
+two effects run against each other. We looked, the picture did not resolve, and we make no claim
+in either direction.
 \section{Related work and formalization}
 
 The $d$-matching polynomial and the interval $[-\rho,\rho]$ are due to Hall, Puder and Sawin; the
@@ -1441,6 +856,8 @@ families I: Bipartite Ramanujan graphs of all degrees}, Ann.\ of Math.\
   polynomial}, arXiv:2510.05041 (2025).
 \bibitem{PartII} V.~Bonfioli, \emph{The biregular case of a spectral-inclusion
   conjecture: the weighted plane class and its obstructions}, companion paper, 2026.
+\bibitem{Supp} V.~Bonfioli, \emph{Roots of $d$-matching polynomials: supplementary
+  material}, companion note, 2026.
 \bibitem{Xu} Z.~Xu, \emph{Note on mixed characteristic polynomials}, personal communication,
   August 2026.
 \bibitem{MO} S.~Mohanty, R.~O'Donnell, \emph{X-Ramanujan graphs}, arXiv:1904.03500v2 (2019).
