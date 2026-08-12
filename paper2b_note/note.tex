@@ -2019,7 +2019,18 @@ The counting step is machine-checked as \texttt{ArcBound.card\_le\_of\_mem\_all}
 exactly $6=2a$ are nonzero (\texttt{code/ceiling.py}). At $a=2$ it reads $m\le4$ and closes the
 four-block ceiling outright, with no linear algebra. At $a\ge3$ it leaves rows of length five and six
 nonzero, and their dependence on the shorter ones, which the ranks above exhibit, is not explained
-here.
+here. That dependence is not local either: a length-five row lies in the span of the rows on its own
+five blocks at $K_{3,3}$ and at the cube, and does not at the Fano family, so no single local identity
+accounts for it and a proof for $a\ge3$ has to be global.
+
+At the level of these rows Conjecture~\ref{conj:lockstep} sharpens. Its second half asks for
+$\delta W_5=4(a-2)\delta W_4$, and what holds is the stronger statement that the $W_5$ row equals
+$4(a-2)$ times the $W_4$ row as a functional on the accessible data: the raw vectors differ, by
+exactly $24$ at each of the three $a=3$ families here, but the difference lies in the annihilator of
+the constraints. With the first half settled the same way in \texttt{code/relations.py}, both halves
+of the conjecture are exact linear-algebra certificates rather than path measurements
+(\texttt{code/ceiling.py}). A certificate is finite and per family, so the conjecture is still stated
+as one.
 
 Against that cokernel the identity $\delta R=2(a-2)\delta Q_2$ holds exactly, to between
 $10^{-15}$ and $4\times10^{-14}$ at all four families: it is a linear-algebra certificate rather than a

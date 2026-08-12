@@ -11,10 +11,22 @@ What the bound closes, by regime.
    a  bound 2a    four-block ceiling                            status
    2         4      follows outright      PROVED by the counting bound
    3         6            needs morerows of length 5,6 nonzero but dependent
+(d) The (I2) row identity, modulo the constraints.
+        family  a  4(a-2)  raw difference   mod constraints  exact
+           C_4  2       0   too small for a five-row
+           C_6  2       0             0.0          0.00e+00   True
+           C_8  2       0             0.0          0.00e+00   True
+   K_4 triples  3       4   too small for a five-row
+  A nonzero raw difference that vanishes modulo the constraints means the two rows agree
+  as functionals on the accessible data, which is the only place they are evaluated.
   P54 HOLDS. The second-order row of a cyclic word of length above 2a vanishes
   identically, because a point of a tight family lies in exactly a blocks and the
   blocks along an arc all contain the same point. The bound is tight at a = 3. At
   a = 2 it is exactly four, so the four-block ceiling is proved there and needs no
   linear algebra. At a >= 3 the ceiling still holds numerically but by a different
   mechanism: the rows of length five and six are nonzero and lie in the span of the
-  shorter ones, and that dependence is not explained here.
+  shorter ones, and that dependence is not explained here. It is not LOCAL either: the
+  expansion is local at K_{3,3} and the cube and global at Fano, so no single local
+  identity will do it.
+  (I2) holds exactly modulo the constraints, so with (I1) from code/relations.py both
+  halves of A12f are exact per-family certificates rather than path measurements.

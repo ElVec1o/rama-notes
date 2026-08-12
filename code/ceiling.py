@@ -38,10 +38,27 @@ length five and six are genuinely nonzero, yet the rank still does not increase 
 for a >= 3 those rows are nonzero and LINEARLY DEPENDENT on the shorter ones, which this does not
 explain. That dependence is the remaining half of the ceiling.
 
+WHERE THE a >= 3 GAP LIVES, and one route ruled out. At a = 3 the rows of length five and six are
+nonzero yet the rank does not rise, so they are LINEARLY DEPENDENT on the shorter ones. The natural
+guess is that the dependence is local, a length-five row lying in the span of the rows on its own
+five blocks. That is true at K_{3,3} and at the cube, at every nonzero five-row tested, and FALSE at
+the Fano family, where the expansion needs rows on other blocks. Checked modulo the constraints,
+which is the only sense in which the rows are functionals at all. So there is no uniform local
+identity and a proof of the ceiling for a >= 3 has to be global. That is a narrowing, not a proof.
+
+(I2) IS EXACT, MODULO THE CONSTRAINTS. The second half of A12f asked for delta W_5 = 4(a-2) delta W_4.
+At the level of rows the statement is sharper than the variational one: the W_5 row equals 4(a-2)
+times the W_4 row as a FUNCTIONAL on the accessible z. The raw vectors differ, by exactly 24 at every
+a = 3 family here, but that difference lies in the annihilator of the constraints, so the two agree
+where they are ever evaluated. Together with (I1), which code/relations.py settles the same way, both
+halves of A12f are exact per-family certificates rather than path measurements. Neither is a proof for
+general (a, b, q): a certificate is finite and has to be recomputed per family.
+
 FROZEN BEFORE THE DATA:
   P54. (a) Every row of length greater than 2a vanishes identically, at every family.
        (b) The bound is tight: some family has a nonzero row of length exactly 2a.
        (c) At a = 2 this closes the four-block ceiling outright, the bound being 4.
+       (d) The W_5 row equals 4(a-2) times the W_4 row modulo the constraints, at every family.
 
 FALSIFICATION. A nonzero row of length greater than 2a refutes the counting argument. A family where
 rows of length 2a are all zero would leave the bound unproved as stated, though the ceiling would
@@ -103,14 +120,36 @@ def main():
     print(f"{3:>4}{6:>10}{'needs more':>22}{'rows of length 5,6 nonzero but dependent':>34}")
     print()
 
-    if ok_a and tight:
+    print("(d) The (I2) row identity, modulo the constraints.")
+    print(f"{'family':>14}{'a':>3}{'4(a-2)':>8}{'raw difference':>16}{'mod constraints':>18}"
+          f"{'exact':>7}")
+    ok_i2 = True
+    for (nm, n, lines, a) in fams:
+        q = len(lines)
+        rows, ns = block_rows(n, lines)
+        if 5 not in rows or rows[5].shape[0] == 0:
+            print(f"{nm:>14}{a:>3}{4 * (a - 2):>8}   too small for a five-row"); continue
+        W4 = rows[4].sum(axis=0); W5 = rows[5].sum(axis=0)
+        D = W5 - 4 * (a - 2) * W4
+        raw = float(np.abs(D).max()); proj = float(np.abs(D @ ns.T).max())
+        good = proj < 1e-9
+        ok_i2 = ok_i2 and good
+        print(f"{nm:>14}{a:>3}{4 * (a - 2):>8}{raw:>16.1f}{proj:>18.2e}{str(good):>7}")
+    print("  A nonzero raw difference that vanishes modulo the constraints means the two rows agree")
+    print("  as functionals on the accessible data, which is the only place they are evaluated.\n")
+
+    if ok_a and tight and ok_i2:
         print("  P54 HOLDS. The second-order row of a cyclic word of length above 2a vanishes")
         print("  identically, because a point of a tight family lies in exactly a blocks and the")
         print("  blocks along an arc all contain the same point. The bound is tight at a = 3. At")
         print("  a = 2 it is exactly four, so the four-block ceiling is proved there and needs no")
         print("  linear algebra. At a >= 3 the ceiling still holds numerically but by a different")
         print("  mechanism: the rows of length five and six are nonzero and lie in the span of the")
-        print("  shorter ones, and that dependence is not explained here.")
+        print("  shorter ones, and that dependence is not explained here. It is not LOCAL either: the")
+        print("  expansion is local at K_{3,3} and the cube and global at Fano, so no single local")
+        print("  identity will do it.")
+        print("  (I2) holds exactly modulo the constraints, so with (I1) from code/relations.py both")
+        print("  halves of A12f are exact per-family certificates rather than path measurements.")
     else:
         print("  P54 FAILS. Either a long row is nonzero, refuting the counting argument, or the")
         print("  bound is not tight and is the wrong statement.")
