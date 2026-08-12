@@ -3818,8 +3818,10 @@ route that looks open from outside.
   directions at $C_4$ are reported as unresolved rather than quoted, their $y_0-\lambda_{\max}$
   falling to about $4\times10^{-12}$, which is the precision floor of the root solve. A direction
   does not determine a curve, order two leaving the off-diagonal blocks of the correction free, so
-  the sign is also checked along curves whose second-order term is perturbed inside the kernel, and
-  it survives (\texttt{code/quartic.py}). Since $\Gamma$ is normalised to $1$ on these directions the
+  the sign is also checked along curves whose second-order term is perturbed inside the kernel:
+  over $240$ curves at each family, twenty directions carrying twelve perturbed corrections apiece,
+  the smallest constant found is $1.2\times10^{-6}$ at $C_4$ and $2.3\times10^{-2}$ at $C_6$, both
+  positive (\texttt{code/quartic.py}). Since $\Gamma$ is normalised to $1$ on these directions the
   same constants are $c_4/\Gamma^2$, which is the constant in the quadratic shape.
   The shape is local of necessity and not by caution: $y_0-\lambda_{\max}$ is bounded on the class
   while $C^2$ is not, so the ratio falls as the commutator grows and no global constant can work.
