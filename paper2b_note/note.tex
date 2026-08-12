@@ -2023,32 +2023,46 @@ here. That dependence is not local either: a length-five row lies in the span of
 five blocks at $K_{3,3}$ and at the cube, and does not at the Fano family, so no single local identity
 accounts for it and a proof for $a\ge3$ has to be global.
 
-At the level of these rows Conjecture~\ref{conj:lockstep} sharpens. Its second half asks for
-$\delta W_5=4(a-2)\delta W_4$, and what holds is the stronger statement that the $W_5$ row equals
-$4(a-2)$ times the $W_4$ row as a functional on the accessible data: the raw vectors differ, by
-exactly $24$ at each of the three $a=3$ families here, but the difference lies in the annihilator of
-the constraints. With the first half settled the same way in \texttt{code/relations.py}, both halves
-of the conjecture are exact linear-algebra certificates rather than path measurements
-(\texttt{code/ceiling.py}).
+At the level of these rows the second half of Conjecture~\ref{conj:lockstep} is not conjectural. It
+follows from the shape of a single difference, and the mechanism is that the difference lies in the
+ideal of functionals that tightness makes identically zero.
 
-The second half needs no certificate at all, as it turns out. The difference
-$W_5^{\mathrm{row}}-4(a-2)W_4^{\mathrm{row}}$ takes exactly two values over all coordinates, one on
-the diagonal $z^{uv}_{kk}$ and twice that on the off-diagonal $z^{uv}_{kl}$, which is the coefficient
-pattern of
+\begin{proposition}[the five-block row is determined by the four-block row]\label{prop:I2}
+Write $W_4^{\mathrm{row}}$ and $W_5^{\mathrm{row}}$ for the second-order rows of $W_4$ and $W_5$ in
+the coordinates $z^{uv}_{kl}=D_k(u,v)D_l(u,v)$, and suppose
 \[
-T(z)=\sum_{u<v}\sum_{k,l\in K(u,v)}z^{uv}_{kl}=\sum_{u<v}\Bigl(\sum_kD_k(u,v)\Bigr)^2 ,
+W_5^{\mathrm{row}}-4(a-2)\,W_4^{\mathrm{row}}=c\,T,\qquad
+T(z)=\sum_{u<v}\ \sum_{k,l\in K(u,v)}z^{uv}_{kl},
 \]
-the doubling being the $k<l$ storage convention. Tightness makes $T$ identically zero, so
-$W_5^{\mathrm{row}}=4(a-2)W_4^{\mathrm{row}}$ as functionals whatever the scalar in front of $T$ is.
-That is a reason rather than a certificate. The scalar itself is measured and not derived: it is $0$,
-$-12$ and $-60$ at $a=2,3,4$, the same at $q=7$, $9$ and $12$ so independent of $q$, and a prediction
-of $-12(a-2)$ frozen before the $a=4$ computation missed, giving $-24$ against $-60$. The first half
-still rests on the per-family certificate, so the conjecture is stated as one.
+for some scalar $c$. Then $\delta W_5=4(a-2)\,\delta W_4$ for every direction and every curve.
+\end{proposition}
 
-Against that cokernel the identity $\delta R=2(a-2)\delta Q_2$ holds exactly, to between
-$10^{-15}$ and $4\times10^{-14}$ at all four families: it is a linear-algebra certificate rather than a
-path measurement. A certificate is finite and per family, so Conjecture~\ref{conj:lockstep} is not
-thereby proved for general $(a,b,q)$, and it is still stated as a conjecture.
+\begin{proof}
+$T$ is the vanishing functional of tightness. Indeed
+\[
+T(z)=\sum_{u<v}\ \sum_{k,l}D_k(u,v)D_l(u,v)=\sum_{u<v}\Bigl(\sum_kD_k(u,v)\Bigr)^2,
+\]
+and $\sum_kD_k=0$ is the linearisation of $\sum_kA_k=aI$, so $T$ vanishes at every admissible $z$.
+Hence $W_5^{\mathrm{row}}$ and $4(a-2)W_4^{\mathrm{row}}$ agree as functionals on the accessible data,
+which is the only place either is evaluated.
+\end{proof}
+
+The hypothesis is a statement about coefficient patterns and is checked directly: the difference takes
+exactly one value on the diagonal coordinates $z^{uv}_{kk}$ and exactly twice that on the off-diagonal
+$z^{uv}_{kl}$, the doubling being the $k<l$ storage convention, at $C_6$, $C_8$, $K_{3,3}$, the Fano
+family and the cube (\texttt{code/ceiling.py}). The scalar is not derived. It is $0$, $-12$ and $-60$
+at $a=2,3,4$, the same at $q=7$, $9$ and $12$ and so independent of $q$; a prediction of $-12(a-2)$
+frozen before the $a=4$ computation missed, giving $-24$ against $-60$. None of that matters for the
+proposition, whose conclusion holds whatever $c$ is.
+
+The first half of the conjecture, $\delta R=2(a-2)\delta Q_2$, has no such argument. It holds exactly,
+to between $10^{-15}$ and $4\times10^{-14}$ at all four families, as a certificate: the functional
+$\phi=(d_P-2(a-2)e_P;\,c_T)$ annihilates the image of the $z$-map. But its difference is not a
+multiple of $T$. That shape holds at the Fano family and $K_{3,3}$, with $c=-6$ and $-3$ respectively,
+and fails at $C_6$ and the cube, where the difference takes several values on each kind of coordinate;
+the weaker form $\sum_{u<v}\alpha_{uv}T^{uv}$, one coefficient per vertex pair, fails at the same two.
+So the first half must also engage the quadrics $Q_j$, and it rests on a per-family certificate.
+Conjecture~\ref{conj:lockstep} is therefore stated as a conjecture, with its second half proved.
 
 Among the coefficients that do move, the first two are not independent, and this is the sharpest
 statement the class supports.
