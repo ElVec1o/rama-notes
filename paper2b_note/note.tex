@@ -1980,6 +1980,29 @@ the locus and three off it, spread $0$ against $0.24$ at $K_{3,3}$
 graph carries them. Verified on $530$ subsets across four families on the locus, and against $\mu$ up
 to $s=5$ off it.
 
+The second-order deformation is carried entirely by the four-block data, and that is the structural
+statement behind everything above. With $A_k=P_k+\varepsilon D_k+\varepsilon^2X_k$, every cyclic
+trace variation is built from the products $D_k(u,v)D_l(u,v)$: two $D$'s give
+$\mathrm{tr}(D_xBD_yC)=\sum_{u,v}B(v)C(u)D_x(u,v)D_y(u,v)$ with $B,C$ diagonal, and one $X$ enters
+only through its diagonal, which order two forces. So all the variations live in one space, cut by
+tightness and the cone condition, and one can ask how much of it each block size spans. The answer is
+that nothing beyond four contributes: the rank of the data from blocks of size at most four equals
+that from size at most five, six and seven, at $C_6$, $K_{3,3}$, the Fano family and the cube, with
+ranks $22$, $82$, $57$ and $189$ (\texttt{code/relations.py}). The relations among the variations are
+the cokernel of that map and number $22$, $65$, $28$ and $148$, against the two coming from $P_2$ and
+$P_3$ being constant.
+
+That settles the shape of the whole picture. Below four the cyclic traces are fixed by tightness and
+idempotency, so $m_0,\dots,m_3$ cannot move. At four the intersection number acquires a cyclic order
+and splits into three, which is the only new information the deformation carries. Above four nothing
+further enters, so $\delta m_5$ and $\delta m_4$ are two functionals on the same space and can be
+proportional, while $\delta m_6$ is a third functional on it and need not be.
+
+Against that cokernel the identity $\delta R=2(a-2)\delta Q_2$ holds exactly, to between
+$10^{-15}$ and $4\times10^{-14}$ at all four families: it is a linear-algebra certificate rather than a
+path measurement. A certificate is finite and per family, so Conjecture~\ref{conj:lockstep} is not
+thereby proved for general $(a,b,q)$, and it is still stated as a conjecture.
+
 Among the coefficients that do move, the first two are not independent, and this is the sharpest
 statement the class supports.
 
