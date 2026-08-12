@@ -1,0 +1,29 @@
+P52 (frozen): (a) the cycle sum counts injective choice functions on the locus;
+(b) the same sum with cyclic traces reproduces mu off it; (c) the three cyclic orders
+on four blocks separate off the locus and coincide on it.
+(a) On the commuting locus: signed cycle sum against the SDR count.
+        family  subsets  up to size   agree
+           C_4       15           4    True
+   K_4 triples       15           4    True
+       K_{3,3}      255           4    True
+  The reason is exact: summing sgn over the permutations with a given cycle partition
+  gives the Moebius function of the partition lattice, and Moebius inversion over the
+  collisions turns choice functions constant on blocks into injective ones.
+(b) Off the locus: the same sum with cyclic traces, against mu.
+        family  commutator  s up to  max abs diff  agrees
+           C_4       0.754        4      1.42e-14    True
+   K_4 triples       0.000        4      9.95e-14    True
+       K_{3,3}       0.931        4      5.68e-13    True
+(c) The three cyclic orders on four blocks: one number on the locus, three off it.
+        family  4-subsets  max spread on locus  max spread off  separates
+           C_4          1             0.00e+00          0.1119       True
+   K_4 triples   no non-commuting family found; row has no power
+       K_{3,3}        126             0.00e+00          0.2387       True
+  On the locus the three orders give one value, the intersection number; off it they
+  give three. That split is what m_4 sees and no set system can express.
+  P52 HOLDS. The deformed polynomial is the SDR count of a family of SUBSPACES: the
+  same signed permutation sum, with the intersection number |cap e| replaced by the
+  cyclic trace tr(prod A). On the locus that is the classical inclusion-exclusion
+  count of partial systems of distinct representatives, hence the matching number of
+  the incidence graph; off it the intersection number acquires a cyclic order and
+  splits into three at four blocks, which is where and why the rigidity ends.

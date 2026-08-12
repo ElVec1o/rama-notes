@@ -1944,6 +1944,42 @@ families against the commuting value $1218$, and at $\mathrm{PG}(2,3)$ the four 
 sit at $1,-52,1170,-14976$ for commuting and deformed families alike while $m_4$, $m_5$ and $m_6$
 move from $120627$, $-638820$, $2258100$ (\texttt{code/transversal.py}).
 
+The cycle expansion has a combinatorial reading, and it is one substitution.
+
+\begin{proposition}[the coefficients count systems of distinct representatives]\label{prop:sdr}
+For a coordinate family, and for every $S$,
+\[
+\sum_{\sigma\in\mathrm{Sym}(S)}\mathrm{sgn}(\sigma)\prod_{\text{cycles }c}\Bigl|\bigcap_{k\in c}e_k\Bigr|
+=\#\bigl\{f:S\to V \ :\ f(k)\in e_k,\ f\text{ injective}\bigr\},
+\]
+so $|m_s|$ is the number of partial systems of distinct representatives of size $s$.
+\end{proposition}
+
+\begin{proof}
+The permutations whose cycle partition is a given $\pi$ contribute
+$\prod_{B\in\pi}(-1)^{|B|-1}(|B|-1)!=\mu(\hat0,\pi)$ in total, the M\"obius function of the
+partition lattice. The product $\prod_{B\in\pi}|\bigcap_{k\in B}e_k|$ counts the choice functions
+constant on every block of $\pi$, so the sum is the M\"obius inversion over the lattice of collisions
+and returns the choice functions with no collision.
+\end{proof}
+
+This is the classical inclusion-exclusion count of systems of distinct representatives in its
+partition-lattice form, and no novelty is claimed for it; it is recorded because of what happens
+next. Off the commuting locus the expansion is unchanged except that
+\[
+\Bigl|\bigcap_{k\in B}e_k\Bigr|\qquad\text{becomes}\qquad \mathrm{tr}\Bigl(\prod_{k\in B}A_k\Bigr).
+\]
+So $\mu$ is the same signed count for a family of \emph{subspaces}, with the number of points common
+to a set of blocks replaced by the cyclic trace of their projections. Three facts recorded separately
+above have that single source. The rigidity of $m_0,\dots,m_3$ is that blocks of size at most three
+have their cyclic traces fixed by $\sum_kA_k=aI$ and idempotency. The cut at four is that
+$\mathrm{tr}(A_iA_jA_kA_l)$ depends on the cyclic order, of which there are three on four blocks,
+where an intersection number has no order at all: at a $4$-subset the three orders give one value on
+the locus and three off it, spread $0$ against $0.24$ at $K_{3,3}$
+(\texttt{code/sdr.py}). And the weights being multi-way rather than pairwise is why no edge-weighted
+graph carries them. Verified on $530$ subsets across four families on the locus, and against $\mu$ up
+to $s=5$ off it.
+
 Among the coefficients that do move, the first two are not independent, and this is the sharpest
 statement the class supports.
 
