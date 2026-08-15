@@ -175,8 +175,8 @@ close the general conjecture, is a CONJECTURE and is labelled as one.
 ## Citing
 Archived on Zenodo. Cite the concept DOI
 [10.5281/zenodo.21433867](https://doi.org/10.5281/zenodo.21433867), which always resolves to the newest
-release. The current release is **v5.0** (2026-08-12),
-[10.5281/zenodo.21908232](https://doi.org/10.5281/zenodo.21908232). Machine-readable metadata is in
+release. The current and final release is **v5.1** (2026-08-15),
+[10.5281/zenodo.21953811](https://doi.org/10.5281/zenodo.21953811). Machine-readable metadata is in
 [`CITATION.cff`](CITATION.cff).
 
 ## License
