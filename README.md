@@ -6,6 +6,15 @@ Four short number-theory / combinatorics notes and a methodology note, each pair
 result with a Lean 4 + Mathlib formalization. Everything here builds and is machine-checked; conjectures
 are labeled as such.
 
+> **Status: closed (August 2026).** This repository is archived and no further work is planned. The
+> central conjecture of Paper 2a is false: Chris Hall's counterexample refutes it, and the two
+> hypotheses proposed to repair it, minimum degree three and 3-connectivity, are refuted here on 14
+> and 23 vertices. The Divisibility Lemma explains why no hypothesis on the ambient graph can work.
+> What stands is the closed form at first Betti number one, the gcd-permanent results of Paper 3,
+> and the formalization. Papers 1 and 4 are slight; Paper 1 recomputes a known OEIS sequence
+> (A128836) over a smaller range than the existing computation and should be read as a note, not a
+> result. Read the papers with that in mind rather than the section headings below.
+
 > **Formalization status:** the Lean library `RamaLean/` builds against Mathlib with **no `sorry`**. Every
 > mathematical theorem depends only on Lean's three standard axioms (`propext`, `Classical.choice`,
 > `Quot.sound`). `native_decide`, which additionally uses `Lean.ofReduceBool`, appears only where the
@@ -19,7 +28,7 @@ are labeled as such.
 ## Papers
 
 ### Paper 2a — Roots of $d$-matching polynomials and the spectrum of the universal cover
-`paper2a_note/` · [note.pdf](paper2a_note/note.pdf) · 22pp
+`paper2a_note/` · [note.pdf](paper2a_note/note.pdf) · 12pp
 
 Hall–Puder–Sawin place the roots of $\mu_{d,G}$ in $[-\rho,\rho]$. We conjectured they lie in
 $\operatorname{spec}(T)$ itself — a proper subset whenever the universal cover has a spectral gap.
@@ -46,7 +55,7 @@ $\operatorname{spec}(T)$ itself — a proper subset whenever the universal cover
   correctness is itself formalized (`SpectralAtom`).
 
 ### Paper 2b — The biregular case: the weighted plane class and its obstructions
-`paper2b_note/` · [note.pdf](paper2b_note/note.pdf) · 60pp
+`paper2b_note/` · [note.pdf](paper2b_note/note.pdf) · 32pp
 
 The biregular case survives the refutation and contains Problem 1 of Song–Fan–Miao. At $b=2$ the
 object is the *weighted plane class*: families $\{(c_k,V_k)\}$ with $\sum_k c_kP_{V_k}\preceq aI$,
