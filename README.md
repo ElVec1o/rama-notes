@@ -31,13 +31,13 @@ are labeled as such.
 `paper2a_note/` · [note.pdf](paper2a_note/note.pdf) · 12pp
 
 Hall–Puder–Sawin place the roots of $\mu_{d,G}$ in $[-\rho,\rho]$. We conjectured they lie in
-$\operatorname{spec}(T)$ itself — a proper subset whenever the universal cover has a spectral gap.
+$\mathrm{spec}(T)$ itself — a proper subset whenever the universal cover has a spectral gap.
 
 - **That conjecture is FALSE, and the counterexample is due to Chris Hall.** A simple connected
   bipartite graph on 41 vertices: five copies of $K_{2,5}$, a pendant leaf on one degree-five
   vertex of each, and a central vertex joined to the other five. Its matching polynomial is
   $x^{21}(x^4-11x^2+25)^4(x^2-5)(x^2-11)$, and $\sqrt5$ sits in an internal gap of
-  $\operatorname{spec}(T)$, certified by an Angel–Friedman–Hoory ratio system with decay
+  $\mathrm{spec}(T)$, certified by an Angel–Friedman–Hoory ratio system with decay
   $0.9636<1$, exact in $\mathbb{Q}(\sqrt5,\sqrt{41})$. We verified his certificate independently
   and machine-checked its algebra. GAPCOUNT falls with it.
 - **Proved** for every $G$ of first Betti number one and every $d$, by a closed form
@@ -45,14 +45,18 @@ $\operatorname{spec}(T)$ itself — a proper subset whenever the universal cover
   $\Phi_{n,r}=\chi_{C_n}U_{r-1}(T_n(x/2))$, equivalent to Hall's conjecture (first proved by
   Cochran–Groothuis–Herring–Rohatgi–Stucky, 2018), by an independent elementary route. **Formalized.**
 - **Proved** for every subdivision at $d=1$, settling the case $\min(d,r)=2$ of Song–Fan–Miao.
-- **The repair, and its threshold.** Minimum degree two fails (pendant cycles for Hall's leaves,
-  92 vertices), bounded maximum degree fails, and 2-connectivity fails — so connectivity is a
-  confound and the mechanism is a *separation*. **D3** (minimum degree $\ge3$) is the surviving
-  hypothesis and three is the exact threshold. **Formalized** (`CutVertexMechanism`,
-  `SeparationOrder`, `MinimumDegreeThreshold`, `GluedSearch`).
-- D3 is a **conjecture**. It survives 806 cut-based configurations built to Hall's own mechanism,
-  419 graphs with no separator at all, and 39 with a separating pair — all on an instrument whose
-  correctness is itself formalized (`SpectralAtom`).
+- **No local repair exists.** Minimum degree two fails, bounded maximum degree fails, and
+  2-connectivity fails. So do the two hypotheses proposed to replace them: **D3** (minimum degree
+  $\ge3$) is refuted on 14 vertices, with $\mu_G=x^4(x^2-3)(x^8-24x^6+171x^4-396x^2+270)$ and
+  $\sqrt3$ outside $\mathrm{spec}(T)$; **C2** (3-connectivity) is refuted on 23 vertices.
+  The spectral certificate is exact and its arithmetic is formalized (`D3Counterexample`).
+- **The Divisibility Lemma** is why none of them could have worked. A separator of size $k$ met by
+  $p$ identical branches forces $A^{\,p-k}\mid\mu_G$, where $A$ is the branch's own matching
+  polynomial. Hall's violating root $\sqrt5$ is the top matching root of the star $K_{1,5}$, and a
+  star's leaves have degree one in the divisor however large their degree is in $G$. Hypotheses on
+  $G$ cannot reach the divisor. **Formalized** (`DivisibilityLemma`).
+- We make **no claim** about 4-connectivity in either direction. Raising the separator size also
+  raises the branch degrees, and our scans resolve neither effect.
 
 ### Paper 2b — The biregular case: the weighted plane class and its obstructions
 `paper2b_note/` · [note.pdf](paper2b_note/note.pdf) · 32pp
@@ -88,7 +92,7 @@ whose matching polynomial is the Marcus–Spielman–Srivastava mixed characteri
 ### Paper 3 — The permanent of the GCD matrix
 `paper3_note/` · [note.pdf](paper3_note/note.pdf)
 
-$a(n)=\operatorname{per}[\gcd(i,j)]_{1\le i,j\le n}$ (OEIS [A085244](https://oeis.org/A085244)). Whereas
+$a(n)=\mathrm{per}[\gcd(i,j)]_{1\le i,j\le n}$ (OEIS [A085244](https://oeis.org/A085244)). Whereas
 $\det[\gcd(i,j)]=\prod_{k\le n}\varphi(k)$ (Smith, 1876), the permanent's arithmetic appears unstudied.
 - Congruences: $2\mid a(n)\ (n\ge3)$, $4\mid a(n)\ (n\ge4)$, $3\mid a(n)\ (n\ge13)$ — **formalized.**
 - $v_2(a(n))\to\infty$ — **formalized.**
@@ -103,7 +107,7 @@ $\det[\gcd(i,j)]=\prod_{k\le n}\varphi(k)$ (Smith, 1876), the permanent's arithm
 
 For $\mu_{d,G}$ (Hall–Puder–Sawin) and fixed $k$, $[x^{|V|d-2k}]\mu_{d,G}$ is a degree-$k$ polynomial in
 $d$; explicit top coefficients in graph invariants (edges, 2-paths, claws, triangles). At $k=3$ the
-constant term counts triangles, $c_3(0)=-\#\triangle(G)$; for $k\ge4$ it is a genuinely higher invariant,
+constant term counts triangles, $c_3(0)$ is minus the number of triangles; for $k\ge4$ it is a genuinely higher invariant,
 **not** a simple count of $k$-edge cyclic subgraphs. **Formalized:** the coefficient extraction
 (`Paper4Coeff`), the inclusion–exclusion for an arbitrary conflict relation (`ConflictIE`), and the
 cover counts $M=|E|d$, $p_2=Pd$ (`CoverCounts`).
@@ -112,8 +116,12 @@ cover counts $M=|E|d$, $p_2=Pd$ (`CoverCounts`).
 `paper1_note/note.md` — a minor note. The sequence is OEIS
 [A128836](https://oeis.org/A128836) (the shifts $S_0=\{n\mid p(n)\}$ and $S_{-1}=\{n\mid p(n)+1\}$ are
 [A051177](https://oeis.org/A051177) and [A203023](https://oeis.org/A203023)); 13 terms to $10^6$;
-elementary explanation of a Ramanujan-prime appearance. The value is the Lean formalization plus the
-elementary explanation, not the sequence; carried as a case study in the methodology note.
+elementary explanation of a Ramanujan-prime appearance.
+
+**Read this as a note, not a result.** A128836 was published in 2007 and computed complete to
+$10^8$; the recomputation here reaches only $10^6$. The central proposition is arithmetic on three
+integers, and the note itself describes the mechanism as trivial and the Ramanujan connection as
+aesthetic. Carried as a case study in the methodology note.
 
 ### Methodology note — Machine-Verified Experimental Mathematics: Four Ramanujan-Style Case Studies
 `methodology_note/` · [note.pdf](methodology_note/note.pdf)
@@ -174,10 +182,9 @@ close the general conjecture, is a CONJECTURE and is labelled as one.
 
 ## Citing
 Archived on Zenodo. Cite the concept DOI
-[10.5281/zenodo.21433867](https://doi.org/10.5281/zenodo.21433867), which always resolves to the newest
-release. The current and final release is **v5.1** (2026-08-15),
-[10.5281/zenodo.21953811](https://doi.org/10.5281/zenodo.21953811). Machine-readable metadata is in
-[`CITATION.cff`](CITATION.cff).
+[10.5281/zenodo.21433867](https://doi.org/10.5281/zenodo.21433867), which always resolves to the
+newest release; per-version DOIs are listed on the Zenodo record itself. Machine-readable metadata
+is in [`CITATION.cff`](CITATION.cff).
 
 ## License
 Dual-licensed — code (Apache-2.0), papers (CC-BY-4.0). See [`LICENSING.md`](LICENSING.md).
