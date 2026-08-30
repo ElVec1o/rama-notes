@@ -1,3 +1,12 @@
+"""SUPERSEDED. This script's spectral verdict cannot be trusted.
+
+It uses the density-of-states and ratio-system machinery of code/d3_counterexample.py, whose
+spectral verdict is retracted: in the graphs built here the branch union is a theta-Aomoto subset,
+so the root is an EIGENVALUE of the universal cover and lies IN spec(T_G), not outside it. The
+graph constructions, the two-cut identity and the gap scans are still correct; only the conclusion
+drawn about spec(T_G) is wrong. See code/aomoto_obstruction.py. Conjectures D3 and C2 are OPEN.
+"""
+
 """Is k = 4 a threshold, or was p simply too small?
 
 code/c2_attack.py refutes C2 at k = 3 and finds both k = 4 attempts clean, which invites the reading

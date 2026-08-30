@@ -6,14 +6,18 @@ Four short number-theory / combinatorics notes and a methodology note, each pair
 result with a Lean 4 + Mathlib formalization. Everything here builds and is machine-checked; conjectures
 are labeled as such.
 
-> **Status: closed (August 2026).** This repository is archived and no further work is planned. The
-> central conjecture of Paper 2a is false: Chris Hall's counterexample refutes it, and the two
-> hypotheses proposed to repair it, minimum degree three and 3-connectivity, are refuted here on 14
-> and 23 vertices. The Divisibility Lemma explains why no hypothesis on the ambient graph can work.
-> What stands is the closed form at first Betti number one, the gcd-permanent results of Paper 3,
-> and the formalization. Papers 1 and 4 are slight; Paper 1 recomputes a known OEIS sequence
-> (A128836) over a smaller range than the existing computation and should be read as a note, not a
-> result. Read the papers with that in mind rather than the section headings below.
+> **Status: closed (August 2026), with a correction.** This repository is archived and no further
+> work is planned. The central conjecture of Paper 2a is false; Chris Hall's counterexample refutes
+> it. **Releases v5.0 to v5.2 additionally claimed that the two proposed repairs, minimum degree
+> three (D3) and 3-connectivity (C2), were refuted here on 14 and 23 vertices. That claim is wrong
+> and is retracted.** In both graphs the root is an *eigenvalue* of the universal cover, so it lies
+> inside the spectrum and refutes nothing. **D3 and C2 are open.** What replaces the claim is a
+> theorem in the other direction: the branch mechanism *cannot* produce a counterexample, because
+> the configuration that forces a root of the matching polynomial is exactly a Aomoto subset for the
+> cover. See `code/aomoto_obstruction.py` and §"Why the branch mechanism cannot produce a
+> counterexample" of Paper 2a. What stands is the closed form at first Betti number one, the
+> gcd-permanent results of Paper 3, and the formalization. Papers 1 and 4 are slight; Paper 1
+> recomputes a known OEIS sequence (A128836) over a smaller range than the existing computation.
 
 > **Formalization status:** the Lean library `RamaLean/` builds against Mathlib with **no `sorry`**. Every
 > mathematical theorem depends only on Lean's three standard axioms (`propext`, `Classical.choice`,
@@ -45,18 +49,21 @@ $\mathrm{spec}(T)$ itself — a proper subset whenever the universal cover has a
   $\Phi_{n,r}=\chi_{C_n}U_{r-1}(T_n(x/2))$, equivalent to Hall's conjecture (first proved by
   Cochran–Groothuis–Herring–Rohatgi–Stucky, 2018), by an independent elementary route. **Formalized.**
 - **Proved** for every subdivision at $d=1$, settling the case $\min(d,r)=2$ of Song–Fan–Miao.
-- **No local repair exists.** Minimum degree two fails, bounded maximum degree fails, and
-  2-connectivity fails. So do the two hypotheses proposed to replace them: **D3** (minimum degree
-  $\ge3$) is refuted on 14 vertices, with $\mu_G=x^4(x^2-3)(x^8-24x^6+171x^4-396x^2+270)$ and
-  $\sqrt3$ outside $\mathrm{spec}(T)$; **C2** (3-connectivity) is refuted on 23 vertices.
-  The spectral certificate is exact and its arithmetic is formalized (`D3Counterexample`).
-- **The Divisibility Lemma** is why none of them could have worked. A separator of size $k$ met by
-  $p$ identical branches forces $A^{\,p-k}\mid\mu_G$, where $A$ is the branch's own matching
-  polynomial. Hall's violating root $\sqrt5$ is the top matching root of the star $K_{1,5}$, and a
-  star's leaves have degree one in the divisor however large their degree is in $G$. Hypotheses on
-  $G$ cannot reach the divisor. **Formalized** (`DivisibilityLemma`).
-- We make **no claim** about 4-connectivity in either direction. Raising the separator size also
-  raises the branch degrees, and our scans resolve neither effect.
+- **The natural repairs are open, and the obvious attack cannot settle them.** Minimum degree two
+  fails and bounded maximum degree fails, which suggests D3 (minimum degree $\ge3$) and C2
+  (3-connectivity). Both are **open**.
+- **The Divisibility Lemma.** A separator of size $k$ met by $p$ identical branches forces
+  $A^{\,p-k}\mid\mu_G$, where $A$ is the branch's own matching polynomial. **Formalized**
+  (`DivisibilityLemma`).
+- **The branch obstruction.** If the branch is a tree with $\theta$ as an eigenvalue and $p>k$, the
+  branch union is a $\theta$-Aomoto subset in the sense of Banks--Garza-Vargas--Mukherjee, so
+  $\theta$ is an *eigenvalue of the universal cover* and lies in $\mathrm{spec}(T)$. The condition
+  $p>k$ that makes the divisor nontrivial is literally the Aomoto inequality
+  $|\partial S|<\mathrm{cc}(G[S])$. The mechanism manufactures points of the spectrum, not
+  counterexamples. **Formalized** (`AomotoObstruction`).
+- **This explains Hall's pendant leaves.** They create the root $\sqrt5$ and simultaneously double
+  the boundary of the relevant star, from $5$ to $10$, carrying it away from the Aomoto inequality.
+  Delete them and the root disappears: $\mu=x^{16}(x^4-15x^2+45)(x^4-10x^2+20)^4$.
 
 ### Paper 2b — The biregular case: the weighted plane class and its obstructions
 `paper2b_note/` · [note.pdf](paper2b_note/note.pdf) · 32pp

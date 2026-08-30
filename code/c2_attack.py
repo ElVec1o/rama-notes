@@ -1,3 +1,23 @@
+"""RETRACTED. The conclusion of this script is wrong.
+
+It concluded that a graph built from p identical branches on a k-vertex separator, with p > k,
+gives a root of mu_G outside spec(T_G), and hence refutes Conjecture D3 or C2. It does not. In
+every such graph the branch union is a theta-Aomoto subset: its components are the p branches, its
+boundary lies in the separator so has at most k vertices, and p > k is exactly the Aomoto
+inequality |boundary| < components. By the criterion of Banks, Garza-Vargas and Mukherjee the root
+is therefore an EIGENVALUE of the universal cover, hence lies IN spec(T_G).
+
+The spectral certificates below are the source of the error. The Angel-Friedman-Hoory ratio system
+degenerates at the root with g(hub -> leaf) = infinity; that pole is the localized eigenstate
+announcing itself, and it was misread as a removable coordinate singularity. The resolvent then
+reported a vertex Green's function of exactly zero at the leaf, which is the same divergence sitting
+in a denominator, and that was misread as the absence of an atom.
+
+The correct analysis is in code/aomoto_obstruction.py. Conjectures D3 and C2 are OPEN. This file is
+kept for the record and because the two-cut identity and the gap scans in it are still correct; only
+the spectral verdict is retracted.
+"""
+
 """Does 3-connectivity survive the star divisor, or does C2 fall the same way D3 did?
 
 Conjecture D3 is refuted in code/d3_counterexample.py by a 14-vertex graph of minimum degree three

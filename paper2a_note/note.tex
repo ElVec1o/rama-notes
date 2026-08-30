@@ -35,17 +35,26 @@ in closed form.
 
 In general it is false. The counterexample is due to Chris Hall \cite{HallCE}: a bipartite graph on
 $41$ vertices with $\mu_G=x^{21}(x^4-11x^2+25)^4(x^2-5)(x^2-11)$, where $\sqrt5$ lies in an internal
-gap of $\operatorname{spec}(T)$. We give the mechanism. A separator of size $k$ met by $p$ identical
-branches forces $A^{\,p-k}\mid\mu_G$, where $A$ is the branch's own matching polynomial
-(Lemma~\ref{lem:divis}); Hall's $\sqrt5$ is the top matching root of the star $K_{1,5}$, and a
-star's leaves have degree one in the divisor however large their degree is in $G$. Hypotheses on
-$G$ therefore cannot reach the offending root. We show this is not a figure of speech by refuting
-both repairs that have been proposed: minimum degree three fails on $14$ vertices, with
-$\mu_G=x^4(x^2-3)(x^8-24x^6+171x^4-396x^2+270)$ and $\sqrt3$ outside $\operatorname{spec}(T)$, and
-$3$-connectivity fails on $23$. Any repair must constrain the divisor rather than the graph.
+gap of $\operatorname{spec}(T)$.
+
+The natural repairs, minimum degree three and $3$-connectivity, are open. Our contribution is to
+show that the obvious attack on them cannot work. A separator of size $k$ met by $p$ identical
+branches forces $A^{\,p-k}\mid\mu_G$, where $A$ is the branch's matching polynomial
+(Lemma~\ref{lem:divis}), so it produces roots of $\mu_G$ at will; but when the branch is a tree that
+same configuration is a $\theta$-Aomoto subset in the sense of Banks, Garza-Vargas and Mukherjee, so
+the root it produces is an \emph{eigenvalue} of the cover
+(Proposition~\ref{prop:obstruction}). The condition $p>k$ that makes the divisor nontrivial is
+literally the Aomoto inequality $|\partial S|<\operatorname{cc}(G[S])$. The mechanism manufactures
+points of $\operatorname{spec}(T)$, not counterexamples.
+
+This explains the one feature of Hall's family that had resisted explanation, the pendant leaves.
+They create the root $\sqrt5$ and simultaneously double the boundary of the relevant star, carrying
+it away from the Aomoto inequality; removing them destroys both. A counterexample must give its
+branches a private boundary, which is a condition on attachment rather than on degrees, and that is
+where a repair should be sought.
 
 Everything asserted is machine-checked in Lean~4/Mathlib unless labelled otherwise. Supplementary
-material is in \cite{Supp}; the biregular case, where the conjecture survives, is \cite{PartII}.
+material is in \cite{Supp}; the biregular case is \cite{PartII}.
 \end{abstract}
 
 \medskip
@@ -146,12 +155,10 @@ in general is the question here.
 
 \S\ref{sec:uni} proves it for every graph of first Betti number one and every $d$.
 \S\ref{sec:conj} states it as a conjecture for all graphs. \S\ref{sec:hallce} is the counterexample,
-due to Chris Hall, together with the reason no local repair of it can work: by the Divisibility
-Lemma of \S\ref{sec:divis} the branch polynomial divides $\mu_G$ across a separator, so the
-offending root belongs to the divisor, and hypotheses on $G$ cannot see it. Minimum degree three
-fails on $14$ vertices and $3$-connectivity on $23$. Supplementary material, including two families
-in which the conjecture is provable and the record of the searches that missed the counterexample,
-is in \cite{Supp}; the biregular case, which survives the refutation, is \cite{PartII}.
+due to Chris Hall. \S\ref{sec:divis} isolates the algebra behind it, and \S\ref{sec:mindeg3} shows
+that this algebra cannot be turned against the two natural repairs, because the configuration it
+needs is exactly an Aomoto subset. Supplementary material is in \cite{Supp}; the biregular case,
+which survives the refutation, is \cite{PartII}.
 
 \section{Proof}
 
@@ -506,171 +513,88 @@ and the algebraic step are machine-checked separately
 \texttt{dvd\_sum\_of\_pow\_terms}, \texttt{matching\_expansion\_dvd}); the matching expansion
 itself is not, Mathlib carrying no matching polynomial.
 
-\subsection{Neither minimum degree nor connectivity}\label{sec:mindeg3}
+\subsection{Why the branch mechanism cannot produce a counterexample}\label{sec:mindeg3}
 
-Connectivity is not the right invariant, because a graph of vertex connectivity $\kappa$ has
-minimum degree at least $\kappa$, and it is the minimum degree that the counterexamples respond
-to. Every counterexample above has minimum degree at most two: Hall's has leaves, the
-$31$-vertex graph of \cite{Supp} has degree-2 vertices, and so do all three
-graphs of \cite{Supp}.
-
-The two-hub construction separates the two conditions exactly, since it can be run with branches
-whose every vertex has degree at least three: ladders anchored at both ends of both rails,
-prisms, and $K_{3,q}$ blocks with two of the three degree-$q$ vertices anchored. That yields
-$102$ graphs of minimum degree three whose vertex connectivity is \emph{two}, so each retains the
-separating pair the engine needs, and $77$ of them have a gap of width at least $0.05$, several
-wider than $2.9$, against the $0.066$ to $0.148$ that the counterexamples of
-\cite{Supp} occupy. None has a root of the bracket in a gap
-(\texttt{code/mindeg3.py}); that sweep did not test the roots of $A$, which is where the
-counterexample below lives.
+The natural repairs are local hypotheses on $G$. Minimum degree two fails and bounded maximum degree
+fails, so one is led to:
 
 \begin{conjecture}[D3]\label{conj:mindeg3}
 Every finite graph of minimum degree at least three satisfies
 $\operatorname{Zeros}(\mu_G)\subseteq\operatorname{spec}(T_G)$.
 \end{conjecture}
 
-\textbf{Conjecture~\ref{conj:mindeg3} is false.} We record the counterexample, which is smaller
-than Hall's by a factor of three.
+\begin{conjecture}[C2]\label{conj:c2}
+Every finite $3$-connected graph satisfies
+$\operatorname{Zeros}(\mu_G)\subseteq\operatorname{spec}(T_G)$.
+\end{conjecture}
 
-\begin{proposition}[D3 fails on $14$ vertices]\label{prop:d3false}
-Let $G$ have two hubs $u,v$, three copies of the star $K_{1,3}$ with centre $c_i$ and leaves
-$\ell_{i,1},\ell_{i,2},\ell_{i,3}$, and every leaf joined to both hubs. Then $G$ is simple,
-connected and bipartite on $14$ vertices and $27$ edges, with
-$\deg c_i=\deg\ell_{i,j}=3$ and $\deg u=\deg v=9$, so $\delta(G)=3$; and
+Both are open. We record here why the construction of \S\ref{sec:divis}, which is the obvious way to
+attack them, cannot settle either: the configuration that makes Lemma~\ref{lem:divis} produce a root
+of $\mu_G$ is the same configuration that puts that root \emph{inside} $\operatorname{spec}(T_G)$.
+
+Banks, Garza-Vargas and Mukherjee \cite{BGM} characterise the eigenvalues of the universal cover:
+$\theta$ is an eigenvalue of $T_G$ if and only if $G$ has a \emph{$\theta$-Aomoto subset}, that is a
+set $S\subseteq V(G)$ with $G[S]$ a forest, $\theta$ an eigenvalue of every component of $G[S]$, and
 \[
-  \mu_G=x^4\,(x^2-3)\,(x^8-24x^6+171x^4-396x^2+270),
+  |\partial_G S|<\operatorname{cc}(G[S]).
 \]
-so $\sqrt3$ is a root of $\mu_G$, while $\sqrt3\notin\operatorname{spec}(T_G)$.
+Li, Magee, Sabri and Thomas \cite{LMST} prove the corresponding statement for the maximal abelian
+cover, in the form that $\theta$ is an eigenvalue of $G^{\mathrm{ab}}$ if and only if $\theta$ is a
+zero of $\mu_{G\setminus\Gamma}$ for every $2$-regular subgraph $\Gamma$, and Spier \cite{Sp} proves
+that $T_G$ and $G^{\mathrm{ab}}$ have the same eigenvalues.
+
+\begin{proposition}[the branch obstruction]\label{prop:obstruction}
+Let $S\subseteq V(G)$ with $|S|=k$, and suppose $G-S$ has $p$ components, each inducing a copy of the
+same \emph{tree} $B$, with $\theta$ an eigenvalue of $B$. If $p>k$ then $\theta$ is an eigenvalue of
+$T_G$, and in particular $\theta\in\operatorname{spec}(T_G)$.
 \end{proposition}
 
-Both halves are exact. That $\mu_G$ factors as displayed is computed from the graph by the deletion
-recursion, with $(x^2-3)$ divided out over $\mathbb{Q}$. That
-$\sqrt3\notin\operatorname{spec}(T_G)$ is Proposition~\ref{prop:d3cert}, whose arithmetic is
-machine-checked (\texttt{RamaLean/D3Counterexample.lean}); the analytic input is the
-Angel--Friedman--Hoory criterion \cite{AFH}, which is cited and not reproved.
+\begin{proof}
+Take the union $U$ of the $p$ branch vertex sets. Then $G[U]$ is the disjoint union of $p$ copies of
+$B$, hence a forest with $\operatorname{cc}(G[U])=p$, and $\theta$ is an eigenvalue of every
+component. Every vertex outside $U$ that is adjacent to $U$ lies in $S$, so
+$|\partial_G U|\le k<p$. Thus $U$ is a $\theta$-Aomoto subset and \cite{BGM} applies.
+\end{proof}
 
-\begin{proposition}[the certificate]\label{prop:d3cert}
-On the four directed-edge orbits of $G$, write $g_1$ for centre-to-leaf, $g_2$ for leaf-to-centre,
-$g_3$ for leaf-to-hub and $g_4$ for hub-to-leaf. At $\lambda=\sqrt3$ the cavity system
+The hypotheses of Proposition~\ref{prop:obstruction} are exactly those of Lemma~\ref{lem:divis}
+together with $p>k$, which is what the lemma needs for the exponent $p-k$ to be positive. So
+whenever the branch mechanism forces a root of $\mu_G$, it forces that root into
+$\operatorname{spec}(T_G)$. The two conditions are the same condition:
 \[
- \lambda=\tfrac1{g_1}+2g_3,\quad \lambda=\tfrac1{g_2}+2g_1,\quad
- \lambda=\tfrac1{g_3}+8g_4,\quad \lambda=\tfrac1{g_4}+g_2+g_3
+  p>k\quad\text{is}\quad |\partial_G S|<\operatorname{cc}(G[S]).
 \]
-is solved by $g_1=1/\sqrt3$, $g_2=\sqrt3$, $g_3=0$, $g_4=\infty$, the last pair escaping along
-$g_3g_4\to-\tfrac18$. The decay quotient has characteristic polynomial $t^4-\tfrac18t^2-\tfrac12$,
-whose largest root in modulus is
-\[
-  \rho=\sqrt{\tfrac{1+\sqrt{129}}{16}}=\tfrac14\sqrt{1+\sqrt{129}}=0.878842\ldots<1,
-\]
-and the vertex Green's functions are $G_{\mathrm{hub}}=\sqrt3/3$,
-$G_{\mathrm{centre}}=-\sqrt3/6$, $G_{\mathrm{leaf}}=0$, all finite.
-\end{proposition}
+A shared separator keeps the boundary at $k$ while the number of components grows with $p$, and the
+Aomoto inequality is then automatic.
 
-Three things make this work where the naive attempt fails. The pole in $g_4$ is a pole of the
-\emph{coordinate}: the decay quotient's entries diverge, but its characteristic polynomial does not,
-because a determinant collects only vertex-disjoint cycle collections and the two cycles present,
-$(g_3g_4)$ and $(g_1g_3g_4g_2)$, share vertices, so their weights $8(g_3g_4)^2=\tfrac18$ and
-$32g_1^2g_2^2(g_3g_4)^2=\tfrac12$ are finite and there is no cross term. Next, $\rho<1$ needs no
-surd: with $s=t^2$ the polynomial is $8s^2-s-4$, and $(s-1)^2\ge0$ gives $8s^2-16s+8\ge0$, which on
-substituting $8s^2=s+4$ leaves $15s\le12$, so $s\le\tfrac45$
-(\texttt{decay\_root\_lt\_one}). Last, the finiteness of every $G_w$ excludes the one remaining
-possibility, that $\sqrt3$ is an \emph{isolated point} of $\operatorname{spec}(T_G)$: an atom forces
-a pole of $G_w$ with the eigenvector weight as residue, and there is none. That step is not a
-formality, since $\operatorname{spec}(T)$ is closed and the biregular cover of \S\ref{sec:conj}
-carries exactly such an isolated $\{0\}$.
+This is why Hall's construction is subtler than it looks, and it explains the role of the pendant
+leaves, which \cite{Supp} records as essential without a mechanism. His branches are not trees, so
+the obstruction does not apply to them directly; the natural forest inside a branch is the star
+$K_{1,5}$ at $w_i$, whose boundary is the pair $\{v_i,\ell_i\}$. With five branches that gives
+$\operatorname{cc}=5$ and $|\partial|=10$, comfortably on the wrong side of the Aomoto inequality.
+Deleting the pendant leaves brings the boundary down to $5$, still not below $5$, and it also
+destroys the root: the leafless graph has
+$\mu=x^{16}(x^4-15x^2+45)(x^4-10x^2+20)^4$, with no factor $x^2-5$. The leaves therefore do two jobs
+at once, creating the root and doubling the boundary of the star, and both are needed
+(\texttt{code/aomoto\_obstruction.py}).
 
-As an independent check, the exact $\sum_wG_w=\sqrt3/6$ is reproduced by the numerical resolvent to
-$7.7\times10^{-10}$ at $\eta=10^{-6}$, the error falling as $\eta^2$, and the exact $\rho$ lies
-between the decays $0.892472$ and $0.867159$ computed at $\sqrt3\mp0.005$
-(\texttt{code/d3\_exact.py}).
-
-The mechanism is Hall's verbatim. His violating root $\sqrt5$ is the top matching root of the
-star $K_{1,5}$, whose matching polynomial is $x^4(x^2-5)$; the divisor is a star. A star's leaves
-have degree one \emph{in the divisor} however large their degree is \emph{in $G$}, so a hypothesis
-on $\delta(G)$ constrains the ambient graph and not the divisor. Here the branch is $K_{1,3}$,
-$A=\mu_{K_{1,3}}=x^2(x^2-3)$, and the two-cut identity
-$\mu_G=A^{p-2}\bigl(x^2A^2-px(B_u+B_v)A+pDA+p(p-1)B_uB_v\bigr)$ makes every root of $A$ a root of
-$\mu_G$ once $p\ge3$. Three branches are needed and two do not suffice, since $A^0=1$ carries no
-root.
-
-This is exactly what the searches above could not see, and the reason is worth stating because it
-is not a matter of scale. Each of them lifted the block's degrees to three by adding edges
-\emph{inside} the block, which changes $A$ and moves its roots; the counterexample lifts them from
-\emph{outside}, by attaching each leaf to both hubs, which leaves $A$ untouched. The five clean
-searches were therefore all run on blocks whose matching polynomial had already been perturbed
-away from the star. Separately, \texttt{code/mindeg3.py} iterated over the roots of the bracket
-and never over the roots of $A$, so the divisibility that is the whole engine went untested; that
-is repaired in \texttt{code/mindeg3adv.py}, which reports a signed margin rather than a verdict.
-
-One trap on the way to Proposition~\ref{prop:d3cert} is worth recording, because it inverts the
-answer rather than blurring it, and because the same trap is what let five searches come back
-clean. Solved naively, the Angel--Friedman--Hoory system
-$\lambda=1/r_e+\sum_{e\to f}r_f$ has four orbits here under $\operatorname{Aut}(G)$, and
-eliminating gives a quadratic whose two real branches both have decay above one, which reads as
-$\sqrt3\in\operatorname{spec}(T_G)$. That is wrong: a hair either side of $\sqrt3$ there are
-\emph{three} real branches and the third has decay about $0.87$. Its $r(\ell\to u)$ crosses zero
-exactly at $\sqrt3$, so the elimination multiplies by it and drops the branch, and a pointwise
-solver returns nothing there for the same reason. Proposition~\ref{prop:d3cert} is what the branch
-becomes once the singularity is removed rather than divided by.
-
-Independently of the algebra, the density-of-states ladder settles the same point numerically and is
-what located it in the first place: with $g_e=1/(z-\sum_{e\to f}g_f)$ at $z=\lambda+i\eta$, the
-quantity $|\operatorname{Im}\sum_w G_w|$ decays linearly in $\eta$ outside the spectrum, tends to a
-positive constant inside a band, and diverges like $\eta^{-1}$ at an atom. On this graph it reports
-an atom at $0$, a band at $1.68$, a band at $2.40$, and linear decay at $\sqrt3$, the atom at the
-origin serving as the internal control (\texttt{code/d3\_counterexample.py}).
-
-Proposition~\ref{prop:d3false} does not touch the connectivity statement, since $G$ there has vertex
-connectivity two. But C2 falls to the same construction, and the reason it does is the point of this
-subsection.
-
-\begin{proposition}[C2 fails on $23$ vertices]\label{prop:c2false}
-Let $G$ have $k$ hubs, $p$ copies of $K_{1,m}$, and every leaf joined to \emph{all} $k$ hubs. A
-matching sends each hub into at most one branch, so at least $p-k$ branches contribute their full
-matching polynomial and
-\[
-  A^{\,p-k}\mid\mu_G,\qquad A=\mu_{K_{1,m}}=x^{m-1}(x^2-m),
-\]
-which is the two-hub identity's $A^{p-2}$ for $k=2$. At $k=3$, $m=3$, $p=5$ the graph has $23$
-vertices, minimum degree three and vertex connectivity \emph{three}, and $\sqrt3$ is a root of
-$\mu_G$ lying outside $\operatorname{spec}(T_G)$ (\texttt{code/c2\_attack.py}).
-\end{proposition}
-
-So neither stated hypothesis survives, and they fail for one reason rather than two: both constrain
-the ambient graph, while the engine is a property of the divisor. A star's leaves have degree one in
-$H$ whatever their degree in $G$, and enlarging the separator leaves $A$ untouched while raising
-$\kappa$.
-
-We do not push the reading further, because the measurements do not support it. Raising the
-separator size $k$ raises the divisibility to $A^{p-k}$, at a cost of $p\ge k+1$ branches, but it
-also raises every branch vertex's degree, and the two effects run against each other. Our scans
-resolve neither, so we make no claim about $\kappa\ge4$ in either direction. What is established is
-that the two hypotheses actually proposed as repairs are false.
-
-The implication D3~$\Rightarrow$~C2 (\texttt{MinimumDegreeThreshold.C2\_of\_D3}) and the sharpness
-statement (\texttt{threshold\_is\_three}) remain valid as implications, but both are now vacuous,
-their hypotheses being false.
+The moral for a repair is that it must forbid the \emph{private} boundary structure that Hall uses,
+not the ambient degrees. Every counterexample must avoid having a $\theta$-Aomoto subset at its
+offending root, and that is a condition on how branches attach, not on how large their degrees are.
 
 \subsection{What this leaves}\label{sec:leaves}
 
-Conjecture~\ref{conj:gap} is false, and so are both hypotheses proposed to repair it. The three
-refutations are one refutation: by Lemma~\ref{lem:divis} the branch polynomial $A$ divides $\mu_G$
-whenever a separator of size $k$ is met by $p\ge k+1$ identical branches, and $A$ depends on the
-branch alone. Minimum degree and vertex connectivity are conditions on $G$. Neither can see $A$,
-and a star divisor is exactly a branch whose own degrees stay at one however large the degrees of
-$G$ become. Any repair of Conjecture~\ref{conj:gap} must constrain the divisor.
+Conjecture~\ref{conj:gap} is false, by Hall's counterexample. Conjectures~\ref{conj:mindeg3}
+and~\ref{conj:c2} are open, and Proposition~\ref{prop:obstruction} says that the branch mechanism
+cannot settle them in the negative: it manufactures eigenvalues of the cover, not counterexamples.
 
-We do not know where that leaves the biregular case, which is the setting the phenomenon actually
-inhabits and is treated in \cite{PartII}. There the cover is an $(a,b)$-biregular tree, the gap is
-the single interval $(0,|s-t|)$, and no construction of the present kind has reached it.
+That is a sharper statement than it may look. Any counterexample must have its offending root avoid
+every $\theta$-Aomoto subset, so a search should be organised around the Aomoto inequality rather
+than around degrees or connectivity. Hall's graph satisfies this by giving each branch a private
+boundary of two vertices; we know of no systematic way to do that at minimum degree three.
 
-Two things are open and we state them as open rather than as programme. Whether some hypothesis on
-the \emph{divisor} rescues the bound is untouched here; the natural candidate compares the
-divisor's Heilmann--Lieb radius $2\sqrt{\Delta_H-1}$ with the band edge it would have to clear.
-And whether higher connectivity eventually defeats the construction is not settled by our
-measurements: raising the separator size $k$ raises every branch vertex's degree as well, and the
-two effects run against each other. We looked, the picture did not resolve, and we make no claim
-in either direction.
+The biregular case, which survives the refutation of Conjecture~\ref{conj:gap} and is where the
+phenomenon lives, is \cite{PartII}.
+
 \section{Related work and formalization}
 
 The $d$-matching polynomial and the interval $[-\rho,\rho]$ are due to Hall, Puder and Sawin
@@ -721,6 +645,8 @@ families I: Bipartite Ramanujan graphs of all degrees}, Ann.\ of Math.\
 \bibitem{AFH} O.~Angel, J.~Friedman, S.~Hoory, \emph{The non-backtracking spectrum of the
   universal cover of a graph}, Trans.\ Amer.\ Math.\ Soc.\ \textbf{367} (2015), 4287--4318;
   arXiv:0712.0192.
+\bibitem{BGM} J.~Banks, J.~Garza-Vargas, S.~Mukherjee, \emph{Point spectrum of the universal
+  cover of a graph}, as cited in \cite{Sp}, Cor.~3.4.
 \bibitem{LMST} W.~Li, M.~Magee, M.~Sabri, D.~Thomas, \emph{Eigenvalues of maximal
   abelian covers}, arXiv:2508.17332 (2025).
 \bibitem{Sp} T.~J.~Spier, \emph{Eigenvalues of universal covers and the matching

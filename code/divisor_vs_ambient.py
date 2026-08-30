@@ -1,3 +1,12 @@
+"""SUPERSEDED. This script's spectral verdict cannot be trusted.
+
+It uses the density-of-states and ratio-system machinery of code/d3_counterexample.py, whose
+spectral verdict is retracted: in the graphs built here the branch union is a theta-Aomoto subset,
+so the root is an EIGENVALUE of the universal cover and lies IN spec(T_G), not outside it. The
+graph constructions, the two-cut identity and the gap scans are still correct; only the conclusion
+drawn about spec(T_G) is wrong. See code/aomoto_obstruction.py. Conjectures D3 and C2 are OPEN.
+"""
+
 """Is the barrier the ambient graph, or the divisor? The two are confounded until you separate them.
 
 code/kboundary.py settles that k = 4 is not itself a threshold: at k = 4, m = 3 the gap reopens once
