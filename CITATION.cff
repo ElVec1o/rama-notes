@@ -18,8 +18,11 @@ identifiers:
     value: "10.5281/zenodo.21433867"
     description: "Concept DOI, resolves to the latest version"
   - type: doi
+    value: "10.5281/zenodo.22215902"
+    description: "Version DOI for release v6.8 (current; resolution-free min-degree-three sweep, 8208 cases)"
+  - type: doi
     value: "10.5281/zenodo.22215369"
-    description: "Version DOI for release v6.7 (current; Rust sweep of Hall's construction at minimum degree three)"
+    description: "Version DOI for release v6.7 (grid-based sweep; superseded by the resolution-free one)"
   - type: doi
     value: "10.5281/zenodo.22214426"
     description: "Version DOI for release v6.6 (soft-edge exponent replicated, caveat on the wheel comparison)"
