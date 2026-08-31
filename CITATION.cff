@@ -18,8 +18,11 @@ identifiers:
     value: "10.5281/zenodo.21433867"
     description: "Concept DOI, resolves to the latest version"
   - type: doi
+    value: "10.5281/zenodo.22212279"
+    description: "Version DOI for release v6.3 (current; certified band exclusion at 36 vertices)"
+  - type: doi
     value: "10.5281/zenodo.22202215"
-    description: "Version DOI for release v6.2 (current; corrected gap detector, retracts v6.1's diagnosis)"
+    description: "Version DOI for release v6.2 (corrected gap detector, retracts v6.1's diagnosis)"
   - type: doi
     value: "10.5281/zenodo.22200692"
     description: "Version DOI for release v6.1 (four new counterexamples; its gap diagnosis is retracted)"
