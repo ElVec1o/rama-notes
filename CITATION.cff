@@ -18,8 +18,11 @@ identifiers:
     value: "10.5281/zenodo.21433867"
     description: "Concept DOI, resolves to the latest version"
   - type: doi
+    value: "10.5281/zenodo.22215369"
+    description: "Version DOI for release v6.7 (current; Rust sweep of Hall's construction at minimum degree three)"
+  - type: doi
     value: "10.5281/zenodo.22214426"
-    description: "Version DOI for release v6.6 (current; soft-edge exponent replicated, caveat on the wheel comparison)"
+    description: "Version DOI for release v6.6 (soft-edge exponent replicated, caveat on the wheel comparison)"
   - type: doi
     value: "10.5281/zenodo.22212775"
     description: "Version DOI for release v6.5 (wheels saturate the bound at m^(-1/2))"
