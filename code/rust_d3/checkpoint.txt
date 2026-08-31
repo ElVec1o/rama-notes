@@ -1,1 +1,1 @@
-DONE 5528 cases in 591s, 0 violations. D3 survives this sweep.
+DONE 8208 cases in 59s, 0 violations. D3 survives this sweep.

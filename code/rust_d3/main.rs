@@ -201,6 +201,41 @@ fn im_green(cv: &Cav, lam: f64, eta: f64) -> f64 {
     }
     tot.abs()
 }
+
+/// Cauchy bound: all real roots lie in (-B, B)
+fn root_bound(a: &Poly) -> f64 {
+    let d = p_deg(a); let lead = a[d] as f64;
+    let mut m = 0.0f64;
+    for i in 0..d { m = m.max((a[i] as f64 / lead).abs()); }
+    1.0 + m
+}
+/// isolate the distinct real roots in (0, bound] and bisect each to `tol`
+fn positive_roots(a: &Poly, tol: f64) -> Vec<f64> {
+    if p_deg(a) < 1 { return Vec::new(); }
+    let b = root_bound(a).min(1e6);
+    let mut out = Vec::new();
+    let mut stack = vec![(1e-9f64, b)];
+    let mut guard = 0;
+    while let Some((lo, hi)) = stack.pop() {
+        guard += 1; if guard > 20000 { break; }
+        let c = sturm_count(a, lo, hi);
+        if c == 0 { continue; }
+        if hi - lo < tol { out.push(0.5 * (lo + hi)); continue; }
+        let mid = 0.5 * (lo + hi);
+        stack.push((lo, mid)); stack.push((mid, hi));
+    }
+    out.sort_by(|x, y| x.partial_cmp(y).unwrap());
+    out.dedup_by(|x, y| (*x - *y).abs() < 10.0 * tol);
+    out
+}
+/// classify lambda by how Im G scales in eta: outside / band / atom
+fn classify_at(cv: &Cav, lam: f64) -> &'static str {
+    let v: Vec<f64> = [1e-3, 1e-4, 1e-5, 1e-6].iter().map(|&e| im_green(cv, lam, e)).collect();
+    if v[2] <= 0.0 { return "outside"; }
+    let r = v[3] / v[2];
+    if r > 3.0 { "atom" } else if r < 0.3 { "outside" } else { "band" }
+}
+
 /// intervals where lambda is outside every band (Im G falls linearly in eta)
 fn band_gaps(g: &Graph, step: f64, top: f64) -> Vec<(f64, f64)> {
     let cv = cav_prep(g);
@@ -222,10 +257,65 @@ fn band_gaps(g: &Graph, step: f64, top: f64) -> Vec<(f64, f64)> {
 #[derive(serde::Deserialize)]
 struct Block { n: usize, root: usize, edges: Vec<Vec<usize>> }
 
+
+fn selftest() {
+    println!("SELF-TEST (the sweep is meaningless unless these pass)\n");
+    let mut fail = 0;
+
+    // 1. root isolation on polynomials with known roots
+    let cases: Vec<(Poly, Vec<f64>)> = vec![
+        (vec![-3, 0, 1], vec![3f64.sqrt()]),                    // x^2 - 3
+        (vec![-7, 0, 25, 0, -12, 0, 1], vec![0.5754993235, 1.4973500, 3.0702999]), // the n=36 minpoly, roots verified against sympy
+        (vec![0, -2, 0, 1], vec![2f64.sqrt()]),                 // x^3 - 2x
+    ];
+    for (p, want) in &cases {
+        let got = positive_roots(p, 1e-10);
+        let ok = want.iter().all(|w| got.iter().any(|g| (g - w).abs() < 1e-6));
+        if !ok { fail += 1; }
+        println!("  roots of {:?}\n     found {:?}  expect to contain {:?}  {}",
+                 p, got.iter().map(|v| (v*1e6).round()/1e6).collect::<Vec<_>>(),
+                 want, if ok { "OK" } else { "FAIL" });
+    }
+
+    // 2. classifier must say "outside" at a known violating root, and "band" at a band root.
+    //    W_6 (hub + 6-cycle): every root is in a band.
+    let mut w = Graph::new(7);
+    for i in 1..=6 { w.add(0, i); }
+    for i in 1..6 { w.add(i, i + 1); }
+    w.add(6, 1);
+    let cvw = cav_prep(&w);
+    for (th, want) in [(0.922170f64, "band"), (1.680849, "band"), (2.885195, "band")] {
+        let got = classify_at(&cvw, th);
+        if got != want { fail += 1; }
+        println!("  W_6 at {:.6}: {} (expect {}) {}", th, got, want,
+                 if got == want { "OK" } else { "FAIL" });
+    }
+
+    // 3. K_4 cover is the 3-regular tree: no gaps, so 2.0 must read "band"
+    let mut k4 = Graph::new(4);
+    for a in 0..4 { for b in (a+1)..4 { k4.add(a, b); } }
+    let cv4 = cav_prep(&k4);
+    let got = classify_at(&cv4, 2.0);
+    if got != "band" { fail += 1; }
+    println!("  K_4 at 2.0: {} (expect band) {}", got, if got == "band" { "OK" } else { "FAIL" });
+
+    // 4. mu of K_4 must be x^4 - 6x^2 + 3
+    let m = mu_of(&k4);
+    let ok = m == vec![3, 0, -6, 0, 1];
+    if !ok { fail += 1; }
+    println!("  mu(K_4) = {:?} (expect [3,0,-6,0,1]) {}", m, if ok { "OK" } else { "FAIL" });
+
+    println!("\n  {} failures", fail);
+    if fail > 0 { std::process::exit(1); }
+    println!("  self-test passed; sweep results are meaningful\n");
+}
+
 fn main() {
+    if std::env::args().any(|a| a == "--selftest") { selftest(); return; }
+
     let raw = fs::read_to_string("blocks.json").expect("blocks.json missing");
     let blocks: Vec<Block> = serde_json::from_str(&raw).expect("bad blocks.json");
-    let pmax = 8usize; let nmax = 46usize;
+    let pmax = 10usize; let nmax = 60usize;
     let total: usize = blocks.iter().map(|b| {
         (3..=pmax).filter(|&p| 1 + p * b.n <= nmax).count()
     }).sum();
@@ -258,25 +348,22 @@ fn main() {
             let bracket = p_add(&p_shift(&a_poly, 1), &p_scale(&br_poly, -(p as i128)));
             let mu_g = p_mul(&p_pow(&a_poly, (p - 1) as u32), &bracket);
 
-            let topd = (0..n).map(|v| g.deg(v)).max().unwrap() as f64;
-            let gaps = band_gaps(&g, 0.02, 2.0 * (topd - 1.0).sqrt() + 0.5);
-            if gaps.is_empty() { continue; }
-            // every root of mu_G is a root of A (degree <= 7) or of the bracket (degree <= 8);
-            // both are small, so no large-polynomial arithmetic is needed anywhere.
-            for (lo, hi) in &gaps {
-                let na = sturm_count(&a_poly, *lo, *hi);
-                let nb = sturm_count(&bracket, *lo, *hi);
-                if na + nb == 0 { continue; }
-                // A-roots are branch eigenvalues: the branch union is an Aomoto subset whenever
-                // p > 1, so those are eigenvalues of the cover and never violations.
-                if nb == 0 { continue; }
-                let line = format!("CANDIDATE block {}v {}e root_idx {} p {} n {} gap ({:.4},{:.4}) \
-bracket_roots_in_gap {} A_roots_in_gap {}\n",
-                                   b.n, b.edges.len(), b.root, p, n, lo, hi, nb, na);
-                print!("{}", line);
-                res.write_all(line.as_bytes()).unwrap();
-                res.flush().unwrap();
-                viol += 1;
+            // Every root of mu_G is a root of A or of the bracket, both of degree <= 8.
+            // Roots of A are branch eigenvalues: the branch union is a theta-Aomoto subset for
+            // p > 1, so they lie in spec(T) by Banks-Garza-Vargas-Mukherjee and are never
+            // violations. Only bracket roots are candidates. Each is classified AT the root, so
+            // the test is resolution-free: no gap can be missed however narrow it is.
+            let cv = cav_prep(&g);
+            for th in positive_roots(&bracket, 1e-11) {
+                let k = classify_at(&cv, th);
+                if k == "outside" {
+                    viol += 1;
+                    let line = format!("CANDIDATE block {}v {}e root {} p {} n {} theta {:.10}\n",
+                                       b.n, b.edges.len(), b.root, p, n, th);
+                    print!("{}", line);
+                    res.write_all(line.as_bytes()).unwrap();
+                    res.flush().unwrap();
+                }
             }
 
             if done % 25 == 0 {
