@@ -616,11 +616,32 @@ and $x^6-13x^4+32x^2-12$, decays $0.94$ to $0.98$, and gap widths of $0.040$ in 
 counterexamples, all of them in gaps of width $0.040$, which is the smallest a scan of step $0.02$
 can resolve, and all of them below the threshold every search here used.
 
-The conclusion is narrower than "the evidence is worthless" and sharper than "the threshold did no
-harm". The sweeps we ran are unaffected. But any search for a \emph{new} counterexample at threshold
-$0.05$ is looking outside the region where all five known examples live, and would have rejected
-Hall's. The four above have minimum degree one, so they bear on Conjecture~\ref{conj:gap} and not on
-Conjectures~\ref{conj:mindeg3} or \ref{conj:c2}, which remain open.
+Finer measurement changes the diagnosis once more, and we state the final version. Scanning at step
+$0.0005$, and treating non-convergence of the ratio iteration as \emph{unknown} rather than as
+membership of the spectrum, the certified gap widths are
+\[
+  0.0295,\quad 0.1035,\quad 0.1000,\quad 0.0305,\quad 0.0400
+\]
+for Hall's example and the four above, against a reported $0.040$ in every case. The detector scans
+in steps of $0.02$ and scores a non-convergent point as lying in the spectrum, so a gap appears as a
+scatter of isolated converged points rather than an interval, and its reported width collapses
+toward two scan steps. Between $25$ and $58$ percent of the fine-scan points converge at all, so
+even the certified widths are lower bounds.
+
+Two of the four new counterexamples therefore sit in gaps of width about $0.10$, twice the threshold
+that discarded them (\texttt{code/gapwidth\_underreport.py}). The failure is not that the phenomenon
+lives in narrow gaps. It is that the instrument reports wide gaps as narrow ones. A correct detector
+would have found those two at the original threshold, and the useful lesson for anyone searching
+this space is to fix the width estimate rather than to lower the cutoff.
+
+The violating root sits at $40$ to $61$ percent of the way across its gap in four of the five cases
+and at $99$ percent in the fifth, which is accordingly the least robust of the set.
+
+The four new examples have minimum degree one, so they bear on Conjecture~\ref{conj:gap} and not on
+Conjectures~\ref{conj:mindeg3} or~\ref{conj:c2}, which remain open. Re-running the
+minimum-degree-three families at the lower threshold changes nothing: $87$ graphs present a gap at
+either setting and no root in any of them is a violation
+(\texttt{code/rerun\_lowgap.py}), so those recorded verdicts stand unweakened.
 
 \subsection{What this leaves}\label{sec:leaves}
 
