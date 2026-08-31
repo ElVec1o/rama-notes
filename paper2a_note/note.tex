@@ -662,6 +662,35 @@ minimum-degree-three families at the lower threshold changes nothing: $87$ graph
 either setting and no root in any of them is a violation (\texttt{code/rerun\_lowgap.py}), so those
 recorded verdicts stand unweakened.
 
+\subsection{Wheels saturate the bound}\label{sec:wheels}
+
+Wheels are the one family of minimum degree three here that carries genuine spectral gaps, so they
+are where a counterexample to Conjecture~\ref{conj:mindeg3} would most plausibly appear. Re-checking
+them with the corrected detector of \S\ref{sec:blindspot} and the exact eigenvalue test, and
+extending the range, none of $W_5,\dots,W_{50}$ has a root of $\mu$ inside a gap. The roots straddle
+the gap: the bulk lie below its lower edge, near $2$, and the largest lies above its upper edge.
+
+What is new is the rate at which they do so. Writing
+\[
+  \operatorname{margin}(m)=\bigl(\text{largest root of }\mu_{W_m}\bigr)-\bigl(\text{top of the gap
+  below it}\bigr),
+\]
+the margin falls monotonically from $0.637$ at $m=5$ to $0.194$ at $m=50$, and a log-log fit over
+that range gives
+\[
+  \operatorname{margin}(m)\;\approx\;1.463\,m^{-0.5125},\qquad R^2=0.999,
+\]
+so the family saturates the covering bound asymptotically without violating it
+(\texttt{code/wheel\_saturation.py}). The computation uses the closed form
+$\mu_{W_m}=x(\mu_{P_m}-\mu_{P_{m-2}})-m\,\mu_{P_{m-1}}$, checked against the deletion recursion
+before use.
+
+This is the same phenomenon the companion paper records for the biregular family, where the margin
+decays like $n^{-2/3}$, the soft-edge exponent \cite{PartII}. Two families, two different exponents,
+both tending to zero. If Conjecture~\ref{conj:mindeg3} is true it is true tightly, and an argument
+yielding a margin bounded below independently of size cannot prove it, for the reason the companion
+paper gives in the biregular case.
+
 \subsection{What this leaves}\label{sec:leaves}
 
 Conjecture~\ref{conj:gap} is false, by Hall's counterexample. Conjectures~\ref{conj:mindeg3}
