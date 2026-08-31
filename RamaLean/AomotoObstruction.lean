@@ -62,6 +62,15 @@ theorem boundary_lt_components (bdry S : Finset V) (k p : ℕ)
   omega
 
 omit [DecidableEq V] in
+/-- **The general form.**  Only the number of qualifying components matters, not their shape: if at
+least `k+1` components of `G - S` induce forests with `θ` as an eigenvalue, their union is a
+`θ`-Aomoto subset. The components need not be isomorphic, and need not be all of `G - S`. -/
+theorem general_obstruction (bdry S : Finset V) (k j : ℕ)
+    (hsub : bdry ⊆ S) (hS : S.card = k) (hj : k + 1 ≤ j) :
+    bdry.card < j :=
+  boundary_lt_components bdry S k j hsub hS (by omega)
+
+omit [DecidableEq V] in
 /-- **The obstruction.**  Under the hypotheses of the Divisibility Lemma with `p > k`, the branch
 union satisfies the Aomoto inequality, so by the criterion of Banks--Garza-Vargas--Mukherjee the
 branch eigenvalue is an eigenvalue of the universal cover, hence lies in its spectrum.

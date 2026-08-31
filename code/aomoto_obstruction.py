@@ -229,6 +229,21 @@ def main():
     print(f"    and the root is gone: mu = {mu2}")
     print("    The leaves create the root sqrt5 and double the star's boundary. Both are needed,")
     print("    which is the mechanism behind the empirical fact that the leaves are essential.")
+
+    print("\n(e) the general form: the components need not be isomorphic.")
+    for paths, nm in [([3, 3], "two P_3"), ([3, 7], "P_3 and P_7, NOT isomorphic"),
+                      ([3, 7, 3], "P_3, P_7, P_3")]:
+        edges = []; nxt = 1; comps = []
+        for L in paths:
+            vs = list(range(nxt, nxt + L)); nxt += L
+            for i in range(L - 1):
+                edges.append((vs[i], vs[i + 1]))
+            edges += [(0, vs[0]), (0, vs[-1])]
+            comps.append(set(vs))
+        yes, cc, bd = is_aomoto(nxt, edges, set().union(*comps), math.sqrt(2))
+        print(f"    {nm:<28} n={nxt:>3}  cc={cc}  |boundary|={bd}  Aomoto={yes}")
+    print("    sqrt2 is an eigenvalue of each path, and the components outnumber the one boundary")
+    print("    vertex, so the obstruction fires without any isomorphism between branches.")
     return 0
 
 

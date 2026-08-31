@@ -544,20 +544,25 @@ zero of $\mu_{G\setminus\Gamma}$ for every $2$-regular subgraph $\Gamma$, and Sp
 that $T_G$ and $G^{\mathrm{ab}}$ have the same eigenvalues.
 
 \begin{proposition}[the branch obstruction]\label{prop:obstruction}
-Let $S\subseteq V(G)$ with $|S|=k$, and suppose $G-S$ has $p$ components, each inducing a copy of the
-same \emph{tree} $B$, with $\theta$ an eigenvalue of $B$. If $p>k$ then $\theta$ is an eigenvalue of
-$T_G$, and in particular $\theta\in\operatorname{spec}(T_G)$.
+Let $\theta\in\mathbb R$ and let $S\subseteq V(G)$ with $|S|=k$. If at least $k+1$ of the components
+of $G-S$ induce forests having $\theta$ as an eigenvalue, then $\theta$ is an eigenvalue of $T_G$,
+and in particular $\theta\in\operatorname{spec}(T_G)$.
 \end{proposition}
 
 \begin{proof}
-Take the union $U$ of the $p$ branch vertex sets. Then $G[U]$ is the disjoint union of $p$ copies of
-$B$, hence a forest with $\operatorname{cc}(G[U])=p$, and $\theta$ is an eigenvalue of every
-component. Every vertex outside $U$ that is adjacent to $U$ lies in $S$, so
-$|\partial_G U|\le k<p$. Thus $U$ is a $\theta$-Aomoto subset and \cite{BGM} applies.
+Let $U$ be the union of $j\ge k+1$ such components. Then $G[U]$ is a disjoint union of forests,
+hence a forest, with $\operatorname{cc}(G[U])=j$ and $\theta$ an eigenvalue of every component. Every
+vertex outside $U$ adjacent to $U$ lies in $S$, so $|\partial_G U|\le k<j$. Thus $U$ is a
+$\theta$-Aomoto subset and \cite{BGM} applies.
 \end{proof}
 
-The hypotheses of Proposition~\ref{prop:obstruction} are exactly those of Lemma~\ref{lem:divis}
-together with $p>k$, which is what the lemma needs for the exponent $p-k$ to be positive. So
+The components need not be isomorphic to one another, and need not be all of $G-S$; only their
+number relative to $|S|$ matters. Taking them to be $p$ copies of a single tree $B$ with
+$\theta$ a root of $\mu_B$ recovers the case that concerns us:
+
+The hypotheses of Proposition~\ref{prop:obstruction} are then exactly those of
+Lemma~\ref{lem:divis} together with $p>k$, which is what the lemma needs for the exponent $p-k$ to
+be positive. So
 whenever the branch mechanism forces a root of $\mu_G$, it forces that root into
 $\operatorname{spec}(T_G)$. The two conditions are the same condition:
 \[
@@ -575,7 +580,9 @@ Deleting the pendant leaves brings the boundary down to $5$, still not below $5$
 destroys the root: the leafless graph has
 $\mu=x^{16}(x^4-15x^2+45)(x^4-10x^2+20)^4$, with no factor $x^2-5$. The leaves therefore do two jobs
 at once, creating the root and doubling the boundary of the star, and both are needed
-(\texttt{code/aomoto\_obstruction.py}).
+(\texttt{code/aomoto\_obstruction.py}). The general form is checked there on non-isomorphic
+branches as well, a hub joined to both ends of a $P_3$ and of a $P_7$, where $\sqrt2$ is an
+eigenvalue of each path and the two components already outnumber the single boundary vertex.
 
 The moral for a repair is that it must forbid the \emph{private} boundary structure that Hall uses,
 not the ambient degrees. Every counterexample must avoid having a $\theta$-Aomoto subset at its
