@@ -643,6 +643,19 @@ At step $0.02$ a gap of width $0.002$ cannot be seen at all.
 The violating root sits at $40$ to $61$ percent of the way across its gap in four of the five cases
 and at $99$ percent in the fifth, which is accordingly the least robust of the set.
 
+One of the four, the $36$-vertex example, carries a certified band exclusion as well. Its
+automorphism group has order $5040$ and its $84$ directed edges fall into $12$ orbits of size $7$,
+so the Angel--Friedman--Hoory system has twelve unknowns; solved at $60$ digits it gives a
+Collatz--Wielandt constant $c=0.9709248\ldots$ against a solution uncertainty of $5\times10^{-58}$,
+a margin of $55$ orders of magnitude (\texttt{code/exact\_certificate36.py}). That is short of
+Hall's certificate, which is exact in $\mathbb{Q}(\sqrt5,\sqrt{41})$, and the shortfall is not
+removable by more effort: two of the twelve ratios lie in $\mathbb{Q}(\theta)$ with closed forms,
+and the other ten admit no polynomial relation of degree at most $30$ with coefficients below
+$10^{20}$ at $200$ digits. A large automorphism group does not give a small ratio field. We record
+also that integer relation search returned plausible expressions in $\mathbb{Q}(\theta)$ for all
+twelve, of which ten were spurious and were caught only by exact reduction in
+$\mathbb{Q}[x]/(f)$.
+
 The four new examples have minimum degree one, so they bear on Conjecture~\ref{conj:gap} and not on
 Conjectures~\ref{conj:mindeg3} or~\ref{conj:c2}, which remain open. Re-running the
 minimum-degree-three families at the lower threshold changes nothing: $87$ graphs present a gap at
