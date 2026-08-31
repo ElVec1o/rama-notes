@@ -588,6 +588,27 @@ The moral for a repair is that it must forbid the \emph{private} boundary struct
 not the ambient degrees. Every counterexample must avoid having a $\theta$-Aomoto subset at its
 offending root, and that is a condition on how branches attach, not on how large their degrees are.
 
+\subsection{A caveat on all the negative evidence}\label{sec:blindspot}
+
+The searches reported here and in \cite{Supp} filter the detected gaps of $\operatorname{spec}(T)$
+by a minimum width before looking for roots inside them, and skip a graph when no gap survives. The
+threshold used throughout is $0.05$. Hall's own counterexample does not survive it:
+$\operatorname{spec}(T)$ for his graph has a gap
+\[
+  (2.220,\ 2.260),\qquad\text{width }0.040,\qquad \sqrt5=2.23607\ldots\in(2.220,2.260),
+\]
+and $0.040<0.05$, so his graph is scored as having no gap and reported clean
+(\texttt{code/gapfilter\_blindspot.py}). The detector finds the gap correctly; the threshold throws
+it away.
+
+Every negative verdict in this development must therefore be read as \emph{no violation was found in
+a gap wider than $0.05$}, which is much weaker than it sounds, and which excludes the one
+counterexample known to exist. The counterexamples of the two-cut family occupy widths $0.066$ to
+$0.148$, which is presumably where the threshold came from; Hall's is narrower than all of them, and
+so is the regime the phenomenon actually inhabits. We record this rather than quietly re-running,
+because the published searches were carried out at the old setting and their stated scale conveys a
+confidence the instrument did not have.
+
 \subsection{What this leaves}\label{sec:leaves}
 
 Conjecture~\ref{conj:gap} is false, by Hall's counterexample. Conjectures~\ref{conj:mindeg3}
