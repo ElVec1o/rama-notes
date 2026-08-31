@@ -588,7 +588,7 @@ The moral for a repair is that it must forbid the \emph{private} boundary struct
 not the ambient degrees. Every counterexample must avoid having a $\theta$-Aomoto subset at its
 offending root, and that is a condition on how branches attach, not on how large their degrees are.
 
-\subsection{A caveat on all the negative evidence}\label{sec:blindspot}
+\subsection{The width threshold, and what it costs}\label{sec:blindspot}
 
 The searches reported here and in \cite{Supp} filter the detected gaps of $\operatorname{spec}(T)$
 by a minimum width before looking for roots inside them, and skip a graph when no gap survives. The
@@ -598,16 +598,29 @@ $\operatorname{spec}(T)$ for his graph has a gap
   (2.220,\ 2.260),\qquad\text{width }0.040,\qquad \sqrt5=2.23607\ldots\in(2.220,2.260),
 \]
 and $0.040<0.05$, so his graph is scored as having no gap and reported clean
-(\texttt{code/gapfilter\_blindspot.py}). The detector finds the gap correctly; the threshold throws
-it away.
+(\texttt{code/gapfilter\_blindspot.py}). The detector finds the gap; the threshold discards it.
 
-Every negative verdict in this development must therefore be read as \emph{no violation was found in
-a gap wider than $0.05$}, which is much weaker than it sounds, and which excludes the one
-counterexample known to exist. The counterexamples of the two-cut family occupy widths $0.066$ to
-$0.148$, which is presumably where the threshold came from; Hall's is narrower than all of them, and
-so is the regime the phenomenon actually inhabits. We record this rather than quietly re-running,
-because the published searches were carried out at the old setting and their stated scale conveys a
-confidence the instrument did not have.
+Two measurements fix how much this costs, and they point in opposite directions.
+
+Re-running the minimum-degree-three families at $0.015$ changes nothing. Exactly $87$ of the graphs
+swept present a gap at $0.05$ and exactly $87$ at $0.015$, and no root in any of them is a violation
+(\texttt{code/rerun\_lowgap.py}). For those families the threshold was not discarding search space,
+and the recorded verdicts stand unweakened. We had expected otherwise and record the miss.
+
+But the threshold does exclude the width regime in which counterexamples actually occur. A search of
+one-cut constructions run at $0.015$, with the exact eigenvalue test of \S\ref{sec:mindeg3} in place
+of a numerical one, returns four counterexamples to Conjecture~\ref{conj:gap} on $36$ and $37$
+vertices, with minimal polynomials $x^6-12x^4+25x^2-7$, $x^6-13x^4+26x^2-7$, $x^6-13x^4+32x^2-13$
+and $x^6-13x^4+32x^2-12$, decays $0.94$ to $0.98$, and gap widths of $0.040$ in every case
+(\texttt{data/lowgap\_counterexamples.json}). Together with Hall's, that is five known
+counterexamples, all of them in gaps of width $0.040$, which is the smallest a scan of step $0.02$
+can resolve, and all of them below the threshold every search here used.
+
+The conclusion is narrower than "the evidence is worthless" and sharper than "the threshold did no
+harm". The sweeps we ran are unaffected. But any search for a \emph{new} counterexample at threshold
+$0.05$ is looking outside the region where all five known examples live, and would have rejected
+Hall's. The four above have minimum degree one, so they bear on Conjecture~\ref{conj:gap} and not on
+Conjectures~\ref{conj:mindeg3} or \ref{conj:c2}, which remain open.
 
 \subsection{What this leaves}\label{sec:leaves}
 
