@@ -686,10 +686,24 @@ $\mu_{W_m}=x(\mu_{P_m}-\mu_{P_{m-2}})-m\,\mu_{P_{m-1}}$, checked against the del
 before use.
 
 This is the same phenomenon the companion paper records for the biregular family, where the margin
-decays like $n^{-2/3}$, the soft-edge exponent \cite{PartII}. Two families, two different exponents,
-both tending to zero. If Conjecture~\ref{conj:mindeg3} is true it is true tightly, and an argument
-yielding a margin bounded below independently of size cannot prove it, for the reason the companion
-paper gives in the biregular case.
+decays like $n^{-2/3}$, the soft-edge exponent \cite{PartII}. That figure has been replicated here
+independently, with matchings recounted by a subset dynamic program on independently generated
+graphs: the fit gives $n^{-0.6629}$ at $R^2=0.9996$, reproducing the published series to four
+decimals at $n=12$ (\texttt{code/softedge\_audit.py}). It is worth noting that the biregular claim
+needs no spectral instrument at all, the band edge for a biregular cover being the closed form
+$|\sqrt{q-1}-\sqrt{d-1}|$, so none of the failures recorded in \S\ref{sec:blindspot} can touch it.
+
+So two families saturate, at $-0.51$ and $-0.66$, and the exponents are genuinely different. We do
+not read that as two edge universality classes. The biregular family has bounded degree, $d$ and $q$
+fixed as $n$ grows, and the wheel family does not, since the hub of $W_m$ has degree $m$. Under the
+soft-edge heuristic a margin $N^{-1/(1+\alpha)}$ corresponds to a density vanishing like
+$(x-\tau)^\alpha$, so $-2/3$ is the square-root edge $\alpha=\tfrac12$ and $-\tfrac12$ would be a
+linear edge $\alpha=1$; but an unbounded degree could produce the same shift for unrelated reasons,
+and nothing here separates the two explanations.
+
+What is unambiguous is the part that bears on Conjecture~\ref{conj:mindeg3}: both families saturate,
+the margin tends to zero in each, and an argument yielding a margin bounded below independently of
+size cannot prove the conjecture on either.
 
 \subsection{What this leaves}\label{sec:leaves}
 
