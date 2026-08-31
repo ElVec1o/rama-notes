@@ -1,3 +1,26 @@
+"""RETRACTED. The conclusion of this file is wrong.
+
+It claimed gap_profile under-reports gap widths by up to 2.5x, on the strength of a fine scan that
+certified [0.5320, 0.6355] as a single gap of width 0.1035 for one of the n=36 counterexamples. That
+scan took the minimum and maximum over all points where rho_at converged with rho < 1, which MERGES
+DISJOINT GAPS ACROSS A BAND. The region is in fact two gaps with a band between them:
+
+    0.535 - 0.575   outside spec   (contains the root)
+    0.580 - 0.605   BAND
+    0.610 - 0.635   outside spec
+
+Both detectors agree on that, and rho_at returns None exactly on the band, which is correct
+behaviour rather than a failure: non-convergence of the real fixed-point iteration corresponds to
+being inside a band. rho_at is not broken.
+
+The corrected measurement is in code/gapscale2.py. The true gap widths, from a validated detector
+that returns contiguous intervals, are 0.030, 0.002, 0.018, 0.026 and 0.038, every one of them below
+the 0.05 filter. So the earlier diagnosis of code/gapfilter_blindspot.py stands after all: the
+phenomenon lives in gaps narrower than the threshold used by every search here.
+
+Kept for the record. The scan below is left as written.
+"""
+
 """The gap detector under-reports widths by up to 2.5x, and that is why counterexamples were missed.
 
 code/gapfilter_blindspot.py showed that MIN_GAP = 0.05 discards Hall's counterexample, whose gap

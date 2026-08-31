@@ -616,23 +616,29 @@ and $x^6-13x^4+32x^2-12$, decays $0.94$ to $0.98$, and gap widths of $0.040$ in 
 counterexamples, all of them in gaps of width $0.040$, which is the smallest a scan of step $0.02$
 can resolve, and all of them below the threshold every search here used.
 
-Finer measurement changes the diagnosis once more, and we state the final version. Scanning at step
-$0.0005$, and treating non-convergence of the ratio iteration as \emph{unknown} rather than as
-membership of the spectrum, the certified gap widths are
+How wide are those gaps really? The scan reports $0.040$ in all five cases, which is two of its
+$0.02$ steps and therefore its resolution floor rather than a measurement. Resolving them needs a
+detector that returns contiguous intervals, which \texttt{code/gapscale2.py} supplies: it replaces
+the real fixed-point iteration by the complex cavity recursion at $z=\lambda+i\eta$, which converges
+at every $\lambda$, and separates band from gap from atom by the scaling of
+$|\operatorname{Im}\sum_wG_w|$ between two values of $\eta$ a factor $100$ apart. It reproduces the
+exact biregular gap $(0,|s-t|)$ for $K_{3,4}$ and $K_{2,3}$ and reports no gap for a $3$-regular
+graph. Scanned at step $0.002$, the gaps holding the five violating roots have widths
 \[
-  0.0295,\quad 0.1035,\quad 0.1000,\quad 0.0305,\quad 0.0400
+  0.030,\qquad 0.002,\qquad 0.018,\qquad 0.026,\qquad 0.038,
 \]
-for Hall's example and the four above, against a reported $0.040$ in every case. The detector scans
-in steps of $0.02$ and scores a non-convergent point as lying in the spectrum, so a gap appears as a
-scatter of isolated converged points rather than an interval, and its reported width collapses
-toward two scan steps. Between $25$ and $58$ percent of the fine-scan points converge at all, so
-even the certified widths are lower bounds.
+every one below the $0.05$ threshold that discarded them. The phenomenon really does live in gaps
+narrower than the filter, and the filter really does exclude every example known to us.
 
-Two of the four new counterexamples therefore sit in gaps of width about $0.10$, twice the threshold
-that discarded them (\texttt{code/gapwidth\_underreport.py}). The failure is not that the phenomenon
-lives in narrow gaps. It is that the instrument reports wide gaps as narrow ones. A correct detector
-would have found those two at the original threshold, and the useful lesson for anyone searching
-this space is to fix the width estimate rather than to lower the cutoff.
+Two things we got wrong on the way to that are worth recording, since both are easy traps. The
+non-convergence of the real iteration is not a defect: it corresponds to $\lambda$ lying in a band,
+and scoring it as spectrum is correct. And a fine scan that takes the extremes of the certified
+points merges disjoint gaps across an intervening band; doing that produced an apparent gap of width
+$0.1035$ where there are really two gaps of $0.04$ and $0.025$ with a band between them
+(\texttt{code/gapwidth\_underreport.py}, retracted in place).
+
+The remedy for a search is therefore a finer step and a much lower cutoff, not a different solver.
+At step $0.02$ a gap of width $0.002$ cannot be seen at all.
 
 The violating root sits at $40$ to $61$ percent of the way across its gap in four of the five cases
 and at $99$ percent in the fifth, which is accordingly the least robust of the set.
@@ -640,8 +646,8 @@ and at $99$ percent in the fifth, which is accordingly the least robust of the s
 The four new examples have minimum degree one, so they bear on Conjecture~\ref{conj:gap} and not on
 Conjectures~\ref{conj:mindeg3} or~\ref{conj:c2}, which remain open. Re-running the
 minimum-degree-three families at the lower threshold changes nothing: $87$ graphs present a gap at
-either setting and no root in any of them is a violation
-(\texttt{code/rerun\_lowgap.py}), so those recorded verdicts stand unweakened.
+either setting and no root in any of them is a violation (\texttt{code/rerun\_lowgap.py}), so those
+recorded verdicts stand unweakened.
 
 \subsection{What this leaves}\label{sec:leaves}
 
