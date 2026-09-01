@@ -1,0 +1,32 @@
+{
+  "prediction": "P78(c): the Conjecture 10 violation disappears at d = 2",
+  "verdict": "holds on the four one-cut counterexamples; Hall's 41-vertex graph not testable by this method",
+  "method": "mu_{2,G} = x^2 A^p - 2p x U A^(p-1) + p(p-1) U^2 A^(p-2) + p W A^(p-1), with A,U,W the exact averages over all 2-lifts of the single rooted branch; validated against brute-force averaging over all 256 2-lifts of a p=2 triangle-branch graph",
+  "hall_41v_excluded": "deleting the hub leaves a 33-vertex component with 48 edges, so the graph is not one-cut in the sense the factorisation needs; the branch average would be 2^48 lifts",
+  "cases": [
+    {"n": 36, "branch": "5v/5e", "p": 7, "mu2_degree": 72, "positive_roots": 13,
+     "d1_root": 0.575499, "d1_status": "outside spec", "d1_margin_to_band_edge": 0.000261,
+     "band_edge": 0.575760, "nearest_d2_root": 0.577704, "d2_status": "in a band",
+     "d2_depth_inside": 0.001944, "d2_roots_outside_spec": []},
+    {"n": 36, "branch": "5v/6e", "p": 7, "mu2_degree": 72, "positive_roots": 16,
+     "d1_root": 0.564625, "d1_status": "outside spec", "d1_margin_to_band_edge": 0.003807,
+     "band_edge": 0.568432, "nearest_d2_root": 0.569391, "d2_status": "in a band",
+     "d2_depth_inside": 0.000959, "d2_roots_outside_spec": []},
+    {"n": 37, "branch": "6v/7e", "p": 6, "mu2_degree": 74, "positive_roots": 18,
+     "d1_root": 1.610340, "d1_status": "outside spec", "d1_margin_to_band_edge": 0.017339,
+     "band_edge": 1.627679, "nearest_d2_root": 1.631596, "d2_status": "in a band",
+     "d2_depth_inside": 0.003917, "d2_roots_outside_spec": []},
+    {"n": 37, "branch": "6v/7e", "p": 6, "mu2_degree": 74, "positive_roots": 16,
+     "d1_root": 0.675861, "d1_status": "outside spec", "d1_margin_to_band_edge": 0.000815,
+     "band_edge": 0.676676, "nearest_d2_root": 0.681596, "d2_status": "in a band",
+     "d2_depth_inside": 0.004920, "d2_roots_outside_spec": []}
+  ],
+  "caveats": [
+    "four graphs, all from one construction family (one-cut, star-like branch)",
+    "Hall's own counterexample, the only one not of our making, is not covered",
+    "the d=2 in-band verdicts rest on the cavity classifier alone, with no exact certificate; depths inside the band are 1e-3 to 5e-3",
+    "the classifier verdicts are stable across eta = 1e-3, 1e-4, 1e-5 at every point tested",
+    "the n=36 root 0.575499 d=1 outside-spec status is independently certified (Newton-Kantorovich, code/exact_certificate36.py); the d=2 verdicts are not",
+    "d = 2 only; nothing is tested for d >= 3"
+  ]
+}
