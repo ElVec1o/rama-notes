@@ -584,9 +584,59 @@ at once, creating the root and doubling the boundary of the star, and both are n
 branches as well, a hub joined to both ends of a $P_3$ and of a $P_7$, where $\sqrt2$ is an
 eigenvalue of each path and the two components already outnumber the single boundary vertex.
 
-The moral for a repair is that it must forbid the \emph{private} boundary structure that Hall uses,
-not the ambient degrees. Every counterexample must avoid having a $\theta$-Aomoto subset at its
-offending root, and that is a condition on how branches attach, not on how large their degrees are.
+The moral for a repair is that it must forbid the \emph{private} boundary structure that Hall uses.
+Every counterexample must avoid having a $\theta$-Aomoto subset at its offending root, which is
+primarily a condition on how branches attach. The ambient degrees are not irrelevant, however: they
+enter through a counting bound, which we record next because it cuts the search space in half.
+
+\subsection{A degree bound on the point spectrum}\label{sec:degbound}
+
+\begin{proposition}[degree spread]\label{prop:degbound}
+Let $G$ be a graph with minimum degree $\delta\ge2$ and maximum degree $\Delta$. If $T_G$ has a
+nonzero eigenvalue, then
+\[
+  \Delta \;>\; 2(\delta-1),\qquad\text{equivalently}\qquad \Delta\ge 2\delta-1 .
+\]
+\end{proposition}
+
+\begin{proof}
+By \cite{BGM} there is a $\theta$-Aomoto subset $S$ with $\theta\ne0$. Put $s=|S|$,
+$c=\operatorname{cc}(G[S])$, $b=|\partial S|$, and let $e$ be the number of edges of $G$ with
+exactly one end in $S$. Since $G[S]$ is a forest with $c$ components it has $s-c$ edges, so
+counting the degrees of the vertices of $S$ gives $e=\sum_{v\in S}\deg v-2(s-c)\ge(\delta-2)s+2c$.
+Every such edge has its other end in $\partial S$, and a boundary vertex meets at most $\Delta$
+edges in total, so $e\le\Delta b$. As $\theta\ne0$, no component of $G[S]$ is a single vertex,
+whence $s\ge2c$; and the Aomoto inequality is $b\le c-1$. Combining,
+\[
+  2c(\delta-1)\;=\;(\delta-2)(2c)+2c\;\le\;(\delta-2)s+2c\;\le\;e\;\le\;\Delta b\;\le\;\Delta(c-1)
+  \;<\;\Delta c ,
+\]
+and dividing by $c>0$ gives $2(\delta-1)<\Delta$.
+\end{proof}
+
+Taking $\Delta=\delta$ recovers the classical fact that a regular tree has no eigenvalues. The case
+that matters here is the contrapositive.
+
+\begin{corollary}\label{cor:trapfree}
+If $\delta(G)\ge3$ and $\Delta(G)\le 2\delta(G)-2$, then $T_G$ has no nonzero eigenvalue. In
+particular this holds for every graph with degrees in $\{3,4\}$.
+\end{corollary}
+
+The counting step and both consequences are machine-checked in
+\texttt{RamaLean/DegreeBound.lean} as \texttt{degree\_bound},
+\texttt{no\_eigenvalue\_of\_small\_spread} and \texttt{mindeg\_three\_maxdeg\_four}; as in
+Proposition~\ref{prop:obstruction}, the criterion of \cite{BGM} is the analytic input and is cited
+rather than reproved, and the three combinatorial facts above enter the Lean statement as
+hypotheses.
+
+Corollary~\ref{cor:trapfree} is what makes the bound useful rather than decorative. A counterexample
+to Conjecture~\ref{conj:mindeg3} needs a root of $\mu_G$ that is outside the bands of
+$\operatorname{spec}(T_G)$ \emph{and} not an eigenvalue, and it was the second condition that
+defeated every attempt in \cite{Supp}: each time, the root that appeared to escape was carried back
+into the spectrum by an Aomoto subset. In the range $\Delta\le2\delta-2$ that failure mode is
+impossible, so only the first condition remains. Every known counterexample to
+Conjecture~\ref{conj:gap}, Hall's included, has $\delta=1$, for which the bound is vacuous; this is
+consistent with the role his pendant leaves play above.
 
 \subsection{The width threshold, and what it costs}\label{sec:blindspot}
 
