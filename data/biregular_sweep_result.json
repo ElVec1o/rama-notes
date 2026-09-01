@@ -1,0 +1,42 @@
+{
+  "prediction": "P80",
+  "question": "Does mu_G have a zero outside spec(T_G) for a (3,4)-biregular graph G?",
+  "why_this_class": [
+    "Degrees in {3,4} satisfy delta >= 3 and Delta <= 2*delta-2, so by DegreeBound.lean the",
+    "universal cover has no nonzero point spectrum. The Aomoto escape, which invalidated every",
+    "previous attack on Conjecture D3, is machine-checked to be unavailable here. A root outside",
+    "the bands would therefore be an unconditional counterexample to Conjecture 10, needing no",
+    "eigenvalue test at all.",
+    "The (3,4)-biregular tree is also the only member of the trap-free class with a spectral gap:",
+    "random mixed {3,4} graphs have continuous spectrum down through the origin."
+  ],
+  "spectrum_of_cover": "{0} union +-[sqrt3-sqrt2, sqrt3+sqrt2] = {0} union +-[0.3178372..., 3.1462643...]",
+  "windows_tested": {
+    "low": "(0, 0.3178), rational endpoint 10099684/100000000 strictly below (sqrt3-sqrt2)^2",
+    "high": "(3.1463, infinity), rational endpoint 98990/10000 strictly above (sqrt3+sqrt2)^2",
+    "note": "Both windows are tested. Heilmann-Lieb only gives |x| < 2*sqrt3 = 3.4641 > 3.1463, so the upper window is not empty a priori and cannot be assumed away."
+  },
+  "method": {
+    "matching_counts": "subset DP over the size-3t side of the bipartition, exact in i128",
+    "polynomial": "mu_G = x^(n-2nu) Q(x^2), Q hyperbolic with all roots real and strictly positive",
+    "root_count": "Budan-Fourier on Q, evaluated in exact BigInt rational arithmetic",
+    "why_budan_fourier": "for a hyperbolic polynomial the Budan-Fourier count is exact, not an upper bound with even defect, and it needs no polynomial remainder sequence, so no Sturm coefficient blowup",
+    "floating_point_in_verdict": false,
+    "per_graph_consistency_check": "V(0) = deg Q must hold; a graph failing it is counted, not silently accepted"
+  },
+  "result": {
+    "graphs_tested": 82896,
+    "hits": 0,
+    "failed_consistency": 0,
+    "elapsed_seconds": 610,
+    "exhaustive": {"t=1": "n=7, 1 connected labelled graph", "t=2": "n=14, all 2895 connected labelled graphs"},
+    "random_quota": {"t=3": 20000, "t=4": 20000, "t=5": 20000, "t=6": 20000}
+  },
+  "verdict": "P80 holds on this sweep. No zero of mu_G outside spec(T_G) anywhere in the sample.",
+  "caveats": [
+    "This is a sample, not a proof. Coverage is t <= 6, i.e. n <= 42, and it is exhaustive only at t = 1 and t = 2. The run ended because the t range was exhausted, not because the time budget was reached.",
+    "Random graphs are drawn by stub pairing with multi-edge rejection, which does not sample connected (3,4)-biregular graphs uniformly.",
+    "The verdicts are exact. The COVERAGE is what is uncertain, which is the opposite of the situation in the cavity-classifier searches elsewhere in this repository.",
+    "A negative result. It is evidence for Conjecture 10 in the trap-free class, and it removes the most plausible place a counterexample could have hidden."
+  ]
+}

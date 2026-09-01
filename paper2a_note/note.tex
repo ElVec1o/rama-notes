@@ -638,6 +638,43 @@ impossible, so only the first condition remains. Every known counterexample to
 Conjecture~\ref{conj:gap}, Hall's included, has $\delta=1$, for which the bound is vacuous; this is
 consistent with the role his pendant leaves play above.
 
+\subsection{An exact search in the trap-free class}\label{sec:biregular}
+
+Corollary~\ref{cor:trapfree} identifies a class in which a counterexample would be unconditional,
+which makes it worth searching directly. Among trap-free graphs the $(3,4)$-biregular ones are the
+natural target, for a reason that is not obvious in advance: a random graph with degrees in
+$\{3,4\}$ has no spectral gap at all, its cover spectrum running continuously through the origin,
+so there is nowhere for a root to hide. The biregular case is the exception. There
+\[
+  \operatorname{spec}(T)=\{0\}\cup\pm\bigl[\sqrt3-\sqrt2,\ \sqrt3+\sqrt2\bigr]
+  =\{0\}\cup\pm[0.317837\ldots,\ 3.146264\ldots],
+\]
+and the complement has two windows. Both must be checked: Heilmann--Lieb confines the zeros of
+$\mu_G$ only to $|x|<2\sqrt3=3.4641\ldots$, which exceeds $\sqrt3+\sqrt2$, so the upper window is
+not empty on those grounds.
+
+The search is exact, with no floating point in the verdict. Writing $\mu_G=x^{n-2\nu}Q(x^2)$, the
+polynomial $Q$ is hyperbolic with all roots real and strictly positive, so its Budan--Fourier count
+is exact rather than an upper bound with even defect, and it requires no polynomial remainder
+sequence and hence suffers none of the coefficient growth of a Sturm chain. Matching counts are
+computed by a subset dynamic program over the smaller side of the bipartition and $Q$ is evaluated
+in exact integer arithmetic at rational endpoints chosen to lie strictly inside the window being
+tested. Each graph additionally carries the free consistency check $V(0)=\deg Q$, and a graph
+failing it is counted as undecided rather than passed.
+
+The sweep (\texttt{code/rust\_biregular}) tested $82896$ graphs: exhaustively at $t=1$ and $t=2$,
+meaning all $2895$ connected labelled $(3,4)$-biregular graphs on $14$ vertices, and $20000$ random
+graphs at each of $t=3,\dots,6$, up to $n=42$. No zero of $\mu_G$ lies outside
+$\operatorname{spec}(T_G)$ anywhere in the sample, and no graph failed the consistency check.
+
+We state plainly what this is and is not. The individual verdicts are exact; the coverage is not
+exhaustive beyond $n=14$, the random graphs are drawn by stub pairing with rejection and so are not
+uniform, and the run terminated because the range of $t$ was exhausted rather than because a time
+budget expired. It is evidence for Conjecture~\ref{conj:gap} in the trap-free class, not a proof.
+Its value is that it is a negative result obtained where a positive one would have been
+unconditional: the one region of the class with a spectral gap, and the region in which the Aomoto
+escape is machine-checked to be unavailable, contains no counterexample up to $42$ vertices.
+
 \subsection{The width threshold, and what it costs}\label{sec:blindspot}
 
 The searches reported here and in \cite{Supp} filter the detected gaps of $\operatorname{spec}(T)$

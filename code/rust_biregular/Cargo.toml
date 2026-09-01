@@ -1,0 +1,15 @@
+[package]
+name = "biregular"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "biregular"
+path = "main.rs"
+
+[dependencies]
+num-bigint = "0.4"
+num-traits = "0.2"
+
+[profile.release]
+opt-level = 3
