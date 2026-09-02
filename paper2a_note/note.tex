@@ -738,11 +738,11 @@ $P_{2m}$ carries a nowhere-vanishing eigenvector for
 since $\gcd(m,2m+1)=1$, and hence $\kappa(\theta)\le 2m$ for every $|\theta|\ge2\sin\frac{\pi}{2(2m+1)}$.
 \end{proposition}
 
-The values are $1,\ 0.6180,\ 0.4450,\ 0.3473$ for $m=1,2,3,4$, and
+The values are $1,\ 0.6180,\ 0.4450,\ 0.3473,\ 0.2846,\ 0.2411$ for $m=1,\dots,6$, and
 $2\sin\frac{\pi}{2(2m+1)}\sim\pi/(2m+1)$, so this family gives $\kappa(\theta)\lesssim\pi/|\theta|$.
-An exhaustive computation over all trees of order at most $9$ finds nothing better: the minimum of
+An exhaustive computation over all trees of order at most $19$ finds nothing better: the minimum of
 $|\theta|$ over all nowhere-vanishing eigenpairs of all trees of order at most $n$ equals
-$2\cos\frac{m\pi}{2m+1}$ for $n\in\{2m,2m+1\}$, $m\le4$, and is attained by $P_{2m}$. Odd orders
+$2\cos\frac{m\pi}{2m+1}$ for $n\in\{2m,2m+1\}$, $m\le9$, and is attained by $P_{2m}$. Odd orders
 contribute nothing new; the minimum over trees of order exactly $2m+1$ is strictly larger than the
 minimum over trees of order exactly $2m$, and for odd order it is not attained by a path.
 
@@ -768,9 +768,10 @@ most the sum, so $y_j^{-1}\le m_{\nu-1}/m_\nu$ for each $j$, which is the claim.
 
 Nothing here uses that the eigenvector is nowhere vanishing, and nothing uses a perfect matching. To
 convert it into a bound on $\kappa$ one needs the largest that $m_{\nu-1}/m_{\nu}$ can be on a tree
-of given order. Exhaustion over all $92$ trees of order at most $9$ gives the maximum as
-$\binom{m+1}{2}$ at order $2m$, attained by $P_{2m}$, and $m^2/2$ at order $2m+1$. Granting the
-first of these, Proposition~\ref{prop:matchbound} gives
+of given order. Exhaustion over all $522{,}958$ trees of order at most $19$ gives the maximum as
+$\binom{m+1}{2}$ at order $2m$, attained by $P_{2m}$, and $m^2/2$ at order $2m+1$. The ratio is a
+quotient of integers, so that range is settled exactly, with no floating point in it. Granting the
+even case, Proposition~\ref{prop:matchbound} gives
 \[
   |\theta| \;\ge\; \sqrt{\frac{2}{m(m+1)}} \;\sim\; \frac{2\sqrt2}{n},
   \qquad\text{that is}\qquad \kappa(\theta)\;\gtrsim\;\frac{2\sqrt2}{|\theta|},
@@ -781,7 +782,7 @@ about ten percent. The residual combinatorial statement is the following.
 
 \begin{conjecture}\label{conj:kappa}
 Over trees of order $2m$, the maximum of $m_{\nu-1}/m_\nu$ is $\binom{m+1}{2}$, attained by
-$P_{2m}$.
+$P_{2m}$; over trees of order $2m+1$ it is $m^2/2$. Verified exactly for $m\le9$.
 \end{conjecture}
 
 In the case of a tree of even order \emph{with a perfect matching} the sharp constant is already a
