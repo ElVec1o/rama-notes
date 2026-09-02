@@ -838,18 +838,44 @@ A tree has at most one perfect matching, since the symmetric difference of two w
 cycle; so $\nu=m$ and $m_\nu=1$, and the ratio is $m_{m-1}$. By the classical theorem of Gutman
 that the path is the unique maximizer of $m_k$, for each fixed $k$, among trees on a given number
 of vertices, $m_{m-1}(T)\le m_{m-1}(P_{2m})=\binom{2m-(m-1)}{m-1}=\binom{m+1}{m-1}=\binom{m+1}{2}$.
+The same bound follows from the sharper recent statement that a tree of even order $n$ has at most
+$n(n+2)/8$ matchings covering all but two of its vertices, with equality only for the path, which
+holds for \emph{every} tree of that order and not only those with a perfect matching.
 \end{proof}
 
 What remains is the trees of even order \emph{without} a perfect matching, where $m_\nu>1$ is
 possible and the ratio is a genuine quotient. Exhaustion to order $20$ gives their maximum exactly,
 and it is smaller by a margin that grows.
 
+\begin{lemma}\label{lem:mnu3}
+A tree of even order with no perfect matching has $m_\nu\ge3$, and this is sharp.
+\end{lemma}
+
+\begin{proof}
+The deficiency $n-2\nu$ is even and positive, so some maximum matching $M$ leaves at least two
+vertices $u\ne w$ exposed. Let $v$ be a neighbour of $u$; it is matched, say to $v'$, or else
+$M+uv$ would be larger, and $M-vv'+uv$ is a second maximum matching. Let $z$ be a neighbour of $w$,
+matched to $z'$. If $\{z,z'\}\ne\{v,v'\}$ then $M-zz'+wz$ is a third; otherwise $w$ is adjacent to
+$v$ or to $v'$, and $M-vv'+wv$ or $M-vv'+wv'$ is a third. Sharpness: the value $3$ is attained at
+every even order, by the tree of the following paragraph among others.
+\end{proof}
+
+Exhaustion to order $20$ identifies the extremal tree uniquely at every order. It is the
+\emph{broom}: a path with three pendant edges attached at one end, of deficiency exactly $2$, with
+$m_\nu=3$ and $m_{\nu-1}$ the $(m-1)$-st pentagonal number.
+
 \begin{conjecture}\label{conj:kappa}
-Over trees of order $2m$ with no perfect matching, the maximum of $m_{\nu-1}/m_\nu$ is
-$\frac{1}{3}\binom{m-1}{1}\frac{3m-4}{2}=\frac{(m-1)(3m-4)}{6}$, that is one third of the
-$(m-1)$-st pentagonal number, so it falls short of $\binom{m+1}{2}$ by exactly $\frac{5m-2}{3}$.
-Verified for $2\le m\le10$.
+Over trees of order $2m$ with no perfect matching, $m_{\nu-1}/m_\nu$ is maximized uniquely by the
+broom, with value $\frac{(m-1)(3m-4)}{6}$, short of $\binom{m+1}{2}$ by $\frac{5m-2}{3}$. Verified
+for $2\le m\le10$.
 \end{conjecture}
+
+By Lemma~\ref{lem:mnu3} the ratio here is at most $m_{\nu-1}/3$, and $\nu\le m-1$, so what is
+missing is exactly an upper bound on $m_{m-2}$ for trees of even order \emph{without} a perfect
+matching. The bound coming from the path, $\binom{m+2}{4}$, is too weak because the path has a
+perfect matching and is therefore not in the class; the required statement is the analogue for that
+class of Ou's determination of the maximum Hosoya index over even-order trees without a perfect
+matching. That is the one remaining gap.
 
 Only the inequality is needed, not the exact value: any bound showing that a tree of even order
 without a perfect matching has ratio below $\binom{m+1}{2}$ completes the even case, and with
