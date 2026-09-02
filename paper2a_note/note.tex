@@ -560,7 +560,31 @@ This is the check that should have been run in \cite{Supp}. The density-of-state
 tests used there decide eigenvalue membership numerically, and it was exactly that step which
 produced the withdrawn claims about Conjectures~\ref{conj:mindeg3} and \ref{conj:conn}: in each
 case the root was an eigenvalue after all, carried back into the spectrum by an Aomoto subset that
-the numerics did not see.
+the numerics did not see. Running it settles both sides.
+
+For the $14$-vertex construction of \cite{Supp}, two hubs with three copies of $K_{1,3}$ and every
+leaf joined to both hubs, the graph has $138$ cycles and $193$ two-regular subgraphs, and
+$\mu_{G\setminus\Gamma}(\sqrt3)=0$ for \emph{every one of them}. So $\sqrt3$ is an eigenvalue of
+$T_G$, the retraction is confirmed without any numerical input, and the construction was not a near
+miss: there is no witness to be found.
+
+For Hall's graph the certificate is short. Write $B$ for one block, a copy of $K_{2,5}$ with a
+pendant leaf on one of the two vertices of degree $5$, joined to the centre at the other. Every
+cycle of the graph lies inside a block and is a $4$-cycle, since $K_{2,5}$ is bipartite with one
+part of size two, and any two of them meet in that part; so a two-regular subgraph takes at most one
+cycle per block. Deleting one such cycle isolates the rest of its block and severs it from the
+centre, and the cut-vertex recursion at the centre gives
+$\mu_{H_s}=x\mu_B^{\,s}-s\,\mu_{B-v}\mu_B^{\,s-1}$ for the centre joined to $s$ intact blocks. Here
+$\mu_B(\sqrt5)=-125$ and $\mu_{B-v}(\sqrt5)=-25\sqrt5$, so $\mu_G(\sqrt5)=0$ while a single
+$4$-cycle already gives $\mu_{G\setminus\Gamma}(\sqrt5)=1220703125\sqrt5\ne0$.
+
+\begin{proposition}\label{prop:hallexact}
+In Hall's $41$-vertex graph, $\sqrt5$ is a root of $\mu_G$ and is not an eigenvalue of $T_G$, and a
+single $4$-cycle inside any one block witnesses this.
+\end{proposition}
+
+The point is not that the conclusion changes, it does not, but that it is now certified by integer
+arithmetic in a quadratic field rather than by an estimate of the width of a spectral gap.
 
 \begin{proposition}[the branch obstruction]\label{prop:obstruction}
 Let $\theta\in\mathbb R$ and let $S\subseteq V(G)$ with $|S|=k$. If at least $k+1$ of the components

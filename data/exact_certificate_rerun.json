@@ -1,0 +1,24 @@
+{
+  "criterion": "theta is an eigenvalue of T_G iff mu_{G-Gamma}(theta) = 0 for every 2-regular subgraph Gamma (Li-Magee-Sabri-Thomas 2025 for the maximal abelian cover, Spier 2025 for the identification with the universal cover). The empty subgraph is 2-regular.",
+  "why_rerun": "the supplement decided eigenvalue membership with density-of-states and ratio-system numerics, and that step produced the withdrawn D3 and C2 claims",
+  "arithmetic": "exact integers in Z[sqrt d]; no floating point anywhere in the verdicts",
+  "P85": {"a": "CONFIRMED", "b": "CONFIRMED"},
+  "d3_construction": {
+    "graph": "two hubs, 3 copies of K_{1,3}, every leaf joined to both hubs, n=14",
+    "theta": "sqrt3", "mu_G(theta)": "0",
+    "cycles": 138, "two_regular_subgraphs": 193,
+    "witnesses_found": 0,
+    "verdict": "sqrt3 IS an eigenvalue of T_G. The retraction is confirmed exactly and the construction was not a near miss: no witness exists."
+  },
+  "hall_41": {
+    "graph": "centre joined to 5 blocks; a block is K_{2,5} with a pendant leaf on one degree-5 vertex, the other joined to the centre; n=41",
+    "theta": "sqrt5",
+    "structure": "every cycle is a 4-cycle inside a block; any two share the size-2 part, so at most one cycle per block",
+    "cut_formula": "mu_{H_s} = x mu_B^s - s mu_{B-v} mu_B^(s-1), validated against brute force at p=1 (n=9) and p=2 (n=17)",
+    "mu_B(sqrt5)": -125,
+    "mu_(B-v)(sqrt5)": "-25 sqrt5",
+    "mu_G(sqrt5)": 0,
+    "witness": "a single 4-cycle in one block: mu_{G-Gamma}(sqrt5) = 1220703125 sqrt5",
+    "verdict": "sqrt5 is NOT an eigenvalue of T_G. Hall's counterexample confirmed by exact polynomial certificate, no gap estimate."
+  }
+}
