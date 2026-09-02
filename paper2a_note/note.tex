@@ -746,26 +746,62 @@ $2\cos\frac{m\pi}{2m+1}$ for $n\in\{2m,2m+1\}$, $m\le4$, and is attained by $P_{
 contribute nothing new; the minimum over trees of order exactly $2m+1$ is strictly larger than the
 minimum over trees of order exactly $2m$, and for odd order it is not attained by a path.
 
+The matching polynomial gives the matching lower bound unconditionally, and with the right order of
+magnitude.
+
+\begin{proposition}[matching bound]\label{prop:matchbound}
+Let $F$ be a forest with matching number $\nu\ge1$ and let $m_k$ be its number of $k$-matchings.
+Then every nonzero eigenvalue $\theta$ of $F$ satisfies
+\[
+  \theta^2 \;\ge\; \frac{m_\nu}{m_{\nu-1}} .
+\]
+\end{proposition}
+
+\begin{proof}
+For a forest the characteristic polynomial is the matching polynomial, so
+$\mu_F(x)=x^{n-2\nu}Q(x^2)$ with $Q(y)=\sum_{j=0}^{\nu}(-1)^{\nu-j}m_{\nu-j}y^{j}$, whose $\nu$
+roots $y_1,\dots,y_\nu$ are the squares of the nonzero eigenvalues and are therefore positive.
+Reading off the bottom two coefficients, $e_\nu(y)=m_\nu$ and $e_{\nu-1}(y)=m_{\nu-1}$, so
+$\sum_j y_j^{-1}=e_{\nu-1}/e_\nu=m_{\nu-1}/m_\nu$. Every term of a sum of positive numbers is at
+most the sum, so $y_j^{-1}\le m_{\nu-1}/m_\nu$ for each $j$, which is the claim.
+\end{proof}
+
+Nothing here uses that the eigenvector is nowhere vanishing, and nothing uses a perfect matching. To
+convert it into a bound on $\kappa$ one needs the largest that $m_{\nu-1}/m_{\nu}$ can be on a tree
+of given order. Exhaustion over all $92$ trees of order at most $9$ gives the maximum as
+$\binom{m+1}{2}$ at order $2m$, attained by $P_{2m}$, and $m^2/2$ at order $2m+1$. Granting the
+first of these, Proposition~\ref{prop:matchbound} gives
+\[
+  |\theta| \;\ge\; \sqrt{\frac{2}{m(m+1)}} \;\sim\; \frac{2\sqrt2}{n},
+  \qquad\text{that is}\qquad \kappa(\theta)\;\gtrsim\;\frac{2\sqrt2}{|\theta|},
+\]
+against the true asymptotic $\pi/|\theta|$ from Proposition~\ref{prop:paths}: the elementary bound
+recovers the correct order and the constant $2\sqrt2=2.828$ in place of $\pi=3.142$, a loss of
+about ten percent. The residual combinatorial statement is the following.
+
 \begin{conjecture}\label{conj:kappa}
-$\kappa(\theta)\ge 2m$ whenever $|\theta|<2\cos\frac{m\pi}{2m+1}$; equivalently, no tree of order
-less than $2m$ has a nowhere-vanishing eigenvector for an eigenvalue smaller in absolute value than
-that of $P_{2m}$.
+Over trees of order $2m$, the maximum of $m_{\nu-1}/m_\nu$ is $\binom{m+1}{2}$, attained by
+$P_{2m}$.
 \end{conjecture}
 
-Granting Conjecture~\ref{conj:kappa}, Proposition~\ref{prop:degkappa} reads
-$\Delta>(\delta-2)\cdot\big(\pi/|\theta|+O(1)\big)+2$: an eigenvalue of $T_G$ near zero forces a
-degree spread growing like $1/|\theta|$. The unconditional half, Proposition~\ref{prop:degkappa}
-together with the values of $\kappa$ certified by exhaustion up to order $9$, already gives
-$\Delta>4(\delta-2)+2$ for $0<|\theta|<0.6180$ and $\Delta>6(\delta-2)+2$ for
-$0<|\theta|<0.4450$, both far stronger than $\Delta>2\delta-2$.
+In the case of a tree of even order \emph{with a perfect matching} the sharp constant is already a
+theorem: Godsil, proving a conjecture of Gutman, showed that among trees on $2m$ vertices with a
+perfect matching the path minimizes the smallest positive eigenvalue, which is exactly
+$2\cos\frac{m\pi}{2m+1}$. That does not close the question here, because a nowhere-vanishing
+eigenvector does not force a perfect matching: among trees of order $6$ and $8$ there are
+respectively $4$ and $18$ without one that still carry a nowhere-vanishing eigenvector for some
+$\theta\ne0$. Their least such $|\theta|$, $0.835$ and $0.548$, is well above the path values
+$0.4450$ and $0.3473$, so they do not affect the minimum; they merely put themselves outside
+Godsil's hypothesis.
 
 Proposition~\ref{prop:degkappa} is machine-checked in \texttt{RamaLean/DegreeBoundKappa.lean} as
 \texttt{degree\_bound\_kappa}, with \texttt{degree\_bound\_of\_kappa\_two} deriving
 Proposition~\ref{prop:degbound} from it and \texttt{no\_eigenvalue\_of\_spread\_lt\_kappa} the
-contrapositive. As before, the criterion and Lemma 4.2 of \cite{BGM} are the analytic input and are
-cited rather than reproved, and the combinatorial facts enter as hypotheses. Neither
-Proposition~\ref{prop:paths} nor Conjecture~\ref{conj:kappa} is formalized;
-Proposition~\ref{prop:paths} is classical, and the conjecture is a conjecture.
+contrapositive. The analytic core of Proposition~\ref{prop:matchbound} is machine-checked in
+\texttt{RamaLean/MatchingEigenvalueBound.lean} as \texttt{eigenvalue\_sq\_ge\_matching\_ratio}, with
+the Vieta identity supplied as a hypothesis in the same way that the criterion of \cite{BGM} is.
+Proposition~\ref{prop:paths} is classical and is not formalized, and
+Conjecture~\ref{conj:kappa} is a conjecture.
 
 \subsection{An exact search in the trap-free class}\label{sec:biregular}
 

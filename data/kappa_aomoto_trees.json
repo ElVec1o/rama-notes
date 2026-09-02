@@ -4,12 +4,24 @@
   "method": "exhaustive over all trees on n vertices by Prufer sequence with dedup on (spectrum, degree sequence); an eigenvalue qualifies iff some vector in its eigenspace is nonzero at every vertex, tested as min over i of the norm of row i of an orthonormal eigenspace basis > 1e-7",
   "range": "n = 2..9, all 92 trees",
   "min_positive_qualifying_eigenvalue_by_order": {
-    "2": 1.0, "3": 1.4142135624, "4": 0.6180339887, "5": 0.7653668647,
-    "6": 0.4450418679, "7": 0.5176380902, "8": 0.3472963553, "9": 0.3901806440
+    "2": 1.0,
+    "3": 1.4142135624,
+    "4": 0.6180339887,
+    "5": 0.7653668647,
+    "6": 0.4450418679,
+    "7": 0.5176380902,
+    "8": 0.3472963553,
+    "9": 0.390180644
   },
   "running_minimum_over_orders_at_most_n": {
-    "2": 1.0, "3": 1.0, "4": 0.6180339887, "5": 0.6180339887,
-    "6": 0.4450418679, "7": 0.4450418679, "8": 0.3472963553, "9": 0.3472963553
+    "2": 1.0,
+    "3": 1.0,
+    "4": 0.6180339887,
+    "5": 0.6180339887,
+    "6": 0.4450418679,
+    "7": 0.4450418679,
+    "8": 0.3472963553,
+    "9": 0.3472963553
   },
   "pattern": "the running minimum drops only at even n = 2m and equals 2 cos(m pi/(2m+1)) = 2 sin(pi/(2(2m+1))), attained by the path P_{2m} at k = m, which qualifies because gcd(m, 2m+1) = 1",
   "refuted_predictions": {
@@ -25,5 +37,62 @@
     "0 < |theta| < 0.3472963553": "Delta > 8(delta-2) + 2"
   },
   "formalized": "RamaLean/DegreeBoundKappa.lean: degree_bound_kappa, degree_bound_of_kappa_two, no_eigenvalue_of_spread_lt_kappa; 0 sorry",
-  "not_formalized": "the path eigenvector formula (classical) and the conjecture (a conjecture)"
+  "not_formalized": "the path eigenvector formula (classical) and the conjecture (a conjecture)",
+  "matching_bound": {
+    "statement": "every nonzero eigenvalue of a forest satisfies theta^2 >= m_nu/m_(nu-1)",
+    "proof": "mu_F = x^(n-2nu) Q(x^2); the nu roots of Q are the squares of the nonzero eigenvalues and are positive; Vieta on the bottom two coefficients gives sum of reciprocals = m_(nu-1)/m_nu; each positive term is at most the sum",
+    "uses_nowhere_vanishing": false,
+    "uses_perfect_matching": false,
+    "formalized": "RamaLean/MatchingEigenvalueBound.lean, 0 sorry, axioms [propext, Classical.choice, Quot.sound]",
+    "max_ratio_over_trees_of_order_n": {
+      "4": 3.0,
+      "5": 2.0,
+      "6": 6.0,
+      "7": 4.5,
+      "8": 10.0,
+      "9": 8.0
+    },
+    "max_ratio_formula_conjectured": "binom(m+1,2) at order 2m (attained by the path), m^2/2 at order 2m+1",
+    "bound_vs_truth": {
+      "4": [
+        0.5774,
+        0.618
+      ],
+      "5": [
+        0.7071,
+        0.7654
+      ],
+      "6": [
+        0.4082,
+        0.445
+      ],
+      "7": [
+        0.4714,
+        0.5176
+      ],
+      "8": [
+        0.3162,
+        0.3473
+      ],
+      "9": [
+        0.3536,
+        0.3902
+      ]
+    },
+    "constant": "gives kappa(theta) >~ 2 sqrt2/|theta| = 2.828/|theta| against the true pi/|theta| = 3.142/|theta|"
+  },
+  "godsil": {
+    "theorem": "Godsil, proving a conjecture of Gutman: among trees on 2m vertices WITH A PERFECT MATCHING the path minimizes the smallest positive eigenvalue, namely 2 cos(m pi/(2m+1))",
+    "why_it_does_not_close_the_question": "a nowhere-vanishing eigenvector does not force a perfect matching",
+    "counts_of_trees_without_perfect_matching_that_still_qualify": {
+      "6": 4,
+      "8": 18
+    },
+    "their_least_qualifying_abs_theta": {
+      "6": 0.835,
+      "8": 0.548062
+    },
+    "conclusion": "those trees are outside Godsil's hypothesis but are well above the path values 0.4450 and 0.3473, so they do not affect the minimum"
+  },
+  "literature_error_caught": "a web summary claimed Hong proved the path minimizes the smallest positive eigenvalue among ALL trees on n vertices. FALSE: the 5-vertex chair has char poly x^5-4x^3+2x, smallest positive eigenvalue 2 cos(3 pi/8) = 0.7654, below P_5's value of 1."
 }
