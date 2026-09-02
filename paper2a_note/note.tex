@@ -638,6 +638,61 @@ impossible, so only the first condition remains. Every known counterexample to
 Conjecture~\ref{conj:gap}, Hall's included, has $\delta=1$, for which the bound is vacuous; this is
 consistent with the role his pendant leaves play above.
 
+\subsection{The origin: Hall's condition exactly}\label{sec:hallzero}
+
+Proposition~\ref{prop:degbound} needs $\theta\ne0$, because the step $s\ge2c$ used that no
+component of $G[S]$ is a single vertex. The excluded case is not a loose end. It has a complete and
+entirely elementary answer, which we record because it identifies the point spectrum at the origin
+with a classical condition.
+
+\begin{theorem}\label{thm:hallzero}
+For any graph $G$, the following are equivalent.
+\begin{enumerate}
+\item $0$ is an eigenvalue of the universal cover $T_G$.
+\item $G$ contains an independent set $S$ with $|N(S)|<|S|$, that is, $G$ fails Hall's condition.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+By \cite{BGM}, (i) holds iff $G$ has a $0$-Aomoto subset.
+
+If $S$ is independent then every component of $G[S]$ is a single vertex, whose only eigenvalue is
+$0$, and $\operatorname{cc}(G[S])=|S|$ while $\partial_GS=N(S)$. So the Aomoto condition
+$|\partial_GS|<\operatorname{cc}(G[S])$ reads $|N(S)|<|S|$, and (ii) implies (i).
+
+Conversely let $S$ be a $0$-Aomoto subset, with $G[S]$ a forest of components $T_1,\dots,T_c$ and
+$b:=|\partial_GS|\le c-1$. A forest has $0$ as an eigenvalue iff it has no perfect matching, so
+each $T_i$ has deficiency $d_i:=|T_i|-2\nu_i\ge1$, where $\nu_i$ is its matching number. Choose a
+maximum independent set $S_i'\subseteq T_i$; as $T_i$ is bipartite, K\"onig's theorem gives
+$|S_i'|=|T_i|-\nu_i=\nu_i+d_i$, and $N_{T_i}(S_i')\subseteq T_i\setminus S_i'$ has at most $\nu_i$
+elements. Put $S'=\bigcup_iS_i'$. Distinct components of an induced subgraph have no edges between
+them, so $S'$ is independent in $G$, and every neighbour of $S'$ lies in some
+$T_i\setminus S_i'$ or in $\partial_GS$. Hence
+\[
+  |S'|=\sum_i(\nu_i+d_i)\ \ge\ \sum_i\nu_i+c,
+  \qquad
+  |N(S')|\ \le\ \sum_i\nu_i+b\ \le\ \sum_i\nu_i+c-1 ,
+\]
+so $|N(S')|<|S'|$ and (ii) holds.
+\end{proof}
+
+The counting step is machine-checked in \texttt{RamaLean/HallZero.lean} as
+\texttt{hall\_zero\_counting} and \texttt{hall\_violator\_of\_aomoto\_zero}; as in
+Proposition~\ref{prop:degbound}, the criterion of \cite{BGM} is the analytic input and is cited
+rather than reproved, and K\"onig's theorem and the deficiency of a forest without a perfect
+matching enter as hypotheses. The equivalence itself, and every step of the construction above, was
+checked by exhaustive enumeration of all $27474$ connected graphs on at most six vertices, with
+$2765$ positive instances and no discrepancy (\texttt{code/hall\_zero.py}).
+
+Two consequences are worth stating. First, an independent set violating Hall's condition admits no
+matching saturating it, so Theorem~\ref{thm:hallzero} gives at once that $0\in\operatorname{spec}_p
+(T_G)$ implies $G$ has no perfect matching, hence $\mu_G(0)=0$. The converse fails: $C_5$ has no
+perfect matching and no Hall violator, and indeed its cover is the infinite path, whose spectrum
+$[-2,2]$ contains $0$ but not as an eigenvalue. Second, taken with
+Proposition~\ref{prop:degbound}, the point spectrum of a universal cover is now bounded by
+combinatorics from both sides: at the origin it is exactly a Hall violation, and away from the
+origin it requires the degree spread $\Delta>2(\delta-1)$.
+
 \subsection{An exact search in the trap-free class}\label{sec:biregular}
 
 Corollary~\ref{cor:trapfree} identifies a class in which a counterexample would be unconditional,
