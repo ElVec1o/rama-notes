@@ -1,0 +1,29 @@
+{
+  "question": "kappa(theta) = least order of a tree carrying a nowhere-vanishing theta-eigenvector",
+  "why": "BGM Lemma 4.2 forces every component of a theta-Aomoto subset to be such a tree, so kappa(theta)*cc(G[S]) <= |S| replaces the crude |S| >= 2 cc(G[S]) in the degree-spread chain, giving Delta > (delta-2) kappa(theta) + 2.",
+  "method": "exhaustive over all trees on n vertices by Prufer sequence with dedup on (spectrum, degree sequence); an eigenvalue qualifies iff some vector in its eigenspace is nonzero at every vertex, tested as min over i of the norm of row i of an orthonormal eigenspace basis > 1e-7",
+  "range": "n = 2..9, all 92 trees",
+  "min_positive_qualifying_eigenvalue_by_order": {
+    "2": 1.0, "3": 1.4142135624, "4": 0.6180339887, "5": 0.7653668647,
+    "6": 0.4450418679, "7": 0.5176380902, "8": 0.3472963553, "9": 0.3901806440
+  },
+  "running_minimum_over_orders_at_most_n": {
+    "2": 1.0, "3": 1.0, "4": 0.6180339887, "5": 0.6180339887,
+    "6": 0.4450418679, "7": 0.4450418679, "8": 0.3472963553, "9": 0.3472963553
+  },
+  "pattern": "the running minimum drops only at even n = 2m and equals 2 cos(m pi/(2m+1)) = 2 sin(pi/(2(2m+1))), attained by the path P_{2m} at k = m, which qualifies because gcd(m, 2m+1) = 1",
+  "refuted_predictions": {
+    "P83a": "REFUTED for odd n. The minimum over trees of order exactly n is attained by a path only for even n; at n = 5, 7, 9 a non-path tree beats every path.",
+    "P83b": "REFUTED in the same way. The gcd formula min over gcd(k,n+1)=1 of |2 cos(k pi/(n+1))| gives the correct value only for even n."
+  },
+  "surviving_claim": "the RUNNING minimum, over all trees of order at most n, is the path value at the largest even order, and is unaffected by the odd-order failures because odd orders never improve on the preceding even order",
+  "conjecture": "kappa(theta) >= 2m whenever |theta| < 2 cos(m pi/(2m+1)); verified exhaustively for all trees of order at most 9, i.e. for m <= 4",
+  "asymptotic": "2 sin(pi/(2(2m+1))) ~ pi/(n+1), so kappa(theta) is about pi/|theta|",
+  "unconditional_consequences": {
+    "0 < |theta| < 0.6180339887": "Delta > 4(delta-2) + 2",
+    "0 < |theta| < 0.4450418679": "Delta > 6(delta-2) + 2",
+    "0 < |theta| < 0.3472963553": "Delta > 8(delta-2) + 2"
+  },
+  "formalized": "RamaLean/DegreeBoundKappa.lean: degree_bound_kappa, degree_bound_of_kappa_two, no_eigenvalue_of_spread_lt_kappa; 0 sorry",
+  "not_formalized": "the path eigenvector formula (classical) and the conjecture (a conjecture)"
+}

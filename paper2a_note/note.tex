@@ -638,20 +638,23 @@ impossible, so only the first condition remains. Every known counterexample to
 Conjecture~\ref{conj:gap}, Hall's included, has $\delta=1$, for which the bound is vacuous; this is
 consistent with the role his pendant leaves play above.
 
-\subsection{The origin: Hall's condition exactly}\label{sec:hallzero}
+\subsection{The origin: Hall's condition, after Banks--Garza-Vargas--Mukherjee}\label{sec:hallzero}
 
 Proposition~\ref{prop:degbound} needs $\theta\ne0$, because the step $s\ge2c$ used that no
-component of $G[S]$ is a single vertex. The excluded case is not a loose end. It has a complete and
-entirely elementary answer, which we record because it identifies the point spectrum at the origin
-with a classical condition.
+component of $G[S]$ is a single vertex. The excluded case has a complete and entirely elementary
+answer, which is \emph{not} new: it is contained in \cite{BGM}, whose Observation 4.2 states that
+for zero potential the Aomoto set at $\lambda=0$ is independent, every Aomoto tree being an
+isolated vertex. Combined with their Theorems 3.1 and 3.3 this gives the following at once. We
+record it because the phrasing in terms of Hall's condition is convenient later, and we give the
+elementary proof because it is self-contained, but no claim of novelty is made for it.
 
-\begin{theorem}\label{thm:hallzero}
+\begin{proposition}[{\cite[Observation 4.2 with Theorems 3.1 and 3.3]{BGM}}]\label{thm:hallzero}
 For any graph $G$, the following are equivalent.
 \begin{enumerate}
 \item $0$ is an eigenvalue of the universal cover $T_G$.
 \item $G$ contains an independent set $S$ with $|N(S)|<|S|$, that is, $G$ fails Hall's condition.
 \end{enumerate}
-\end{theorem}
+\end{proposition}
 
 \begin{proof}
 By \cite{BGM}, (i) holds iff $G$ has a $0$-Aomoto subset.
@@ -676,7 +679,11 @@ $T_i\setminus S_i'$ or in $\partial_GS$. Hence
 so $|N(S')|<|S'|$ and (ii) holds.
 \end{proof}
 
-The counting step is machine-checked in \texttt{RamaLean/HallZero.lean} as
+The argument below is a re-derivation by counting; the proof in \cite{BGM} is shorter and
+stronger, deducing from their Lemma 4.2 that each Aomoto tree carries a nowhere-vanishing
+$\lambda$-eigenvector, and that a kernel vector of a zero-potential tree operator cannot be nonzero
+at the parent of a leaf, so the Aomoto trees at $\lambda=0$ are single vertices. The counting step
+is machine-checked in \texttt{RamaLean/HallZero.lean} as
 \texttt{hall\_zero\_counting} and \texttt{hall\_violator\_of\_aomoto\_zero}; as in
 Proposition~\ref{prop:degbound}, the criterion of \cite{BGM} is the analytic input and is cited
 rather than reproved, and K\"onig's theorem and the deficiency of a forest without a perfect
@@ -692,6 +699,73 @@ $[-2,2]$ contains $0$ but not as an eigenvalue. Second, taken with
 Proposition~\ref{prop:degbound}, the point spectrum of a universal cover is now bounded by
 combinatorics from both sides: at the origin it is exactly a Hall violation, and away from the
 origin it requires the degree spread $\Delta>2(\delta-1)$.
+
+\subsection{Small eigenvalues need large Aomoto trees}\label{sec:kappa}
+
+The step $s\ge2c$ in Proposition~\ref{prop:degbound} is the weakest link in the chain, and it is
+weak by a wide margin. It uses only that a $\theta$-Aomoto tree with $\theta\ne0$ is not a single
+vertex. Lemma 4.2 of \cite{BGM} says much more: each component $T_i$ of $G[S]$ carries a
+$\theta$-eigenvector that is nonzero at \emph{every} vertex. Such trees cannot be small when
+$\theta$ is small. The only tree of order $2$ is $K_2$, whose eigenvalues are $\pm1$; the two trees
+of order $3$ are $P_3$, with $\pm\sqrt2$ and $0$, and the eigenvector for $0$ vanishes at the
+centre. So already $0<|\theta|<1$ forces every component to have at least four vertices.
+
+Write $\kappa(\theta)$ for the least order of a tree possessing a nowhere-vanishing
+$\theta$-eigenvector. Then $s\ge\kappa(\theta)\,c$, and the same counting chain gives the following.
+
+\begin{proposition}[refined degree spread]\label{prop:degkappa}
+Let $\delta(G)\ge2$ and let $\theta\ne0$ be an eigenvalue of $T_G$. Then
+\[
+  \Delta \;>\; (\delta-2)\,\kappa(\theta)+2 .
+\]
+\end{proposition}
+
+\begin{proof}
+Verbatim the proof of Proposition~\ref{prop:degbound} with $s\ge\kappa c$ in place of $s\ge2c$:
+$c\big((\delta-2)\kappa+2\big)\le(\delta-2)s+2c\le e\le\Delta b\le\Delta(c-1)<\Delta c$.
+\end{proof}
+
+Proposition~\ref{prop:degbound} is the case $\kappa=2$. The content is that $\kappa(\theta)$ grows
+as $\theta\to0$, and the path family shows how fast.
+
+\begin{proposition}[paths]\label{prop:paths}
+The eigenvector of $P_n$ for $\lambda_k=2\cos\frac{k\pi}{n+1}$ has $j$-th entry
+$\sin\frac{jk\pi}{n+1}$, so it is nowhere vanishing if and only if $\gcd(k,n+1)=1$. In particular
+$P_{2m}$ carries a nowhere-vanishing eigenvector for
+\[
+  \lambda_m \;=\; 2\cos\tfrac{m\pi}{2m+1} \;=\; 2\sin\tfrac{\pi}{2(2m+1)},
+\]
+since $\gcd(m,2m+1)=1$, and hence $\kappa(\theta)\le 2m$ for every $|\theta|\ge2\sin\frac{\pi}{2(2m+1)}$.
+\end{proposition}
+
+The values are $1,\ 0.6180,\ 0.4450,\ 0.3473$ for $m=1,2,3,4$, and
+$2\sin\frac{\pi}{2(2m+1)}\sim\pi/(2m+1)$, so this family gives $\kappa(\theta)\lesssim\pi/|\theta|$.
+An exhaustive computation over all trees of order at most $9$ finds nothing better: the minimum of
+$|\theta|$ over all nowhere-vanishing eigenpairs of all trees of order at most $n$ equals
+$2\cos\frac{m\pi}{2m+1}$ for $n\in\{2m,2m+1\}$, $m\le4$, and is attained by $P_{2m}$. Odd orders
+contribute nothing new; the minimum over trees of order exactly $2m+1$ is strictly larger than the
+minimum over trees of order exactly $2m$, and for odd order it is not attained by a path.
+
+\begin{conjecture}\label{conj:kappa}
+$\kappa(\theta)\ge 2m$ whenever $|\theta|<2\cos\frac{m\pi}{2m+1}$; equivalently, no tree of order
+less than $2m$ has a nowhere-vanishing eigenvector for an eigenvalue smaller in absolute value than
+that of $P_{2m}$.
+\end{conjecture}
+
+Granting Conjecture~\ref{conj:kappa}, Proposition~\ref{prop:degkappa} reads
+$\Delta>(\delta-2)\cdot\big(\pi/|\theta|+O(1)\big)+2$: an eigenvalue of $T_G$ near zero forces a
+degree spread growing like $1/|\theta|$. The unconditional half, Proposition~\ref{prop:degkappa}
+together with the values of $\kappa$ certified by exhaustion up to order $9$, already gives
+$\Delta>4(\delta-2)+2$ for $0<|\theta|<0.6180$ and $\Delta>6(\delta-2)+2$ for
+$0<|\theta|<0.4450$, both far stronger than $\Delta>2\delta-2$.
+
+Proposition~\ref{prop:degkappa} is machine-checked in \texttt{RamaLean/DegreeBoundKappa.lean} as
+\texttt{degree\_bound\_kappa}, with \texttt{degree\_bound\_of\_kappa\_two} deriving
+Proposition~\ref{prop:degbound} from it and \texttt{no\_eigenvalue\_of\_spread\_lt\_kappa} the
+contrapositive. As before, the criterion and Lemma 4.2 of \cite{BGM} are the analytic input and are
+cited rather than reproved, and the combinatorial facts enter as hypotheses. Neither
+Proposition~\ref{prop:paths} nor Conjecture~\ref{conj:kappa} is formalized;
+Proposition~\ref{prop:paths} is classical, and the conjecture is a conjecture.
 
 \subsection{An exact search in the trap-free class}\label{sec:biregular}
 

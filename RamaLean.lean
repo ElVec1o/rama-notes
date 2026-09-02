@@ -23,6 +23,7 @@ import RamaLean.CrossingSplit
 import RamaLean.CutVertexMechanism
 import RamaLean.DefectLocalization
 import RamaLean.DegreeBound
+import RamaLean.DegreeBoundKappa
 import RamaLean.EvenEval
 import RamaLean.FeedbackGapCount
 import RamaLean.FeedbackTwo

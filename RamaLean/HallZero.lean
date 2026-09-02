@@ -7,7 +7,13 @@ By the criterion of Banks, Garza-Vargas and Mukherjee, `θ` is an eigenvalue of 
 cover `T_G` iff `G` has a `θ`-Aomoto subset: a set `S` with `G[S]` a forest, `θ` an eigenvalue of
 every component of `G[S]`, and `|∂_G S| < cc(G[S])`.
 
-At `θ = 0` this collapses to something elementary. An independent set has all components `K_1`,
+NOT NEW. This is Observation 4.2 of [BGM] combined with their Theorems 3.1 and 3.3. They prove
+the reduction more strongly and more cheaply: their Lemma 4.2 gives each Aomoto tree a
+nowhere-vanishing `λ`-eigenvector, and a kernel vector of a zero-potential tree operator cannot be
+nonzero at the parent of a leaf, so at `λ = 0` every Aomoto tree is a single vertex. What follows
+is a re-derivation by counting, kept because the counting core is reused elsewhere.
+
+At `θ = 0` the criterion collapses to something elementary. An independent set has all components `K_1`,
 whose eigenvalue is `0`, and `cc(G[S]) = |S|` with `∂_G S = N(S)`, so the Aomoto condition reads
 `|N(S)| < |S|`: exactly the failure of Hall's marriage condition. The content is the converse,
 that a general `0`-Aomoto subset can be replaced by an independent one.
