@@ -207,5 +207,38 @@
     ],
     "verification": "mu_G computed exactly through the boundary as a separator, so n=23 needs no 2^n; mu_G(theta)=0 exactly in each row, and the Aomoto inequality cc > |boundary| holds in each",
     "minimality": "the counting chain fixes c, then b, then n, so each row is the smallest graph for its Delta"
-  }
+  },
+  "sharpness_general": {
+    "theorem": "for every delta>=3 and every theta-critical tree B of order kappa>=2, with W=(delta-2)kappa+2, there is a graph with delta(G)=delta, Delta(G)=W+1, theta in the point spectrum of T_G, on kappa(W+1)+W vertices; both Delta and the order are least possible",
+    "construction": "c=W+1 copies of B plus b=W boundary vertices; each branch vertex takes delta-deg_B(v) boundary neighbours; cross edges = Wc = W(W+1) = Delta*b so every boundary vertex has degree exactly W+1",
+    "why_it_is_a_proof": "the Aomoto criterion of BGM is a cited theorem, so only the combinatorics needs checking: simple graph, degrees, and cc(G[S])=c > c-1=|boundary|",
+    "verified": "delta in 3..6 and kappa in 2..5, all 16 cases simple with correct degrees and the Aomoto inequality; exact mu_G(theta)=0 additionally checked at (3,2),(3,3),(4,2)",
+    "instances": {
+      "(3,2)": {
+        "Delta": 5,
+        "n": 14
+      },
+      "(3,3)": {
+        "Delta": 6,
+        "n": 23
+      },
+      "(3,4)": {
+        "Delta": 7,
+        "n": 34
+      },
+      "(4,2)": {
+        "Delta": 7,
+        "n": 20
+      },
+      "(5,2)": {
+        "Delta": 9,
+        "n": 26
+      },
+      "(6,5)": {
+        "Delta": 23,
+        "n": 137
+      }
+    }
+  },
+  "literature_status_ratio_bound": "INCONCLUSIVE. A targeted search for m_(nu-1)/m_nu <= binom(nu+1,2) over forests returned nothing relevant. The proof glues Cauchy interlacing to Gutman's theorem, both classical, so it may well be folklore. This is the one open literature question and it is for Hall."
 }

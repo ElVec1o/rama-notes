@@ -37,8 +37,22 @@ In general it is false. The counterexample is due to Chris Hall \cite{HallCE}: a
 $41$ vertices with $\mu_G=x^{21}(x^4-11x^2+25)^4(x^2-5)(x^2-11)$, where $\sqrt5$ lies in an internal
 gap of $\operatorname{spec}(T)$.
 
-The natural repairs, minimum degree three and $3$-connectivity, are open. Our contribution is to
-show that the obvious attack on them cannot work. A separator of size $k$ met by $p$ identical
+The natural repairs, minimum degree three and $3$-connectivity, are open. Our main contribution is
+a structural reason why counterexamples are hard to build, and why the known one looks as it does.
+If $\delta(G)\ge3$ and $\theta\ne0$ is an eigenvalue of $T_G$, then
+\[
+  \theta^2>\frac{8(\delta-2)^2}{(\Delta-2)(\Delta+2\delta-6)},
+  \qquad\text{so}\qquad |\theta|>\frac{2\sqrt2\,(\delta-2)}{\Delta}\bigl(1+o(1)\bigr)
+\]
+(Theorem~\ref{thm:main}): an eigenvalue near zero forces degree spread growing like $1/|\theta|$.
+The bound is attained for every admissible pair of parameters (Theorem~\ref{thm:sharpgen}), the
+smallest witness having $\delta=3$, $\Delta=5$ and $14$ vertices. It is vacuous at $\delta=1$,
+which is exactly where Hall's counterexample lives. The route runs through a bound of independent
+interest: every forest with matching number $\nu$ satisfies $m_{\nu-1}/m_\nu\le\binom{\nu+1}{2}$,
+with equality only for $P_{2\nu}$ (Theorem~\ref{thm:ratio}), proved by Cauchy interlacing and a
+theorem of Gutman.
+
+We also show that the obvious attack on the two repairs cannot work. A separator of size $k$ met by $p$ identical
 branches forces $A^{\,p-k}\mid\mu_G$, where $A$ is the branch's matching polynomial
 (Lemma~\ref{lem:divis}), so it produces roots of $\mu_G$ at will; but when the branch is a tree that
 same configuration is a $\theta$-Aomoto subset in the sense of Banks, Garza-Vargas and Mukherjee, so
@@ -157,7 +171,9 @@ in general is the question here.
 \S\ref{sec:conj} states it as a conjecture for all graphs. \S\ref{sec:hallce} is the counterexample,
 due to Chris Hall. \S\ref{sec:divis} isolates the algebra behind it, and \S\ref{sec:mindeg3} shows
 that this algebra cannot be turned against the two natural repairs, because the configuration it
-needs is exactly an Aomoto subset. Supplementary material is in \cite{Supp}; the biregular case,
+needs is exactly an Aomoto subset. \S\ref{sec:degbound} and \S\ref{sec:kappa} contain the main
+theorem, the lower bound on the point spectrum in terms of the degrees, and \S\ref{sec:sharp}
+shows it is attained for every admissible pair of parameters. Supplementary material is in \cite{Supp}; the biregular case,
 which survives the refutation, is \cite{PartII}.
 
 \section{Proof}
@@ -907,7 +923,35 @@ $4$ & $K_2$ & $2$ & $\pm1$ & $\Delta\ge7$ & $7$ & $7$, $6$ & $20$ \\
 \end{center}
 
 In each row $\Delta$ equals the least value the bound permits, and $n$ is the least possible for
-that $\Delta$. The first row is the smallest of all and is worth stating separately.
+that $\Delta$. These are not three coincidences: the chain forces the construction, so the same
+argument runs for every pair.
+
+\begin{theorem}[sharpness]\label{thm:sharpgen}
+Let $\delta\ge3$ and let $B$ be a $\theta$-critical tree of order $\kappa\ge2$, and put
+$W=(\delta-2)\kappa+2$. There is a graph $G$ with $\delta(G)=\delta$, $\Delta(G)=W+1$ and
+$\theta\in\operatorname{Spec}_p T_G$, on $\kappa(W+1)+W$ vertices. Both $\Delta$ and the order are
+the least possible. In particular Proposition~\ref{prop:degkappa} is sharp for every such
+$(\delta,\kappa)$, and since $P_\kappa$ is $\theta$-critical at
+$\theta=2\cos\frac{\pi}{\kappa+1}$, for every $\kappa\ge2$.
+\end{theorem}
+
+\begin{proof}
+Take $c=W+1$ copies of $B$ and $b=W$ boundary vertices, and give each branch vertex $v$ exactly
+$\delta-\deg_B(v)$ boundary neighbours. The number of cross edges is
+$\sum_v(\delta-\deg_B v)=c\bigl(\delta\kappa-2(\kappa-1)\bigr)=Wc=W(W+1)=(W+1)b$, so the
+degrees can be shared out with every boundary vertex receiving exactly $W+1$; this is a realizable
+simple bipartite degree sequence because each $\delta-\deg_B v\le\delta-1\le W=b$. Branch vertices
+then have degree $\delta$ and boundary vertices $W+1\ge\delta$, so $\delta(G)=\delta$ and
+$\Delta(G)=W+1$. The branch set $S$ induces $c$ disjoint copies of $B$, a forest each of whose
+components has $\theta$ as an eigenvalue, and $|\partial_GS|=b=c-1<c$, so $S$ is a
+$\theta$-Aomoto subset and \cite{BGM} gives $\theta\in\operatorname{Spec}_pT_G$. Minimality: the
+chain of Proposition~\ref{prop:degkappa} reads $Wc\le\Delta(c-1)$, so $\Delta=W+1$ forces
+$c\ge W+1$, then $e=Wc\le\Delta b$ gives $b\ge W$, while $b\le c-1$; hence $c=W+1$, $b=W$ and
+$|V|\ge\kappa(W+1)+W$.
+\end{proof}
+
+The first row is the smallest instance of all and is worth stating separately, with its point
+spectrum computed outright.
 
 \begin{proposition}\label{prop:sharp}
 Let $G$ be the graph on $14$ vertices consisting of five disjoint edges together with four further
