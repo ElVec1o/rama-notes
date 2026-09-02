@@ -86,3 +86,27 @@ theorem matching_ratio_of_small_eigenvalue {ι : Type*} (s : Finset ι) (y : ι 
     exact (div_pos_iff_of_pos_right hmnu).mp hsum
   rw [div_le_iff₀ hm1] at hb
   linarith
+
+/-- The case a tree of even order with a perfect matching: a tree has at most one perfect
+matching, so `m_ν = 1` and the ratio collapses to `m_(ν-1)`, which the path maximizes. Given any
+upper bound `B` on `m_(ν-1)`, every nonzero eigenvalue satisfies `θ² ≥ 1/B`. -/
+theorem eigenvalue_sq_ge_inv_of_unique_perfect_matching {ι : Type*} (s : Finset ι) (y : ι → ℝ)
+    (mnu1 B : ℝ)
+    (hpos : ∀ i ∈ s, 0 < y i)
+    (hvieta : ∑ i ∈ s, (y i)⁻¹ = mnu1 / 1)
+    (hB : mnu1 ≤ B)
+    {j : ι} (hj : j ∈ s) :
+    B⁻¹ ≤ y j := by
+  have h := eigenvalue_sq_ge_matching_ratio s y 1 mnu1 hpos one_pos hvieta hj
+  rw [one_div] at h
+  have hm1 : 0 < mnu1 := by
+    have hsum : 0 < mnu1 / 1 := by
+      rw [← hvieta]
+      exact lt_of_lt_of_le (inv_pos.mpr (hpos j hj))
+        (Finset.single_le_sum (f := fun i => (y i)⁻¹)
+          (fun i hi => le_of_lt (inv_pos.mpr (hpos i hi))) hj)
+    simpa using hsum
+  have hBpos : 0 < B := lt_of_lt_of_le hm1 hB
+  have : B⁻¹ ≤ mnu1⁻¹ := by
+    rw [inv_le_inv₀ hBpos hm1]; exact hB
+  exact le_trans this h

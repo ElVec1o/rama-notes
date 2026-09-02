@@ -802,10 +802,37 @@ against the true asymptotic $\pi/|\theta|$ from Proposition~\ref{prop:paths}: th
 recovers the correct order and the constant $2\sqrt2=2.828$ in place of $\pi=3.142$, a loss of
 about ten percent. The residual combinatorial statement is the following.
 
+The even case splits, and one half is now a theorem.
+
+\begin{proposition}[trees with a perfect matching]\label{prop:pmratio}
+Let $T$ be a tree of order $2m$ with a perfect matching. Then
+$m_{\nu-1}/m_\nu=m_{m-1}\le\binom{m+1}{2}$, with equality if and only if $T=P_{2m}$.
+\end{proposition}
+
+\begin{proof}
+A tree has at most one perfect matching, since the symmetric difference of two would contain a
+cycle; so $\nu=m$ and $m_\nu=1$, and the ratio is $m_{m-1}$. By the classical theorem of Gutman
+that the path is the unique maximizer of $m_k$, for each fixed $k$, among trees on a given number
+of vertices, $m_{m-1}(T)\le m_{m-1}(P_{2m})=\binom{2m-(m-1)}{m-1}=\binom{m+1}{m-1}=\binom{m+1}{2}$.
+\end{proof}
+
+What remains is the trees of even order \emph{without} a perfect matching, where $m_\nu>1$ is
+possible and the ratio is a genuine quotient. Exhaustion to order $20$ gives their maximum exactly,
+and it is smaller by a margin that grows.
+
 \begin{conjecture}\label{conj:kappa}
-Over trees of order $2m$, the maximum of $m_{\nu-1}/m_\nu$ is $\binom{m+1}{2}$, attained by
-$P_{2m}$; over trees of order $2m+1$ it is $m^2/2$. Verified exactly for $m\le9$.
+Over trees of order $2m$ with no perfect matching, the maximum of $m_{\nu-1}/m_\nu$ is
+$\frac{1}{3}\binom{m-1}{1}\frac{3m-4}{2}=\frac{(m-1)(3m-4)}{6}$, that is one third of the
+$(m-1)$-st pentagonal number, so it falls short of $\binom{m+1}{2}$ by exactly $\frac{5m-2}{3}$.
+Verified for $2\le m\le10$.
 \end{conjecture}
+
+Only the inequality is needed, not the exact value: any bound showing that a tree of even order
+without a perfect matching has ratio below $\binom{m+1}{2}$ completes the even case, and with
+Proposition~\ref{prop:pmratio} that is the whole of what
+Proposition~\ref{prop:matchbound} requires. Proposition~\ref{prop:pmratio} in the form used, that a
+bound on $m_{\nu-1}$ with $m_\nu=1$ bounds the eigenvalue, is machine-checked as
+\texttt{eigenvalue\_sq\_ge\_inv\_of\_unique\_perfect\_matching}.
 
 In the case of a tree of even order \emph{with a perfect matching} the sharp constant is already a
 theorem: Godsil, proving a conjecture of Gutman, showed that among trees on $2m$ vertices with a

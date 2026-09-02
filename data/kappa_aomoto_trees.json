@@ -143,5 +143,23 @@
     "b": "HOLDS",
     "c": "HOLDS, the running minimum at order 9 is unchanged by the two recovered trees"
   },
-  "runtime_seconds": 153
+  "runtime_seconds": 153,
+  "C1_resolved": {
+    "split": "trees of order 2m with a perfect matching, versus without",
+    "with_perfect_matching": "PROVED. A tree has at most one perfect matching, so m_nu = 1 and the ratio is m_(m-1). Gutman's classical theorem, that the path is the unique maximiser of m_k for each fixed k among trees on n vertices, gives m_(m-1) <= binom(m+1,2) with equality only for the path. Verified separately here: over all trees of order at most 16, zero violations of m_k(T) <= m_k(P_n) for any k.",
+    "without_perfect_matching": "OPEN, but exhausted to order 20. The maximum is (m-1)(3m-4)/6, one third of the (m-1)-st pentagonal number, falling short of binom(m+1,2) by exactly (5m-2)/3.",
+    "max_no_pm_by_2m": {
+      "4": "1/3",
+      "6": "5/3",
+      "8": "4",
+      "10": "22/3",
+      "12": "35/3",
+      "14": "17",
+      "16": "70/3",
+      "18": "92/3",
+      "20": "39"
+    },
+    "what_is_still_needed": "only the inequality, not the exact value: any argument that a tree of even order without a perfect matching has ratio below binom(m+1,2)"
+  },
+  "formalized_addendum": "eigenvalue_sq_ge_inv_of_unique_perfect_matching in RamaLean/MatchingEigenvalueBound.lean"
 }
