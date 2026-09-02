@@ -903,6 +903,48 @@ the Vieta identity supplied as a hypothesis in the same way that the criterion o
 Proposition~\ref{prop:paths} is classical and is not formalized, and
 Conjecture~\ref{conj:kappa} is a conjecture.
 
+\subsection{The degree bound is sharp}\label{sec:sharp}
+
+Propositions~\ref{prop:degbound} and \ref{prop:degkappa} are not merely true but attained, and the
+witness is small and explicit. At $\delta=3$ and $\theta=\pm1$, whose $\theta$-critical tree is
+$K_2$ and so $\kappa=2$, both read $\Delta\ge5$.
+
+\begin{proposition}\label{prop:sharp}
+Let $G$ be the graph on $14$ vertices consisting of five disjoint edges together with four further
+vertices, where each of the ten edge-endpoints is joined to two of the four, distributed so that
+each of the four receives five such edges. Then $\delta(G)=3$, $\Delta(G)=5$, and the point spectrum
+of $T_G$ is exactly $\{+1,-1\}$. Moreover no graph with $\delta\ge3$ and a nonzero eigenvalue of its
+universal cover has $\Delta<5$, or has fewer than $14$ vertices when $\Delta=5$.
+\end{proposition}
+
+\begin{proof}
+The five disjoint edges form the set $S$: $G[S]$ is a forest with $\operatorname{cc}=5$ components,
+each having $\pm1$ as an eigenvalue, and $|\partial_GS|=4<5$, so $S$ is a $(\pm1)$-Aomoto subset and
+\cite{BGM} gives $\pm1\in\operatorname{Spec}_p T_G$. That the point spectrum is no larger is the
+computation below. For minimality, the chain in the proof of Proposition~\ref{prop:degkappa} with
+$\delta=3$, $\kappa=2$ reads $4c\le\Delta(c-1)$, so $\Delta=5$ forces $c\ge5$; then
+$e=4c=20\le\Delta b=5b$ gives $b\ge4$, while the Aomoto inequality gives $b\le c-1=4$. Hence $b=4$,
+$c=5$, and $|V|\ge 2\cdot5+4=14$.
+\end{proof}
+
+The exact certificate of Remark~\ref{rem:certificate} identifies the point spectrum outright, since
+$\theta$ is an eigenvalue exactly when it is a root of every $\mu_{G\setminus\Gamma}$, so
+$\operatorname{Spec}_pT_G$ is the root set of the integer polynomial
+$E_G=\gcd_\Gamma\mu_{G\setminus\Gamma}$. For this graph there are $504$ two-regular subgraphs and
+\[
+  \mu_G=(x^2-1)\bigl(x^{12}-24x^{10}+206x^{8}-756x^{6}+1081x^{4}-364x^{2}+16\bigr),
+  \qquad E_G=x^2-1 .
+\]
+So $\Delta=5=2\delta-1$ is attained, and both propositions are sharp at $\delta=3$. For contrast,
+$E_G=x^4(x^2-3)$ for the $14$-vertex construction of \cite{Supp}, which has $\delta=3$ but
+$\Delta=9$.
+
+Sharpness should not be read as encouragement. The bound is attained by a graph built to attain it,
+and in $397$ random graphs with $\delta\ge3$ on at most $12$ vertices, sampled across a range of
+densities, $E_G$ had no nonzero root even once. A nonzero point spectrum is not a matter of degrees
+being large enough; it needs many components with a small boundary, which is a sparse and highly
+structured condition that random graphs do not meet.
+
 \subsection{An exact search in the trap-free class}\label{sec:biregular}
 
 Corollary~\ref{cor:trapfree} identifies a class in which a counterexample would be unconditional,

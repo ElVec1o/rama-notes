@@ -1,0 +1,22 @@
+{
+  "tool": "E_G = gcd over all 2-regular subgraphs Gamma of mu_{G-Gamma}. Its root set IS the point spectrum of T_G, exactly, as an integer polynomial. Follows from Li-Magee-Sabri-Thomas plus Spier. No eigenvalue is ever computed numerically.",
+  "validation": {
+    "d3_m3_p3": {"n":14,"delta":3,"Delta":9,"mu_G":"x^4 (x^2-3)(x^8-24x^6+171x^4-396x^2+270)","E_G":"x^4 (x^2-3)","point_spectrum":"{0, +-sqrt3}"},
+    "d3_m3_p4": {"n":18,"delta":3,"Delta":12,"E_G":"x^6 (x^2-3)^2"},
+    "d3_m2_p3": {"n":11,"delta":2,"Delta":6,"E_G":"x (x^2-2)"}
+  },
+  "sharpness": {
+    "claim":"the degree bound Delta > 2(delta-1), and its refinement Delta > (delta-2) kappa + 2, are SHARP at delta = 3",
+    "graph":"five disjoint edges plus four boundary vertices; each of the ten edge-endpoints joined to two boundary vertices, each boundary vertex receiving five",
+    "n":14,"delta":3,"Delta":5,"edges":25,"two_regular_subgraphs":504,
+    "edge_list":[[0,4],[0,5],[0,6],[0,7],[0,8],[1,4],[1,5],[1,9],[1,10],[1,11],[2,6],[2,7],[2,9],[2,12],[2,13],[3,8],[3,10],[3,11],[3,12],[3,13],[4,5],[6,7],[8,9],[10,11],[12,13]],
+    "mu_G":"(x-1)(x+1)(x^12-24x^10+206x^8-756x^6+1081x^4-364x^2+16)",
+    "E_G":"(x-1)(x+1)",
+    "point_spectrum":"exactly {+1,-1}",
+    "minimality":"the counting chain with delta=3, kappa=2 gives 4c <= Delta(c-1), so Delta=5 forces c>=5; then e=4c=20 <= 5b gives b>=4, and the Aomoto inequality gives b<=c-1=4, so b=4, c=5, n>=14. Both Delta=5 and n=14 are least possible."
+  },
+  "P86": {"a":"HOLDS, 92 trap-free graphs, none with nonzero point spectrum, as the machine-checked bound requires",
+          "b":"REFUTED as stated for random graphs (0 of 305 beyond-threshold random graphs had one), but HOLDS for structured ones: the sharp example above has delta=3, Delta=5",
+          "c":"no counterexample to D3 found"},
+  "lesson":"a nonzero point spectrum is not about degrees being large enough. It needs many components with a small boundary, a sparse and highly structured condition. 397 random graphs with delta>=3 gave E_G with no nonzero root, every time."
+}
