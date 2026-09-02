@@ -1,0 +1,21 @@
+{
+  "question": "is the kappa bound, or the theta^2 >= m_nu/m_(nu-1) matching bound, already known?",
+  "searched": ["smallest positive eigenvalue of trees and matching numbers",
+               "Banks Garza-Vargas Mukherjee follow-up work",
+               "Li Magee Sabri Thomas maximal abelian covers",
+               "Spier, eigenvalues of universal covers and the matching polynomial"],
+  "findings": {
+    "godsil_gutman": "Gutman conjectured and Godsil proved that among NONSINGULAR trees, equivalently trees on 2m vertices with a perfect matching, the path minimizes the smallest positive eigenvalue. Gives the sharp constant in that class only.",
+    "theta_critical_is_the_established_name": "a tree carrying a nowhere-vanishing theta-eigenvector is a theta-critical tree in the sense of Ku and Wong (V(G) = 0_theta^G). Spier Cor. 40 identifies the components of a refined theta-Aomoto subset as exactly these. So kappa(theta) = least order of a theta-critical tree, and the objects were already named; adopt that terminology.",
+    "no_size_bound_found": "no degree bound on the point spectrum, and no lower bound on the order of a theta-critical tree, appears in BGM, Li-Magee-Sabri-Thomas, or Spier. Their Theorem 15 bounds neighbourhoods of the boundary, not component orders. The matching bound theta^2 >= m_nu/m_(nu-1) was not found in the searched literature, but it is a two-line Vieta argument and should be assumed folklore until someone says otherwise.",
+    "spier_2025": "arXiv:2510.05041, Thomas Jung Spier, Oct 2025. G^uni and G^ab have the same eigenvalues. Theorem 35 chains the equivalences.",
+    "lmst_2025": "arXiv:2508.17332, Li, Magee, Sabri, Thomas, Aug 2025. theta is an eigenvalue of G^ab iff theta is a zero of mu_{G minus Gamma} for every 2-regular subgraph Gamma. The empty subgraph counts."
+  },
+  "consequence_drawn": "a root theta of mu_G fails to be an eigenvalue of T_G iff some 2-regular subgraph Gamma has mu_{G minus Gamma}(theta) != 0. This is an exact finite polynomial certificate and it replaces every numerical eigenvalue test in the supplement, including the one that produced the withdrawn D3 and C2 claims.",
+  "questions_for_hall": [
+    "is theta^2 >= m_nu/m_(nu-1) for forests in the literature under some other name",
+    "is the maximum of m_(nu-1)/m_nu over trees of order 2m known to be binom(m+1,2), attained by the path",
+    "is any lower bound on the order of a theta-critical tree known, in the Ku-Wong line of work",
+    "does the 2-regular-subgraph certificate suggest a better search for a min-degree-3 counterexample than the branch constructions"
+  ]
+}

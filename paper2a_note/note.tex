@@ -543,6 +543,25 @@ cover, in the form that $\theta$ is an eigenvalue of $G^{\mathrm{ab}}$ if and on
 zero of $\mu_{G\setminus\Gamma}$ for every $2$-regular subgraph $\Gamma$, and Spier \cite{Sp} proves
 that $T_G$ and $G^{\mathrm{ab}}$ have the same eigenvalues.
 
+Combining the two gives an exact and purely combinatorial certificate, which is worth stating
+because it replaces every numerical test used in \cite{Supp}. The empty subgraph is $2$-regular, so
+taking $\Gamma=\varnothing$ recovers the containment of the point spectrum in the zeros of $\mu_G$;
+the content is the converse direction.
+
+\begin{remark}\label{rem:certificate}
+A root $\theta$ of $\mu_G$ fails to be an eigenvalue of $T_G$ if and only if there is a $2$-regular
+subgraph $\Gamma\subseteq G$, that is a disjoint union of cycles, with $\mu_{G\setminus\Gamma}(\theta)\ne0$.
+A counterexample to Conjecture~\ref{conj:gap} is therefore a graph carrying a root $\theta$ of
+$\mu_G$ that lies outside the bands of $\operatorname{spec}(T_G)$ together with one such witness
+$\Gamma$, and both halves are finite exact checks on polynomials.
+\end{remark}
+
+This is the check that should have been run in \cite{Supp}. The density-of-states and ratio-system
+tests used there decide eigenvalue membership numerically, and it was exactly that step which
+produced the withdrawn claims about Conjectures~\ref{conj:mindeg3} and \ref{conj:conn}: in each
+case the root was an eigenvalue after all, carried back into the spectrum by an Aomoto subset that
+the numerics did not see.
+
 \begin{proposition}[the branch obstruction]\label{prop:obstruction}
 Let $\theta\in\mathbb R$ and let $S\subseteq V(G)$ with $|S|=k$. If at least $k+1$ of the components
 of $G-S$ induce forests having $\theta$ as an eigenvalue, then $\theta$ is an eigenvalue of $T_G$,
@@ -705,7 +724,10 @@ origin it requires the degree spread $\Delta>2(\delta-1)$.
 The step $s\ge2c$ in Proposition~\ref{prop:degbound} is the weakest link in the chain, and it is
 weak by a wide margin. It uses only that a $\theta$-Aomoto tree with $\theta\ne0$ is not a single
 vertex. Lemma 4.2 of \cite{BGM} says much more: each component $T_i$ of $G[S]$ carries a
-$\theta$-eigenvector that is nonzero at \emph{every} vertex. Such trees cannot be small when
+$\theta$-eigenvector that is nonzero at \emph{every} vertex. Such a tree is precisely a
+\emph{$\theta$-critical} tree in the sense of Ku and Wong, the notion under which Spier
+\cite[Cor.~40]{Sp} identifies the components of a refined $\theta$-Aomoto subset, and
+$\kappa(\theta)$ below is the least order of one. Such trees cannot be small when
 $\theta$ is small. The only tree of order $2$ is $K_2$, whose eigenvalues are $\pm1$; the two trees
 of order $3$ are $P_3$, with $\pm\sqrt2$ and $0$, and the eigenvector for $0$ vanishes at the
 centre. So already $0<|\theta|<1$ forces every component to have at least four vertices.
