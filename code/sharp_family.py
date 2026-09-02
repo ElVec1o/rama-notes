@@ -68,6 +68,7 @@ def match_counts_sep(n, edges, B):
         tab.append((c, idx, d))
     total = [0]
     order = list(B)
+    pos = {v: i for i, v in enumerate(order)}
 
     def rec(i, used, k):
         nonlocal total
@@ -88,6 +89,10 @@ def match_counts_sep(n, edges, B):
         rec(i + 1, used, k)                       # v unmatched
         for w in adj[v]:
             if w in used:
+                continue
+            # an edge with both ends in the separator must be initiated by its EARLIER end only,
+            # or it is counted once from each end
+            if w in pos and pos[w] < i:
                 continue
             rec(i + 1, used | {v, w}, k + 1)
 

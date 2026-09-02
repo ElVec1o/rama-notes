@@ -6,18 +6,40 @@ Four short number-theory / combinatorics notes and a methodology note, each pair
 result with a Lean 4 + Mathlib formalization. Everything here builds and is machine-checked; conjectures
 are labeled as such.
 
-> **Status: closed (August 2026), with a correction.** This repository is archived and no further
-> work is planned. The central conjecture of Paper 2a is false; Chris Hall's counterexample refutes
-> it. **Releases v5.0 to v5.2 additionally claimed that the two proposed repairs, minimum degree
-> three (D3) and 3-connectivity (C2), were refuted here on 14 and 23 vertices. That claim is wrong
-> and is retracted.** In both graphs the root is an *eigenvalue* of the universal cover, so it lies
-> inside the spectrum and refutes nothing. **D3 and C2 are open.** What replaces the claim is a
-> theorem in the other direction: the branch mechanism *cannot* produce a counterexample, because
-> the configuration that forces a root of the matching polynomial is exactly a Aomoto subset for the
-> cover. See `code/aomoto_obstruction.py` and §"Why the branch mechanism cannot produce a
-> counterexample" of Paper 2a. What stands is the closed form at first Betti number one, the
-> gcd-permanent results of Paper 3, and the formalization. Papers 1 and 4 are slight; Paper 1
-> recomputes a known OEIS sequence (A128836) over a smaller range than the existing computation.
+> **Status: reopened, September 2026.** Paper 2a now has a main theorem. Previously this
+> repository was closed at v6.0; that closure recorded the retraction below and stands, but the
+> paper is no longer only a set of obstructions.
+>
+> **Main theorem (Paper 2a).** If a graph `G` has minimum degree `delta >= 3` and maximum degree
+> `Delta`, and `theta != 0` is an eigenvalue of the universal cover `T_G`, then
+>
+> > `theta^2 > 8(delta-2)^2 / ((Delta-2)(Delta+2delta-6))`, so `|theta| > 2 sqrt2 (delta-2)/Delta` asymptotically.
+>
+> An eigenvalue near zero forces degree spread growing like `1/|theta|`. The bound is **attained for
+> every admissible pair of parameters**; the smallest witness has `delta=3`, `Delta=5` and 14
+> vertices, with point spectrum exactly `{+1,-1}`. It is vacuous at `delta=1`, which is exactly where
+> Hall's counterexample lives, and that is the first explanation of why counterexamples look the way
+> they do. The route is a bound of independent interest: every forest with matching number `nu`
+> satisfies `m_(nu-1)/m_nu <= binom(nu+1,2)`, equality only for the path `P_2nu`, proved by Cauchy
+> interlacing plus a theorem of Gutman. Whether that last bound is already known is an open
+> literature question.
+>
+> **Also new.** Combining Li-Magee-Sabri-Thomas (arXiv:2508.17332) with Spier (arXiv:2510.05041),
+> the point spectrum of `T_G` is the root set of the integer polynomial
+> `E_G = gcd over 2-regular subgraphs Gamma of mu_(G-Gamma)`, computable exactly with no numerics.
+> Applied to Hall's 41-vertex graph, a **single 4-cycle** certifies his counterexample, giving
+> `mu_(G-Gamma)(sqrt5) = 1220703125 sqrt5 != 0`. See `code/exact_cover_certificate.py`,
+> `code/hall_certificate.py`, `code/point_spectrum_exact.py`.
+>
+> **The retraction still stands.** The central conjecture of Paper 2a is false; Chris Hall's
+> counterexample refutes it. **Releases v5.0 to v5.2 additionally claimed that the two proposed
+> repairs, minimum degree three (D3) and 3-connectivity (C2), were refuted here on 14 and 23
+> vertices. That claim is wrong and is retracted.** In both graphs the root is an *eigenvalue* of the
+> universal cover. **D3 and C2 remain open**, and the main theorem above does not settle either; it
+> says why counterexamples are hard to build. The exact certificate now confirms the retraction
+> without numerics: for the 14-vertex graph all 193 two-regular subgraphs leave `sqrt3` a root, so
+> that construction was never close. Papers 1 and 4 are slight; Paper 1 recomputes a known OEIS
+> sequence (A128836) over a smaller range than the existing computation.
 
 > **Formalization status:** the Lean library `RamaLean/` builds against Mathlib with **no `sorry`**. Every
 > mathematical theorem depends only on Lean's three standard axioms (`propext`, `Classical.choice`,
