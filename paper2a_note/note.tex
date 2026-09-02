@@ -558,7 +558,7 @@ $\Gamma$, and both halves are finite exact checks on polynomials.
 
 This is the check that should have been run in \cite{Supp}. The density-of-states and ratio-system
 tests used there decide eigenvalue membership numerically, and it was exactly that step which
-produced the withdrawn claims about Conjectures~\ref{conj:mindeg3} and \ref{conj:conn}: in each
+produced the withdrawn claims about Conjectures~\ref{conj:mindeg3} and \ref{conj:c2}: in each
 case the root was an eigenvalue after all, carried back into the spectrum by an Aomoto subset that
 the numerics did not see. Running it settles both sides.
 
@@ -792,122 +792,122 @@ $2\cos\frac{m\pi}{2m+1}$ for $n\in\{2m,2m+1\}$, $m\le9$, and is attained by $P_{
 contribute nothing new; the minimum over trees of order exactly $2m+1$ is strictly larger than the
 minimum over trees of order exactly $2m$, and for odd order it is not attained by a path.
 
-The matching polynomial gives the matching lower bound unconditionally, and with the right order of
-magnitude.
+The matching polynomial closes the gap, unconditionally and with the sharp order of magnitude.
 
 \begin{proposition}[matching bound]\label{prop:matchbound}
 Let $F$ be a forest with matching number $\nu\ge1$ and let $m_k$ be its number of $k$-matchings.
-Then every nonzero eigenvalue $\theta$ of $F$ satisfies
-\[
-  \theta^2 \;\ge\; \frac{m_\nu}{m_{\nu-1}} .
-\]
+Then every nonzero eigenvalue $\theta$ of $F$ satisfies $\theta^2\ge m_\nu/m_{\nu-1}$.
 \end{proposition}
 
 \begin{proof}
 For a forest the characteristic polynomial is the matching polynomial, so
-$\mu_F(x)=x^{n-2\nu}Q(x^2)$ with $Q(y)=\sum_{j=0}^{\nu}(-1)^{\nu-j}m_{\nu-j}y^{j}$, whose $\nu$
-roots $y_1,\dots,y_\nu$ are the squares of the nonzero eigenvalues and are therefore positive.
-Reading off the bottom two coefficients, $e_\nu(y)=m_\nu$ and $e_{\nu-1}(y)=m_{\nu-1}$, so
-$\sum_j y_j^{-1}=e_{\nu-1}/e_\nu=m_{\nu-1}/m_\nu$. Every term of a sum of positive numbers is at
-most the sum, so $y_j^{-1}\le m_{\nu-1}/m_\nu$ for each $j$, which is the claim.
+$\mu_F(x)=x^{n-2\nu}Q(x^2)$ with $Q(y)=\sum_{j}(-1)^{\nu-j}m_{\nu-j}y^{j}$, whose $\nu$ roots
+$y_1,\dots,y_\nu$ are the squares of the nonzero eigenvalues and are positive. Reading off the
+bottom two coefficients, $e_\nu(y)=m_\nu$ and $e_{\nu-1}(y)=m_{\nu-1}$, so
+$\sum_j y_j^{-1}=m_{\nu-1}/m_\nu$; every term of a sum of positive numbers is at most the sum.
 \end{proof}
 
-Nothing here uses that the eigenvector is nowhere vanishing, and nothing uses a perfect matching. To
-convert it into a bound on $\kappa$ one needs the largest that $m_{\nu-1}/m_{\nu}$ can be on a tree
-of given order. Exhaustion over all $522{,}958$ trees of order at most $19$ gives the maximum as
-$\binom{m+1}{2}$ at order $2m$, attained by $P_{2m}$, and $m^2/2$ at order $2m+1$. The ratio is a
-quotient of integers, so that range is settled exactly, with no floating point in it. Granting the
-even case, Proposition~\ref{prop:matchbound} gives
-\[
-  |\theta| \;\ge\; \sqrt{\frac{2}{m(m+1)}} \;\sim\; \frac{2\sqrt2}{n},
-  \qquad\text{that is}\qquad \kappa(\theta)\;\gtrsim\;\frac{2\sqrt2}{|\theta|},
-\]
-against the true asymptotic $\pi/|\theta|$ from Proposition~\ref{prop:paths}: the elementary bound
-recovers the correct order and the constant $2\sqrt2=2.828$ in place of $\pi=3.142$, a loss of
-about ten percent. The residual combinatorial statement is the following.
+Write $R(F)=m_{\nu-1}/m_\nu=\sum_j\theta_j^{-2}$, the sum over the $\nu$ positive eigenvalues. The
+key point is that deleting an exposed vertex cannot decrease $R$, and this is interlacing rather
+than combinatorics.
 
-The even case splits, and one half is now a theorem.
-
-\begin{proposition}[trees with a perfect matching]\label{prop:pmratio}
-Let $T$ be a tree of order $2m$ with a perfect matching. Then
-$m_{\nu-1}/m_\nu=m_{m-1}\le\binom{m+1}{2}$, with equality if and only if $T=P_{2m}$.
-\end{proposition}
-
-\begin{proof}
-A tree has at most one perfect matching, since the symmetric difference of two would contain a
-cycle; so $\nu=m$ and $m_\nu=1$, and the ratio is $m_{m-1}$. By the classical theorem of Gutman
-that the path is the unique maximizer of $m_k$, for each fixed $k$, among trees on a given number
-of vertices, $m_{m-1}(T)\le m_{m-1}(P_{2m})=\binom{2m-(m-1)}{m-1}=\binom{m+1}{m-1}=\binom{m+1}{2}$.
-The same bound follows from the sharper recent statement that a tree of even order $n$ has at most
-$n(n+2)/8$ matchings covering all but two of its vertices, with equality only for the path, which
-holds for \emph{every} tree of that order and not only those with a perfect matching.
-\end{proof}
-
-What remains is the trees of even order \emph{without} a perfect matching, where $m_\nu>1$ is
-possible and the ratio is a genuine quotient. Exhaustion to order $20$ gives their maximum exactly,
-and it is smaller by a margin that grows.
-
-\begin{lemma}\label{lem:mnu3}
-A tree of even order with no perfect matching has $m_\nu\ge3$, and this is sharp.
+\begin{lemma}\label{lem:interlace}
+Let $F$ be a forest with matching number $\nu$ and let $u$ be a vertex with $\nu(F-u)=\nu$. Then
+$R(F)\le R(F-u)$.
 \end{lemma}
 
 \begin{proof}
-The deficiency $n-2\nu$ is even and positive, so some maximum matching $M$ leaves at least two
-vertices $u\ne w$ exposed. Let $v$ be a neighbour of $u$; it is matched, say to $v'$, or else
-$M+uv$ would be larger, and $M-vv'+uv$ is a second maximum matching. Let $z$ be a neighbour of $w$,
-matched to $z'$. If $\{z,z'\}\ne\{v,v'\}$ then $M-zz'+wz$ is a third; otherwise $w$ is adjacent to
-$v$ or to $v'$, and $M-vv'+wv$ or $M-vv'+wv'$ is a third. Sharpness: the value $3$ is attained at
-every even order, by the tree of the following paragraph among others.
+A forest has exactly $2\nu$ nonzero eigenvalues, so $F$ and $F-u$ each have exactly $\nu$ positive
+ones, $\theta_1\ge\dots\ge\theta_\nu>0$ and $\theta'_1\ge\dots\ge\theta'_\nu>0$. Cauchy interlacing
+for the deletion of a vertex gives $\theta'_j\le\theta_j$ for every $j$, and all are positive, so
+$\theta_j^{-2}\le(\theta'_j)^{-2}$. Sum over $j$.
 \end{proof}
 
-Exhaustion to order $20$ identifies the extremal tree uniquely at every order. It is the
-\emph{broom}: a path with three pendant edges attached at one end, of deficiency exactly $2$, with
-$m_\nu=3$ and $m_{\nu-1}$ the $(m-1)$-st pentagonal number.
+\begin{theorem}\label{thm:ratio}
+Every forest $F$ with matching number $\nu\ge1$ satisfies
+$R(F)=m_{\nu-1}/m_\nu\le\binom{\nu+1}{2}$, with equality if and only if $F$ is $P_{2\nu}$ together
+with isolated vertices. Consequently every nonzero eigenvalue of $F$ satisfies
+\[
+  \theta^2\;\ge\;\frac{2}{\nu(\nu+1)} .
+\]
+\end{theorem}
 
-\begin{conjecture}\label{conj:kappa}
-Over trees of order $2m$ with no perfect matching, $m_{\nu-1}/m_\nu$ is maximized uniquely by the
-broom, with value $\frac{(m-1)(3m-4)}{6}$, short of $\binom{m+1}{2}$ by $\frac{5m-2}{3}$. Verified
-for $2\le m\le10$.
-\end{conjecture}
+\begin{proof}
+If $|V(F)|>2\nu$ some vertex $u$ is missed by a maximum matching, and that matching survives in
+$F-u$, so $\nu(F-u)=\nu$ and Lemma~\ref{lem:interlace} applies. Iterating reaches a forest $F^\ast$
+on $2\nu$ vertices with matching number $\nu$, that is with a perfect matching, and
+$R(F)\le R(F^\ast)$. A forest has at most one perfect matching, since the symmetric difference of
+two would contain a cycle, so $m_\nu(F^\ast)=1$ and $R(F^\ast)=m_{\nu-1}(F^\ast)$. By the classical
+theorem of Gutman that the path is the unique maximizer of $m_k$, for each fixed $k$, among forests
+on a given number of vertices,
+$m_{\nu-1}(F^\ast)\le m_{\nu-1}(P_{2\nu})=\binom{\nu+1}{\nu-1}=\binom{\nu+1}{2}$. The last claim is
+Proposition~\ref{prop:matchbound} with $R\le\nu(\nu+1)/2$.
+\end{proof}
 
-By Lemma~\ref{lem:mnu3} the ratio here is at most $m_{\nu-1}/3$, and $\nu\le m-1$, so what is
-missing is exactly an upper bound on $m_{m-2}$ for trees of even order \emph{without} a perfect
-matching. The bound coming from the path, $\binom{m+2}{4}$, is too weak because the path has a
-perfect matching and is therefore not in the class; the required statement is the analogue for that
-class of Ou's determination of the maximum Hosoya index over even-order trees without a perfect
-matching. That is the one remaining gap.
+Since a $\theta$-critical tree of order $n$ has $\nu\le n/2$, Theorem~\ref{thm:ratio} inverts to a
+lower bound on $\kappa$, and hence to a bound with no free parameter left in it.
 
-Only the inequality is needed, not the exact value: any bound showing that a tree of even order
-without a perfect matching has ratio below $\binom{m+1}{2}$ completes the even case, and with
-Proposition~\ref{prop:pmratio} that is the whole of what
-Proposition~\ref{prop:matchbound} requires. Proposition~\ref{prop:pmratio} in the form used, that a
-bound on $m_{\nu-1}$ with $m_\nu=1$ bounds the eigenvalue, is machine-checked as
-\texttt{eigenvalue\_sq\_ge\_inv\_of\_unique\_perfect\_matching}.
+\begin{theorem}\label{thm:main}
+Let $G$ have minimum degree $\delta\ge3$ and maximum degree $\Delta$, and let $\theta\ne0$ be an
+eigenvalue of $T_G$. Then
+\[
+  \theta^2\;>\;\frac{8(\delta-2)^2}{(\Delta-2)(\Delta+2\delta-6)},
+  \qquad\text{so in particular}\qquad
+  |\theta|\;>\;\frac{2\sqrt2\,(\delta-2)}{\Delta}\bigl(1+o(1)\bigr).
+\]
+\end{theorem}
 
-In the case of a tree of even order \emph{with a perfect matching} the sharp constant is already a
-theorem: Godsil, proving a conjecture of Gutman, showed that among trees on $2m$ vertices with a
-perfect matching the path minimizes the smallest positive eigenvalue, which is exactly
-$2\cos\frac{m\pi}{2m+1}$. That does not close the question here, because a nowhere-vanishing
-eigenvector does not force a perfect matching: among trees of order $6$ and $8$ there are
-respectively $4$ and $18$ without one that still carry a nowhere-vanishing eigenvector for some
-$\theta\ne0$. Their least such $|\theta|$, $0.835$ and $0.548$, is well above the path values
-$0.4450$ and $0.3473$, so they do not affect the minimum; they merely put themselves outside
-Godsil's hypothesis.
+\begin{proof}
+By Lemma 4.2 of \cite{BGM} each component of a $\theta$-Aomoto subset is a $\theta$-critical tree,
+so by Theorem~\ref{thm:ratio} its matching number satisfies $\nu(\nu+1)\ge2/\theta^2$ and its order
+is at least $2\nu\ge\sqrt{1+8/\theta^2}-1=:K$. Hence $\kappa(\theta)\ge K$ and
+Proposition~\ref{prop:degkappa} gives $\Delta>(\delta-2)K+2$. Solving for $\theta^2$, and using
+$(\Delta+\delta-4)^2-(\delta-2)^2=(\Delta-2)(\Delta+2\delta-6)$, gives the stated bound.
+\end{proof}
+
+This is the structural statement the subject was missing. A nonzero point spectrum is not merely a
+matter of some degree spread being present; the spread must grow like $1/|\theta|$, so eigenvalues
+near zero are expensive. It also explains the shape of every known counterexample to
+Conjecture~\ref{conj:gap}: Hall's has $\delta=1$, for which the bound is vacuous.
 
 Proposition~\ref{prop:degkappa} is machine-checked in \texttt{RamaLean/DegreeBoundKappa.lean} as
-\texttt{degree\_bound\_kappa}, with \texttt{degree\_bound\_of\_kappa\_two} deriving
-Proposition~\ref{prop:degbound} from it and \texttt{no\_eigenvalue\_of\_spread\_lt\_kappa} the
-contrapositive. The analytic core of Proposition~\ref{prop:matchbound} is machine-checked in
-\texttt{RamaLean/MatchingEigenvalueBound.lean} as \texttt{eigenvalue\_sq\_ge\_matching\_ratio}, with
-the Vieta identity supplied as a hypothesis in the same way that the criterion of \cite{BGM} is.
-Proposition~\ref{prop:paths} is classical and is not formalized, and
-Conjecture~\ref{conj:kappa} is a conjecture.
+\texttt{degree\_bound\_kappa}, with \texttt{degree\_bound\_of\_kappa\_two} recovering
+Proposition~\ref{prop:degbound} and \texttt{no\_eigenvalue\_of\_spread\_lt\_kappa} the
+contrapositive. Proposition~\ref{prop:matchbound}, the summation step of
+Lemma~\ref{lem:interlace}, and the final inequality of Theorem~\ref{thm:ratio} are machine-checked
+in \texttt{RamaLean/MatchingEigenvalueBound.lean} as
+\texttt{eigenvalue\_sq\_ge\_matching\_ratio}, \texttt{sum\_inv\_sq\_antitone} and
+\texttt{eigenvalue\_sq\_ge\_two\_div}. As throughout, the criterion of \cite{BGM}, Cauchy
+interlacing and Gutman's theorem are cited rather than reproved, and enter the Lean statements as
+hypotheses.
 
 \subsection{The degree bound is sharp}\label{sec:sharp}
 
 Propositions~\ref{prop:degbound} and \ref{prop:degkappa} are not merely true but attained, and the
 witness is small and explicit. At $\delta=3$ and $\theta=\pm1$, whose $\theta$-critical tree is
 $K_2$ and so $\kappa=2$, both read $\Delta\ge5$.
+
+The bound of Theorem~\ref{thm:main} is attained. Three constructions do it, one for each of the
+pairs $(\delta,\kappa)=(3,2)$, $(3,3)$ and $(4,2)$: take $c$ disjoint copies of the $\theta$-critical
+tree $B$ together with $b$ boundary vertices, and give every branch vertex enough boundary
+neighbours to reach degree $\delta$, sharing the resulting edges out equally. The counting chain
+fixes every parameter, since $e=((\delta-2)|B|+2)c\le\Delta b$ and $b\le c-1$ force $c$, then $b$,
+then $n$.
+
+\begin{center}
+\begin{tabular}{cccccccc}
+\toprule
+$\delta$ & $B$ & $\kappa$ & $\theta$ & bound & $\Delta$ & $c$, $b$ & $n$ \\
+\midrule
+$3$ & $K_2$ & $2$ & $\pm1$ & $\Delta\ge5$ & $5$ & $5$, $4$ & $14$ \\
+$3$ & $P_3$ & $3$ & $\pm\sqrt2$ & $\Delta\ge6$ & $6$ & $6$, $5$ & $23$ \\
+$4$ & $K_2$ & $2$ & $\pm1$ & $\Delta\ge7$ & $7$ & $7$, $6$ & $20$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+In each row $\Delta$ equals the least value the bound permits, and $n$ is the least possible for
+that $\Delta$. The first row is the smallest of all and is worth stating separately.
 
 \begin{proposition}\label{prop:sharp}
 Let $G$ be the graph on $14$ vertices consisting of five disjoint edges together with four further

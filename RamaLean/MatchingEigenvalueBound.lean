@@ -110,3 +110,57 @@ theorem eigenvalue_sq_ge_inv_of_unique_perfect_matching {ι : Type*} (s : Finset
   have : B⁻¹ ≤ mnu1⁻¹ := by
     rw [inv_le_inv₀ hBpos hm1]; exact hB
   exact le_trans this h
+
+/-!
+## The interlacing step
+
+For a forest with matching number `ν` the nonzero eigenvalues are exactly `2ν` in number, so
+`R(F) = m_(ν-1)/m_ν = Σ_j λ_j⁻²` over the `ν` positive ones. If `u` is a vertex missed by some
+maximum matching then `ν(F - u) = ν`, so `F - u` also has exactly `ν` positive eigenvalues, and
+Cauchy interlacing gives `0 < λ_j(F - u) ≤ λ_j(F)` for every `j`. The sum of reciprocal squares
+therefore reverses, which is the content below: deleting an exposed vertex cannot decrease `R`.
+
+Iterating lands on a forest of order `2ν` with a perfect matching, where `m_ν = 1` and the classical
+theorem of Gutman bounds `m_(ν-1)` by that of the path. So `R ≤ ν(ν+1)/2` for every forest, and
+with `eigenvalue_sq_ge_matching_ratio` every nonzero eigenvalue satisfies `θ² ≥ 2/(ν(ν+1))`.
+-/
+
+/-- Interlacing reverses the sum of reciprocal squares: if `a i ≤ b i` with `a i` positive, then
+the sum over `b` is at most the sum over `a`. Applied with `a = λ(F - u)` and `b = λ(F)` this says
+`R(F) ≤ R(F - u)`. -/
+theorem sum_inv_sq_antitone {ι : Type*} (s : Finset ι) (a b : ι → ℝ)
+    (hpos : ∀ i ∈ s, 0 < a i)
+    (hle : ∀ i ∈ s, a i ≤ b i) :
+    ∑ i ∈ s, (b i)⁻¹ ^ 2 ≤ ∑ i ∈ s, (a i)⁻¹ ^ 2 := by
+  refine Finset.sum_le_sum ?_
+  intro i hi
+  have ha : 0 < a i := hpos i hi
+  have hb : 0 < b i := lt_of_lt_of_le ha (hle i hi)
+  have : (b i)⁻¹ ≤ (a i)⁻¹ := by
+    rw [inv_le_inv₀ hb ha]; exact hle i hi
+  have h0 : (0:ℝ) ≤ (b i)⁻¹ := le_of_lt (inv_pos.mpr hb)
+  nlinarith [this, h0]
+
+/-- The closed chain. With `R ≤ ν(ν+1)/2` for a forest of matching number `ν`, every nonzero
+eigenvalue satisfies `θ² ≥ 2/(ν(ν+1))`. -/
+theorem eigenvalue_sq_ge_two_div {ι : Type*} (s : Finset ι) (y : ι → ℝ)
+    (mnu mnu1 : ℝ) (nu : ℝ)
+    (hpos : ∀ i ∈ s, 0 < y i)
+    (hmnu : 0 < mnu)
+    (hnu : 0 < nu)
+    (hvieta : ∑ i ∈ s, (y i)⁻¹ = mnu1 / mnu)
+    (hratio : mnu1 / mnu ≤ nu * (nu + 1) / 2)
+    {j : ι} (hj : j ∈ s) :
+    2 / (nu * (nu + 1)) ≤ y j := by
+  have hd : 0 < nu * (nu + 1) := mul_pos hnu (by linarith)
+  have hterm : (y j)⁻¹ ≤ nu * (nu + 1) / 2 := by
+    refine le_trans ?_ hratio
+    rw [← hvieta]
+    exact Finset.single_le_sum (f := fun i => (y i)⁻¹)
+      (fun i hi => le_of_lt (inv_pos.mpr (hpos i hi))) hj
+  have hyj : 0 < y j := hpos j hj
+  have h1 : 1 ≤ (nu * (nu + 1) / 2) * y j := by
+    have := mul_le_mul_of_nonneg_right hterm (le_of_lt hyj)
+    rwa [inv_mul_cancel₀ (ne_of_gt hyj)] at this
+  rw [div_le_iff₀ hd]
+  nlinarith [h1, hyj, hd]

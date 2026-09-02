@@ -161,5 +161,51 @@
     },
     "what_is_still_needed": "only the inequality, not the exact value: any argument that a tree of even order without a perfect matching has ratio below binom(m+1,2)"
   },
-  "formalized_addendum": "eigenvalue_sq_ge_inv_of_unique_perfect_matching in RamaLean/MatchingEigenvalueBound.lean"
+  "formalized_addendum": "eigenvalue_sq_ge_inv_of_unique_perfect_matching in RamaLean/MatchingEigenvalueBound.lean",
+  "CLOSED": {
+    "status": "the chain is complete and unconditional; conj:kappa is withdrawn, superseded by a theorem",
+    "lemma": "if F is a forest with matching number nu and u a vertex with nu(F-u)=nu, then R(F) <= R(F-u). Proof: a forest has exactly 2nu nonzero eigenvalues so both F and F-u have exactly nu positive ones; Cauchy interlacing gives theta'_j <= theta_j for every j, all positive; sum reciprocal squares. Verified on 33907 (F,u) pairs to order 14 with 0 violations and 0 equalities.",
+    "theorem": "R(F) = m_(nu-1)/m_nu <= binom(nu+1,2) for EVERY forest, equality iff P_{2nu} plus isolated vertices. Proof: delete exposed vertices (each preserves nu and cannot decrease R) to reach a forest of order 2nu with a perfect matching, where m_nu=1, then apply Gutman. Verified for all trees to order 18, tight exactly once per even order, at the path.",
+    "consequence": "theta^2 >= 2/(nu(nu+1)) for every nonzero eigenvalue of a forest",
+    "main": "if delta >= 3 and theta != 0 is an eigenvalue of T_G then theta^2 > 8(delta-2)^2/((Delta-2)(Delta+2delta-6)), so |theta| > 2 sqrt2 (delta-2)/Delta asymptotically",
+    "why_the_old_route_failed": "I was trying to bound m_(m-2) for non-PM trees of even order, a hard extremal problem. Indexing by the matching number nu instead of the order makes the statement uniform across both cases and the proof is interlacing.",
+    "formalized": "sum_inv_sq_antitone and eigenvalue_sq_ge_two_div in RamaLean/MatchingEigenvalueBound.lean"
+  },
+  "sharpness_family": {
+    "claim": "Delta > (delta-2) kappa + 2 is attained at (delta,kappa) = (3,2), (3,3), (4,2)",
+    "rows": [
+      {
+        "delta": 3,
+        "B": "K_2",
+        "kappa": 2,
+        "theta": "+-1",
+        "Delta": 5,
+        "c": 5,
+        "b": 4,
+        "n": 14
+      },
+      {
+        "delta": 3,
+        "B": "P_3",
+        "kappa": 3,
+        "theta": "+-sqrt2",
+        "Delta": 6,
+        "c": 6,
+        "b": 5,
+        "n": 23
+      },
+      {
+        "delta": 4,
+        "B": "K_2",
+        "kappa": 2,
+        "theta": "+-1",
+        "Delta": 7,
+        "c": 7,
+        "b": 6,
+        "n": 20
+      }
+    ],
+    "verification": "mu_G computed exactly through the boundary as a separator, so n=23 needs no 2^n; mu_G(theta)=0 exactly in each row, and the Aomoto inequality cc > |boundary| holds in each",
+    "minimality": "the counting chain fixes c, then b, then n, so each row is the smallest graph for its Delta"
+  }
 }
